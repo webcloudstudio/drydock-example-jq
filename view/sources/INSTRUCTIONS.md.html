@@ -27,8 +27,11 @@ fi
 JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py</code></pre>
 <p>Before relying on any path above, run <code>ls sources/</code> in the application directory and correct the paths in the harness against what is actually on disk. Correcting a path is the only edit permitted to this script. Do not add flags, filters, skips, or a redirection of the exit code.</p>
 <p>The interface check is deliberately separate from the conformance run so that a missing program and a genuine conformance failure are distinguishable in the evidence. <code>JQ</code> is the harness&#x27;s only knowledge of the implementation language; the harness itself is language-neutral.</p>
-<p><strong>The scoring assets are read-only.</strong> <code>sources/full_test.sh</code>, <code>sources/run_conformance.py</code>, <code>sources/exclusions.txt</code>, and <code>sources/jq.test</code> are hash-verified against the import and restored before grading, so a modification is reported as tampering rather than honoured. Do not write to them. Build <code>./jq</code> so that the supplied entry point succeeds; changing the entry point is not a repair.</p>
-<h2>Interface Contract</h2>
+<h2>Read-only scoring assets</h2>
+<p>These four files are the exam. They are hash-verified against the import and restored before grading, so a modification is reported as tampering rather than honoured:</p>
+<ul><li><code>sources/full_test.sh</code> — the scoring entry point</li><li><code>sources/run_conformance.py</code> — the scoring instrument</li><li><code>sources/exclusions.txt</code> — the declared skips</li><li><code>sources/jq.test</code> — the conformance corpus</li></ul>
+<p>Do not write to them. Build <code>./jq</code> so that the supplied entry point succeeds; changing the entry point is not a repair, and a repair pass spent editing one of these files is wasted.</p>
+<h2>Interface contract</h2>
 <p>The program is a filter: an executable file named <code>jq</code> at the application root, invoked as</p>
 <pre><code>./jq -c &#x27;&lt;program&gt;&#x27;</code></pre>
 <p>with JSON on <strong>stdin</strong>. It writes each value the program produces to <strong>stdout</strong> as one compact JSON value per line, and exits <code>0</code>.</p>
@@ -37,8 +40,8 @@ JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py</code></pre>
 <div class="scroll"><table><thead><tr><th>Exit</th><th>Meaning</th></tr></thead><tbody><tr><td><code>0</code></td><td>the program compiled and ran to completion</td></tr><tr><td><code>3</code></td><td>the program did not compile — a syntax or static error</td></tr><tr><td><code>5</code></td><td>the program compiled but raised at run time</td></tr></tbody></table></div>
 <p>A case may legitimately emit several values and then raise; the harness compares the values produced before the raise, so exit <code>5</code> is not by itself a failure. Exit <code>3</code> on a valid program is always a failure. Diagnostics go to <strong>stderr</strong> and are never compared.</p>
 <p>Any implementation shape that satisfies this contract is acceptable. A <code>#!/usr/bin/env python3</code> script named <code>jq</code> that imports the real work from a package alongside it is the obvious one; <code>main</code> should parse arguments and delegate.</p>
-<h2>Test / Verification Process</h2>
-<p>The imported source files are placed in a <code>sources/</code> subdirectory of the application directory. No installation step and no network access are required at any point.</p>
+<h2>Test / verification process</h2>
+<p>The imported source files are placed in a <code>sources/</code> subdirectory of the application directory. The only tools required are <code>python3</code> and a POSIX <code>sh</code>, both already present. No installation step, no package download, and no network access are required at any point.</p>
 <pre><code>JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py                     # the scored run
 JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py -v                  # list passing cases too
 JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --json              # machine-readable
@@ -46,18 +49,22 @@ JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --list              # 
 JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # one construct at a time</code></pre>
 <p>During development, <code>sh sources/full_test.sh</code> does the interface check and the conformance run together, and is the same command the score is taken from.</p>
 <p><code>--select</code> takes a regular expression matched against the case&#x27;s program text and exists for development only. The acceptance gate always runs the whole corpus; there is no scoped gate and none may be created.</p>
+<p><strong>Exactly one acceptance check runs the suite.</strong> One terminal story — the last one — runs <code>sh sources/full_test.sh</code>, asserts only <code>result.returncode == 0</code>, prints the captured stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea Trial. No other acceptance check may invoke <code>full_test.sh</code> or <code>run_conformance.py</code>, and no acceptance check may assert that an imported or staged file merely exists — a file-presence check is not acceptance.</p>
 <p>The summary line is:</p>
 <pre><code>jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)</code></pre>
 <p>The harness reserves exit <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion. Exit <code>2</code> never means the interpreter is wrong.</p>
-<h3>The corpus format</h3>
+<h2>The corpus format</h2>
 <p><code>sources/jq.test</code> documents its own format in its header. Cases are separated by blank lines; blank lines and <code>#</code> lines are ignored. A case is a program line, an input line, and then the expected output values, one per line. A case preceded by <code>%%FAIL</code> is a program that must be <strong>rejected at compile time</strong>: the following lines are upstream jq&#x27;s diagnostic, which this harness records but never compares. Reproducing jq&#x27;s exact error text is reverse-engineering a C implementation, not conforming to a specification, so a <code>%%FAIL</code> case passes on exit <code>3</code> alone.</p>
 <p>Values are compared structurally, not textually. <code>1</code> and <code>1.0</code> are the same jq value; so are two objects whose keys are printed in a different order. Formatting of output is therefore not under test, but the <strong>number and order</strong> of values is.</p>
-<h3>Declared exclusions</h3>
+<h2>Declared exclusions</h2>
 <p><code>sources/exclusions.txt</code> names the corpus cases this kit cannot run, with the reason. They are the module-loader cases: <code>import</code> and <code>include</code> resolved against a search path of fixture files that this kit&#x27;s flat source import cannot carry. They are reported as <code>skipped</code> and are not part of the score.</p>
 <p>The module <em>grammar</em> cases are <strong>not</strong> excluded and must pass. <code>module (.+1); 0</code>, <code>module []; 0</code>, <code>include &quot;a&quot; (.+1); 0</code>, <code>include &quot;a&quot; []; 0</code>, <code>include &quot;\ &quot;; 0</code>, <code>include &quot;\(a)&quot;; 0</code>, and <code>%::wat</code> are all <code>%%FAIL</code> cases: the front end must parse the module syntax far enough to reject them, without ever touching the filesystem.</p>
-<h2>Files the LLM Needs</h2>
-<ul><li><code>sources/jq-manual.txt</code> — the jq language manual at 1.8.2, rendered to plain text.</li></ul>
-<p>The primary specification. Required, and the normative description of every builtin.</p>
+<h2>Source Roles</h2>
+<p>Record this table in the Analysis so every asset is staged onto disk in the build directory. <code>sources/jq-manual.txt</code>, <code>sources/jq.test</code>, <code>sources/parser.y</code>, and <code>sources/lexer.l</code> are large and must be readable from disk during implementation rather than carried in prompt text.</p>
+<div class="scroll"><table><thead><tr><th>Source</th><th>Role</th><th>Plan disposition</th><th>Build disposition</th></tr></thead><tbody><tr><td><code>jq-manual.txt</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>jq.test</code></td><td>conformance test suite</td><td>context</td><td>stage</td></tr><tr><td><code>parser.y</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>lexer.l</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>builtin.jq</code></td><td>reference implementation</td><td>context</td><td>stage</td></tr><tr><td><code>run_conformance.py</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>full_test.sh</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>exclusions.txt</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>INSTRUCTIONS.md</code></td><td>author intent</td><td>context</td><td>prompt-only</td></tr></tbody></table></div>
+<p>What each staged file is for:</p>
+<ul><li><code>sources/jq-manual.txt</code> — the jq language manual at 1.8.2, rendered to plain text. The</li></ul>
+<p>primary specification, and the normative description of every builtin.</p>
 <ul><li><code>sources/jq.test</code> — the conformance corpus. Also the most precise available statement of</li></ul>
 <p>the semantics, especially for generators and backtracking.</p>
 <ul><li><code>sources/parser.y</code> — upstream&#x27;s yacc grammar. The authority on operator precedence,</li></ul>
@@ -66,12 +73,9 @@ JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&
 <p>escape handling.</p>
 <ul><li><code>sources/builtin.jq</code> — the subset of jq&#x27;s builtins that upstream defines in jq itself.</li></ul>
 <p>Read it as a specification of those builtins&#x27; semantics.</p>
-<ul><li><code>sources/run_conformance.py</code>, <code>sources/full_test.sh</code>, <code>sources/exclusions.txt</code> —</li></ul>
-<p>the scoring instruments. Read-only.</p>
-<h2>Source Roles</h2>
-<p>Record this table in the Analysis so every asset is staged onto disk in the build directory. <code>sources/jq-manual.txt</code>, <code>sources/jq.test</code>, <code>sources/parser.y</code>, and <code>sources/lexer.l</code> are large and must be readable from disk during implementation rather than carried in prompt text.</p>
-<div class="scroll"><table><thead><tr><th>Source</th><th>Role</th><th>Plan disposition</th><th>Build disposition</th></tr></thead><tbody><tr><td><code>jq-manual.txt</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>jq.test</code></td><td>conformance test suite</td><td>context</td><td>stage</td></tr><tr><td><code>parser.y</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>lexer.l</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>builtin.jq</code></td><td>reference implementation</td><td>context</td><td>stage</td></tr><tr><td><code>run_conformance.py</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>full_test.sh</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>exclusions.txt</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>INSTRUCTIONS.md</code></td><td>author intent</td><td>context</td><td>prompt-only</td></tr></tbody></table></div>
-<h2>Suggested Implementation Order</h2>
+<ul><li><code>sources/run_conformance.py</code>, <code>sources/full_test.sh</code>, <code>sources/exclusions.txt</code> — the</li></ul>
+<p>scoring instruments, read-only as stated above.</p>
+<h2>Suggested implementation order</h2>
 <p>The difficulty is concentrated in one place — the evaluation model — and not spread evenly across the corpus. Build the core correctly before reaching for coverage.</p>
 <ol><li><strong>Lexer and parser.</strong> Follow <code>sources/lexer.l</code> and <code>sources/parser.y</code> directly. Produce</li></ol>
 <p>an AST. Precedence, <code>?</code> suffixes, string interpolation, and the <code>def</code> forms are all settled there. Reject invalid programs with exit <code>3</code>.</p>
@@ -97,7 +101,9 @@ JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&
 <p>implementation or binding is forbidden** — <code>jq.py</code>, <code>pyjq</code>, <code>jqlang</code>, <code>gojq</code>, <code>jaq</code>, and any other — as is shelling out to a system <code>jq</code> binary. A wrapper around real jq scores perfectly and makes the exercise meaningless.</p>
 <ul><li>The project declares no third-party runtime dependency. The standard library is</li></ul>
 <p>sufficient: <code>json</code>, <code>decimal</code>, <code>math</code>, <code>re</code>, <code>datetime</code>, <code>time</code>, <code>base64</code>, <code>unicodedata</code>, <code>itertools</code>, <code>functools</code>, <code>dataclasses</code>, <code>argparse</code>, <code>sys</code>.</p>
-<ul><li>No network access at any point, including at test time.</li><li>Deliver a concise project <code>README.md</code> documenting the stdin/stdout interface, the exit</li></ul>
+<ul><li>No network access at any point, including at test time. No package is installed, and no</li></ul>
+<p>tool beyond <code>python3</code> and POSIX <code>sh</code> is invoked.</p>
+<ul><li>Deliver a concise project <code>README.md</code> documenting the stdin/stdout interface, the exit</li></ul>
 <p>codes, and the <code>sh sources/full_test.sh</code> command.</p></article>
 </main>
 </body>

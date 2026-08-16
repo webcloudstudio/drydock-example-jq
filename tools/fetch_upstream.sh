@@ -40,6 +40,13 @@ if [ "${MODE}" = "fetch" ]; then
     done
 fi
 
+if [ "${MODE}" = "verify" ]; then
+    OUT="$(mktemp)"
+    trap 'rm -f "${OUT}"' EXIT
+else
+    OUT="${KIT}/PROVENANCE.md"
+fi
+
 {
     echo "# Provenance"
     echo
@@ -72,7 +79,16 @@ fi
     echo "interface itself and jq's command-line option surface is not under test."
     echo
     echo "\`LICENSE\` is upstream \`COPYING\` with a kit attribution note prepended."
-} > "${KIT}/PROVENANCE.md"
+} > "${OUT}"
 
 echo
-echo "wrote ${KIT}/PROVENANCE.md"
+if [ "${MODE}" = "verify" ]; then
+    if diff -u "${KIT}/PROVENANCE.md" "${OUT}"; then
+        echo "verified: every file on disk matches PROVENANCE.md"
+    else
+        echo "error: on-disk files do not match PROVENANCE.md (diff above)" >&2
+        exit 1
+    fi
+else
+    echo "wrote ${KIT}/PROVENANCE.md"
+fi

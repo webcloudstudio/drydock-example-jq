@@ -9,12 +9,14 @@
 <body>
 <main>
 <header class="fileheader"><div class="kind">Project document</div><h1>USER_NOTES.md</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../USER_NOTES.md">Raw file</a></div></header>
-<article class="doc"><p>No setup is required to run this kit. Python 3 is the only prerequisite, and the kit needs no network access.</p>
-<p>To re-fetch the pinned upstream files and re-check their hashes:</p>
+<article class="doc"><h1>Host prerequisites</h1>
+<div class="scroll"><table><thead><tr><th>Tool</th><th>Needed for</th><th>When</th></tr></thead><tbody><tr><td><code>python3</code> (3.11 or newer)</td><td><code>sources/run_conformance.py</code> and the delivered interpreter</td><td>every run</td></tr><tr><td>POSIX <code>sh</code></td><td><code>sources/full_test.sh</code>, the scoring entry point</td><td>every run</td></tr><tr><td><code>curl</code></td><td>fetching upstream files and the pinned jq release binary</td><td>authoring and calibration only</td></tr></tbody></table></div>
+<p>A run installs nothing and needs no network access. Nothing beyond the Python standard library is used, by the harness or by the deliverable.</p>
+<p>To re-fetch the pinned upstream files and re-check their hashes — needs <code>curl</code> and network access:</p>
 <p>sh uat/jq/tools/fetch_upstream.sh --verify python3 uat/jq/tools/render_manual.py --check</p>
 <p>To calibrate the scoring instrument against real jq before trusting a run:</p>
 <p>curl -sL https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64 -o /tmp/jq182 chmod +x /tmp/jq182 cd uat/jq &amp;&amp; JQ=/tmp/jq182 python3 sources/run_conformance.py</p>
-<p>Expect: 537 passed, 0 failed, 0 errored, 13 skipped.</p></article>
+<p>Expect: <code>537 passed, 0 failed, 0 errored, 13 skipped</code>, exit 0.</p></article>
 </main>
 </body>
 </html>

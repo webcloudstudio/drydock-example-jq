@@ -8,8 +8,8 @@ reproduce a run.
 ## What this kit builds
 
 An interpreter for the **jq** language, in Python, from the jq 1.8.2 manual. Correctness is
-decided by upstream's own conformance corpus, `tests/jq.test`, taken byte-for-byte from the jq
-repository at tag `jq-1.8.2`.
+decided by upstream's own conformance corpus, `sources/jq.test`, taken byte-for-byte from
+`tests/jq.test` in the jq repository at tag `jq-1.8.2`.
 
 ## Why this target
 
@@ -30,8 +30,15 @@ score is fractional, so the failure shows up as a number instead of a judgement 
 
 ## Prerequisites
 
-None beyond Python 3. Unlike the Toml kit there is no toolchain to install, no harness to build,
-and no network access at any point after the kit is fetched.
+| Tool | Needed for | When |
+|---|---|---|
+| `python3` (3.11+) | `sources/run_conformance.py`, the delivered interpreter | every run |
+| POSIX `sh` | `sources/full_test.sh` | every run |
+| `curl` | downloading the pinned jq release binary and re-fetching upstream files | authoring and calibration only |
+
+Unlike the Toml kit there is no toolchain to install and no harness to build. A run needs no
+network access and installs nothing; `curl` is used only by `tools/fetch_upstream.sh` and by the
+calibration step below, both of which are author-side.
 
 ## Running
 
@@ -77,7 +84,8 @@ The runner is calibrated against real jq before any model runs:
 | jq 1.8.2 (the pinned version) | 537 passed, 0 failed, 0 errored, 13 skipped — exit 0 |
 | jq 1.6 (older, for a gradient) | 397 passed, 136 failed, 4 errored — exit 1 |
 
-Reproduce the first row with the official static release binary:
+Reproduce the first row with the official static release binary (requires `curl` and network
+access; the kit itself needs neither):
 
 ```bash
 curl -sL https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64 -o /tmp/jq182
@@ -104,7 +112,10 @@ rejects without touching the filesystem.
 ```text
 uat/jq/
   README.md              this file
+  NEXT_STEPS.md          authoring notes: kit decisions, calibration, open items
+  USER_NOTES.md          host prerequisites
   PROVENANCE.md          upstream tag and a SHA-256 for every verbatim file
+  LICENSE                upstream jq licence plus a kit attribution note
   uat.json               source bundle, test command, and the governed full gate
   inputs/                lifecycle decisions seeded before analysis
     SEA_TRIALS.md
@@ -122,6 +133,8 @@ uat/jq/
     fetch_upstream.sh    re-fetch the pinned upstream files and rewrite PROVENANCE.md
     render_manual.py     manual.yml -> sources/jq-manual.txt
   runs/<run-id>/         one complete unattended run (generated)
+  index.html             project page linking documents, bundles, and every run (generated)
+  view/  assets/         generated viewers and stylesheet for the linked artifacts
 ```
 
 The manual ships as `.txt` rather than `.md` deliberately. Drydock stages only non-Markdown

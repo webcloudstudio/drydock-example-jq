@@ -48,13 +48,20 @@ program and a genuine conformance failure are distinguishable in the evidence. `
 harness's only knowledge of the implementation language; the harness itself is
 language-neutral.
 
-**The scoring assets are read-only.** `sources/full_test.sh`, `sources/run_conformance.py`,
-`sources/exclusions.txt`, and `sources/jq.test` are hash-verified against the import and
-restored before grading, so a modification is reported as tampering rather than honoured.
-Do not write to them. Build `./jq` so that the supplied entry point succeeds; changing the
-entry point is not a repair.
+## Read-only scoring assets
 
-## Interface Contract
+These four files are the exam. They are hash-verified against the import and restored
+before grading, so a modification is reported as tampering rather than honoured:
+
+- `sources/full_test.sh` — the scoring entry point
+- `sources/run_conformance.py` — the scoring instrument
+- `sources/exclusions.txt` — the declared skips
+- `sources/jq.test` — the conformance corpus
+
+Do not write to them. Build `./jq` so that the supplied entry point succeeds; changing the
+entry point is not a repair, and a repair pass spent editing one of these files is wasted.
+
+## Interface contract
 
 The program is a filter: an executable file named `jq` at the application root, invoked as
 
@@ -86,10 +93,12 @@ Any implementation shape that satisfies this contract is acceptable. A
 `#!/usr/bin/env python3` script named `jq` that imports the real work from a package
 alongside it is the obvious one; `main` should parse arguments and delegate.
 
-## Test / Verification Process
+## Test / verification process
 
 The imported source files are placed in a `sources/` subdirectory of the application
-directory. No installation step and no network access are required at any point.
+directory. The only tools required are `python3` and a POSIX `sh`, both already present.
+No installation step, no package download, and no network access are required at any
+point.
 
 ```bash
 JQ="$PWD/jq" python3 sources/run_conformance.py                     # the scored run
@@ -106,6 +115,13 @@ run together, and is the same command the score is taken from.
 for development only. The acceptance gate always runs the whole corpus; there is no scoped
 gate and none may be created.
 
+**Exactly one acceptance check runs the suite.** One terminal story — the last one — runs
+`sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured
+stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea
+Trial. No other acceptance check may invoke `full_test.sh` or `run_conformance.py`, and no
+acceptance check may assert that an imported or staged file merely exists — a file-presence
+check is not acceptance.
+
 The summary line is:
 
 ```
@@ -115,7 +131,7 @@ jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-
 The harness reserves exit `2` for its own faults — a missing corpus, an unset `JQ`, a
 stale exclusion. Exit `2` never means the interpreter is wrong.
 
-### The corpus format
+## The corpus format
 
 `sources/jq.test` documents its own format in its header. Cases are separated by blank
 lines; blank lines and `#` lines are ignored. A case is a program line, an input line, and
@@ -129,7 +145,7 @@ Values are compared structurally, not textually. `1` and `1.0` are the same jq v
 are two objects whose keys are printed in a different order. Formatting of output is
 therefore not under test, but the **number and order** of values is.
 
-### Declared exclusions
+## Declared exclusions
 
 `sources/exclusions.txt` names the corpus cases this kit cannot run, with the reason. They
 are the module-loader cases: `import` and `include` resolved against a search path of
@@ -140,21 +156,6 @@ The module *grammar* cases are **not** excluded and must pass. `module (.+1); 0`
 `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`,
 `include "\(a)"; 0`, and `%::wat` are all `%%FAIL` cases: the front end must parse the
 module syntax far enough to reject them, without ever touching the filesystem.
-
-## Files the LLM Needs
-
-- `sources/jq-manual.txt` — the jq language manual at 1.8.2, rendered to plain text.
-  The primary specification. Required, and the normative description of every builtin.
-- `sources/jq.test` — the conformance corpus. Also the most precise available statement of
-  the semantics, especially for generators and backtracking.
-- `sources/parser.y` — upstream's yacc grammar. The authority on operator precedence,
-  associativity, and the shape of every syntactic form.
-- `sources/lexer.l` — upstream's lexer. The authority on tokens, string interpolation, and
-  escape handling.
-- `sources/builtin.jq` — the subset of jq's builtins that upstream defines in jq itself.
-  Read it as a specification of those builtins' semantics.
-- `sources/run_conformance.py`, `sources/full_test.sh`, `sources/exclusions.txt` —
-  the scoring instruments. Read-only.
 
 ## Source Roles
 
@@ -175,7 +176,22 @@ than carried in prompt text.
 | `exclusions.txt` | conformance harness | context | stage |
 | `INSTRUCTIONS.md` | author intent | context | prompt-only |
 
-## Suggested Implementation Order
+What each staged file is for:
+
+- `sources/jq-manual.txt` — the jq language manual at 1.8.2, rendered to plain text. The
+  primary specification, and the normative description of every builtin.
+- `sources/jq.test` — the conformance corpus. Also the most precise available statement of
+  the semantics, especially for generators and backtracking.
+- `sources/parser.y` — upstream's yacc grammar. The authority on operator precedence,
+  associativity, and the shape of every syntactic form.
+- `sources/lexer.l` — upstream's lexer. The authority on tokens, string interpolation, and
+  escape handling.
+- `sources/builtin.jq` — the subset of jq's builtins that upstream defines in jq itself.
+  Read it as a specification of those builtins' semantics.
+- `sources/run_conformance.py`, `sources/full_test.sh`, `sources/exclusions.txt` — the
+  scoring instruments, read-only as stated above.
+
+## Suggested implementation order
 
 The difficulty is concentrated in one place — the evaluation model — and not spread evenly
 across the corpus. Build the core correctly before reaching for coverage.
@@ -223,6 +239,7 @@ inferring behaviour from jq's printed output.
 - The project declares no third-party runtime dependency. The standard library is
   sufficient: `json`, `decimal`, `math`, `re`, `datetime`, `time`, `base64`, `unicodedata`,
   `itertools`, `functools`, `dataclasses`, `argparse`, `sys`.
-- No network access at any point, including at test time.
+- No network access at any point, including at test time. No package is installed, and no
+  tool beyond `python3` and POSIX `sh` is invoked.
 - Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit
   codes, and the `sh sources/full_test.sh` command.
