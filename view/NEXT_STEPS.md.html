@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXT_STEPS.md</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>NEXT_STEPS.md</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../NEXT_STEPS.md">Raw file</a></div></header>
+<article class="doc"><h1>jq Kit — State, Design Points, and Open Items</h1>
+<p>Written 2026-08-14. This file exists so the reasoning behind the kit survives a context clear. It is authoring notes, not a governed input; <code>uat.json</code> does not declare it.</p>
+<h2>Status</h2>
+<p>The kit is complete and calibrated. Nothing is pending before a run.</p>
+<div class="scroll"><table><thead><tr><th>Candidate</th><th>Result</th></tr></thead><tbody><tr><td>jq 1.8.2 (the pinned version)</td><td>537 passed, 0 failed, 0 errored, 13 skipped — exit 0, ~1.1 s</td></tr><tr><td>jq 1.6 (older, negative control)</td><td>397 passed, 136 failed, 4 errored — exit 1</td></tr><tr><td>bogus exclusion, or unset <code>JQ</code></td><td>exit 2 — kit fault, never charged to the build</td></tr></tbody></table></div>
+<p>Reproduce the first row:</p>
+<pre><code>curl -sL https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64 -o /tmp/jq182
+chmod +x /tmp/jq182
+cd uat/jq &amp;&amp; JQ=/tmp/jq182 python3 sources/run_conformance.py</code></pre>
+<p>Anything other than <code>0 failed, 0 errored</code> on jq 1.8.2 is a defect in <code>run_conformance.py</code>.</p>
+<h2>Design points</h2>
+<h3>The manual ships as <code>.txt</code>, not <code>.md</code>, and that is load-bearing</h3>
+<p>Build-story prompts receive <strong>no imported source content</strong>. <code>source_roles.py</code> skips Markdown when promoting sources into the Blueprint, and <code>build.py</code> gives the builder only the <em>names</em> of staged non-Markdown assets. The full bundle reaches <code>analyze</code> and <code>plan</code> and stops there.</p>
+<p>So an imported <code>.md</code> manual would survive into the build only as whatever <code>analyze</code> paraphrased into the Blueprint. As <code>.txt</code> it is both injectable as prose at analysis time and staged onto disk for the builder to open. CommonMark&#x27;s <code>spec.txt</code> works the same way.</p>
+<h3>The Source Roles table in INSTRUCTIONS.md is not decoration</h3>
+<p>Staging is opt-in and the <code>## Source Roles</code> table is authored by the LLM during <code>analyze</code>. An unsteered <code>analyze</code> stages nothing, and the builder then has a manual it cannot read. The table in <code>sources/INSTRUCTIONS.md</code> exists to force <code>stage</code> on all eight non-INSTRUCTIONS sources. Do not delete it while editing that file down.</p>
+<h3>Exit codes are the grading contract</h3>
+<p>jq&#x27;s own: <code>0</code> ran, <code>3</code> did not compile, <code>5</code> compiled then raised. The runner adopts them.</p>
+<ul><li>A <code>%%FAIL</code> case passes on exit <code>3</code> <strong>specifically</strong>, not on any non-zero exit. All 19 <code>%%FAIL</code></li></ul>
+<p>cases were verified to exit 3 under real jq. This is stricter than the original plan.</p>
+<ul><li>An ordinary case <em>tolerates</em> exit <code>5</code>. Five cases — the <code>?//</code> destructuring alternatives and one</li></ul>
+<p><code>try</code>/<code>error</code> case — emit their values and then raise; upstream judges them on the values produced. Treating exit 5 as failure was the first calibration defect found.</p>
+<ul><li>The harness reserves exit <code>2</code> for its own faults, matching <code>GATE_USAGE_EXIT</code>.</li></ul>
+<h3><code>str.splitlines()</code> cannot be used on this corpus</h3>
+<p>It is Unicode-aware and breaks on U+000B, U+000C, U+0085, U+2028, and U+2029. The <code>trim, ltrim, rtrim</code> case&#x27;s expected output embeds exactly those inside JSON strings, so one value was being shredded into five and a correct implementation failed. <code>run_conformance.py</code> uses a newline-only <code>split_lines()</code> throughout — corpus parsing, exclusions parsing, and stdout splitting. Do not &quot;simplify&quot; it back.</p>
+<h3>13 exclusions — loader cases only</h3>
+<p>Only the module-<em>loader</em> cases are excluded: they resolve <code>import</code>/<code>include</code> against a search path of fixture files across nested directories, and Drydock copies a kit&#x27;s sources <strong>flattened by basename</strong>, so that tree physically cannot be carried.</p>
+<p>The module-<em>grammar</em> cases stay in the scored set — <code>module (.+1); 0</code>, <code>module []; 0</code>, <code>include &quot;a&quot; (.+1); 0</code>, <code>include &quot;a&quot; []; 0</code>, <code>include &quot;\ &quot;; 0</code>, <code>include &quot;\(a)&quot;; 0</code>, <code>%::wat</code>. They are <code>%%FAIL</code> parse errors a correct front end rejects without touching the filesystem.</p>
+<p>An exclusion matching zero cases is exit 2, so the list cannot rot silently against the pin.</p>
+<h3>Why this target at all</h3>
+<p><code>jq.test</code>&#x27;s comment banners are <strong>not</strong> a usable partition — measured, <code>Conditionals</code> owns 194 cases and <code>toliteral</code> 91, so two banners are 52% of 550. There is no decomposition to hide behind, which is the whole point: the build loop has to face &quot;this story is too hard, split it&quot; for real. Hence <code>acceptance.full</code> only, with no <code>stages</code> block.</p>
+<h2>Open items for your hand-edit</h2>
+<ol><li><strong><code>sources/builtin.jq</code>.</strong> In per <code>ideas/UAT.md</code>&#x27;s bundle, but it is jq&#x27;s own jq-language</li></ol>
+<p>implementation of ~100 builtins — a materially larger giveaway than the CommonMark kit shipped (<code>cmark.py</code> there is a ctypes wrapper, not a reference implementation). To drop it: delete the file and its one entry in <code>uat.json</code>.</p>
+<ol><li><strong>Bundle cost.</strong> ~230 KB ≈ 55k tokens at <code>analyze</code> and at each <code>plan</code> batch. <code>jq-manual.txt</code> is</li></ol>
+<p>131 KB of that. The <code>Invoking jq</code> and <code>Colors</code> sections are already dropped by <code>tools/render_manual.py</code>. There is no per-story source selection in Drydock — <code>build.py</code> resolves a story&#x27;s <code>context:</code> against the Blueprint, never against <code>sources/</code> — so slicing the manual per story is not available; it ships whole or not at all.</p>
+<ol><li><strong>Repository.</strong> <code>uat/</code> is gitignored at <code>.gitignore:46</code> (commit 9771073, one repo per kit).</li></ol>
+<p>Nothing here is tracked. Whether <code>uat/jq</code> becomes its own repository is your call.</p>
+<h2>Unrelated red test, not from this kit</h2>
+<p><code>tests/test_gate_policy_replay.py::test_frozen_corpus_matches_the_live_corpus</code> fails with <code>ValueError: unrecognized recorded verdict &#x27;MET&#x27;</code>. <code>tests/uat_corpus.py:32</code> maps only <code>{PASS, FAIL, INCONCLUSIVE}</code>, but recent runs under <code>uat/ReadingList/</code> and <code>uat/Toml/</code> record <code>MET</code>. The grader&#x27;s verdict vocabulary changed and the replay helper&#x27;s map did not follow. This kit has produced no runs. Rest of the suite: 2608 passed.</p></article>
+</main>
+</body>
+</html>

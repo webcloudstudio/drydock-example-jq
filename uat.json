@@ -1,0 +1,22 @@
+{
+  "target": "jq",
+  "expect": { "verdict": "PASSED" },
+  "sources": [
+    "sources/INSTRUCTIONS.md",
+    "sources/jq-manual.txt",
+    "sources/jq.test",
+    "sources/exclusions.txt",
+    "sources/parser.y",
+    "sources/lexer.l",
+    "sources/builtin.jq",
+    "sources/run_conformance.py",
+    "sources/full_test.sh"
+  ],
+  "updates": [],
+  "sea_trials": "inputs/SEA_TRIALS.md",
+  "technology_stack": "inputs/TECHNOLOGY_STACK.md",
+  "test_command": ["sh", "sources/full_test.sh"],
+  "acceptance": {
+    "full": ["sh", "sources/full_test.sh"]
+  }
+}

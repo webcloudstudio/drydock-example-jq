@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROVENANCE.md</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>PROVENANCE.md</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../PROVENANCE.md">Raw file</a></div></header>
+<article class="doc"><h1>Provenance</h1>
+<p>Upstream: https://github.com/jqlang/jq<br>Tag: jq-1.8.2<br>Fetched by: tools/fetch_upstream.sh</p>
+<p>Every file below is byte-for-byte upstream. None is hand-edited. Where a case in the corpus cannot run under this kit&#x27;s harness, the exclusion is declared in <code>sources/exclusions.txt</code> rather than by modifying the corpus.</p>
+<div class="scroll"><table><thead><tr><th>Upstream path</th><th>Kit path</th><th>Bytes</th><th>SHA-256</th></tr></thead><tbody><tr><td><code>tests/jq.test</code></td><td><code>sources/jq.test</code></td><td>52230</td><td><code>329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd</code></td></tr><tr><td><code>src/parser.y</code></td><td><code>sources/parser.y</code></td><td>22382</td><td><code>803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60</code></td></tr><tr><td><code>src/lexer.l</code></td><td><code>sources/lexer.l</code></td><td>4548</td><td><code>cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3</code></td></tr><tr><td><code>src/builtin.jq</code></td><td><code>sources/builtin.jq</code></td><td>9631</td><td><code>b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4</code></td></tr><tr><td><code>docs/content/manual/v1.8/manual.yml</code></td><td><code>tools/manual.yml</code></td><td>147279</td><td><code>2309907188195edee4659ffcdd52d4a30c51d4ef3824a05bcdb9d5e259802a73</code></td></tr><tr><td><code>COPYING</code></td><td><code>tools/COPYING</code></td><td>7887</td><td><code>ad2b4a266b2268939c1446979759706077421cf906a203aa188c6f396e8cfd74</code></td></tr></tbody></table></div>
+<h2>Derived</h2>
+<p><code>sources/jq-manual.txt</code> is rendered from <code>tools/manual.yml</code> by <code>tools/render_manual.py</code>. It is a deterministic transformation: section and entry titles, bodies, and examples are preserved; the <code>Invoking jq</code> section and the manpage intro and epilogue are dropped, because this kit fixes the program&#x27;s interface itself and jq&#x27;s command-line option surface is not under test.</p>
+<p><code>LICENSE</code> is upstream <code>COPYING</code> with a kit attribution note prepended.</p></article>
+</main>
+</body>
+</html>
