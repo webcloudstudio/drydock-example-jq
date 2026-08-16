@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.203700.681Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.203700.681Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.203700.681Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;reusable-compact filename=&quot;full_test.sh&quot;&gt;
+Runs `sources/run_conformance.py` from the application root with `JQ=&quot;$PWD/jq&quot;`. Requires executable `./jq`; preserves harness exit status.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;run_conformance.py&quot;&gt;
+Parses `sources/jq.test`, applies exact exclusions, runs each case via `JQ`, compares structural JSON output and exit codes. Exit 0 means no failures/errors; 1 means candidate failure; 2 means harness fault. Compile errors must exit 3; runtime errors may exit 5.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;exclusions.txt&quot;&gt;
+Declares only module-loader corpus cases as skipped. Entries must match corpus program lines exactly; stale entries are harness errors.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;jq.test&quot;&gt;
+Pinned jq 1.8.2 conformance corpus. Cases contain program, input, and expected output lines; `%%FAIL` cases require compile exit 3.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;jq-manual.txt&quot;&gt;
+Normative jq language specification covering filters, generators, operators, builtins, control flow, variables, regex, modules, dates, streaming, and assignment.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;lexer.l&quot;&gt;
+Defines jq lexical tokens, comments, strings/interpolation, literals, identifiers, bindings, formats, operators, and delimiter state validation.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;parser.y&quot;&gt;
+Defines jq grammar, precedence, associativity, syntax validation, functions, patterns, modules, conditionals, generators, assignments, and compile-time diagnostics.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;builtin.jq&quot;&gt;
+Reference definitions for jq builtins including map/select, reductions, recursion, paths, strings, regex, control flow, dates, streaming, traversal, SQL-style helpers, and assignment support.
+&lt;/reusable-compact&gt;
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- sources/INSTRUCTIONS.md
+- tests/test_source_staging.py
+
+SUMMARY:
+Staged the missing authoritative `INSTRUCTIONS.md`; verified all nine source assets are present, non-empty, and byte-stable. Added deterministic pytest coverage for asset staging and harness executability. Tests passed.
+
+BLOCKERS:
+- None</pre></article>
+</main>
+</body>
+</html>

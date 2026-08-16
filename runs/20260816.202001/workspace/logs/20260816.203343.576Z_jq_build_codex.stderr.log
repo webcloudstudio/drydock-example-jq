@@ -1,0 +1,25 @@
+2026-08-16T20:35:22.186213Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc "python3 - <<'PY'
+import ast
+import inspect
+from pathlib import Path
+import jq_lexer, jq_parser, jq_runtime
+assert callable(jq_lexer.tokenize)
+assert callable(jq_parser.parse)
+assert callable(jq_runtime.evaluate)
+assert inspect.isgeneratorfunction(jq_runtime.evaluate)
+source = Path('jq_runtime.py').read_text(encoding='utf-8')
+tree = ast.parse(source)
+imports = {node.names[0].name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import) and node.names}
+for node in ast.walk(tree):
+    if isinstance(node, ast.ImportFrom) and node.module:
+        imports.add(node.module.split('.')[0])
+stdlib = {'argparse','ast','base64','copy','datetime','decimal','functools','itertools','json','math','operator','os','re','sys','time','types',' unicodedata'.strip()}
+assert imports <= stdlib, imports
+PY
+python3 -m unittest discover -s tests -v
+rm -rf ./__pycache__ ./tests/__pycache__
+printf '%s\\n' '--- status checks ---'
+./jq -c '(' </dev/null >/tmp/jq-compile-out 2>/tmp/jq-compile-err; test "'$? -eq 3
+printf '"'%s\\n' '1' | ./jq -c '., 2' | python3 -c 'import sys; assert sys.stdin.read() == \"1\\\\n2\\\\n\"'
+printf '%s\\n' '--- changed files ---'
+find . -maxdepth 2 -type f "'! -path '"'./sources/*' -print | sort"`: CreateProcess { message: "Rejected(\"`/bin/bash -lc \\\"python3 - <<'PY'\\nimport ast\\nimport inspect\\nfrom pathlib import Path\\nimport jq_lexer, jq_parser, jq_runtime\\nassert callable(jq_lexer.tokenize)\\nassert callable(jq_parser.parse)\\nassert callable(jq_runtime.evaluate)\\nassert inspect.isgeneratorfunction(jq_runtime.evaluate)\\nsource = Path('jq_runtime.py').read_text(encoding='utf-8')\\ntree = ast.parse(source)\\nimports = {node.names[0].name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import) and node.names}\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.ImportFrom) and node.module:\\n        imports.add(node.module.split('.')[0])\\nstdlib = {'argparse','ast','base64','copy','datetime','decimal','functools','itertools','json','math','operator','os','re','sys','time','types',' unicodedata'.strip()}\\nassert imports <= stdlib, imports\\nPY\\npython3 -m unittest discover -s tests -v\\nrm -rf ./__pycache__ ./tests/__pycache__\\nprintf '%s\\\\\\\\n' '--- status checks ---'\\n./jq -c '(' </dev/null >/tmp/jq-compile-out 2>/tmp/jq-compile-err; test \\\"'$? -eq 3\\nprintf '\\\"'%s\\\\\\\\n' '1' | ./jq -c '., 2' | python3 -c 'import sys; assert sys.stdin.read() == \\\\\\\"1\\\\\\\\\\\\\\\\n2\\\\\\\\\\\\\\\\n\\\\\\\"'\\nprintf '%s\\\\\\\\n' '--- changed files ---'\\nfind . -maxdepth 2 -type f \\\"'! -path '\\\"'./sources/*' -print | sort\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }

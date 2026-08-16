@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_source_staging.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_source_staging.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_source_staging.py">Raw file</a></div></header>
+<article class="doc"><pre>from hashlib import sha256
+from pathlib import Path
+import subprocess
+
+
+ASSET_HASHES = {
+    &quot;sources/INSTRUCTIONS.md&quot;: &quot;1257c99beb99ebfca4a32b8e4aba86d8b6304cbfbf74cc6ef311cada4c0de734&quot;,
+    &quot;sources/builtin.jq&quot;: &quot;b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4&quot;,
+    &quot;sources/exclusions.txt&quot;: &quot;0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9&quot;,
+    &quot;sources/full_test.sh&quot;: &quot;4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5&quot;,
+    &quot;sources/jq-manual.txt&quot;: &quot;92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3&quot;,
+    &quot;sources/jq.test&quot;: &quot;329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd&quot;,
+    &quot;sources/lexer.l&quot;: &quot;cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3&quot;,
+    &quot;sources/parser.y&quot;: &quot;803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60&quot;,
+    &quot;sources/run_conformance.py&quot;: &quot;c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492&quot;,
+}
+
+
+def test_declared_assets_are_nonempty_and_byte_stable() -&gt; None:
+    for name, expected_hash in ASSET_HASHES.items():
+        path = Path(name)
+        assert path.is_file()
+        assert path.stat().st_size &gt; 0
+        assert sha256(path.read_bytes()).hexdigest() == expected_hash
+
+
+def test_scoring_entry_point_is_executable_by_sh() -&gt; None:
+    result = subprocess.run(
+        [&quot;sh&quot;, &quot;sources/full_test.sh&quot;, &quot;--help&quot;],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 127
+</pre></article>
+</main>
+</body>
+</html>

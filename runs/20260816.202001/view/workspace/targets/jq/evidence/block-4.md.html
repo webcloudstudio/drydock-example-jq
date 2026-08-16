@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-4.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-4.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-4.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 4 · Service (block-4)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 45691</li><li>execution id: 20260816.204408.297Z-baca52fd</li></ul>
+<h2>Stories built</h2>
+<ul><li>Parse jq programs into an executable abstract syntax tree. (parser) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3836)</li><li>implements: FEATURE-Parser.md (SP 675)</li><li>context: parser.y (SP 5596)</li><li>context: lexer.l (SP 1137)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: ARCHITECTURE_compact.md (SP 160)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_parser.py</li><li>tests/test_parser.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: parser-builds-ast (FEATURE-Parser.md)</li></ul>
+<p>intent: A valid jq program is parsed into a non-null AST. return code: 1 stderr: --- drydock: values at failure --- token = Token(kind=&#x27;field&#x27;, value=&#x27;foo&#x27;, position=0, line=1, column=1) --- drydock: end values --- Traceback (most recent call last): File &quot;parser-builds-ast.py&quot;, line 3, in &lt;module&gt; ast = jq_parser.parse(&quot;.foo | .bar&quot;) ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 72, in parse tree = parser.expression() ^^^^^^^^^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 36, in expression left = self.term() ^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 66, in term raise ParseError(f&quot;unexpected token at position {token.position}&quot;) jq_parser.ParseError: unexpected token at position 0</p>
+<ul><li>RED: parser-preserves-precedence (FEATURE-Parser.md)</li></ul>
+<p>intent: Arithmetic precedence is represented distinctly from addition. return code: 1 stderr: --- drydock: values at failure --- parser = &lt;jq_parser.Parser object at 0x7e5c8c92c1d0&gt; --- drydock: end values --- Traceback (most recent call last): File &quot;parser-preserves-precedence.py&quot;, line 3, in &lt;module&gt; ast = jq_parser.parse(&quot;1 + 2 * 2&quot;) ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 74, in parse raise ParseError(f&quot;unexpected token at position {parser.current().position}&quot;) jq_parser.ParseError: unexpected token at position 2</p>
+<ul><li>RED: parser-supports-constructors (FEATURE-Parser.md)</li></ul>
+<p>intent: Array and object construction parse successfully. return code: 1 stderr: --- drydock: values at failure --- token = Token(kind=&#x27;delimiter&#x27;, value=&#x27;[&#x27;, position=0, line=1, column=1) --- drydock: end values --- Traceback (most recent call last): File &quot;parser-supports-constructors.py&quot;, line 4, in &lt;module&gt; assert jq_parser.parse(program) is not None ^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 72, in parse tree = parser.expression() ^^^^^^^^^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 36, in expression left = self.term() ^^^^^^^^^^^ File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_parser.py&quot;, line 66, in term raise ParseError(f&quot;unexpected token at position {token.position}&quot;) jq_parser.ParseError: unexpected token at position 0</p>
+<ul><li>GREEN (prepassed): parser-rejects-malformed-program (FEATURE-Parser.md)</li></ul>
+<p>intent: Unterminated syntax is rejected as a compile error by the parser boundary. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: parser-builds-ast (FEATURE-Parser.md)</li></ul>
+<p>intent: A valid jq program is parsed into a non-null AST. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: parser-preserves-precedence (FEATURE-Parser.md)</li></ul>
+<p>intent: Arithmetic precedence is represented distinctly from addition. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: parser-supports-constructors (FEATURE-Parser.md)</li></ul>
+<p>intent: Array and object construction parse successfully. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: parser-rejects-malformed-program (FEATURE-Parser.md)</li></ul>
+<p>intent: Unterminated syntax is rejected as a compile error by the parser boundary. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_parser.py</li><li>tests/test_parser.py</li></ul>
+<p>SUMMARY: Implemented immutable, precedence-aware jq AST parsing with constructors, bindings, functions, control flow, reducers, indexing, interpolation, modules, and compile-time validation. All 17 tests pass.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

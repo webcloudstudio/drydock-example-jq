@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/LINEAGE.json</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/LINEAGE.json</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/LINEAGE.json">Raw file</a></div></header>
+<article class="doc"><pre>{
+  &quot;version&quot;: 1,
+  &quot;import&quot;: {
+    &quot;root&quot;: &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/sources&quot;,
+    &quot;format&quot;: &quot;markdown&quot;
+  },
+  &quot;sources&quot;: {
+    &quot;INSTRUCTIONS.md&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;1257c99beb99ebfca4a32b8e4aba86d8b6304cbfbf74cc6ef311cada4c0de734&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;build-jq-interpreter&quot;,
+              &quot;text&quot;: &quot;Build an interpreter for the jq language as described in `sources/jq-manual.txt`.&quot;,
+              &quot;stories&quot;: [
+                &quot;architecture&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;stage-source-assets&quot;,
+              &quot;text&quot;: &quot;Record this table in the Analysis so every asset is staged onto disk in the build directory.&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;lex-jq-programs&quot;,
+              &quot;text&quot;: &quot;Follow `sources/lexer.l` and `sources/parser.y` directly.&quot;,
+              &quot;stories&quot;: [
+                &quot;lexer&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;parse-jq-programs&quot;,
+              &quot;text&quot;: &quot;Produce an AST.&quot;,
+              &quot;stories&quot;: [
+                &quot;parser&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;compile-exit-status&quot;,
+              &quot;text&quot;: &quot;Reject invalid programs with exit `3`.&quot;,
+              &quot;stories&quot;: [
+                &quot;compile-contract&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;generator-evaluation&quot;,
+              &quot;text&quot;: &quot;Evaluate a filter as something that yields a stream of values:&quot;,
+              &quot;stories&quot;: [
+                &quot;generator-runtime&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;core-values&quot;,
+              &quot;text&quot;: &quot;`.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;operators-type-behavior&quot;,
+              &quot;text&quot;: &quot;Get `[.[] | f]`, cartesian products over multi-output arguments, and short-circuiting right.&quot;,
+              &quot;stories&quot;: [
+                &quot;operators&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;paths-and-assignment&quot;,
+              &quot;text&quot;: &quot;`path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends.&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;control-flow&quot;,
+              &quot;text&quot;: &quot;`if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;,
+                &quot;reductions&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;functions-and-bindings&quot;,
+              &quot;text&quot;: &quot;`def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.&quot;,
+              &quot;stories&quot;: [
+                &quot;functions-bindings&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;jq-builtins&quot;,
+              &quot;text&quot;: &quot;Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.&quot;,
+              &quot;stories&quot;: [
+                &quot;formats&quot;,
+                &quot;structural-builtins&quot;,
+                &quot;regex-builtins&quot;,
+                &quot;numeric-builtins&quot;,
+                &quot;date-json-encoding&quot;,
+                &quot;io-streaming&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;numbers-and-edge-cases&quot;,
+              &quot;text&quot;: &quot;`nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin \u2014 return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.&quot;,
+              &quot;stories&quot;: [
+                &quot;numeric-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;jq-command-interface&quot;,
+              &quot;text&quot;: &quot;The interface contract&quot;,
+              &quot;stories&quot;: [
+                &quot;executable&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;verification-process&quot;,
+              &quot;text&quot;: &quot;During development, `sh sources/full_test.sh` does the interface check and the conformance run together, and is the same command the score is taken from.&quot;,
+              &quot;stories&quot;: [
+                &quot;focused-verification&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;full-conformance-gate&quot;,
+              &quot;text&quot;: &quot;Exactly one acceptance check runs the suite.&quot;,
+              &quot;stories&quot;: [
+                &quot;full-conformance&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;builtin.jq&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;runtime-errors-and-control-flow&quot;,
+              &quot;text&quot;: &quot;def halt_error: halt_error(5);\ndef error(msg): msg|error;&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;core-values-and-collection-operations&quot;,
+              &quot;text&quot;: &quot;def map(f): [.[] | f];\ndef select(f): if f then . else empty end;\ndef sort_by(f): _sort_by_impl(map([f]));\ndef group_by(f): _group_by_impl(map([f]));\ndef unique_by(f): _unique_by_impl(map([f]));\ndef max_by(f): _max_by_impl(map([f]));\ndef min_by(f): _min_by_impl(map([f]));\ndef add(f): reduce f as $x (null; . + $x);\ndef add: add(.[]);\ndef del(f): delpaths([path(f)]);\ndef abs: if . &lt; 0 then - . else . end;&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;,
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;path-and-recursion-operations&quot;,
+              &quot;text&quot;: &quot;def _assign(paths; $value): reduce path(paths) as $p (.; setpath($p; $value));\ndef _modify(paths; update):\n    reduce path(paths) as $p ([., []];\n        . as $dot\n      | null\n      | label $out\n      | ($dot[0] | getpath($p)) as $v\n      | (\n          (   $$$$v\n            | update\n            | (., break $out) as $v\n            | $$$$dot\n            | setpath([0] + $p; $v)\n          ),\n          (\n              $$$$dot\n            | setpath([1, (.[1] | length)]; $p)\n          )\n        )\n    ) | . as $dot | $dot[0] | delpaths($dot[1]);\n# recurse\ndef recurse(f): def r: ., (f | r); r;\ndef recurse(f; cond): def r: ., (f | select(cond) | r); r;\ndef recurse: recurse(.[]?);\ndef paths: path(recurse)|select(length &gt; 0);\ndef paths(node_filter): path(recurse|select(node_filter))|select(length &gt; 0);&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;,
+                &quot;reductions&quot;,
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;string-and-regular-expression-builtins&quot;,
+              &quot;text&quot;: &quot;def ltrimstr($left): if startswith($left) then .[$left | length:] end;\ndef rtrimstr($right): if endswith($right) then .[:length - ($right | length)] end;\ndef trimstr($val): ltrimstr($val) | rtrimstr($val);\ndef match(re; mode): _match_impl(re; mode; false)|.[];\ndef test(re; mode): _match_impl(re; mode; true);\ndef capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);\ndef scan($re; $flags):\n  match($re; \&quot;g\&quot; + $flags)\n    | if (.captures|length &gt; 0)\n      then [ .captures | .[] | .string ]\n      else .string\n      end;\ndef scan($re): scan($re; null);&quot;,
+              &quot;stories&quot;: [
+                &quot;regex-builtins&quot;,
+                &quot;formats&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;string-substitution-and-splitting&quot;,
+              &quot;text&quot;: &quot;def splits($re; $flags):\n  .[foreach (match($re; $flags+\&quot;g\&quot;), null) as {$offset, $length}\n      (null; {start: .next, end: $offset, next: ($offset+$length)})];\ndef splits($re): splits($re; null);\n\n# split emits an array for backward compatibility\ndef split($re; $flags): [ splits($re; $flags) ];\n\n# If s contains capture variables, then create a capture object and pipe it to s, bearing\n# in mind that s could be a stream\ndef sub($re; s; $flags):\n   . as $in\n   | (reduce match($re; $flags) as $edit\n        ({result: [], previous: 0};\n            $in[ .previous: ($edit | .offset) ] as $gap\n            # create the \&quot;capture\&quot; objects (one per item in s)\n            | [reduce ( $edit | .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair\n                 ({}; . + $pair) | s ] as $inserts\n            | reduce range(0; $inserts|length) as $ix (.; .result[$ix] += $gap + $inserts[$ix])\n            | .previous = ($edit | .offset + .length ) )\n          | .result[] + $in[.previous:] )\n      // $in;\n\ndef sub($re; s): sub($re; s; \&quot;\&quot;);\n\ndef gsub($re; s; flags): sub($re; s; flags + \&quot;g\&quot;);\ndef gsub($re; s): sub($re; s; \&quot;g\&quot;);&quot;,
+              &quot;stories&quot;: [
+                &quot;regex-builtins&quot;,
+                &quot;formats&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;generator-iteration-and-limits&quot;,
+              &quot;text&quot;: &quot;# generic iterator/generator\ndef while(cond; update):\n     def _while:\n         if cond then ., (update | _while) else empty end;\n     _while;\ndef until(cond; next):\n     def _until:\n         if cond then . else (next|_until) end;\n     _until;\ndef limit($n; expr):\n  if $n &gt; 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . &lt;= 0 then break $out else empty end)\n  elif $n == 0 then empty\n  else error(\&quot;limit doesn&#x27;t support negative count\&quot;) end;\ndef skip($n; expr):\n  if $n &gt; 0 then foreach expr as $item ($n; . - 1; if . &lt; 0 then $item else empty end)\n  elif $n == 0 then expr\n  else error(\&quot;skip doesn&#x27;t support negative count\&quot;) end;&quot;,
+              &quot;stories&quot;: [
+                &quot;generator-runtime&quot;,
+                &quot;reductions&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;generator-selection-and-reduction&quot;,
+              &quot;text&quot;: &quot;def first(g): label $out | g | ., break $out;\ndef isempty(g): first((g|false), true);\ndef all(generator; condition): isempty(generator|condition and empty);\ndef any(generator; condition): isempty(generator|condition or empty)|not;\ndef all(condition): all(.[]; condition);\ndef any(condition): any(.[]; .);\ndef nth($n; g):\n  if $n &lt; 0 then error(\&quot;nth doesn&#x27;t support negative indices\&quot;)\n  else first(skip($n; g)) end;\ndef first: .[0];\ndef last: .[-1];\ndef nth($n): .[$n];&quot;,
+              &quot;stories&quot;: [
+                &quot;generator-runtime&quot;,
+                &quot;reductions&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;range-and-combination-operations&quot;,
+              &quot;text&quot;: &quot;def combinations:\n    if length == 0 then [] else\n        .[0][] as $x\n          | (.[1:] | combinations) as $y\n          | [$x] + $y\n    end;\ndef combinations(n):\n    . as $dot\n      | [range(n) | $dot]\n      | combinations;\ndef transpose: [range(0; map(length)|max // 0) as $i | [.[][$i]]];\ndef range($x): range(0;$x);\ndef range($init; $upto; $by):\n    if $by &gt; 0 then $init|while(. &lt; $upto; . + $by)\n  elif $by &lt; 0 then $init|while(. &gt; $upto; . + $by)\n  else empty end;&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;,
+                &quot;reductions&quot;,
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;type-filtering-and-membership&quot;,
+              &quot;text&quot;: &quot;def in(xs): . as $x | xs | has($x);\ndef inside(xs): . as $x | xs | contains($x);\ndef arrays: select(type == \&quot;array\&quot;);\ndef objects: select(type == \&quot;object\&quot;);\ndef iterables: select(type|. == \&quot;array\&quot; or . == \&quot;object\&quot;);\ndef booleans: select(type == \&quot;boolean\&quot;);\ndef numbers: select(type == \&quot;number\&quot;);\ndef normals: select(isnormal);\ndef finites: select(isfinite);\ndef strings: select(type == \&quot;string\&quot;);\ndef nulls: select(. == null);\ndef values: select(. != null);\ndef scalars: select(type|. != \&quot;array\&quot; and . != \&quot;object\&quot;);&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;,
+                &quot;operators&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;date-json-encoding-builtins&quot;,
+              &quot;text&quot;: &quot;def fromdateiso8601: strptime(\&quot;%Y-%m-%dT%H:%M:%SZ\&quot;)|mktime;\ndef todateiso8601: strftime(\&quot;%Y-%m-%dT%H:%M:%SZ\&quot;);\ndef fromdate: fromdateiso8601;\ndef todate: todateiso8601;&quot;,
+              &quot;stories&quot;: [
+                &quot;numeric-builtins&quot;,
+                &quot;date-json-encoding&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;streaming-and-io-transformations&quot;,
+              &quot;text&quot;: &quot;def truncate_stream(stream):\n  . as $n | null | stream | . as $input | if (.[0]|length) &gt; $n then setpath([0];$input[0][$n:]) else empty end;\ndef fromstream(i): {x: null, e: false} as $init |\n  # .x = object being built; .e = emit and reset state\n  foreach i as $i ($init\n  ; if .e then $init else . end\n  | if $i|length == 2\n    then setpath([\&quot;e\&quot;]; $i[0]|length==0) | setpath([\&quot;x\&quot;]+$i[0]; $i[1])\n    else setpath([\&quot;e\&quot;]; $i[0]|length==1) end\n  ; if .e then .x else empty end);\ndef tostream:\n  path(def r: (.[]?|r), .; r) as $p |\n  getpath($p) |\n  reduce path(.[]?) as $q ([$p, .]; [$p+$q]);&quot;,
+              &quot;stories&quot;: [
+                &quot;io-streaming&quot;,
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;sql-and-introspection-builtins&quot;,
+              &quot;text&quot;: &quot;# SQL-ish operators:\ndef INDEX(stream; idx_expr):\n  reduce stream as $row ({}; .[$row|idx_expr|tostring] = $row);\ndef INDEX(idx_expr): INDEX(.[]; idx_expr);\ndef JOIN($idx; idx_expr):\n  [.[] | [., $idx[idx_expr]]];\ndef JOIN($idx; stream; idx_expr):\n  stream | [., $idx[idx_expr]];\ndef JOIN($idx; stream; idx_expr; join_expr):\n  stream | [., $idx[idx_expr]] | join_expr;\ndef IN(s): any(s == .; .);\ndef IN(src; s): any(src == s; .);&quot;,
+              &quot;stories&quot;: [
+                &quot;sql-introspection&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;exclusions.txt&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;verify-exclusions-asset&quot;,
+              &quot;text&quot;: &quot;This file is a scoring asset: it is hash-verified against the import and restored before grading.&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;,
+                &quot;focused-verification&quot;,
+                &quot;full-conformance&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;reject-unmatched-exclusions&quot;,
+              &quot;text&quot;: &quot;One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug \u2014 a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.&quot;,
+              &quot;stories&quot;: [
+                &quot;focused-verification&quot;,
+                &quot;full-conformance&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;exclude-module-loading-cases&quot;,
+              &quot;text&quot;: &quot;These cases resolve `import` and `include` against a module search path supplied by jq&#x27;s -L flag, reading roughly twenty fixture files spread across nested directories upstream (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit&#x27;s declared sources into the application flattened by basename, so that directory tree cannot be carried, and the interface this kit fixes exercises no flag but -c.&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;,
+                &quot;full-conformance&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;retain-module-grammar-cases&quot;,
+              &quot;text&quot;: &quot;The module *grammar* cases \u2014 `module (.+1); 0`, `module []; 0`, `include \&quot;a\&quot; (.+1); 0`, `include \&quot;a\&quot; []; 0`, `include \&quot;\\ \&quot;; 0`, `include \&quot;\\(a)\&quot;; 0`, and `%::wat` \u2014 remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.&quot;,
+              &quot;stories&quot;: [
+                &quot;lexer&quot;,
+                &quot;parser&quot;,
+                &quot;compile-contract&quot;,
+                &quot;full-conformance&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;exclude-modulemeta-cases&quot;,
+              &quot;text&quot;: &quot;`modulemeta` reports a module&#x27;s declared dependencies and definitions. Its three cases take the module name \&quot;c\&quot; as input and read tests/modules/c/c.jq from the search path, so they fail for the same reason as the loader cases above.&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;,
+                &quot;full-conformance&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;full_test.sh&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;executable-jq&quot;,
+              &quot;text&quot;: &quot;The deliverable is an executable named jq that reads JSON on stdin.&quot;,
+              &quot;stories&quot;: [
+                &quot;executable&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;run-full-conformance&quot;,
+              &quot;text&quot;: &quot;`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.&quot;,
+              &quot;stories&quot;: [
+                &quot;full-conformance&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;jq-manual.txt&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;jq-filter-language&quot;,
+              &quot;text&quot;: &quot;A jq program is a \&quot;filter\&quot;: it takes an input, and produces an\noutput.&quot;,
+              &quot;stories&quot;: [
+                &quot;lexer&quot;,
+                &quot;parser&quot;,
+                &quot;compile-contract&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;generator-streams&quot;,
+              &quot;text&quot;: &quot;Some jq operators and functions are actually generators in\nthat they can produce zero, one, or more values for each\ninput, just as one might expect in other programming\nlanguages that have generators.&quot;,
+              &quot;stories&quot;: [
+                &quot;generator-runtime&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;json-values-and-structure&quot;,
+              &quot;text&quot;: &quot;jq supports the same set of datatypes as JSON - numbers,\nstrings, booleans, arrays, objects (which in JSON-speak are\nhashes with only string keys), and \&quot;null\&quot;.&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;operators-and-assignment&quot;,
+              &quot;text&quot;: &quot;Some jq operators (for instance, `+`) do different things\ndepending on the type of their arguments (arrays, numbers,\netc.). However, jq never does implicit type conversions.&quot;,
+              &quot;stories&quot;: [
+                &quot;operators&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;errors-and-control-flow&quot;,
+              &quot;text&quot;: &quot;Errors can be caught by using `try EXP catch EXP`.&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;functions-variables-and-modules&quot;,
+              &quot;text&quot;: &quot;It is also possible to define functions in jq, although this\nis is a feature whose biggest use is defining jq&#x27;s standard\nlibrary (many jq functions such as `map` and `select` are in\nfact written in jq).&quot;,
+              &quot;stories&quot;: [
+                &quot;functions-bindings&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;reductions-and-recursion&quot;,
+              &quot;text&quot;: &quot;The `reduce` syntax allows you to combine all of the results of\nan expression by accumulating them into a single answer.&quot;,
+              &quot;stories&quot;: [
+                &quot;reductions&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;structural-builtins&quot;,
+              &quot;text&quot;: &quot;For any filter `f`, `map(f)` and `map_values(f)` apply `f`\nto each of the values in the input array or object, that is,\nto the values of `.[]`.&quot;,
+              &quot;stories&quot;: [
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;regular-expression-builtins&quot;,
+              &quot;text&quot;: &quot;jq uses the\n[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),\nas do PHP, TextMate, Sublime Text, etc, so the description here will focus on jq specifics.&quot;,
+              &quot;stories&quot;: [
+                &quot;regex-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;numeric-and-math-builtins&quot;,
+              &quot;text&quot;: &quot;jq currently only has IEEE754 double-precision (64-bit) floating\npoint number support.&quot;,
+              &quot;stories&quot;: [
+                &quot;numeric-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;dates-json-encoding-and-environment&quot;,
+              &quot;text&quot;: &quot;jq provides some basic date handling functionality, with some\nhigh-level and low-level builtins. In all cases these\nbuiltins deal exclusively with time in UTC.&quot;,
+              &quot;stories&quot;: [
+                &quot;date-json-encoding&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;format-and-escaping-filters&quot;,
+              &quot;text&quot;: &quot;The `@foo` syntax is used to format and escape strings,\nwhich is useful for building URLs, documents in a language\nlike HTML or XML, and so forth.&quot;,
+              &quot;stories&quot;: [
+                &quot;formats&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;io-and-streaming&quot;,
+              &quot;text&quot;: &quot;At this time jq has minimal support for I/O, mostly in the\nform of control over when inputs are read.&quot;,
+              &quot;stories&quot;: [
+                &quot;io-streaming&quot;,
+                &quot;executable&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;sql-and-introspection-builtins&quot;,
+              &quot;text&quot;: &quot;jq provides a few SQL-style operators.&quot;,
+              &quot;stories&quot;: [
+                &quot;sql-introspection&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;jq.test&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;conformance-test-corpus&quot;,
+              &quot;text&quot;: &quot;# Tests are groups of three lines: program, input, expected output\n# Blank lines and lines starting with # are ignored&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;,
+                &quot;focused-verification&quot;,
+                &quot;full-conformance&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;parse-jq-syntax&quot;,
+              &quot;text&quot;: &quot;#\n# Dictionary construction syntax\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;lexer&quot;,
+                &quot;parser&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;compile-diagnostics&quot;,
+              &quot;text&quot;: &quot;%%FAIL&quot;,
+              &quot;stories&quot;: [
+                &quot;compile-contract&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;ordered-generator-streams&quot;,
+              &quot;text&quot;: &quot;#\n# Multiple outputs, iteration\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;generator-runtime&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;values-indexing-and-construction&quot;,
+              &quot;text&quot;: &quot;#\n# Field access, piping\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;operators-and-type-behavior&quot;,
+              &quot;text&quot;: &quot;#\n# Builtin functions\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;operators&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;runtime-errors-and-control-flow&quot;,
+              &quot;text&quot;: &quot;# Try/catch and general `?` operator&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;functions-variables-and-destructuring&quot;,
+              &quot;text&quot;: &quot;#\n# User-defined functions\n# Oh god.\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;functions-bindings&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;reductions-and-recursive-iteration&quot;,
+              &quot;text&quot;: &quot;reduce .[] as $x (0; . + $x)&quot;,
+              &quot;stories&quot;: [
+                &quot;reductions&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;paths-and-structural-builtins&quot;,
+              &quot;text&quot;: &quot;#\n# Paths\n#&quot;,
+              &quot;stories&quot;: [
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;formats-and-interpolation&quot;,
+              &quot;text&quot;: &quot;@text,@json,([1,.]|@csv,@tsv),@html,(@uri|.,@urid),@sh,(@base64|.,@base64d)&quot;,
+              &quot;stories&quot;: [
+                &quot;formats&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;string-and-regular-expression-builtins&quot;,
+              &quot;text&quot;: &quot;# string operations&quot;,
+              &quot;stories&quot;: [
+                &quot;regex-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;numeric-math-and-special-numbers&quot;,
+              &quot;text&quot;: &quot;# Basic numbers tests: integers, powers of two&quot;,
+              &quot;stories&quot;: [
+                &quot;numeric-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;date-json-encoding-and-environment-builtins&quot;,
+              &quot;text&quot;: &quot;strftime(\&quot;%Y-%m-%dT%H:%M:%SZ\&quot;)&quot;,
+              &quot;stories&quot;: [
+                &quot;date-json-encoding&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;streaming-and-io-builtins&quot;,
+              &quot;text&quot;: &quot;# calling input/0, or debug/0 in a test doesn&#x27;t crash jq&quot;,
+              &quot;stories&quot;: [
+                &quot;io-streaming&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;sql-style-and-introspection-builtins&quot;,
+              &quot;text&quot;: &quot;builtins|length &gt; 10&quot;,
+              &quot;stories&quot;: [
+                &quot;sql-introspection&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;lexer.l&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;lex-jq-programs&quot;,
+              &quot;text&quot;: &quot;\&quot;!=\&quot; { return NEQ; }\n\&quot;==\&quot; { return EQ; }\n\&quot;as\&quot; { return AS; }\n\&quot;import\&quot; { return IMPORT; }\n\&quot;include\&quot; { return INCLUDE; }\n\&quot;module\&quot; { return MODULE; }\n\&quot;def\&quot; { return DEF; }\n\&quot;if\&quot; { return IF; }\n\&quot;then\&quot; { return THEN; }\n\&quot;else\&quot; { return ELSE; }\n\&quot;elif\&quot; { return ELSE_IF; }\n\&quot;and\&quot; { return AND; }\n\&quot;or\&quot; { return OR; }\n\&quot;end\&quot; { return END; }\n\&quot;reduce\&quot; { return REDUCE; }\n\&quot;foreach\&quot; { return FOREACH; }\n\&quot;//\&quot; { return DEFINEDOR; }\n\&quot;try\&quot; { return TRY; }\n\&quot;catch\&quot; { return CATCH; }\n\&quot;label\&quot; { return LABEL; }\n\&quot;break\&quot; { return BREAK; }\n\&quot;$__loc__\&quot; { return LOC; }\n\&quot;|=\&quot; { return SETPIPE; }\n\&quot;+=\&quot; { return SETPLUS; }\n\&quot;-=\&quot; { return SETMINUS; }\n\&quot;*=\&quot; { return SETMULT; }\n\&quot;/=\&quot; { return SETDIV; }\n\&quot;%=\&quot; { return SETMOD; }\n\&quot;//=\&quot; { return SETDEFINEDOR; }\n\&quot;&lt;=\&quot; { return LESSEQ; }\n\&quot;&gt;=\&quot; { return GREATEREQ; }\n\&quot;..\&quot; { return REC; }\n\&quot;?//\&quot; { return ALTERNATION; }\n\&quot;.\&quot;|\&quot;?\&quot;|\&quot;=\&quot;|\&quot;;\&quot;|\&quot;,\&quot;|\&quot;:\&quot;|\&quot;|\&quot;|\&quot;+\&quot;|\&quot;-\&quot;|\&quot;*\&quot;|\&quot;/\&quot;|\&quot;%\&quot;|\&quot;\\$\&quot;|\&quot;&lt;\&quot;|\&quot;&gt;\&quot; { return yytext[0];}&quot;,
+              &quot;stories&quot;: [
+                &quot;lexer&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;format-interpolation&quot;,
+              &quot;text&quot;: &quot;\&quot;@\&quot;[a-zA-Z0-9_]+ {\n  yylval-&gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;\n}\n\&quot;\\\\(\&quot; {\n    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);\n  }&quot;,
+              &quot;stories&quot;: [
+                &quot;formats&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;parser.y&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;parse-jq-grammar&quot;,
+              &quot;text&quot;: &quot;TopLevel:\nModule Imports Query {\n  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);\n} |\nModule Imports FuncDefs {\n  *answer = BLOCK($1, $2, $3);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;parser&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;compile-diagnostics&quot;,
+              &quot;text&quot;: &quot;void yyerror(YYLTYPE* loc, block* answer, int* errors,\n             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){\n  (*errors)++;\n  locfile_locate(locations, *loc, \&quot;jq: error: %s\&quot;, s);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;compile-contract&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;format-strings&quot;,
+              &quot;text&quot;: &quot;QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {\n  $$ = gen_binop($1, gen_format($3, jv_copy($&lt;literal&gt;0)), &#x27;+&#x27;);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;formats&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;evaluate-values-and-indexes&quot;,
+              &quot;text&quot;: &quot;Term FIELD %prec NONOPT {\n  $$ = gen_index($1, gen_const($2));\n} |\nFIELD %prec NONOPT {\n  $$ = gen_index(gen_noop(), gen_const($1));\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;core-values&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;construct-arrays-and-objects&quot;,
+              &quot;text&quot;: &quot;&#x27;[&#x27; Query &#x27;]&#x27; {\n  $$ = gen_collect($2);\n} |\n&#x27;{&#x27; DictPairs &#x27;}&#x27; {\n  block o = gen_const_object($2);\n  if (o.first != NULL)\n    $$ = o;\n  else\n    $$ = BLOCK(gen_subexp(gen_const(jv_object())), $2, gen_op_simple(POP));\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;structural-builtins&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;evaluate-operators&quot;,
+              &quot;text&quot;: &quot;Expr \&quot;==\&quot; Expr {\n  $$ = gen_binop($1, $3, EQ);\n} |\nExpr \&quot;!=\&quot; Expr {\n  $$ = gen_binop($1, $3, NEQ);\n} |\nExpr &#x27;&lt;&#x27; Expr {\n  $$ = gen_binop($1, $3, &#x27;&lt;&#x27;);\n} |\nExpr &#x27;&gt;&#x27; Expr {\n  $$ = gen_binop($1, $3, &#x27;&gt;&#x27;);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;operators&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;control-flow-and-errors&quot;,
+              &quot;text&quot;: &quot;\&quot;if\&quot; Query \&quot;then\&quot; Query ElseBody {\n  $$ = gen_cond($2, $4, $5);\n} |\n\&quot;try\&quot; Expr \&quot;catch\&quot; Expr {\n  $$ = gen_try($2, $4);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;errors-control&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;functions-bindings-and-imports&quot;,
+              &quot;text&quot;: &quot;\&quot;def\&quot; IDENT &#x27;(&#x27; Params &#x27;)&#x27; &#x27;:&#x27; Query &#x27;;&#x27; {\n  $$ = gen_function(jv_string_value($2), $4, $7);\n  jv_free($2);\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;functions-bindings&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;reductions-and-recursion&quot;,
+              &quot;text&quot;: &quot;\&quot;reduce\&quot; Expr \&quot;as\&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {\n  $$ = gen_reduce($2, $4, $6, $8);\n} |\n\&quot;foreach\&quot; Expr \&quot;as\&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {\n  $$ = gen_foreach($2, $4, $6, $8, $10);\n} |\nREC {\n  $$ = gen_call(\&quot;recurse\&quot;, gen_noop());\n}&quot;,
+              &quot;stories&quot;: [
+                &quot;reductions&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &quot;run_conformance.py&quot;: {
+      &quot;state&quot;: &quot;current&quot;,
+      &quot;versions&quot;: [
+        {
+          &quot;commit&quot;: &quot;6a9ab4c&quot;,
+          &quot;date&quot;: &quot;2026-08-16&quot;,
+          &quot;hash&quot;: &quot;c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492&quot;,
+          &quot;release&quot;: &quot;&quot;,
+          &quot;state&quot;: &quot;consumed&quot;,
+          &quot;via&quot;: &quot;plan&quot;,
+          &quot;ticket&quot;: null,
+          &quot;requirements&quot;: [
+            {
+              &quot;name&quot;: &quot;stage-conformance-assets&quot;,
+              &quot;text&quot;: &quot;It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.&quot;,
+              &quot;stories&quot;: [
+                &quot;source-staging&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;run-conformance-corpus&quot;,
+              &quot;text&quot;: &quot;This is the scoring instrument. Its exit status is the acceptance verdict.&quot;,
+              &quot;stories&quot;: [
+                &quot;full-conformance&quot;,
+                &quot;executable&quot;
+              ]
+            },
+            {
+              &quot;name&quot;: &quot;support-conformance-verification&quot;,
+              &quot;text&quot;: &quot;Usage:\n    JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run\n    JQ=./jq python3 sources/run_conformance.py -v                  # list passing cases too\n    JQ=./jq python3 sources/run_conformance.py --json              # machine-readable report\n    JQ=./jq python3 sources/run_conformance.py --list              # print cases, run nothing\n    JQ=./jq python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # develop one construct&quot;,
+              &quot;stories&quot;: [
+                &quot;focused-verification&quot;
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+</pre></article>
+</main>
+</body>
+</html>

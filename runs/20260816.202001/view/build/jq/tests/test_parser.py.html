@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_parser.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_parser.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_parser.py">Raw file</a></div></header>
+<article class="doc"><pre>import unittest
+
+import jq_parser
+
+
+class ParserTests(unittest.TestCase):
+    def test_parser_builds_ast(self) -&gt; None:
+        ast = jq_parser.parse(&quot;.foo | .bar&quot;)
+        self.assertIsNotNone(ast)
+        self.assertEqual(ast.kind, &quot;|&quot;)
+
+    def test_parser_preserves_precedence(self) -&gt; None:
+        ast = jq_parser.parse(&quot;1 + 2 * 2&quot;)
+        self.assertIn(&quot;1&quot;, repr(ast))
+        self.assertIn(&quot;2&quot;, repr(ast))
+        self.assertEqual(ast.kind, &quot;+&quot;)
+        self.assertEqual(ast.children[1].kind, &quot;*&quot;)
+
+    def test_parser_supports_constructors(self) -&gt; None:
+        for program in (&quot;[.foo, .bar]&quot;, &quot;{foo: .bar}&quot;, &quot;if . then 1 else 2 end&quot;):
+            self.assertIsNotNone(jq_parser.parse(program))
+
+    def test_parser_rejects_malformed_program(self) -&gt; None:
+        with self.assertRaises(jq_parser.ParseError):
+            jq_parser.parse(&quot;{&quot;)
+
+    def test_parser_supports_generator_and_control_forms(self) -&gt; None:
+        for program in (
+            &quot;.[] | .name?&quot;, &quot;.[-2:]&quot;, &#x27;&quot;value=\\(.)&quot;&#x27;,
+            &quot;. as $x | $x + 1&quot;, &quot;reduce .[] as $x (0; . + $x)&quot;,
+            &quot;foreach .[] as $x (0; . + $x; .)&quot;,
+        ):
+            self.assertIsNotNone(jq_parser.parse(program))
+
+    def test_parser_rejects_undefined_binding(self) -&gt; None:
+        with self.assertRaises(jq_parser.ParseError):
+            jq_parser.parse(&quot;$missing&quot;)
+
+    def test_parser_ast_is_immutable(self) -&gt; None:
+        ast = jq_parser.parse(&quot;1&quot;)
+        with self.assertRaises(AttributeError):
+            ast.kind = &quot;changed&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

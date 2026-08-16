@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Date-JSON-Encoding.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Date-JSON-Encoding.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Date-JSON-Encoding.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Date, JSON, Encoding, and Environment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provide date, JSON conversion, encoding, and environment builtins for jq programs.</td></tr><tr><td>Depends On</td><td>FEATURE-Formats.md, FEATURE-Numeric-Builtins.md</td></tr><tr><td>Provides</td><td>date/time builtins, tojson, fromjson, env, $ENV, encoding helpers</td></tr><tr><td>Consumes</td><td>JSON values, format filters, Python standard library</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement <code>tojson</code>, <code>fromjson</code>, <code>env</code>, <code>$ENV</code>, date conversion and formatting functions, and the encoding helpers required by the conformance corpus. All behavior must use Python standard-library facilities and preserve jq stream semantics.</p>
+<h2>Behavior</h2>
+<ul><li><code>tojson | fromjson</code> round-trips supported JSON values.</li><li><code>fromdateiso8601</code>, <code>todateiso8601</code>, <code>fromdate</code>, and <code>todate</code> use UTC.</li><li><code>gmtime</code>, <code>localtime</code>, <code>mktime</code>, <code>strptime</code>, <code>strftime</code>, and <code>strflocaltime</code> expose jq-compatible time arrays and formatting.</li><li><code>env</code> and <code>$ENV</code> expose the process environment without mutating it.</li><li>JSON encoding remains compact and supports the supported special-number behavior.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC date-json-roundtrip ===<br>Intent: JSON conversion preserves supplied values through a public jq round trip.</p>
+<p>import json import subprocess</p>
+<p>value = {&quot;text&quot;: &quot;sample&quot;, &quot;items&quot;: [1, True, None]} payload = json.dumps(value, separators=(&quot;,&quot;, &quot;:&quot;)) result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;tojson | fromjson&quot;], input=payload + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == value === END AC date-json-roundtrip ===</p>
+<p>=== AC date-utc-roundtrip ===<br>Intent: ISO date conversion reverses a supplied UTC timestamp.</p>
+<p>import subprocess</p>
+<p>timestamp = &quot;2015-03-05T23:51:47Z&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601 | todateiso8601&quot;], input=timestamp + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert result.stdout.strip().strip(&#x27;&quot;&#x27;) == timestamp === END AC date-utc-roundtrip ===</p>
+<p>=== AC environment-read ===<br>Intent: Environment access returns a value supplied by the process environment.</p>
+<p>import json import os import subprocess</p>
+<p>key = &quot;JQ_ACCEPTANCE_VALUE&quot; value = &quot;acceptance&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;env[$key]&quot;], input=json.dumps(key) + &quot;\n&quot;, capture_output=True, text=True, env={**os.environ, key: value}, ) assert result.returncode == 0 assert json.loads(result.stdout) == value === END AC environment-read ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not access the network or third-party date, JSON, or encoding libraries.</li><li>Do not mutate the process environment.</li><li>Keep diagnostics on stderr and result values on stdout.</li></ul></article>
+</main>
+</body>
+</html>

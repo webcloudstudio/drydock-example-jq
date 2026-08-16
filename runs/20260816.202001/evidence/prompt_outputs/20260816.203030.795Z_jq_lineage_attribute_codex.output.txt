@@ -1,0 +1,25 @@
+<requirement name="executable-jq" stories="executable">
+The deliverable is an executable named jq that reads JSON on stdin.
+</requirement>
+<requirement name="run-full-conformance" stories="full-conformance">
+`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.
+</requirement>
+<unattached story="architecture"/>
+<unattached story="source-staging"/>
+<unattached story="lexer"/>
+<unattached story="parser"/>
+<unattached story="compile-contract"/>
+<unattached story="formats"/>
+<unattached story="generator-runtime"/>
+<unattached story="core-values"/>
+<unattached story="operators"/>
+<unattached story="errors-control"/>
+<unattached story="functions-bindings"/>
+<unattached story="reductions"/>
+<unattached story="structural-builtins"/>
+<unattached story="regex-builtins"/>
+<unattached story="numeric-builtins"/>
+<unattached story="date-json-encoding"/>
+<unattached story="io-streaming"/>
+<unattached story="sql-introspection"/>
+<unattached story="focused-verification"/>

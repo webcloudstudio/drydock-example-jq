@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260816.202838.629Z_jq_lineage_attribute_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260816.202838.629Z_jq_lineage_attribute_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260816.202838.629Z_jq_lineage_attribute_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>Attribute Stories to Source Requirements</h1>
+<p>You are the lineage attribution agent. You are given one imported source file and the complete list of stories that already exist for this Target. Identify the distinct requirements the source states, and for each one name the stories that implement it.</p>
+<p>This is a matching task against a closed set. Every story you may name is listed in <code>&lt;stories&gt;</code>. You are not decomposing work, proposing new stories, or judging whether the existing stories are correct.</p>
+<h2>Method</h2>
+<ol><li>Read the source and identify each distinct requirement it states. A requirement is a thing the</li></ol>
+<p>system must do, at whatever granularity the author wrote it. One sentence may state one requirement that several stories implement — for example &quot;add a table and show it on screen&quot; is one requirement implemented by a schema story, a route story, and a view story. Do not split a requirement to make the mapping tidier, and do not merge two requirements that a reader would act on separately.</p>
+<ol><li>Give each requirement a short kebab-case name that describes it. The name is an identifier, not</li></ol>
+<p>a summary: <code>mark-book-read</code>, not <code>the-reader-can-mark-a-book-as-read</code>.</p>
+<ol><li>For each requirement, list every story that implements any part of it. A story may implement</li></ol>
+<p>more than one requirement; a requirement may need more than one story.</p>
+<ol><li>List any story that implements no requirement in the source as <code>&lt;unattached&gt;</code>. This is expected</li></ol>
+<p>and correct for foundational work — application scaffolding, configuration, shared UI framing, test harnesses — that the author never asked for by name. Do not force such a story onto an unrelated requirement.</p>
+<h2>Rules</h2>
+<ul><li>Use only story ids that appear in <code>&lt;stories&gt;</code>. Never invent one.</li><li>Every story must appear exactly once, either inside a <code>stories</code> attribute or as <code>&lt;unattached&gt;</code>.</li><li>Quote the requirement text verbatim from the source in the tag body. Do not paraphrase it.</li><li>Emit nothing but the tags below. No preamble, no commentary, no explanation.</li></ul>
+<h2>Output</h2>
+<pre><code>&lt;requirement name=&quot;add-remove-books&quot; stories=&quot;add-book,remove-book,database&quot;&gt;
+The reader can add a book with a title and author, view the books in the order added, and remove a book.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-empty-fields&quot; stories=&quot;validate-book&quot;&gt;
+An empty title or author is rejected with a clear error message.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;ui-general&quot;/&gt;</code></pre>
+<h1>Attribution job</h1>
+<p>&lt;source name=&quot;INSTRUCTIONS.md&quot;&gt;</p>
+<h1>Build Instructions: A jq Interpreter</h1>
+<h2>Objective</h2>
+<p>Build an interpreter for the jq language as described in <code>sources/jq-manual.txt</code>. Correctness is measured by the upstream jq conformance corpus, <code>sources/jq.test</code>, taken verbatim from jq 1.8.2. The goal is to pass every case the corpus supplies, with none failed and none errored. The suite&#x27;s size is a property of the pinned corpus; never assert a case count.</p>
+<p>The implementation language is Python, fixed by this Target&#x27;s <code>TECHNOLOGY_STACK.md</code> and governed by <code>stack/python.md</code>.</p>
+<p>jq is a small language with a large semantic core. Almost every filter is a <strong>generator</strong>: it takes one input and produces a stream of zero, one, or many outputs, and downstream filters run once per upstream output. Backtracking through that stream is not an optimisation, it is the evaluation model, and <code>reduce</code>, <code>foreach</code>, <code>limit</code>, <code>first</code>, <code>label</code>/<code>break</code>, and the <code>?//</code> destructuring alternative are all defined in terms of it. An implementation that treats a filter as a function returning one value will pass the early cases and then stall permanently. Decide the evaluation model before writing builtins.</p>
+<h2>Run Harness</h2>
+<p><code>sources/full_test.sh</code> is the single scoring entry point. It is supplied, not authored: it is staged verbatim into the build directory alongside the other imported assets, and <code>drydock uat</code> runs <code>sh sources/full_test.sh</code> from the completed application root and takes its exit code and output as the score. It reads:</p>
+<pre><code>#!/bin/sh
+# full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.
+set -eu
+if [ ! -x ./jq ]; then
+    echo &quot;error: no executable ./jq at the application root.&quot; &gt;&amp;2
+    echo &quot;The deliverable is an executable named jq that reads JSON on stdin.&quot; &gt;&amp;2
+    exit 1
+fi
+JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py</code></pre>
+<p>Before relying on any path above, run <code>ls sources/</code> in the application directory and correct the paths in the harness against what is actually on disk. Correcting a path is the only edit permitted to this script. Do not add flags, filters, skips, or a redirection of the exit code.</p>
+<p>The interface check is deliberately separate from the conformance run so that a missing program and a genuine conformance failure are distinguishable in the evidence. <code>JQ</code> is the harness&#x27;s only knowledge of the implementation language; the harness itself is language-neutral.</p>
+<h2>Read-only scoring assets</h2>
+<p>These four files are the exam. They are hash-verified against the import and restored before grading, so a modification is reported as tampering rather than honoured:</p>
+<ul><li><code>sources/full_test.sh</code> — the scoring entry point</li><li><code>sources/run_conformance.py</code> — the scoring instrument</li><li><code>sources/exclusions.txt</code> — the declared skips</li><li><code>sources/jq.test</code> — the conformance corpus</li></ul>
+<p>Do not write to them. Build <code>./jq</code> so that the supplied entry point succeeds; changing the entry point is not a repair, and a repair pass spent editing one of these files is wasted.</p>
+<h2>Interface contract</h2>
+<p>The program is a filter: an executable file named <code>jq</code> at the application root, invoked as</p>
+<pre><code>./jq -c &#x27;&lt;program&gt;&#x27;</code></pre>
+<p>with JSON on <strong>stdin</strong>. It writes each value the program produces to <strong>stdout</strong> as one compact JSON value per line, and exits <code>0</code>.</p>
+<p><code>-c</code> is the only option exercised. The program need not implement any other jq command-line option, and the manual&#x27;s &quot;Invoking jq&quot; section is omitted from <code>sources/jq-manual.txt</code> for that reason.</p>
+<p>Exit codes follow jq&#x27;s own, and the distinction is load-bearing because the harness grades on it:</p>
+<div class="scroll"><table><thead><tr><th>Exit</th><th>Meaning</th></tr></thead><tbody><tr><td><code>0</code></td><td>the program compiled and ran to completion</td></tr><tr><td><code>3</code></td><td>the program did not compile — a syntax or static error</td></tr><tr><td><code>5</code></td><td>the program compiled but raised at run time</td></tr></tbody></table></div>
+<p>A case may legitimately emit several values and then raise; the harness compares the values produced before the raise, so exit <code>5</code> is not by itself a failure. Exit <code>3</code> on a valid program is always a failure. Diagnostics go to <strong>stderr</strong> and are never compared.</p>
+<p>Any implementation shape that satisfies this contract is acceptable. A <code>#!/usr/bin/env python3</code> script named <code>jq</code> that imports the real work from a package alongside it is the obvious one; <code>main</code> should parse arguments and delegate.</p>
+<h2>Test / verification process</h2>
+<p>The imported source files are placed in a <code>sources/</code> subdirectory of the application directory. The only tools required are <code>python3</code> and a POSIX <code>sh</code>, both already present. No installation step, no package download, and no network access are required at any point.</p>
+<pre><code>JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py                     # the scored run
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py -v                  # list passing cases too
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --json              # machine-readable
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --list              # print cases, run nothing
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # one construct at a time</code></pre>
+<p>During development, <code>sh sources/full_test.sh</code> does the interface check and the conformance run together, and is the same command the score is taken from.</p>
+<p><code>--select</code> takes a regular expression matched against the case&#x27;s program text and exists for development only. The acceptance gate always runs the whole corpus; there is no scoped gate and none may be created.</p>
+<p><strong>Exactly one acceptance check runs the suite.</strong> One terminal story — the last one — runs <code>sh sources/full_test.sh</code>, asserts only <code>result.returncode == 0</code>, prints the captured stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea Trial. No other acceptance check may invoke <code>full_test.sh</code> or <code>run_conformance.py</code>, and no acceptance check may assert that an imported or staged file merely exists — a file-presence check is not acceptance.</p>
+<p>The summary line is:</p>
+<pre><code>jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)</code></pre>
+<p>The harness reserves exit <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion. Exit <code>2</code> never means the interpreter is wrong.</p>
+<h2>The corpus format</h2>
+<p><code>sources/jq.test</code> documents its own format in its header. Cases are separated by blank lines; blank lines and <code>#</code> lines are ignored. A case is a program line, an input line, and then the expected output values, one per line. A case preceded by <code>%%FAIL</code> is a program that must be <strong>rejected at compile time</strong>: the following lines are upstream jq&#x27;s diagnostic, which this harness records but never compares. Reproducing jq&#x27;s exact error text is reverse-engineering a C implementation, not conforming to a specification, so a <code>%%FAIL</code> case passes on exit <code>3</code> alone.</p>
+<p>Values are compared structurally, not textually. <code>1</code> and <code>1.0</code> are the same jq value; so are two objects whose keys are printed in a different order. Formatting of output is therefore not under test, but the <strong>number and order</strong> of values is.</p>
+<h2>Declared exclusions</h2>
+<p><code>sources/exclusions.txt</code> names the corpus cases this kit cannot run, with the reason. They are the module-loader cases: <code>import</code> and <code>include</code> resolved against a search path of fixture files that this kit&#x27;s flat source import cannot carry. They are reported as <code>skipped</code> and are not part of the score.</p>
+<p>The module <em>grammar</em> cases are <strong>not</strong> excluded and must pass. <code>module (.+1); 0</code>, <code>module []; 0</code>, <code>include &quot;a&quot; (.+1); 0</code>, <code>include &quot;a&quot; []; 0</code>, <code>include &quot;\ &quot;; 0</code>, <code>include &quot;\(a)&quot;; 0</code>, and <code>%::wat</code> are all <code>%%FAIL</code> cases: the front end must parse the module syntax far enough to reject them, without ever touching the filesystem.</p>
+<h2>Source Roles</h2>
+<p>Record this table in the Analysis so every asset is staged onto disk in the build directory. <code>sources/jq-manual.txt</code>, <code>sources/jq.test</code>, <code>sources/parser.y</code>, and <code>sources/lexer.l</code> are large and must be readable from disk during implementation rather than carried in prompt text.</p>
+<div class="scroll"><table><thead><tr><th>Source</th><th>Role</th><th>Plan disposition</th><th>Build disposition</th></tr></thead><tbody><tr><td><code>jq-manual.txt</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>jq.test</code></td><td>conformance test suite</td><td>context</td><td>stage</td></tr><tr><td><code>parser.y</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>lexer.l</code></td><td>normative specification</td><td>context</td><td>stage</td></tr><tr><td><code>builtin.jq</code></td><td>reference implementation</td><td>context</td><td>stage</td></tr><tr><td><code>run_conformance.py</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>full_test.sh</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>exclusions.txt</code></td><td>conformance harness</td><td>context</td><td>stage</td></tr><tr><td><code>INSTRUCTIONS.md</code></td><td>author intent</td><td>context</td><td>prompt-only</td></tr></tbody></table></div>
+<p>What each staged file is for:</p>
+<ul><li><code>sources/jq-manual.txt</code> — the jq language manual at 1.8.2, rendered to plain text. The</li></ul>
+<p>primary specification, and the normative description of every builtin.</p>
+<ul><li><code>sources/jq.test</code> — the conformance corpus. Also the most precise available statement of</li></ul>
+<p>the semantics, especially for generators and backtracking.</p>
+<ul><li><code>sources/parser.y</code> — upstream&#x27;s yacc grammar. The authority on operator precedence,</li></ul>
+<p>associativity, and the shape of every syntactic form.</p>
+<ul><li><code>sources/lexer.l</code> — upstream&#x27;s lexer. The authority on tokens, string interpolation, and</li></ul>
+<p>escape handling.</p>
+<ul><li><code>sources/builtin.jq</code> — the subset of jq&#x27;s builtins that upstream defines in jq itself.</li></ul>
+<p>Read it as a specification of those builtins&#x27; semantics.</p>
+<ul><li><code>sources/run_conformance.py</code>, <code>sources/full_test.sh</code>, <code>sources/exclusions.txt</code> — the</li></ul>
+<p>scoring instruments, read-only as stated above.</p>
+<h2>Suggested implementation order</h2>
+<p>The difficulty is concentrated in one place — the evaluation model — and not spread evenly across the corpus. Build the core correctly before reaching for coverage.</p>
+<ol><li><strong>Lexer and parser.</strong> Follow <code>sources/lexer.l</code> and <code>sources/parser.y</code> directly. Produce</li></ol>
+<p>an AST. Precedence, <code>?</code> suffixes, string interpolation, and the <code>def</code> forms are all settled there. Reject invalid programs with exit <code>3</code>.</p>
+<ol><li><strong>The generator core.</strong> Evaluate a filter as something that yields a stream of values:</li></ol>
+<p><code>.</code>, literals, <code>|</code>, <code>,</code>, field access, iteration, arithmetic, comparison, and <code>empty</code>. Every later feature is expressed in terms of this. Get <code>[.[] | f]</code>, cartesian products over multi-output arguments, and short-circuiting right.</p>
+<ol><li><strong>Paths and assignment.</strong> <code>path(f)</code>, <code>getpath</code>, <code>setpath</code>, <code>delpaths</code>, <code>del</code>, and then</li></ol>
+<p><code>=</code>, <code>|=</code>, <code>+=</code>, and friends. Assignment is defined over path expressions, so this cannot precede step 2.</p>
+<ol><li><strong>Control flow.</strong> <code>if</code>/<code>then</code>/<code>elif</code>/<code>else</code>/<code>end</code>, <code>try</code>/<code>catch</code> and <code>?</code>, <code>//</code>,</li></ol>
+<p><code>reduce</code>, <code>foreach</code>, <code>label</code>/<code>break</code>, <code>limit</code>, <code>first</code>, <code>last</code>, <code>until</code>, <code>while</code>, <code>recurse</code>. This is where backtracking is tested hardest.</p>
+<ol><li><strong>Functions, variables, and destructuring.</strong> <code>def</code> with arity and closures, <code>as</code></li></ol>
+<p>bindings, object and array patterns, and the <code>?//</code> alternative operator.</p>
+<ol><li><strong>Builtins.</strong> Work outward from <code>sources/builtin.jq</code> and the manual: strings, arrays,</li></ol>
+<p>objects, <code>sort_by</code>/<code>group_by</code>/<code>unique_by</code>, <code>@base64</code>/<code>@uri</code>/<code>@csv</code>/<code>@tsv</code>/<code>@sh</code> formats, the date functions, <code>tostream</code>, <code>input</code>/<code>inputs</code>, <code>$__loc__</code>, <code>debug</code>.</p>
+<ol><li><strong>Numbers and edge cases.</strong> <code>nan</code>, <code>infinite</code>, integer/float equality, large literals,</li></ol>
+<p>and the <code>have_decnum</code> builtin — return <code>false</code> from it and the corpus takes its non-decNumber branch, which native floats satisfy.</p>
+<p>The manual is normative and the corpus is precise. Follow both directly rather than inferring behaviour from jq&#x27;s printed output.</p>
+<h2>Definition of Done</h2>
+<ul><li><code>sh sources/full_test.sh</code> runs cleanly with zero errors and exits zero.</li><li>The program satisfies the <code>./jq -c</code> → stdin → one-JSON-value-per-line → exit-code</li></ul>
+<p>contract.</p>
+<ul><li>Every corpus case that runs passes: the failed and errored counts are both zero, and the</li></ul>
+<p>skipped count matches the declared exclusions. The harness exit status is the verdict and the whole verdict — assert <code>returncode == 0</code> and stop there. Do not assert on the text of the summary line at all: the case totals belong to the pinned corpus, and a check that reads a runner&#x27;s printed output is measuring the runner rather than the interpreter.</p>
+<ul><li>Do not create acceptance checks asserting that imported or staged files merely exist.</li><li>The interpreter is written from the specification. **Every third-party jq</li></ul>
+<p>implementation or binding is forbidden** — <code>jq.py</code>, <code>pyjq</code>, <code>jqlang</code>, <code>gojq</code>, <code>jaq</code>, and any other — as is shelling out to a system <code>jq</code> binary. A wrapper around real jq scores perfectly and makes the exercise meaningless.</p>
+<ul><li>The project declares no third-party runtime dependency. The standard library is</li></ul>
+<p>sufficient: <code>json</code>, <code>decimal</code>, <code>math</code>, <code>re</code>, <code>datetime</code>, <code>time</code>, <code>base64</code>, <code>unicodedata</code>, <code>itertools</code>, <code>functools</code>, <code>dataclasses</code>, <code>argparse</code>, <code>sys</code>.</p>
+<ul><li>No network access at any point, including at test time. No package is installed, and no</li></ul>
+<p>tool beyond <code>python3</code> and POSIX <code>sh</code> is invoked.</p>
+<ul><li>Deliver a concise project <code>README.md</code> documenting the stdin/stdout interface, the exit</li></ul>
+<p>codes, and the <code>sh sources/full_test.sh</code> command. &lt;/source&gt;</p>
+<p>&lt;stories&gt; &lt;story id=&quot;architecture&quot; implements=&quot;ARCHITECTURE.md&quot;&gt;Define the standalone jq interpreter architecture and executable boundaries.&lt;/story&gt; &lt;story id=&quot;source-staging&quot; implements=&quot;FEATURE-Source-Staging.md&quot;&gt;Stage the supplied jq sources and conformance assets.&lt;/story&gt; &lt;story id=&quot;lexer&quot; implements=&quot;FEATURE-Lexer.md&quot;&gt;Tokenize jq programs according to the jq lexical specification.&lt;/story&gt; &lt;story id=&quot;parser&quot; implements=&quot;FEATURE-Parser.md&quot;&gt;Parse jq programs into an executable abstract syntax tree.&lt;/story&gt; &lt;story id=&quot;compile-contract&quot; implements=&quot;FEATURE-Compile-Contract.md&quot;&gt;Enforce jq compile diagnostics and exit-status behavior.&lt;/story&gt; &lt;story id=&quot;formats&quot; implements=&quot;FEATURE-Formats.md&quot;&gt;Implement jq interpolation and format filters.&lt;/story&gt; &lt;story id=&quot;generator-runtime&quot; implements=&quot;FEATURE-Generator-Runtime.md&quot;&gt;Evaluate jq filters as ordered generator-valued streams.&lt;/story&gt; &lt;story id=&quot;core-values&quot; implements=&quot;FEATURE-Core-Values.md&quot;&gt;Implement core jq values, indexing, iteration, and construction.&lt;/story&gt; &lt;story id=&quot;operators&quot; implements=&quot;FEATURE-Operators.md&quot;&gt;Implement jq operators, comparisons, and type behavior.&lt;/story&gt; &lt;story id=&quot;errors-control&quot; implements=&quot;FEATURE-Errors-Control.md&quot;&gt;Implement jq runtime errors and structured control flow.&lt;/story&gt; &lt;story id=&quot;functions-bindings&quot; implements=&quot;FEATURE-Functions-Bindings.md&quot;&gt;Implement jq functions, variables, closures, and destructuring.&lt;/story&gt; &lt;story id=&quot;reductions&quot; implements=&quot;FEATURE-Reductions.md&quot;&gt;Implement jq reductions, iteration helpers, and recursive control flow.&lt;/story&gt; &lt;story id=&quot;structural-builtins&quot; implements=&quot;FEATURE-Structural-Builtins.md&quot;&gt;Implement collection and structural jq builtins.&lt;/story&gt; &lt;story id=&quot;regex-builtins&quot; implements=&quot;FEATURE-Regex-Builtins.md&quot;&gt;Implement jq string and regular-expression builtins.&lt;/story&gt; &lt;story id=&quot;numeric-builtins&quot; implements=&quot;FEATURE-Numeric-Builtins.md&quot;&gt;Implement numeric, math, and special-number builtins.&lt;/story&gt; &lt;story id=&quot;date-json-encoding&quot; implements=&quot;FEATURE-Date-JSON-Encoding.md&quot;&gt;Implement date, JSON, encoding, and environment builtins.&lt;/story&gt; &lt;story id=&quot;io-streaming&quot; implements=&quot;FEATURE-IO-Streaming.md&quot;&gt;Implement jq streaming and I/O builtins.&lt;/story&gt; &lt;story id=&quot;sql-introspection&quot; implements=&quot;FEATURE-SQL-Introspection.md&quot;&gt;Implement SQL-style and introspection builtins.&lt;/story&gt; &lt;story id=&quot;executable&quot; implements=&quot;FEATURE-Executable.md&quot;&gt;Deliver the executable jq command-line entry point.&lt;/story&gt; &lt;story id=&quot;focused-verification&quot; implements=&quot;FEATURE-Focused-Verification.md&quot;&gt;Run bounded implementation verification across interpreter capabilities.&lt;/story&gt; &lt;story id=&quot;full-conformance&quot; implements=&quot;FEATURE-Full-Conformance.md&quot;&gt;Gate the completed interpreter on the complete jq conformance corpus.&lt;/story&gt; &lt;/stories&gt;</p></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<requirement name="build-jq-interpreter" stories="architecture">
+Build an interpreter for the jq language as described in `sources/jq-manual.txt`.
+</requirement>
+<requirement name="stage-source-assets" stories="source-staging">
+Record this table in the Analysis so every asset is staged onto disk in the build directory.
+</requirement>
+<requirement name="lex-jq-programs" stories="lexer">
+Follow `sources/lexer.l` and `sources/parser.y` directly.
+</requirement>
+<requirement name="parse-jq-programs" stories="parser">
+Produce an AST.
+</requirement>
+<requirement name="compile-exit-status" stories="compile-contract">
+Reject invalid programs with exit `3`.
+</requirement>
+<requirement name="generator-evaluation" stories="generator-runtime">
+Evaluate a filter as something that yields a stream of values:
+</requirement>
+<requirement name="core-values" stories="core-values">
+`.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.
+</requirement>
+<requirement name="operators-type-behavior" stories="operators">
+Get `[.[] | f]`, cartesian products over multi-output arguments, and short-circuiting right.
+</requirement>
+<requirement name="paths-and-assignment" stories="errors-control">
+`path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends.
+</requirement>
+<requirement name="control-flow" stories="errors-control,reductions">
+`if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.
+</requirement>
+<requirement name="functions-and-bindings" stories="functions-bindings">
+`def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.
+</requirement>
+<requirement name="jq-builtins" stories="formats,structural-builtins,regex-builtins,numeric-builtins,date-json-encoding,io-streaming">
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="numbers-and-edge-cases" stories="numeric-builtins">
+`nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin — return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.
+</requirement>
+<requirement name="jq-command-interface" stories="executable">
+The interface contract
+</requirement>
+<requirement name="verification-process" stories="focused-verification">
+During development, `sh sources/full_test.sh` does the interface check and the conformance run together, and is the same command the score is taken from.
+</requirement>
+<requirement name="full-conformance-gate" stories="full-conformance">
+Exactly one acceptance check runs the suite.
+</requirement>
+<unattached story="sql-introspection"/>

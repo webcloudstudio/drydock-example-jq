@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Focused-Verification.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Focused-Verification.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Focused-Verification.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Focused Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provide bounded diagnostic verification across the completed jq implementation areas.</td></tr><tr><td>Depends On</td><td>FEATURE-Executable.md</td></tr><tr><td>Provides</td><td>bounded implementation verification</td></tr><tr><td>Consumes</td><td>./jq executable, supplied conformance runner</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Add focused, bounded verification for representative implementation areas using the supplied conformance harness selectors. This story is diagnostic only and must not replace or duplicate the terminal full-conformance gate.</p>
+<h2>Verification Scope</h2>
+<p>The focused checks cover representative lexer/parser, generator, core-value, operator, control-flow, function, builtin, and executable behavior. Each invocation must use a bounded selector and must not modify the imported corpus, exclusions, or runner.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC focused-lexer-parser ===<br>Intent: The executable passes bounded lexer and parser conformance selections.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;interpolation|object|field&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;}, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC focused-lexer-parser ===</p>
+<p>=== AC focused-runtime-builtins ===<br>Intent: The executable passes bounded runtime and builtin conformance selections.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;reduce|range|sort|match|tojson&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;}, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC focused-runtime-builtins ===</p>
+<p>=== AC focused-assets-unchanged ===<br>Intent: The focused verification command completes using the supplied harness and candidate executable.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^\\.$&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;}, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC focused-assets-unchanged ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never invoke the full corpus from this story.</li><li>Never edit, filter, skip, or reinterpret supplied scoring assets.</li><li>The terminal full-conformance story remains the sole release gate.</li></ul></article>
+</main>
+</body>
+</html>

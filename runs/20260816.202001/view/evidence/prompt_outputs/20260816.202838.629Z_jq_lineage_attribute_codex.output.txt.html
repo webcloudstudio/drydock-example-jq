@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.202838.629Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.202838.629Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.202838.629Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;build-jq-interpreter&quot; stories=&quot;architecture&quot;&gt;
+Build an interpreter for the jq language as described in `sources/jq-manual.txt`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stage-source-assets&quot; stories=&quot;source-staging&quot;&gt;
+Record this table in the Analysis so every asset is staged onto disk in the build directory.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;lex-jq-programs&quot; stories=&quot;lexer&quot;&gt;
+Follow `sources/lexer.l` and `sources/parser.y` directly.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-jq-programs&quot; stories=&quot;parser&quot;&gt;
+Produce an AST.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;compile-exit-status&quot; stories=&quot;compile-contract&quot;&gt;
+Reject invalid programs with exit `3`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;generator-evaluation&quot; stories=&quot;generator-runtime&quot;&gt;
+Evaluate a filter as something that yields a stream of values:
+&lt;/requirement&gt;
+&lt;requirement name=&quot;core-values&quot; stories=&quot;core-values&quot;&gt;
+`.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;operators-type-behavior&quot; stories=&quot;operators&quot;&gt;
+Get `[.[] | f]`, cartesian products over multi-output arguments, and short-circuiting right.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;paths-and-assignment&quot; stories=&quot;errors-control&quot;&gt;
+`path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;control-flow&quot; stories=&quot;errors-control,reductions&quot;&gt;
+`if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;functions-and-bindings&quot; stories=&quot;functions-bindings&quot;&gt;
+`def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;jq-builtins&quot; stories=&quot;formats,structural-builtins,regex-builtins,numeric-builtins,date-json-encoding,io-streaming&quot;&gt;
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;numbers-and-edge-cases&quot; stories=&quot;numeric-builtins&quot;&gt;
+`nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin — return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;jq-command-interface&quot; stories=&quot;executable&quot;&gt;
+The interface contract
+&lt;/requirement&gt;
+&lt;requirement name=&quot;verification-process&quot; stories=&quot;focused-verification&quot;&gt;
+During development, `sh sources/full_test.sh` does the interface check and the conformance run together, and is the same command the score is taken from.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;full-conformance-gate&quot; stories=&quot;full-conformance&quot;&gt;
+Exactly one acceptance check runs the suite.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;sql-introspection&quot;/&gt;
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Lexer.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Lexer.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Lexer.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Lexer</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Tokenizes jq source according to the supplied jq lexer specification.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Source-Staging.md</td></tr><tr><td>Provides</td><td>jq lexer token stream</td></tr><tr><td>Consumes</td><td>interpreter architecture, jq source text</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The lexer converts jq source text into tokens carrying token kind, source spelling or decoded literal, and source location. It recognizes whitespace and comments, keywords, identifiers, field selectors, variable bindings, numeric literals, quoted strings, interpolation boundaries, format tokens, operators, delimiters, and invalid characters.</p>
+<p>String escape validation must reject unsupported escapes while preserving valid JSON escapes. Comment handling must support line continuation with a trailing backslash. Delimiter state must detect mismatched closing characters.</p>
+<h2>Token Categories</h2>
+<ul><li>Keywords: <code>as</code>, <code>def</code>, <code>if</code>, <code>then</code>, <code>else</code>, <code>elif</code>, <code>end</code>, <code>reduce</code>, <code>foreach</code>, <code>and</code>, <code>or</code>, <code>try</code>, <code>catch</code>, <code>label</code>, <code>break</code>, <code>import</code>, <code>include</code>, <code>module</code>.</li><li>Literals: JSON-compatible numbers and quoted string fragments.</li><li>Names: identifiers, dotted fields, and <code>$</code> bindings.</li><li>Formats: <code>@text</code>, <code>@json</code>, <code>@html</code>, <code>@uri</code>, <code>@urid</code>, <code>@csv</code>, <code>@tsv</code>, <code>@sh</code>, <code>@base64</code>, and <code>@base64d</code>.</li><li>Operators: arithmetic, comparison, assignment, defined-or, optional, recursive descent, comma, pipe, and delimiters.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-tokenizes-basic-source ===<br>Intent: The lexer emits tokens for identity, a field, a number, and a pipe. import jq_lexer</p>
+<p>tokens = list(jq_lexer.tokenize(&quot;.foo | 42&quot;)) kinds = [getattr(token, &quot;kind&quot;, getattr(token, &quot;type&quot;, None)) for token in tokens] assert len(tokens) &gt;= 4 assert all(kind is not None for kind in kinds) === END AC lexer-tokenizes-basic-source ===</p>
+<p>=== AC lexer-recognizes-formats ===<br>Intent: The lexer recognizes format syntax as a format token rather than an invalid character. import jq_lexer</p>
+<p>tokens = list(jq_lexer.tokenize(&#x27;@json&#x27;)) spellings = [getattr(token, &quot;value&quot;, getattr(token, &quot;text&quot;, None)) for token in tokens] assert any(value in (&quot;json&quot;, &quot;@json&quot;) for value in spellings) === END AC lexer-recognizes-formats ===</p>
+<p>=== AC lexer-recognizes-bindings ===<br>Intent: The lexer recognizes jq variable bindings. import jq_lexer</p>
+<p>tokens = list(jq_lexer.tokenize(&quot;$item&quot;)) spellings = [getattr(token, &quot;value&quot;, getattr(token, &quot;text&quot;, None)) for token in tokens] assert any(value in (&quot;item&quot;, &quot;$item&quot;) for value in spellings) === END AC lexer-recognizes-bindings ===</p>
+<p>=== AC lexer-rejects-invalid-escape ===<br>Intent: Invalid string escapes are rejected lexically. import jq_lexer</p>
+<p>try: list(jq_lexer.tokenize(r&#x27;&quot;u\vw&quot;&#x27;)) except Exception: pass else: raise AssertionError(&quot;invalid escape was accepted&quot;) === END AC lexer-rejects-invalid-escape ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep token source locations available for compile diagnostics.</li><li>Do not reinterpret strings, interpolation, comments, or escape sequences outside the supplied lexer specification.</li></ul></article>
+</main>
+</body>
+</html>

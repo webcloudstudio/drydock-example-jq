@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_builtins.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_builtins.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/jq_builtins.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Registry boundary for standard-library jq builtin filters.
+
+The full builtin surface is implemented incrementally by later build blocks; keeping
+registration here prevents the runtime from depending on CLI or parser details.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from collections.abc import Callable, Iterator
+from typing import Any
+
+
+Builtin = Callable[[Any], Iterator[Any]]
+
+
+def _identity(value: Any) -&gt; Iterator[Any]:
+    yield value
+
+
+BUILTINS: dict[str, Builtin] = {&quot;identity&quot;: _identity}
+
+
+def get_builtin(name: str) -&gt; Builtin:
+    &quot;&quot;&quot;Return a registered builtin or raise a lookup error.&quot;&quot;&quot;
+    try:
+        return BUILTINS[name]
+    except KeyError as error:
+        raise KeyError(f&quot;unknown builtin: {name}&quot;) from error
+</pre></article>
+</main>
+</body>
+</html>

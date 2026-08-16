@@ -1,0 +1,547 @@
+=== BEGIN ARTIFACT FEATURE-Functions-Bindings.md ===
+# FEATURE: Functions, Variables, Closures, and Destructuring
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Defines jq functions, lexical bindings, closures, and destructuring alternatives. |
+| Depends On  | FEATURE-Errors-Control.md, FEATURE-Parser.md, FEATURE-Generator-Runtime.md |
+| Provides    | user functions, filter parameters, value parameters, lexical bindings, destructuring, ?// |
+| Consumes    | jq parser and AST, generator evaluator, runtime control flow |
+
+## Questions
+
+- None.
+
+## Intent
+
+This feature implements jq's lexical function and binding model. Function definitions are visible
+only to subsequent expressions, recursive definitions are supported, and function parameters retain
+jq's distinction between filter arguments and value arguments.
+
+Bindings include scalar variables, nested object and array patterns, closures, recursive calls, and
+the `?//` destructuring alternative. Alternative branches must expose all variables used by the
+continuation, assigning `null` where a successful branch did not bind a name.
+
+## Behavior
+
+- `def name: filter;` and `def name(args): filter;` define callable filters.
+- Identifier parameters are filter parameters; binding parameters are evaluated values.
+- Function calls preserve generator ordering and backtracking.
+- `as` binds each result of its left expression while the continuation receives the original input.
+- Bindings are immutable and lexically scoped.
+- Array and object patterns bind missing values as `null`.
+- `?//` selects the first successful destructuring branch and retries a later branch when the
+  continuation raises an error.
+- Undefined variables, invalid patterns, and malformed definitions are compile errors.
+
+## Programmatic Acceptance
+
+=== AC functions-bindings-suite ===
+Intent: The supplied conformance corpus passes the functions, closures, bindings, and destructuring cases owned by this feature.
+Suite: scoped
+
+import subprocess
+import os
+
+pattern = r"def | as \$|destructur|closure|\\?//|reduce .* as"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": "./jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC functions-bindings-suite ===
+
+=== AC functions-generator-arguments ===
+Intent: Filter and value parameters preserve jq's distinct evaluation behavior.
+import subprocess
+import json
+
+program = "def f(x): x|x; 5|f(.*2)"
+input_value = "null\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [20]
+assert actual == expected
+=== END AC functions-generator-arguments ===
+
+=== AC bindings-and-patterns ===
+Intent: Lexical bindings and nested destructuring produce the supplied bound values.
+import subprocess
+import json
+
+program = ". as {a: $a, b: [$b, {c: $c}]} | [$a, $b, $c]"
+input_value = '{"a":1,"b":[2,{"c":3}]}\n'
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[1, 2, 3]]
+assert actual == expected
+=== END AC bindings-and-patterns ===
+
+=== AC undefined-binding-compile-error ===
+Intent: Referencing an undefined variable produces the documented compile exit status.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", ". as $x | $missing"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC undefined-binding-compile-error ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not treat filter parameters as eagerly evaluated values.
+- Do not leak bindings outside their lexical scope.
+- Do not retry a destructuring alternative after a successful branch unless its continuation
+  raises a runtime error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Reductions.md ===
+# FEATURE: Reductions and Recursive Control Flow
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Defines jq reductions, generator limits, range helpers, and recursive control filters. |
+| Depends On  | FEATURE-Functions-Bindings.md, FEATURE-Generator-Runtime.md |
+| Provides    | reduce, foreach, range, limit, skip, first, last, nth, while, until, repeat, recurse |
+| Consumes    | generator evaluator, functions and bindings, runtime labels |
+
+## Questions
+
+- None.
+
+## Intent
+
+This feature provides jq's generator-oriented iteration and accumulation constructs. Each construct
+must preserve stream order, evaluate generator expressions correctly, and support lexical labels and
+backtracking where the jq language requires them.
+
+## Behavior
+
+- `reduce EXP as $x (INIT; UPDATE)` evaluates `UPDATE` once per generated value.
+- `foreach` emits each intermediate accumulator through its extraction filter.
+- `range` supports one-, two-, and three-argument forms, including descending ranges.
+- `limit`, `skip`, `first`, `last`, and `nth` operate on generator outputs.
+- `while`, `until`, and `repeat` recursively evaluate filters with generator semantics.
+- `recurse` emits the current value before recursively generated descendants.
+- Negative unsupported counts raise runtime errors; `label`/`break` can terminate iteration.
+
+## Programmatic Acceptance
+
+=== AC reductions-suite ===
+Intent: The supplied conformance corpus passes the reduction and recursive-control cases owned by this feature.
+Suite: scoped
+
+import subprocess
+import os
+
+pattern = r"reduce|foreach|range\\(|limit\\(|skip\\(|first\\(|last\\(|nth\\(|while\\(|until\\(|repeat\\(|recurse|label \\$"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": "./jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC reductions-suite ===
+
+=== AC reduce-and-foreach ===
+Intent: Reduction and foreach preserve accumulator order and extraction behavior.
+import subprocess
+import json
+
+program = "[reduce .[] as $x (0; . + $x), foreach .[] as $x (0; . + $x)]"
+input_value = "[1,2,3]\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[6, 1, 3, 6]]
+assert actual == expected
+=== END AC reduce-and-foreach ===
+
+=== AC range-limit-skip ===
+Intent: Range generation, limiting, and skipping preserve ordered stream values.
+import subprocess
+import json
+
+program = "[range(0;10;3)], [limit(3; range(10))], [skip(3; range(6))]"
+input_value = "null\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[0, 3, 6, 9], [0, 1, 2], [3, 4, 5]]
+assert actual == expected
+=== END AC range-limit-skip ===
+
+=== AC negative-count-runtime-error ===
+Intent: Unsupported negative limit counts produce the documented runtime exit status.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "limit(-1; 1)"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC negative-count-runtime-error ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator order and do not collapse multi-output filters into one value.
+- Do not evaluate an unneeded tail after `first`, `limit`, or `break`.
+- Preserve partial output emitted before an uncaught runtime error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Structural-Builtins.md ===
+# FEATURE: Collection and Structural Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Defines jq builtins for collection, structure, paths, containment, and recursive transformation. |
+| Depends On  | FEATURE-Reductions.md, FEATURE-Core-Values.md, FEATURE-Operators.md |
+| Provides    | collection, sorting, grouping, uniqueness, containment, entries, walking, flattening, transpose, paths |
+| Consumes    | core values, paths, assignments, reductions |
+
+## Questions
+
+- None.
+
+## Intent
+
+This feature implements structural builtins expressed over arrays, objects, paths, and recursive
+values. Builtins must retain jq's type ordering, stable generator behavior, immutable value model,
+and path semantics.
+
+## Behavior
+
+- Collection helpers include `map`, `map_values`, `add`, `join`, `flatten`, `transpose`, and
+  `combinations`.
+- Ordering helpers include `sort`, `sort_by`, `group_by`, `unique`, `unique_by`, `min`, and
+  `max_by`.
+- Object helpers include `to_entries`, `from_entries`, and `with_entries`.
+- Structural predicates include `contains`, `inside`, `arrays`, `objects`, `iterables`, `scalars`,
+  `values`, and related selectors.
+- `walk` recursively transforms children before their containing array or object.
+- `path`, `paths`, `getpath`, `setpath`, `delpaths`, `pick`, and `del` preserve path order and
+  path creation/deletion rules.
+- Invalid types and invalid paths raise jq runtime errors.
+
+## Programmatic Acceptance
+
+=== AC structural-builtins-suite ===
+Intent: The supplied conformance corpus passes the collection, structural, path, and transformation cases owned by this feature.
+Suite: scoped
+
+import subprocess
+import os
+
+pattern = r"map|map_values|sort|group_by|unique|contains|inside|to_entries|from_entries|with_entries|flatten|transpose|combinations|walk|path|paths|getpath|setpath|delpaths|pick|del\\("
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": "./jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC structural-builtins-suite ===
+
+=== AC structural-round-trip ===
+Intent: Entry conversion and structural transformation preserve object contents and keys.
+import subprocess
+import json
+
+program = "with_entries(.key |= \"x_\" + .)"
+input_value = '{"a":1,"b":2}\n'
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [{"x_a": 1, "x_b": 2}]
+assert actual == expected
+=== END AC structural-round-trip ===
+
+=== AC structural-ordering ===
+Intent: Sorting and uniqueness use jq's structural ordering and remove duplicates.
+import subprocess
+import json
+
+program = "[sort, unique]"
+input_value = "[3,1,3,2]\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[1, 2, 3], [1, 2, 3]]
+assert actual == expected
+=== END AC structural-ordering ===
+
+=== AC path-update ===
+Intent: Path utilities can read, update, and delete nested values.
+import subprocess
+import json
+
+program = "[getpath([\"a\",\"b\"]), setpath([\"a\",\"b\"]; 2), delpaths([[\"a\",\"b\"]])]"
+input_value = '{"a":{"b":1,"c":3}}\n'
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1, {"a": {"b": 2, "c": 3}}, {"a": {"c": 3}}]
+assert actual == expected
+=== END AC path-update ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve jq's null/boolean/number/string/array/object ordering.
+- Do not mutate the original input value while computing an assignment or path update.
+- Do not silently reinterpret invalid path expressions as ordinary values.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Regex-Builtins.md ===
+# FEATURE: String and Regular-Expression Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Defines jq string utilities and regular-expression matching and substitution builtins. |
+| Depends On  | FEATURE-Formats.md, FEATURE-Functions-Bindings.md, FEATURE-Core-Values.md |
+| Provides    | string trimming, splitting, joining, case conversion, indices, match, test, scan, capture, sub, gsub |
+| Consumes    | string values and interpolation |
+
+## Questions
+
+- None.
+
+## Intent
+
+This feature implements jq's string and regular-expression library using Python standard-library
+facilities. It preserves Unicode codepoint offsets, named captures, generator behavior, supported
+flags, and jq's distinction between string and non-string inputs.
+
+## Behavior
+
+- `startswith`, `endswith`, `ltrimstr`, `rtrimstr`, `trimstr`, `trim`, `ltrim`, and `rtrim`
+  validate string inputs and preserve Unicode behavior.
+- `split`, `splits`, and `join` preserve empty fields and jq conversions for numbers, booleans,
+  and nulls.
+- `indices`, `index`, and `rindex` operate on strings and arrays.
+- `match`, `test`, `capture`, and `scan` support supported flags, global matching, named captures,
+  offsets, and lengths.
+- `sub` replaces the first matching occurrence; `gsub` replaces all non-overlapping occurrences.
+- `ascii_downcase`, `ascii_upcase`, `explode`, and `implode` follow jq codepoint rules.
+- Invalid input types and invalid regular expressions raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC regex-builtins-suite ===
+Intent: The supplied conformance corpus passes the string and regular-expression cases owned by this feature.
+Suite: scoped
+
+import subprocess
+import os
+
+pattern = r"startswith|endswith|ltrimstr|rtrimstr|trimstr|trim,|split|splits|join|indices|index\\(|rindex|match|test|capture|scan|sub\\(|gsub|ascii_|explode|implode"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": "./jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC regex-builtins-suite ===
+
+=== AC string-transformations ===
+Intent: String splitting, joining, trimming, and case conversion preserve supplied input semantics.
+import subprocess
+import json
+
+program = "[split(\",\"), join(\"-\"), trim, ascii_upcase]"
+input_value = "[\"a,b\",\"c\"]\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [["a", "b"], "a-b", "[\"a,b\",\"c\"]", "[\"A\",\"B\"]"]
+assert actual == expected
+=== END AC string-transformations ===
+
+=== AC regex-match-capture ===
+Intent: Matching and named capture extraction produce structured match data.
+import subprocess
+import json
+
+program = "[match(\"(?<word>[a-z]+)-(?<n>[0-9]+)\"), capture(\"(?<word>[a-z]+)-(?<n>[0-9]+)\")]"
+input_value = "\"abc-12\"\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert len(actual) == 1
+assert actual[0][0]["string"] == "abc-12"
+assert actual[0][1] == {"word": "abc", "n": "12"}
+=== END AC regex-match-capture ===
+
+=== AC regex-invalid-input ===
+Intent: Applying a string builtin to a non-string input produces the documented runtime exit status.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "startswith(\"x\")"],
+    input="1\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC regex-invalid-input ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Keep offsets and lengths in Unicode codepoints as jq specifies.
+- Do not use a third-party regular-expression package.
+- Do not turn a regex error or invalid input into a successful empty stream.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Numeric-Builtins.md ===
+# FEATURE: Numeric, Math, and Special-Number Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Defines jq numeric conversion, mathematical functions, predicates, and special-number behavior. |
+| Depends On  | FEATURE-Operators.md, FEATURE-Core-Values.md |
+| Provides    | tonumber, math functions, infinities, NaN, numeric predicates, have_decnum |
+| Consumes    | numeric operators and JSON values |
+
+## Questions
+
+- None.
+
+## Intent
+
+This feature implements jq's numeric library with Python standard-library math facilities. It
+supports ordinary arithmetic, conversion, predicates, special values, and the corpus-required
+literal-number behavior without third-party dependencies.
+
+## Behavior
+
+- `tonumber` accepts numbers and correctly formatted numeric strings.
+- Standard one-, two-, and three-argument math functions use jq's filter calling convention.
+- `infinite` and `nan` produce numeric special values; `isinfinite`, `isnan`, `isfinite`, and
+  `isnormal` classify them.
+- `have_decnum` follows the selected float-with-literal-metadata implementation behavior.
+- Numeric comparisons distinguish numbers from booleans and preserve jq ordering.
+- Arithmetic converts values according to jq's numeric semantics while unary negation preserves
+  literal behavior required by the corpus.
+- Invalid conversions and unsupported type combinations raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC numeric-builtins-suite ===
+Intent: The supplied conformance corpus passes numeric, math, special-number, and literal-number cases owned by this feature.
+Suite: scoped
+
+import subprocess
+import os
+
+pattern = r"tonumber|have_decnum|infinite|nan|isnan|isinfinite|isfinite|isnormal|pow\\(|log|sqrt|floor|ceil|round|sin|cos|atan|fabs|numeric|literal|decnum"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": "./jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC numeric-builtins-suite ===
+
+=== AC numeric-conversion ===
+Intent: Numeric conversion accepts numbers and valid numeric strings.
+import subprocess
+import json
+
+program = "[tonumber, tonumber]"
+input_value = "\"12.5\"\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [12.5, 12.5]
+assert actual == expected
+=== END AC numeric-conversion ===
+
+=== AC numeric-math ===
+Intent: Standard mathematical filters produce numeric results.
+import subprocess
+import json
+
+program = "[sqrt, floor, ceil]"
+input_value = "9.7\n"
+result = subprocess.run(["./jq", "-c", program], input=input_value, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [3, 9, 10]
+assert actual == expected
+=== END AC numeric-math ===
+
+=== AC numeric-predicates ===
+Intent: Numeric predicates distinguish finite, infinite, and NaN values.
+import subprocess
+import json
+
+program = "[infinite|isinfinite, nan|isnan, 1|isfinite]"
+result = subprocess.run(["./jq", "-c", program], input="null\n", capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[True, True, True]]
+assert actual == expected
+=== END AC numeric-predicates ===
+
+=== AC invalid-number-conversion ===
+Intent: Invalid numeric conversion produces the documented runtime exit status.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "tonumber"],
+    input="\"not-a-number\"\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC invalid-number-conversion ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not equate booleans with numbers.
+- Do not introduce a third-party numeric or math dependency.
+- Preserve the selected literal-number and `have_decnum` behavior consistently across parsing,
+  comparison, arithmetic, and serialization.
+=== END ARTIFACT ===

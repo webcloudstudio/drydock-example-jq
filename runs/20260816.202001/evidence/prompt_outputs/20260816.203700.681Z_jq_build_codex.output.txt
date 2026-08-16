@@ -1,0 +1,43 @@
+<reusable-compact filename="full_test.sh">
+Runs `sources/run_conformance.py` from the application root with `JQ="$PWD/jq"`. Requires executable `./jq`; preserves harness exit status.
+</reusable-compact>
+
+<reusable-compact filename="run_conformance.py">
+Parses `sources/jq.test`, applies exact exclusions, runs each case via `JQ`, compares structural JSON output and exit codes. Exit 0 means no failures/errors; 1 means candidate failure; 2 means harness fault. Compile errors must exit 3; runtime errors may exit 5.
+</reusable-compact>
+
+<reusable-compact filename="exclusions.txt">
+Declares only module-loader corpus cases as skipped. Entries must match corpus program lines exactly; stale entries are harness errors.
+</reusable-compact>
+
+<reusable-compact filename="jq.test">
+Pinned jq 1.8.2 conformance corpus. Cases contain program, input, and expected output lines; `%%FAIL` cases require compile exit 3.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Normative jq language specification covering filters, generators, operators, builtins, control flow, variables, regex, modules, dates, streaming, and assignment.
+</reusable-compact>
+
+<reusable-compact filename="lexer.l">
+Defines jq lexical tokens, comments, strings/interpolation, literals, identifiers, bindings, formats, operators, and delimiter state validation.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Defines jq grammar, precedence, associativity, syntax validation, functions, patterns, modules, conditionals, generators, assignments, and compile-time diagnostics.
+</reusable-compact>
+
+<reusable-compact filename="builtin.jq">
+Reference definitions for jq builtins including map/select, reductions, recursion, paths, strings, regex, control flow, dates, streaming, traversal, SQL-style helpers, and assignment support.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- sources/INSTRUCTIONS.md
+- tests/test_source_staging.py
+
+SUMMARY:
+Staged the missing authoritative `INSTRUCTIONS.md`; verified all nine source assets are present, non-empty, and byte-stable. Added deterministic pytest coverage for asset staging and harness executability. Tests passed.
+
+BLOCKERS:
+- None

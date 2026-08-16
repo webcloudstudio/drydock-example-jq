@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Full-Conformance.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Full-Conformance.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Full-Conformance.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Full Conformance</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Gate the completed jq interpreter against the complete supplied jq 1.8.2 conformance corpus.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Executable.md, FEATURE-Focused-Verification.md</td></tr><tr><td>Provides</td><td>complete jq conformance verdict</td></tr><tr><td>Consumes</td><td>./jq executable and supplied scoring script</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>This feature performs the terminal verification of the completed standalone jq interpreter. It invokes the supplied scoring entry point exactly as authored, preserving the corpus, exclusions, harness, and diagnostics.</p>
+<p>The full suite is the project-level definition of done for the interpreter. Its exit status is the sole verdict; the suite’s printed summary is diagnostic output only.</p>
+<h2>Workflow</h2>
+<ol><li>Confirm all implementation and verification stories are complete.</li><li>Run <code>sh sources/full_test.sh</code> from the application root.</li><li>Preserve the command’s stdout and stderr for diagnosis.</li><li>Accept the feature only when the command exits successfully.</li></ol>
+<h2>Operational Requirements</h2>
+<ul><li>Do not modify <code>sources/full_test.sh</code>, <code>sources/run_conformance.py</code>, <code>sources/jq.test</code>, or <code>sources/exclusions.txt</code>.</li><li>Do not filter, reinterpret, or selectively rerun corpus cases during the full gate.</li><li>The executable must remain <code>./jq</code> and must be executable.</li><li>The full gate must run without network access, package installation, or third-party jq implementations.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC full-conformance ===<br>Intent: The completed interpreter passes the supplied full jq conformance suite.<br>Suite: full<br>Requires: executable=python3; scope=test<br>Requires: executable=sh; scope=test</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=subprocess.sys.stderr) assert result.returncode == 0 === END AC full-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The supplied scoring script and corpus remain unmodified.</li><li>The complete suite runs only after all implementation stories and focused verification close.</li><li>The suite exit status is the only acceptance oracle; summary text is never asserted.</li></ul></article>
+</main>
+</body>
+</html>

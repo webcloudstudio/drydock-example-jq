@@ -1,0 +1,5 @@
+2026-08-16T20:51:54.014083Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/jq_runtime.py:
+    elif node.kind == ",":
+        yield from _walk(node.children[0], value)
+        yield from _walk(node.children[1], value)
+    elif node.kind == "iterate":

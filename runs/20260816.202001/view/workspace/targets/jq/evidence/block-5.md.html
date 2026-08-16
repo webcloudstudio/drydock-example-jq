@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-5.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-5.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-5.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 5 · Service (block-5)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 23572</li><li>execution id: 20260816.204819.647Z-2cbc3678</li></ul>
+<h2>Stories built</h2>
+<ul><li>Enforce jq compile diagnostics and exit-status behavior. (compile-contract) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3836)</li><li>implements: FEATURE-Compile-Contract.md (SP 585)</li><li>context: run_conformance.py (SP 4354)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 160)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_parser.py</li><li>tests/test_compile_contract.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: compile-api-separates-errors (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: The compiler exposes a compile boundary that distinguishes invalid source. return code: 1 stderr: --- drydock: values at failure --- rejected = False --- drydock: end values --- Traceback (most recent call last): File &quot;compile-api-separates-errors.py&quot;, line 10, in &lt;module&gt; assert rejected is True ^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>GREEN (prepassed): compile-valid-source-reaches-ast (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: Valid source crosses compilation and produces an AST. return code: 0</p>
+<ul><li>GREEN (prepassed): compile-cli-status-contract (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: The executable reports a malformed program with the declared compile status. return code: 0</p>
+<ul><li>GREEN (prepassed): compile-diagnostics-use-stderr (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: Compile diagnostics are separated from result output. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: compile-api-separates-errors (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: The compiler exposes a compile boundary that distinguishes invalid source. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: compile-valid-source-reaches-ast (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: Valid source crosses compilation and produces an AST. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: compile-cli-status-contract (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: The executable reports a malformed program with the declared compile status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: compile-diagnostics-use-stderr (FEATURE-Compile-Contract.md)</li></ul>
+<p>intent: Compile diagnostics are separated from result output. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_parser.py</li><li>tests/test_compile_contract.py</li></ul>
+<p>SUMMARY: Implemented static compile rejection for invalid patterns and undefined labels. Added compile/runtime contract tests. All 23 project tests and 10 targeted compile checks pass. Staged asset hashes remain unchanged.</p>
+<p>BLOCKERS:</p>
+<ul><li>Full conformance still has unrelated pre-existing runtime failures outside this block.</li></ul></article>
+</main>
+</body>
+</html>

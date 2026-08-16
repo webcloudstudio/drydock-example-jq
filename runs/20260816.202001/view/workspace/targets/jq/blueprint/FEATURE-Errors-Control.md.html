@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Errors-Control.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Errors-Control.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Errors-Control.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Errors and Control Flow</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implements jq runtime errors, try/catch, optional evaluation, labels, and breaks.</td></tr><tr><td>Depends On</td><td>FEATURE-Operators.md</td></tr><tr><td>Provides</td><td>runtime error status 5, try/catch, optional access, labels, break</td></tr><tr><td>Consumes</td><td>generator evaluator, operators</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement structured runtime failure and control-flow semantics while preserving ordered outputs emitted before uncaught failures.</p>
+<h2>Scope</h2>
+<ul><li>Runtime error propagation with exit status 5.</li><li><code>error</code>, <code>try</code>, <code>catch</code>, and postfix <code>?</code>.</li><li>Lexically scoped <code>label</code> and <code>break</code>.</li><li>Error suppression and partial stream output.</li><li>Distinction between compile errors and runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC errors-control-suite ===<br>Intent: Error and control behavior passes its authoritative conformance slice.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(try|catch|break|label|\?)&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC errors-control-suite ===</p>
+<p>=== AC errors-runtime-status ===<br>Intent: An uncaught runtime failure exits with the documented runtime status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC errors-runtime-status ===</p>
+<p>=== AC errors-try-catch ===<br>Intent: try/catch converts a supplied runtime failure into a value.</p>
+<p>import json import subprocess</p>
+<p>fallback = &quot;handled&quot; program = f&#x27;try error catch {json.dumps(fallback)}&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == fallback === END AC errors-try-catch ===</p>
+<p>=== AC errors-partial-output ===<br>Intent: Values emitted before an uncaught runtime failure remain observable.</p>
+<p>import json import subprocess</p>
+<p>program = &quot;1, error&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual == [1] === END AC errors-partial-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Runtime failures use exit status 5; compile failures use exit status 3.</li><li>Diagnostics go to stderr only.</li><li><code>try</code>, <code>catch</code>, <code>?</code>, labels, and breaks must not reorder already-produced values.</li><li>Break labels are lexical and unavailable outside their defining scope.</li></ul></article>
+</main>
+</body>
+</html>

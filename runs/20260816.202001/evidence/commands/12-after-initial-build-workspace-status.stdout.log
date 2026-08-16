@@ -1,0 +1,17 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status — workspace
+
+Target: jq
+   Phase:     Implement
+   State:     Failed: programmatic acceptance failed: formats-suite
+   Detail:    9 imported · 21 authored · metadata building
+   Analysis:  Questions · 19 stories · 1 questions · 0 blockers
+   Plan:      approved · 0/21 verified · 15 pending
+   Review:    BLOCKERS.md none · 1 questionnaires
+   Next Step: drydock run quarterdeck jq
+   8-16:      ✅  drydock build status jq
+   8-16:      ❌  drydock build jq --override --repair-attempts 6
+   8-16:      ✅  drydock build status jq
+   8-16:      ✅  drydock plan jq --override
+   8-16:      ✅  drydock analyze jq
+

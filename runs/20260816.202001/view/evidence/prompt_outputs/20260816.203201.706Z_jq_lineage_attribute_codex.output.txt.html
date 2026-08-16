@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.203201.706Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.203201.706Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.203201.706Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;lex-jq-programs&quot; stories=&quot;lexer&quot;&gt;
+&quot;!=&quot; { return NEQ; }
+&quot;==&quot; { return EQ; }
+&quot;as&quot; { return AS; }
+&quot;import&quot; { return IMPORT; }
+&quot;include&quot; { return INCLUDE; }
+&quot;module&quot; { return MODULE; }
+&quot;def&quot; { return DEF; }
+&quot;if&quot; { return IF; }
+&quot;then&quot; { return THEN; }
+&quot;else&quot; { return ELSE; }
+&quot;elif&quot; { return ELSE_IF; }
+&quot;and&quot; { return AND; }
+&quot;or&quot; { return OR; }
+&quot;end&quot; { return END; }
+&quot;reduce&quot; { return REDUCE; }
+&quot;foreach&quot; { return FOREACH; }
+&quot;//&quot; { return DEFINEDOR; }
+&quot;try&quot; { return TRY; }
+&quot;catch&quot; { return CATCH; }
+&quot;label&quot; { return LABEL; }
+&quot;break&quot; { return BREAK; }
+&quot;$__loc__&quot; { return LOC; }
+&quot;|=&quot; { return SETPIPE; }
+&quot;+=&quot; { return SETPLUS; }
+&quot;-=&quot; { return SETMINUS; }
+&quot;*=&quot; { return SETMULT; }
+&quot;/=&quot; { return SETDIV; }
+&quot;%=&quot; { return SETMOD; }
+&quot;//=&quot; { return SETDEFINEDOR; }
+&quot;&lt;=&quot; { return LESSEQ; }
+&quot;&gt;=&quot; { return GREATEREQ; }
+&quot;..&quot; { return REC; }
+&quot;?//&quot; { return ALTERNATION; }
+&quot;.&quot;|&quot;?&quot;|&quot;=&quot;|&quot;;&quot;|&quot;,&quot;|&quot;:&quot;|&quot;|&quot;|&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;|&quot;%&quot;|&quot;\$&quot;|&quot;&lt;&quot;|&quot;&gt;&quot; { return yytext[0];}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;format-interpolation&quot; stories=&quot;formats&quot;&gt;
+&quot;@&quot;[a-zA-Z0-9_]+ {
+  yylval-&gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+&quot;\\(&quot; {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;source-staging&quot;/&gt;
+&lt;unattached story=&quot;parser&quot;/&gt;
+&lt;unattached story=&quot;compile-contract&quot;/&gt;
+&lt;unattached story=&quot;generator-runtime&quot;/&gt;
+&lt;unattached story=&quot;core-values&quot;/&gt;
+&lt;unattached story=&quot;operators&quot;/&gt;
+&lt;unattached story=&quot;errors-control&quot;/&gt;
+&lt;unattached story=&quot;functions-bindings&quot;/&gt;
+&lt;unattached story=&quot;reductions&quot;/&gt;
+&lt;unattached story=&quot;structural-builtins&quot;/&gt;
+&lt;unattached story=&quot;regex-builtins&quot;/&gt;
+&lt;unattached story=&quot;numeric-builtins&quot;/&gt;
+&lt;unattached story=&quot;date-json-encoding&quot;/&gt;
+&lt;unattached story=&quot;io-streaming&quot;/&gt;
+&lt;unattached story=&quot;sql-introspection&quot;/&gt;
+&lt;unattached story=&quot;executable&quot;/&gt;
+&lt;unattached story=&quot;focused-verification&quot;/&gt;
+&lt;unattached story=&quot;full-conformance&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

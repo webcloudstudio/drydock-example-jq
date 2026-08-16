@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/13-score-acceptance.stderr.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/13-score-acceptance.stderr.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/13-score-acceptance.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>error: acceptance verification failed for jq: 37 of 72 criteria
+  architecture-no-third-party-runtime  architecture  ARCHITECTURE.md
+    assertion: assert imports &lt;= stdlib → AssertionError
+    raised at: architecture-no-third-party-runtime.py:18
+    process exit code: 1
+    values at failure:
+      imports = {&#x27;time&#x27;, &#x27;__future__&#x27;, &#x27;urllib&#x27;, &#x27;json&#x27;, &#x27;math&#x27;, &#x27;jq_parser&#x27;, &#x27;base64&#x27;, &#x27;io&#x27;, &#x27;csv&#x27;}
+      stdlib = {&#x27;copy&#x27;, &#x27;ast&#x27;, &#x27;decimal&#x27;, &#x27;time&#x27;, &#x27;datetime&#x27;, &#x27;argparse&#x27;, &#x27;itertools&#x27;, &#x27;os&#x27;, &#x27;operator&#x27;, &#x27;re&#x27;, &#x27;json&#x27;, &#x27;functools&#x27;, &#x27;math&#x27;, &#x27;sys&#x27;, &#x27;base64&#x27;, &#x27;unicodedata&#x27;, &#x27;types&#x27;}
+    criterion code:
+         1 | import ast
+         2 | from pathlib import Path
+         3 |
+         4 | source = Path(&quot;jq_runtime.py&quot;).read_text(encoding=&quot;utf-8&quot;)
+         5 | tree = ast.parse(source)
+         6 | imports = {
+         7 |     node.names[0].name.split(&quot;.&quot;)[0]
+         8 |     for node in ast.walk(tree)
+         9 |     if isinstance(node, ast.Import) and node.names
+        10 | }
+        11 | for node in ast.walk(tree):
+        12 |     if isinstance(node, ast.ImportFrom) and node.module:
+        13 |         imports.add(node.module.split(&quot;.&quot;)[0])
+        14 |
+        15 | stdlib = {&quot;argparse&quot;, &quot;ast&quot;, &quot;base64&quot;, &quot;copy&quot;, &quot;datetime&quot;, &quot;decimal&quot;, &quot;functools&quot;,
+        16 |           &quot;itertools&quot;, &quot;json&quot;, &quot;math&quot;, &quot;operator&quot;, &quot;os&quot;, &quot;re&quot;, &quot;sys&quot;, &quot;time&quot;,
+        17 |           &quot;types&quot;, &quot; unicodedata&quot;.strip()}
+      &gt; 18 | assert imports &lt;= stdlib
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;architecture-no-third-party-runtime.py&quot;, line 18, in &lt;module&gt;
+          assert imports &lt;= stdlib
+                 ^^^^^^^^^^^^^^^^^
+      AssertionError
+  formats-suite  formats  FEATURE-Formats.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: formats-suite.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;@|interpolation&#x27;], returncode=2, stdout=&#x27;&#x27;, stderr=&#x27;error: JQ is not set; give the command that runs your implementation, e.g.\n    JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;@|interpolation&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+      error: JQ is not set; give the command that runs your implementation, e.g.
+          JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;formats-suite.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  generator-suite  generator-runtime  FEATURE-Generator-Runtime.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: generator-suite.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;(^empty$|,|\\|)&#x27;], returncode=2, stdout=&#x27;&#x27;, stderr=&#x27;error: JQ is not set; give the command that runs your implementation, e.g.\n    JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(^empty$|,|\|)&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+      error: JQ is not set; give the command that runs your implementation, e.g.
+          JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;generator-suite.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  core-values-suite  core-values  FEATURE-Core-Values.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: core-values-suite.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;(\\.foo|\\.\\[|^\\[\\.)&#x27;], returncode=2, stdout=&#x27;&#x27;, stderr=&#x27;error: JQ is not set; give the command that runs your implementation, e.g.\n    JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(\.foo|\.\[|^\[\.)&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+      error: JQ is not set; give the command that runs your implementation, e.g.
+          JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;core-values-suite.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  core-values-indexing  core-values  FEATURE-Core-Values.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: core-values-indexing.py:12
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;.items[] | .name&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: cannot index value\n&#x27;)
+    criterion code:
+         1 | import json
+         2 | import subprocess
+         3 |
+         4 | value = {&quot;items&quot;: [{&quot;name&quot;: &quot;a&quot;}, {&quot;name&quot;: &quot;b&quot;}]}
+         5 | program = &quot;.items[] | .name&quot;
+         6 | result = subprocess.run(
+         7 |     [&quot;./jq&quot;, &quot;-c&quot;, program],
+         8 |     input=json.dumps(value) + &quot;\n&quot;,
+         9 |     capture_output=True,
+        10 |     text=True,
+        11 | )
+      &gt; 12 | assert result.returncode == 0
+        13 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+        14 | expected = [item[&quot;name&quot;] for item in value[&quot;items&quot;]]
+        15 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;core-values-indexing.py&quot;, line 12, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  core-values-construction  core-values  FEATURE-Core-Values.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: core-values-construction.py:11
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[range(0; 3)]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: range\n&#x27;)
+    criterion code:
+         1 | import json
+         2 | import subprocess
+         3 |
+         4 | program = &quot;[range(0; 3)]&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;./jq&quot;, &quot;-c&quot;, program],
+         7 |     input=&quot;null\n&quot;,
+         8 |     capture_output=True,
+         9 |     text=True,
+        10 | )
+      &gt; 11 | assert result.returncode == 0
+        12 | actual = json.loads(result.stdout)
+        13 | assert actual == list(range(0, 3))
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;core-values-construction.py&quot;, line 11, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  operators-suite  operators  FEATURE-Operators.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: operators-suite.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;(==|!=|[&lt;&gt;]=?|\\+|\\-|\\*|/|%|//)&#x27;], returncode=2, stdout=&#x27;&#x27;, stderr=&#x27;error: JQ is not set; give the command that runs your implementation, e.g.\n    JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(==|!=|[&lt;&gt;]=?|\+|\-|\*|/|%|//)&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+      error: JQ is not set; give the command that runs your implementation, e.g.
+          JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;operators-suite.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  operators-definedor  operators  FEATURE-Operators.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: operators-definedor.py:12
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;. // {&quot;fallback&quot;:true}&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown AST node: //\n&#x27;)
+    criterion code:
+         1 | import json
+         2 | import subprocess
+         3 |
+         4 | fallback = {&quot;fallback&quot;: True}
+         5 | program = f&quot;. // {json.dumps(fallback, separators=(&#x27;,&#x27;, &#x27;:&#x27;))}&quot;
+         6 | result = subprocess.run(
+         7 |     [&quot;./jq&quot;, &quot;-c&quot;, program],
+         8 |     input=&quot;null\n&quot;,
+         9 |     capture_output=True,
+        10 |     text=True,
+        11 | )
+      &gt; 12 | assert result.returncode == 0
+        13 | actual = json.loads(result.stdout)
+        14 | assert actual == fallback
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;operators-definedor.py&quot;, line 12, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  errors-control-suite  errors-control  FEATURE-Errors-Control.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: errors-control-suite.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;(try|catch|break|label|\\?)&#x27;], returncode=2, stdout=&#x27;&#x27;, stderr=&#x27;error: JQ is not set; give the command that runs your implementation, e.g.\n    JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(try|catch|break|label|\?)&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+      error: JQ is not set; give the command that runs your implementation, e.g.
+          JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;errors-control-suite.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  errors-try-catch  errors-control  FEATURE-Errors-Control.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: errors-try-catch.py:12
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;try error catch &quot;handled&quot;&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown AST node: try\n&#x27;)
+    criterion code:
+         1 | import json
+         2 | import subprocess
+         3 |
+         4 | fallback = &quot;handled&quot;
+         5 | program = f&#x27;try error catch {json.dumps(fallback)}&#x27;
+         6 | result = subprocess.run(
+         7 |     [&quot;./jq&quot;, &quot;-c&quot;, program],
+         8 |     input=&quot;null\n&quot;,
+         9 |     capture_output=True,
+        10 |     text=True,
+        11 | )
+      &gt; 12 | assert result.returncode == 0
+        13 | actual = json.loads(result.stdout)
+        14 | assert actual == fallback
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;errors-try-catch.py&quot;, line 12, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  functions-bindings-suite  functions-bindings  FEATURE-Functions-Bindings.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: functions-bindings-suite.py:13
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;def | as \\$|destructur|closure|\\\\?//|reduce .* as&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:333  output mismatch\n    program:  [label $out | foreach .[] as $item ([3, null]; if .[0] &lt; 1 then break $out else [.[0] -1, $item] end; .[1])]\n    input:    [11,22,33,44,55,66,77,88,99]\n    expected: [\&#x27;[11,22,33]\&#x27;]\n    actual… (+26055 chars)
+    criterion code:
+         1 | import subprocess
+         2 | import os
+         3 |
+         4 | pattern = r&quot;def | as \$|destructur|closure|\\?//|reduce .* as&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+         7 |     capture_output=True,
+         8 |     text=True,
+         9 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+        10 | )
+        11 | print(result.stdout)
+        12 | print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+      &gt; 13 | assert result.returncode == 0
+    observed output:
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | sort) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      FAIL jq.test:2633  output mismatch
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | unique) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      jq conformance: 2 passed, 90 failed, 0 errored, 3 skipped (corpus jq.test @ jq-1.8.2)
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;functions-bindings-suite.py&quot;, line 13, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  functions-generator-arguments  functions-bindings  FEATURE-Functions-Bindings.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: functions-generator-arguments.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;def f(x): x|x; 5|f(.*2)&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown AST node: program\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;def f(x): x|x; 5|f(.*2)&quot;
+         5 | input_value = &quot;null\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [20]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;functions-generator-arguments.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  bindings-and-patterns  functions-bindings  FEATURE-Functions-Bindings.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: bindings-and-patterns.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;. as {a: $a, b: [$b, {c: $c}]} | [$a, $b, $c]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown AST node: as\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;. as {a: $a, b: [$b, {c: $c}]} | [$a, $b, $c]&quot;
+         5 | input_value = &#x27;{&quot;a&quot;:1,&quot;b&quot;:[2,{&quot;c&quot;:3}]}\n&#x27;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [[1, 2, 3]]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;bindings-and-patterns.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  reductions-suite  reductions  FEATURE-Reductions.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: reductions-suite.py:13
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;reduce|foreach|range\\\\(|limit\\\\(|skip\\\\(|first\\\\(|last\\\\(|nth\\\\(|while\\\\(|until\\\\(|repeat\\\\(|recurse|label \\\\$&#x27;], returncode=1, stdout=&#x27;&#x27;, stderr=&#x27;Traceback (most recent call last):\n  File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/sources/run_conformance.py&quot;, line 455, … (+5859 chars)
+    criterion code:
+         1 | import subprocess
+         2 | import os
+         3 |
+         4 | pattern = r&quot;reduce|foreach|range\\(|limit\\(|skip\\(|first\\(|last\\(|nth\\(|while\\(|until\\(|repeat\\(|recurse|label \\$&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+         7 |     capture_output=True,
+         8 |     text=True,
+         9 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+        10 | )
+        11 | print(result.stdout)
+        12 | print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+      &gt; 13 | assert result.returncode == 0
+    check stderr:
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 862, in _parse
+          p = _parse_sub(source, state, sub_verbose, nested + 1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 862, in _parse
+          p = _parse_sub(source, state, sub_verbose, nested + 1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 864, in _parse
+          raise source.error(&quot;missing ), unterminated subpattern&quot;,
+      re.error: missing ), unterminated subpattern at position 91
+      Traceback (most recent call last):
+        File &quot;reductions-suite.py&quot;, line 13, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  reduce-and-foreach  reductions  FEATURE-Reductions.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: reduce-and-foreach.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[reduce .[] as $x (0; . + $x), foreach .[] as $x (0; . + $x)]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&quot;jq: compile error: expected &#x27;;&#x27; at position 59\n&quot;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[reduce .[] as $x (0; . + $x), foreach .[] as $x (0; . + $x)]&quot;
+         5 | input_value = &quot;[1,2,3]\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [[6, 1, 3, 6]]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;reduce-and-foreach.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  range-limit-skip  reductions  FEATURE-Reductions.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: range-limit-skip.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[range(0;10;3)], [limit(3; range(10))], [skip(3; range(6))]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: range\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[range(0;10;3)], [limit(3; range(10))], [skip(3; range(6))]&quot;
+         5 | input_value = &quot;null\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [[0, 3, 6, 9], [0, 1, 2], [3, 4, 5]]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;range-limit-skip.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  structural-builtins-suite  structural-builtins  FEATURE-Structural-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: structural-builtins-suite.py:13
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;map|map_values|sort|group_by|unique|contains|inside|to_entries|from_entries|with_entries|flatten|transpose|combinations|walk|path|paths|getpath|setpath|delpaths|pick|del\\\\(&#x27;], returncode=1, stdout=&#x27;&#x27;, stderr=&#x27;Traceback (most recent call last):\n  File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/buil… (+1904 chars)
+    criterion code:
+         1 | import subprocess
+         2 | import os
+         3 |
+         4 | pattern = r&quot;map|map_values|sort|group_by|unique|contains|inside|to_entries|from_entries|with_entries|flatten|transpose|combinations|walk|path|paths|getpath|setpath|delpaths|pick|del\\(&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+         7 |     capture_output=True,
+         8 |     text=True,
+         9 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+        10 | )
+        11 | print(result.stdout)
+        12 | print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+      &gt; 13 | assert result.returncode == 0
+    check stderr:
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/__init__.py&quot;, line 307, in _compile
+          p = _compiler.compile(pattern, flags)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_compiler.py&quot;, line 750, in compile
+          p = _parser.parse(p, flags)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 979, in parse
+          p = _parse_sub(source, state, flags &amp; SRE_FLAG_VERBOSE, 0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 864, in _parse
+          raise source.error(&quot;missing ), unterminated subpattern&quot;,
+      re.error: missing ), unterminated subpattern at position 171
+      Traceback (most recent call last):
+        File &quot;structural-builtins-suite.py&quot;, line 13, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  structural-round-trip  structural-builtins  FEATURE-Structural-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: structural-round-trip.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;with_entries(.key |= &quot;x_&quot; + .)&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: with_entries\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;with_entries(.key |= \&quot;x_\&quot; + .)&quot;
+         5 | input_value = &#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [{&quot;x_a&quot;: 1, &quot;x_b&quot;: 2}]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;structural-round-trip.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  structural-ordering  structural-builtins  FEATURE-Structural-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: structural-ordering.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[sort, unique]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: sort\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[sort, unique]&quot;
+         5 | input_value = &quot;[3,1,3,2]\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [[1, 2, 3], [1, 2, 3]]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;structural-ordering.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  path-update  structural-builtins  FEATURE-Structural-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: path-update.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[getpath([&quot;a&quot;,&quot;b&quot;]), setpath([&quot;a&quot;,&quot;b&quot;]; 2), delpaths([[&quot;a&quot;,&quot;b&quot;]])]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: getpath\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[getpath([\&quot;a\&quot;,\&quot;b\&quot;]), setpath([\&quot;a\&quot;,\&quot;b\&quot;]; 2), delpaths([[\&quot;a\&quot;,\&quot;b\&quot;]])]&quot;
+         5 | input_value = &#x27;{&quot;a&quot;:{&quot;b&quot;:1,&quot;c&quot;:3}}\n&#x27;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [1, {&quot;a&quot;: {&quot;b&quot;: 2, &quot;c&quot;: 3}}, {&quot;a&quot;: {&quot;c&quot;: 3}}]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;path-update.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  regex-builtins-suite  regex-builtins  FEATURE-Regex-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: regex-builtins-suite.py:13
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;startswith|endswith|ltrimstr|rtrimstr|trimstr|trim,|split|splits|join|indices|index\\\\(|rindex|match|test|capture|scan|sub\\\\(|gsub|ascii_|explode|implode&#x27;], returncode=1, stdout=&#x27;&#x27;, stderr=&#x27;Traceback (most recent call last):\n  File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/sources/run_c… (+2386 chars)
+    criterion code:
+         1 | import subprocess
+         2 | import os
+         3 |
+         4 | pattern = r&quot;startswith|endswith|ltrimstr|rtrimstr|trimstr|trim,|split|splits|join|indices|index\\(|rindex|match|test|capture|scan|sub\\(|gsub|ascii_|explode|implode&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+         7 |     capture_output=True,
+         8 |     text=True,
+         9 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+        10 | )
+        11 | print(result.stdout)
+        12 | print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+      &gt; 13 | assert result.returncode == 0
+    check stderr:
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 979, in parse
+          p = _parse_sub(source, state, flags &amp; SRE_FLAG_VERBOSE, 0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 862, in _parse
+          p = _parse_sub(source, state, sub_verbose, nested + 1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 864, in _parse
+          raise source.error(&quot;missing ), unterminated subpattern&quot;,
+      re.error: missing ), unterminated subpattern at position 123
+      Traceback (most recent call last):
+        File &quot;regex-builtins-suite.py&quot;, line 13, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  string-transformations  regex-builtins  FEATURE-Regex-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: string-transformations.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[split(&quot;,&quot;), join(&quot;-&quot;), trim, ascii_upcase]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: split\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[split(\&quot;,\&quot;), join(\&quot;-\&quot;), trim, ascii_upcase]&quot;
+         5 | input_value = &quot;[\&quot;a,b\&quot;,\&quot;c\&quot;]\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [[&quot;a&quot;, &quot;b&quot;], &quot;a-b&quot;, &quot;[\&quot;a,b\&quot;,\&quot;c\&quot;]&quot;, &quot;[\&quot;A\&quot;,\&quot;B\&quot;]&quot;]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;string-transformations.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  regex-match-capture  regex-builtins  FEATURE-Regex-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: regex-match-capture.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[match(&quot;(?&lt;word&gt;[a-z]+)-(?&lt;n&gt;[0-9]+)&quot;), capture(&quot;(?&lt;word&gt;[a-z]+)-(?&lt;n&gt;[0-9]+)&quot;)]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: match\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[match(\&quot;(?&lt;word&gt;[a-z]+)-(?&lt;n&gt;[0-9]+)\&quot;), capture(\&quot;(?&lt;word&gt;[a-z]+)-(?&lt;n&gt;[0-9]+)\&quot;)]&quot;
+         5 | input_value = &quot;\&quot;abc-12\&quot;\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | assert len(actual) == 1
+        10 | assert actual[0][0][&quot;string&quot;] == &quot;abc-12&quot;
+        11 | assert actual[0][1] == {&quot;word&quot;: &quot;abc&quot;, &quot;n&quot;: &quot;12&quot;}
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;regex-match-capture.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  numeric-builtins-suite  numeric-builtins  FEATURE-Numeric-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: numeric-builtins-suite.py:13
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;tonumber|have_decnum|infinite|nan|isnan|isinfinite|isfinite|isnormal|pow\\\\(|log|sqrt|floor|ceil|round|sin|cos|atan|fabs|numeric|literal|decnum&#x27;], returncode=1, stdout=&#x27;&#x27;, stderr=&#x27;Traceback (most recent call last):\n  File &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/build/jq/sources/run_conformance.p… (+1873 chars)
+    criterion code:
+         1 | import subprocess
+         2 | import os
+         3 |
+         4 | pattern = r&quot;tonumber|have_decnum|infinite|nan|isnan|isinfinite|isfinite|isnormal|pow\\(|log|sqrt|floor|ceil|round|sin|cos|atan|fabs|numeric|literal|decnum&quot;
+         5 | result = subprocess.run(
+         6 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+         7 |     capture_output=True,
+         8 |     text=True,
+         9 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+        10 | )
+        11 | print(result.stdout)
+        12 | print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+      &gt; 13 | assert result.returncode == 0
+    check stderr:
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/__init__.py&quot;, line 307, in _compile
+          p = _compiler.compile(pattern, flags)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_compiler.py&quot;, line 750, in compile
+          p = _parser.parse(p, flags)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 979, in parse
+          p = _parse_sub(source, state, flags &amp; SRE_FLAG_VERBOSE, 0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 460, in _parse_sub
+          itemsappend(_parse(source, state, verbose, nested + 1,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/re/_parser.py&quot;, line 864, in _parse
+          raise source.error(&quot;missing ), unterminated subpattern&quot;,
+      re.error: missing ), unterminated subpattern at position 74
+      Traceback (most recent call last):
+        File &quot;numeric-builtins-suite.py&quot;, line 13, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  numeric-conversion  numeric-builtins  FEATURE-Numeric-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: numeric-conversion.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[tonumber, tonumber]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: tonumber\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[tonumber, tonumber]&quot;
+         5 | input_value = &quot;\&quot;12.5\&quot;\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [12.5, 12.5]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;numeric-conversion.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  numeric-math  numeric-builtins  FEATURE-Numeric-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: numeric-math.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[sqrt, floor, ceil]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: sqrt\n&#x27;)
+    criterion code:
+         1 | import subprocess
+         2 | import json
+         3 |
+         4 | program = &quot;[sqrt, floor, ceil]&quot;
+         5 | input_value = &quot;9.7\n&quot;
+         6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True)
+      &gt;  7 | assert result.returncode == 0
+         8 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+         9 | expected = [3, 9, 10]
+        10 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;numeric-math.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  numeric-predicates  numeric-builtins  FEATURE-Numeric-Builtins.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: numeric-predicates.py:6
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[infinite|isinfinite, nan|isnan, 1|isfinite]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: infinite\n&#x27;)
+    criterion code:
+        1 | import subprocess
+        2 | import json
+        3 |
+        4 | program = &quot;[infinite|isinfinite, nan|isnan, 1|isfinite]&quot;
+        5 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True)
+      &gt; 6 | assert result.returncode == 0
+        7 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+        8 | expected = [[True, True, True]]
+        9 | assert actual == expected
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;numeric-predicates.py&quot;, line 6, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  date-utc-roundtrip  date-json-encoding  FEATURE-Date-JSON-Encoding.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: date-utc-roundtrip.py:5
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;fromdateiso8601 | todateiso8601&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: Extra data: line 1 column 5 (char 4)\n&#x27;)
+    criterion code:
+        1 | import subprocess
+        2 |
+        3 | timestamp = &quot;2015-03-05T23:51:47Z&quot;
+        4 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601 | todateiso8601&quot;], input=timestamp + &quot;\n&quot;, capture_output=True, text=True)
+      &gt; 5 | assert result.returncode == 0
+        6 | assert result.stdout.strip().strip(&#x27;&quot;&#x27;) == timestamp
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;date-utc-roundtrip.py&quot;, line 5, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  environment-read  date-json-encoding  FEATURE-Date-JSON-Encoding.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: environment-read.py:14
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;env[$key]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;jq: compile error: undefined variable $key\n&#x27;)
+    criterion code:
+         1 | import json
+         2 | import os
+         3 | import subprocess
+         4 |
+         5 | key = &quot;JQ_ACCEPTANCE_VALUE&quot;
+         6 | value = &quot;acceptance&quot;
+         7 | result = subprocess.run(
+         8 |     [&quot;./jq&quot;, &quot;-c&quot;, &quot;env[$key]&quot;],
+         9 |     input=json.dumps(key) + &quot;\n&quot;,
+        10 |     capture_output=True,
+        11 |     text=True,
+        12 |     env={**os.environ, key: value},
+        13 | )
+      &gt; 14 | assert result.returncode == 0
+        15 | assert json.loads(result.stdout) == value
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;environment-read.py&quot;, line 14, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  inputs-order  io-streaming  FEATURE-IO-Streaming.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: inputs-order.py:6
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;inputs&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: inputs\n&#x27;)
+    criterion code:
+        1 | import json
+        2 | import subprocess
+        3 |
+        4 | values = [1, {&quot;value&quot;: 2}, [3]]
+        5 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;], input=&quot;\n&quot;.join(json.dumps(v) for v in values) + &quot;\n&quot;, capture_output=True, text=True)
+      &gt; 6 | assert result.returncode == 0
+        7 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+        8 | assert actual == values
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;inputs-order.py&quot;, line 6, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  stream-roundtrip  io-streaming  FEATURE-IO-Streaming.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: stream-roundtrip.py:7
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;tostream | fromstream&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: tostream\n&#x27;)
+    criterion code:
+        1 | import json
+        2 | import subprocess
+        3 |
+        4 | value = {&quot;a&quot;: [1, {&quot;b&quot;: True}], &quot;c&quot;: None}
+        5 | payload = json.dumps(value, separators=(&quot;,&quot;, &quot;:&quot;))
+        6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;tostream | fromstream&quot;], input=payload + &quot;\n&quot;, capture_output=True, text=True)
+      &gt; 7 | assert result.returncode == 0
+        8 | assert json.loads(result.stdout) == value
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;stream-roundtrip.py&quot;, line 7, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  stderr-isolation  io-streaming  FEATURE-IO-Streaming.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: stderr-isolation.py:5
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;stderr&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: stderr\n&#x27;)
+    criterion code:
+        1 | import subprocess
+        2 |
+        3 | value = &quot;diagnostic&quot;
+        4 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;stderr&quot;], input=&#x27;&quot;&#x27; + value + &#x27;&quot;\n&#x27;, capture_output=True, text=True)
+      &gt; 5 | assert result.returncode == 0
+        6 | assert result.stdout == &quot;&quot;
+        7 | assert value in result.stderr
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;stderr-isolation.py&quot;, line 5, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  index-build  sql-introspection  FEATURE-SQL-Introspection.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: index-build.py:6
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;INDEX(.[]; .id)&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: INDEX\n&#x27;)
+    criterion code:
+        1 | import json
+        2 | import subprocess
+        3 |
+        4 | rows = [{&quot;id&quot;: 1, &quot;name&quot;: &quot;a&quot;}, {&quot;id&quot;: 2, &quot;name&quot;: &quot;b&quot;}]
+        5 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;INDEX(.[]; .id)&quot;], input=json.dumps(rows) + &quot;\n&quot;, capture_output=True, text=True)
+      &gt; 6 | assert result.returncode == 0
+        7 | actual = json.loads(result.stdout)
+        8 | assert actual[&quot;1&quot;] == rows[0]
+        9 | assert actual[&quot;2&quot;] == rows[1]
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;index-build.py&quot;, line 6, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  membership-stream  sql-introspection  FEATURE-SQL-Introspection.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: membership-stream.py:6
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;range(5) | IN(0,2,4)&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;jq: runtime error: unknown builtin: range\n&#x27;)
+    criterion code:
+        1 | import json
+        2 | import subprocess
+        3 |
+        4 | values = [0, 2, 4]
+        5 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;range(5) | IN(0,2,4)&quot;], input=&quot;null\n&quot;, capture_output=True, text=True)
+      &gt; 6 | assert result.returncode == 0
+        7 | actual = [json.loads(line) for line in result.stdout.splitlines()]
+        8 | assert actual == [index in values for index in range(5)]
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;membership-stream.py&quot;, line 6, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  focused-lexer-parser  focused-verification  FEATURE-Focused-Verification.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: focused-lexer-parser.py:12
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;interpolation|object|field&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:725  output mismatch\n    program:  [{&quot;a&quot;:42},.object,10,.num,false,true,null,&quot;b&quot;,[1,4]] | .[] as $x | [$x == .[]]\n    input:    {&quot;object&quot;: {&quot;a&quot;:42}, &quot;num&quot;:10.0}\n    expected: [\&#x27;[true,  true,  false, false, false, false, false, false, false]\&#x27;, \&#x27;[true,  … (+1253 chars)
+    criterion code:
+         1 | import os
+         2 | import subprocess
+         3 |
+         4 | result = subprocess.run(
+         5 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;interpolation|object|field&quot;],
+         6 |     capture_output=True,
+         7 |     text=True,
+         8 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+         9 | )
+        10 | print(result.stdout)
+        11 | print(result.stderr)
+      &gt; 12 | assert result.returncode == 0
+    observed output:
+          program:  [.[]|objects]
+          input:    [1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+          expected: [&#x27;[{}]&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown builtin: objects
+      FAIL jq.test:2135  output mismatch
+          program:  (.. | select(type == &quot;object&quot; and has(&quot;b&quot;) and (.b | type) == &quot;array&quot;)|.b) |= .[0]
+          input:    {&quot;a&quot;: {&quot;b&quot;: [1, {&quot;b&quot;: 3}]}}
+          expected: [&#x27;{&quot;a&quot;: {&quot;b&quot;: 1}}&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: |=
+      jq conformance: 0 passed, 3 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;focused-lexer-parser.py&quot;, line 12, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  focused-runtime-builtins  focused-verification  FEATURE-Focused-Verification.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: focused-runtime-builtins.py:12
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;reduce|range|sort|match|tojson&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:287  output mismatch\n    program:  [range(0;10)]\n    input:    null\n    expected: [\&#x27;[0,1,2,3,4,5,6,7,8,9]\&#x27;]\n    actual:   (no output)\n    stderr:   jq: runtime error: unknown builtin: range\nFAIL jq.test:291  output mismatch\n    program:  [range(… (+21211 chars)
+    criterion code:
+         1 | import os
+         2 | import subprocess
+         3 |
+         4 | result = subprocess.run(
+         5 |     [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;reduce|range|sort|match|tojson&quot;],
+         6 |     capture_output=True,
+         7 |     text=True,
+         8 |     env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;},
+         9 | )
+        10 | print(result.stdout)
+        11 | print(result.stderr)
+      &gt; 12 | assert result.returncode == 0
+    observed output:
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | sort) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      FAIL jq.test:2633  output mismatch
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | unique) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      jq conformance: 1 passed, 79 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;focused-runtime-builtins.py&quot;, line 12, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+  full-conformance  full-conformance  FEATURE-Full-Conformance.md
+    assertion: assert result.returncode == 0 → AssertionError
+    raised at: full-conformance.py:10
+    process exit code: 1
+    values at failure:
+      result = CompletedProcess(args=[&#x27;sh&#x27;, &#x27;sources/full_test.sh&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:25  output mismatch\n    program:  -1\n    input:    null\n    expected: [\&#x27;-1\&#x27;]\n    actual:   (no output)\n    stderr:   jq: runtime error: unknown AST node: negate\nFAIL jq.test:31  output mismatch\n    program:  {}\n    input:    null\n    expected: [\&#x27;{}\&#x27;]\n    actual:   (no output)\n    stderr:   jq: r… (+120442 chars)
+    criterion code:
+         1 | import subprocess
+         2 |
+         3 | result = subprocess.run(
+         4 |     [&quot;sh&quot;, &quot;sources/full_test.sh&quot;],
+         5 |     capture_output=True,
+         6 |     text=True,
+         7 | )
+         8 | print(result.stdout)
+         9 | print(result.stderr, file=subprocess.sys.stderr)
+      &gt; 10 | assert result.returncode == 0
+    observed output:
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | sort) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      FAIL jq.test:2633  output mismatch
+          program:  try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | unique) catch .
+          input:    null
+          expected: [&#x27;&quot;Comparison too deep&quot;&#x27;]
+          actual:   (no output)
+          stderr:   jq: runtime error: unknown AST node: try
+      jq conformance: 81 passed, 456 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)
+    check stderr:
+      Traceback (most recent call last):
+        File &quot;full-conformance.py&quot;, line 10, in &lt;module&gt;
+          assert result.returncode == 0
+                 ^^^^^^^^^^^^^^^^^^^^^^
+      AssertionError
+</pre></article>
+</main>
+</body>
+</html>

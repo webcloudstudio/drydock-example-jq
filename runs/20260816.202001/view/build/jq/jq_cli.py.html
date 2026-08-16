@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_cli.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_cli.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/jq_cli.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Process boundary for the standalone jq executable.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections.abc import Sequence
+from typing import Any
+
+from jq_parser import ParseError, parse
+from jq_runtime import RuntimeFailure, evaluate
+
+
+def _arguments(arguments: Sequence[str]) -&gt; argparse.Namespace:
+    parser = argparse.ArgumentParser(prog=&quot;jq&quot;)
+    parser.add_argument(&quot;-c&quot;, dest=&quot;program&quot;, required=True)
+    return parser.parse_args(arguments)
+
+
+def main(arguments: Sequence[str] | None = None) -&gt; int:
+    &quot;&quot;&quot;Run jq&#x27;s compact stdin/stdout protocol and return its process status.&quot;&quot;&quot;
+    try:
+        options = _arguments(sys.argv[1:] if arguments is None else arguments)
+        program = parse(options.program)
+    except (ParseError, ValueError, SystemExit) as error:
+        if isinstance(error, SystemExit):
+            return int(error.code or 0)
+        print(f&quot;jq: compile error: {error}&quot;, file=sys.stderr)
+        return 3
+
+    try:
+        for line in sys.stdin:
+            if not line.strip():
+                continue
+            value: Any = json.loads(line)
+            for result in evaluate(program, value):
+                print(json.dumps(result, separators=(&quot;,&quot;, &quot;:&quot;), ensure_ascii=False))
+    except (json.JSONDecodeError, RuntimeFailure, TypeError, ValueError) as error:
+        print(f&quot;jq: runtime error: {error}&quot;, file=sys.stderr)
+        return 5
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</pre></article>
+</main>
+</body>
+</html>

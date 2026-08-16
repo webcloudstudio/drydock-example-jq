@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_parser.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_parser.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/jq_parser.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Parser and immutable AST for the jq language front end.
+
+The parser deliberately keeps evaluation concerns out of the tree.  Every
+node records its construct and children, so the generator runtime can choose
+how to evaluate it without the parser retaining input or lexical state.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+import json
+
+from jq_lexer import LexError, Token, tokenize
+
+
+class ParseError(ValueError):
+    &quot;&quot;&quot;Raised for syntax or compile-time jq errors.&quot;&quot;&quot;
+
+
+@dataclass(frozen=True)
+class Node:
+    kind: str
+    value: object = None
+    children: tuple[&quot;Node&quot;, ...] = ()
+
+    def __repr__(self) -&gt; str:
+        if self.children:
+            return f&quot;Node({self.kind!r}, {self.value!r}, {self.children!r})&quot;
+        return f&quot;Node({self.kind!r}, {self.value!r})&quot;
+
+
+_PREC = {&quot;,&quot;: 100, &quot;//&quot;: 20, &quot;=&quot;: 30, &quot;|=&quot;: 30, &quot;+=&quot;: 30, &quot;-=&quot;: 30,
+         &quot;*=&quot;: 30, &quot;/=&quot;: 30, &quot;%=&quot;: 30, &quot;//=&quot;: 30, &quot;or&quot;: 40, &quot;and&quot;: 50,
+         &quot;==&quot;: 60, &quot;!=&quot;: 60, &quot;&lt;&quot;: 60, &quot;&gt;&quot;: 60, &quot;&lt;=&quot;: 60, &quot;&gt;=&quot;: 60,
+         &quot;+&quot;: 70, &quot;-&quot;: 70, &quot;*&quot;: 80, &quot;/&quot;: 80, &quot;%&quot;: 80, &quot;|&quot;: 90}
+_RIGHT_ASSOC = {&quot;=&quot;, &quot;|=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;, &quot;//=&quot;, &quot;//&quot;, &quot;|&quot;}
+
+
+class Parser:
+    def __init__(self, tokens: list[Token]) -&gt; None:
+        self.tokens = tokens
+        self.index = 0
+        self.functions: set[tuple[str, int]] = set()
+        self.bindings: list[set[str]] = [set()]
+        self.labels: list[str] = []
+
+    def current(self) -&gt; Token:
+        return self.tokens[self.index]
+
+    def take(self) -&gt; Token:
+        token = self.current()
+        self.index += 1
+        return token
+
+    def accept(self, value: str) -&gt; bool:
+        if self.current().value == value:
+            self.take()
+            return True
+        return False
+
+    def expect(self, value: str) -&gt; Token:
+        if not self.accept(value):
+            token = self.current()
+            raise ParseError(f&quot;expected {value!r} at position {token.position}&quot;)
+        return self.tokens[self.index - 1]
+
+    def expect_kind(self, kind: str) -&gt; Token:
+        token = self.current()
+        if token.kind != kind:
+            raise ParseError(f&quot;expected {kind!r} at position {token.position}&quot;)
+        return self.take()
+
+    def parse(self) -&gt; Node:
+        declarations: list[Node] = []
+        while self.current().value in {&quot;module&quot;, &quot;import&quot;, &quot;include&quot;, &quot;def&quot;}:
+            if self.current().value == &quot;def&quot;:
+                declarations.append(self.parse_definition())
+            else:
+                declarations.append(self.parse_module_directive())
+        if self.current().kind == &quot;eof&quot;:
+            raise ParseError(&quot;expected filter&quot;)
+        body = self.expression()
+        if self.current().kind != &quot;eof&quot;:
+            token = self.current()
+            raise ParseError(f&quot;unexpected token {token.value!r} at position {token.position}&quot;)
+        if declarations:
+            return Node(&quot;program&quot;, children=tuple(declarations + [body]))
+        return body
+
+    def expression(self, minimum: int = 0) -&gt; Node:
+        left = self.term()
+        while True:
+            token = self.current()
+            op = token.value
+            if op == &quot;as&quot;:
+                if minimum &gt; 25:
+                    break
+                self.take()
+                pattern = self.pattern()
+                self.expect(&quot;|&quot;)
+                self.bindings[-1].update(self.pattern_names(pattern))
+                right = self.expression(0)
+                left = Node(&quot;as&quot;, children=(left, pattern, right))
+                continue
+            if op not in _PREC or _PREC[op] &lt; minimum:
+                break
+            self.take()
+            next_min = _PREC[op] if op in _RIGHT_ASSOC else _PREC[op] + 1
+            right = self.expression(next_min)
+            left = Node(op, children=(left, right))
+        return left
+
+    def term(self) -&gt; Node:
+        token = self.take()
+        if token.kind == &quot;eof&quot;:
+            raise ParseError(f&quot;expected filter at position {token.position}&quot;)
+        if token.value == &quot;.&quot;:
+            node = Node(&quot;identity&quot;)
+        elif token.kind == &quot;field&quot;:
+            node = Node(&quot;index&quot;, value=token.value, children=(Node(&quot;identity&quot;),))
+        elif token.kind == &quot;binding&quot;:
+            if token.value not in self.bindings[-1]:
+                # Builtin/private bindings are legal without a local declaration.
+                if not token.value.startswith(&quot;__&quot;) and token.value not in {&quot;ENV&quot;, &quot;ARGS&quot;}:
+                    raise ParseError(f&quot;undefined variable ${token.value}&quot;)
+            node = Node(&quot;binding&quot;, token.value)
+        elif token.kind == &quot;number&quot;:
+            node = Node(&quot;literal&quot;, json.loads(token.value))
+        elif token.kind == &quot;string&quot;:
+            node = Node(&quot;literal&quot;, token.value)
+        elif token.kind == &quot;qqstring_start&quot;:
+            node = self.qqstring()
+        elif token.value == &quot;if&quot;:
+            node = self.conditional()
+        elif token.value == &quot;try&quot;:
+            node = self.try_expression()
+        elif token.value in {&quot;reduce&quot;, &quot;foreach&quot;}:
+            node = self.reducer(token.value)
+        elif token.value == &quot;label&quot;:
+            label = self.take()
+            if label.kind != &quot;binding&quot;:
+                raise ParseError(&quot;label requires a binding&quot;)
+            self.expect(&quot;|&quot;)
+            self.labels.append(label.value)
+            try:
+                body = self.expression()
+            finally:
+                self.labels.pop()
+            node = Node(&quot;label&quot;, label.value, (body,))
+        elif token.value == &quot;break&quot;:
+            label = self.take()
+            if label.kind != &quot;binding&quot;:
+                raise ParseError(&quot;break requires a label&quot;)
+            if label.value not in self.labels:
+                raise ParseError(f&quot;undefined label ${label.value}&quot;)
+            node = Node(&quot;break&quot;, label.value)
+        elif token.kind in {&quot;word&quot;, &quot;format&quot;}:
+            node = self.word(token)
+        elif token.value == &quot;(&quot; :
+            node = self.expression()
+            self.expect(&quot;)&quot;)
+        elif token.value == &quot;[&quot;:
+            node = self.array()
+        elif token.value == &quot;{&quot;:
+            node = self.object()
+        elif token.value == &quot;-&quot;:
+            node = Node(&quot;negate&quot;, children=(self.term(),))
+        elif token.value == &quot;..&quot;:
+            node = Node(&quot;recurse&quot;)
+        else:
+            raise ParseError(f&quot;unexpected token {token.value!r} at position {token.position}&quot;)
+        return self.postfix(node)
+
+    def word(self, token: Token) -&gt; Node:
+        if token.kind == &quot;format&quot;:
+            base = Node(&quot;format&quot;, token.value)
+            if self.current().kind in {&quot;string&quot;, &quot;qqstring_start&quot;}:
+                return Node(&quot;format_string&quot;, children=(base, self.term()))
+            return base
+        if token.value in {&quot;true&quot;, &quot;false&quot;, &quot;null&quot;, &quot;empty&quot;}:
+            return Node(token.value)
+        if self.accept(&quot;(&quot;):
+            args = self.arguments()
+            return Node(&quot;call&quot;, token.value, tuple(args))
+        return Node(&quot;call&quot;, token.value, ())
+
+    def postfix(self, node: Node) -&gt; Node:
+        while True:
+            if self.current().kind == &quot;field&quot;:
+                field = self.take().value
+                optional = self.accept(&quot;?&quot;)
+                node = Node(&quot;index_opt&quot; if optional else &quot;index&quot;, field, (node,))
+            elif self.accept(&quot;.&quot;) or self.current().kind in {&quot;string&quot;, &quot;qqstring_start&quot;}:
+                key = self.take()
+                if key.kind not in {&quot;string&quot;, &quot;qqstring_text&quot;}:
+                    raise ParseError(f&quot;expected string field at position {key.position}&quot;)
+                optional = self.accept(&quot;?&quot;)
+                node = Node(&quot;index_opt&quot; if optional else &quot;index&quot;, key.value, (node,))
+            elif self.accept(&quot;[&quot;):
+                if self.accept(&quot;]&quot;):
+                    node = Node(&quot;iterate&quot;, children=(node,))
+                else:
+                    first = self.expression()
+                    if self.accept(&quot;:&quot;):
+                        second = None if self.current().value in {&quot;]&quot;, &quot;?&quot;} else self.expression()
+                        self.expect(&quot;]&quot;)
+                        node = Node(&quot;slice&quot;, children=(node, first, second or Node(&quot;null&quot;)))
+                    else:
+                        self.expect(&quot;]&quot;)
+                        node = Node(&quot;index&quot;, children=(node, first))
+                if self.accept(&quot;?&quot;):
+                    node = Node(&quot;optional&quot;, children=(node,))
+            elif self.accept(&quot;?&quot;):
+                node = Node(&quot;optional&quot;, children=(node,))
+            else:
+                return node
+
+    def arguments(self) -&gt; list[Node]:
+        if self.accept(&quot;)&quot;):
+            return []
+        args = [self.expression()]
+        while self.accept(&quot;;&quot;):
+            args.append(self.expression())
+        self.expect(&quot;)&quot;)
+        return args
+
+    def array(self) -&gt; Node:
+        if self.accept(&quot;]&quot;):
+            return Node(&quot;array&quot;, children=())
+        value = self.expression()
+        self.expect(&quot;]&quot;)
+        return Node(&quot;array&quot;, children=(value,))
+
+    def object(self) -&gt; Node:
+        pairs: list[Node] = []
+        if self.accept(&quot;}&quot;):
+            return Node(&quot;object&quot;, children=())
+        while True:
+            key = self.take()
+            if key.kind not in {&quot;word&quot;, &quot;string&quot;, &quot;binding&quot;, &quot;qqstring_text&quot;}:
+                raise ParseError(f&quot;invalid object key at position {key.position}&quot;)
+            if self.accept(&quot;:&quot;):
+                # Commas separate object pairs; they remain available to the
+                # object parser rather than becoming the value&#x27;s comma node.
+                value = self.expression(_PREC[&quot;,&quot;] + 1)
+            else:
+                value = Node(&quot;index&quot;, key.value, (Node(&quot;identity&quot;),))
+            pairs.append(Node(&quot;pair&quot;, key.value, (value,)))
+            if not self.accept(&quot;,&quot;):
+                break
+        self.expect(&quot;}&quot;)
+        return Node(&quot;object&quot;, children=tuple(pairs))
+
+    def conditional(self) -&gt; Node:
+        condition = self.expression()
+        self.expect(&quot;then&quot;)
+        yes = self.expression()
+        branches = [condition, yes]
+        while self.accept(&quot;elif&quot;):
+            branches.extend((self.expression(), self.expect(&quot;then&quot;) and self.expression()))
+        no = Node(&quot;identity&quot;)
+        if self.accept(&quot;else&quot;):
+            no = self.expression()
+        self.expect(&quot;end&quot;)
+        branches.append(no)
+        return Node(&quot;if&quot;, children=tuple(branches))
+
+    def try_expression(self) -&gt; Node:
+        expression = self.expression(0)
+        if self.accept(&quot;catch&quot;):
+            return Node(&quot;try&quot;, children=(expression, self.expression()))
+        return Node(&quot;try&quot;, children=(expression, Node(&quot;empty&quot;)))
+
+    def reducer(self, kind: str) -&gt; Node:
+        # The source ends at the grammar&#x27;s ``as`` delimiter; ``as`` is not
+        # an ordinary binary operator in a reducer.
+        source = self.expression(26)
+        self.expect(&quot;as&quot;)
+        pattern = self.pattern()
+        self.bindings[-1].update(self.pattern_names(pattern))
+        self.expect(&quot;(&quot;)
+        initial = self.expression()
+        self.expect(&quot;;&quot;)
+        update = self.expression()
+        parts = [source, pattern, initial, update]
+        if kind == &quot;foreach&quot;:
+            self.expect(&quot;;&quot;)
+            parts.append(self.expression())
+        self.expect(&quot;)&quot;)
+        return Node(kind, children=tuple(parts))
+
+    def pattern(self) -&gt; Node:
+        if self.current().kind == &quot;binding&quot;:
+            return Node(&quot;pattern&quot;, self.take().value)
+        if self.accept(&quot;[&quot;):
+            parts = []
+            if self.accept(&quot;]&quot;):
+                raise ParseError(&quot;empty array destructuring pattern&quot;)
+            parts.append(self.pattern())
+            while self.accept(&quot;,&quot;):
+                parts.append(self.pattern())
+            self.expect(&quot;]&quot;)
+            return Node(&quot;array_pattern&quot;, children=tuple(parts))
+        if self.accept(&quot;{&quot;):
+            parts = []
+            if self.accept(&quot;}&quot;):
+                raise ParseError(&quot;empty object destructuring pattern&quot;)
+            while True:
+                key = self.take()
+                if self.accept(&quot;:&quot;):
+                    value = self.pattern()
+                else:
+                    value = Node(&quot;pattern&quot;, key.value)
+                parts.append(Node(&quot;pattern_pair&quot;, key.value, (value,)))
+                if not self.accept(&quot;,&quot;):
+                    break
+            self.expect(&quot;}&quot;)
+            return Node(&quot;object_pattern&quot;, children=tuple(parts))
+        raise ParseError(&quot;expected destructuring pattern&quot;)
+
+    def pattern_names(self, node: Node) -&gt; set[str]:
+        if node.kind in {&quot;pattern&quot;, &quot;pattern_pair&quot;}:
+            names = {str(node.value)} if node.kind == &quot;pattern&quot; else set()
+            return names | set().union(*(self.pattern_names(c) for c in node.children))
+        return set().union(*(self.pattern_names(c) for c in node.children))
+
+    def qqstring(self) -&gt; Node:
+        parts: list[Node] = []
+        while self.current().kind != &quot;qqstring_end&quot;:
+            token = self.take()
+            if token.kind == &quot;qqstring_text&quot;:
+                parts.append(Node(&quot;literal&quot;, token.value))
+            elif token.kind == &quot;interpolation_start&quot;:
+                parts.append(self.expression())
+                self.expect_kind(&quot;interpolation_end&quot;)
+            else:
+                raise ParseError(f&quot;invalid string part at position {token.position}&quot;)
+        self.take()
+        return Node(&quot;string&quot;, children=tuple(parts))
+
+    def parse_definition(self) -&gt; Node:
+        self.expect(&quot;def&quot;)
+        name = self.take()
+        if name.kind != &quot;word&quot;:
+            raise ParseError(&quot;function definition requires a name&quot;)
+        params: list[Node] = []
+        if self.accept(&quot;(&quot;):
+            if not self.accept(&quot;)&quot;):
+                params.append(self.pattern() if self.current().kind == &quot;binding&quot; else Node(&quot;param&quot;, self.take().value))
+                while self.accept(&quot;;&quot;):
+                    params.append(Node(&quot;param&quot;, self.take().value))
+                self.expect(&quot;)&quot;)
+        self.expect(&quot;:&quot;)
+        body = self.expression()
+        self.expect(&quot;;&quot;)
+        self.functions.add((name.value, len(params)))
+        return Node(&quot;def&quot;, name.value, tuple(params) + (body,))
+
+    def parse_module_directive(self) -&gt; Node:
+        kind = self.take().value
+        if kind == &quot;module&quot;:
+            metadata = self.expression()
+            if metadata.kind != &quot;object&quot;:
+                raise ParseError(&quot;module metadata must be constant&quot;)
+            self.expect(&quot;;&quot;)
+            return Node(&quot;module&quot;, children=(metadata,))
+        path = self.take()
+        if path.kind != &quot;string&quot;:
+            raise ParseError(&quot;import path must be constant&quot;)
+        if kind == &quot;import&quot;:
+            self.expect(&quot;as&quot;)
+            alias = self.take()
+            if alias.kind not in {&quot;word&quot;, &quot;binding&quot;}:
+                raise ParseError(&quot;import requires an alias&quot;)
+        # Metadata is optional, but if present it must be a constant object.
+        metadata = None
+        if self.current().value != &quot;;&quot;:
+            metadata = self.expression()
+            if metadata.kind != &quot;object&quot;:
+                raise ParseError(&quot;module metadata must be constant&quot;)
+        self.expect(&quot;;&quot;)
+        return Node(kind, path.value, () if metadata is None else (metadata,))
+
+
+def parse(source: str) -&gt; Node:
+    &quot;&quot;&quot;Tokenize and parse *source*, returning an immutable executable AST.&quot;&quot;&quot;
+    try:
+        return Parser(tokenize(source)).parse()
+    except (LexError, json.JSONDecodeError) as error:
+        raise ParseError(str(error)) from error
+</pre></article>
+</main>
+</body>
+</html>

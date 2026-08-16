@@ -1,0 +1,14 @@
+AC_BROKEN: formats-suite
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_parser.py
+- jq_runtime.py
+- tests/test_formats.py
+
+SUMMARY:
+Implemented interpolation and format filters. The scoped conformance slice passes 8/8; all 28 project tests pass. Interface and base64 round-trip checks pass.
+
+BLOCKERS:
+- The declared `formats-suite` omits `JQ`, causing the harness to exit 2 before running tests. With `JQ="$PWD/jq"`, it passes.

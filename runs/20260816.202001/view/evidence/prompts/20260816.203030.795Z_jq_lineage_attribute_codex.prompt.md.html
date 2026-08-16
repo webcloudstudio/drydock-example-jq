@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260816.203030.795Z_jq_lineage_attribute_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260816.203030.795Z_jq_lineage_attribute_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260816.203030.795Z_jq_lineage_attribute_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>Attribute Stories to Source Requirements</h1>
+<p>You are the lineage attribution agent. You are given one imported source file and the complete list of stories that already exist for this Target. Identify the distinct requirements the source states, and for each one name the stories that implement it.</p>
+<p>This is a matching task against a closed set. Every story you may name is listed in <code>&lt;stories&gt;</code>. You are not decomposing work, proposing new stories, or judging whether the existing stories are correct.</p>
+<h2>Method</h2>
+<ol><li>Read the source and identify each distinct requirement it states. A requirement is a thing the</li></ol>
+<p>system must do, at whatever granularity the author wrote it. One sentence may state one requirement that several stories implement — for example &quot;add a table and show it on screen&quot; is one requirement implemented by a schema story, a route story, and a view story. Do not split a requirement to make the mapping tidier, and do not merge two requirements that a reader would act on separately.</p>
+<ol><li>Give each requirement a short kebab-case name that describes it. The name is an identifier, not</li></ol>
+<p>a summary: <code>mark-book-read</code>, not <code>the-reader-can-mark-a-book-as-read</code>.</p>
+<ol><li>For each requirement, list every story that implements any part of it. A story may implement</li></ol>
+<p>more than one requirement; a requirement may need more than one story.</p>
+<ol><li>List any story that implements no requirement in the source as <code>&lt;unattached&gt;</code>. This is expected</li></ol>
+<p>and correct for foundational work — application scaffolding, configuration, shared UI framing, test harnesses — that the author never asked for by name. Do not force such a story onto an unrelated requirement.</p>
+<h2>Rules</h2>
+<ul><li>Use only story ids that appear in <code>&lt;stories&gt;</code>. Never invent one.</li><li>Every story must appear exactly once, either inside a <code>stories</code> attribute or as <code>&lt;unattached&gt;</code>.</li><li>Quote the requirement text verbatim from the source in the tag body. Do not paraphrase it.</li><li>Emit nothing but the tags below. No preamble, no commentary, no explanation.</li></ul>
+<h2>Output</h2>
+<pre><code>&lt;requirement name=&quot;add-remove-books&quot; stories=&quot;add-book,remove-book,database&quot;&gt;
+The reader can add a book with a title and author, view the books in the order added, and remove a book.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-empty-fields&quot; stories=&quot;validate-book&quot;&gt;
+An empty title or author is rejected with a clear error message.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;ui-general&quot;/&gt;</code></pre>
+<h1>Attribution job</h1>
+<p>&lt;source name=&quot;full_test.sh&quot;&gt; #!/bin/sh</p>
+<h1>full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.</h1>
+<p>#</p>
+<h1><code>drydock uat</code> runs <code>sh sources/full_test.sh</code> from the completed application root and takes its</h1>
+<h1>exit code and output as the score. The interface check is separate from the conformance run so</h1>
+<h1>that a missing or non-executable program and a genuine conformance failure are distinguishable</h1>
+<h1>in the evidence. JQ is the harness&#x27;s only knowledge of the implementation language; the</h1>
+<h1>harness itself is language-neutral.</h1>
+<p>set -eu if [ ! -x ./jq ]; then echo &quot;error: no executable ./jq at the application root.&quot; &gt;&amp;2 echo &quot;The deliverable is an executable named jq that reads JSON on stdin.&quot; &gt;&amp;2 exit 1 fi JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py &lt;/source&gt;</p>
+<p>&lt;stories&gt; &lt;story id=&quot;architecture&quot; implements=&quot;ARCHITECTURE.md&quot;&gt;Define the standalone jq interpreter architecture and executable boundaries.&lt;/story&gt; &lt;story id=&quot;source-staging&quot; implements=&quot;FEATURE-Source-Staging.md&quot;&gt;Stage the supplied jq sources and conformance assets.&lt;/story&gt; &lt;story id=&quot;lexer&quot; implements=&quot;FEATURE-Lexer.md&quot;&gt;Tokenize jq programs according to the jq lexical specification.&lt;/story&gt; &lt;story id=&quot;parser&quot; implements=&quot;FEATURE-Parser.md&quot;&gt;Parse jq programs into an executable abstract syntax tree.&lt;/story&gt; &lt;story id=&quot;compile-contract&quot; implements=&quot;FEATURE-Compile-Contract.md&quot;&gt;Enforce jq compile diagnostics and exit-status behavior.&lt;/story&gt; &lt;story id=&quot;formats&quot; implements=&quot;FEATURE-Formats.md&quot;&gt;Implement jq interpolation and format filters.&lt;/story&gt; &lt;story id=&quot;generator-runtime&quot; implements=&quot;FEATURE-Generator-Runtime.md&quot;&gt;Evaluate jq filters as ordered generator-valued streams.&lt;/story&gt; &lt;story id=&quot;core-values&quot; implements=&quot;FEATURE-Core-Values.md&quot;&gt;Implement core jq values, indexing, iteration, and construction.&lt;/story&gt; &lt;story id=&quot;operators&quot; implements=&quot;FEATURE-Operators.md&quot;&gt;Implement jq operators, comparisons, and type behavior.&lt;/story&gt; &lt;story id=&quot;errors-control&quot; implements=&quot;FEATURE-Errors-Control.md&quot;&gt;Implement jq runtime errors and structured control flow.&lt;/story&gt; &lt;story id=&quot;functions-bindings&quot; implements=&quot;FEATURE-Functions-Bindings.md&quot;&gt;Implement jq functions, variables, closures, and destructuring.&lt;/story&gt; &lt;story id=&quot;reductions&quot; implements=&quot;FEATURE-Reductions.md&quot;&gt;Implement jq reductions, iteration helpers, and recursive control flow.&lt;/story&gt; &lt;story id=&quot;structural-builtins&quot; implements=&quot;FEATURE-Structural-Builtins.md&quot;&gt;Implement collection and structural jq builtins.&lt;/story&gt; &lt;story id=&quot;regex-builtins&quot; implements=&quot;FEATURE-Regex-Builtins.md&quot;&gt;Implement jq string and regular-expression builtins.&lt;/story&gt; &lt;story id=&quot;numeric-builtins&quot; implements=&quot;FEATURE-Numeric-Builtins.md&quot;&gt;Implement numeric, math, and special-number builtins.&lt;/story&gt; &lt;story id=&quot;date-json-encoding&quot; implements=&quot;FEATURE-Date-JSON-Encoding.md&quot;&gt;Implement date, JSON, encoding, and environment builtins.&lt;/story&gt; &lt;story id=&quot;io-streaming&quot; implements=&quot;FEATURE-IO-Streaming.md&quot;&gt;Implement jq streaming and I/O builtins.&lt;/story&gt; &lt;story id=&quot;sql-introspection&quot; implements=&quot;FEATURE-SQL-Introspection.md&quot;&gt;Implement SQL-style and introspection builtins.&lt;/story&gt; &lt;story id=&quot;executable&quot; implements=&quot;FEATURE-Executable.md&quot;&gt;Deliver the executable jq command-line entry point.&lt;/story&gt; &lt;story id=&quot;focused-verification&quot; implements=&quot;FEATURE-Focused-Verification.md&quot;&gt;Run bounded implementation verification across interpreter capabilities.&lt;/story&gt; &lt;story id=&quot;full-conformance&quot; implements=&quot;FEATURE-Full-Conformance.md&quot;&gt;Gate the completed interpreter on the complete jq conformance corpus.&lt;/story&gt; &lt;/stories&gt;</p></article>
+</main>
+</body>
+</html>

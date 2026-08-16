@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/logs/20260816.203343.576Z_jq_build_codex.stderr.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/logs/20260816.203343.576Z_jq_build_codex.stderr.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/logs/20260816.203343.576Z_jq_build_codex.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>2026-08-16T20:35:22.186213Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc &quot;python3 - &lt;&lt;&#x27;PY&#x27;
+import ast
+import inspect
+from pathlib import Path
+import jq_lexer, jq_parser, jq_runtime
+assert callable(jq_lexer.tokenize)
+assert callable(jq_parser.parse)
+assert callable(jq_runtime.evaluate)
+assert inspect.isgeneratorfunction(jq_runtime.evaluate)
+source = Path(&#x27;jq_runtime.py&#x27;).read_text(encoding=&#x27;utf-8&#x27;)
+tree = ast.parse(source)
+imports = {node.names[0].name.split(&#x27;.&#x27;)[0] for node in ast.walk(tree) if isinstance(node, ast.Import) and node.names}
+for node in ast.walk(tree):
+    if isinstance(node, ast.ImportFrom) and node.module:
+        imports.add(node.module.split(&#x27;.&#x27;)[0])
+stdlib = {&#x27;argparse&#x27;,&#x27;ast&#x27;,&#x27;base64&#x27;,&#x27;copy&#x27;,&#x27;datetime&#x27;,&#x27;decimal&#x27;,&#x27;functools&#x27;,&#x27;itertools&#x27;,&#x27;json&#x27;,&#x27;math&#x27;,&#x27;operator&#x27;,&#x27;os&#x27;,&#x27;re&#x27;,&#x27;sys&#x27;,&#x27;time&#x27;,&#x27;types&#x27;,&#x27; unicodedata&#x27;.strip()}
+assert imports &lt;= stdlib, imports
+PY
+python3 -m unittest discover -s tests -v
+rm -rf ./__pycache__ ./tests/__pycache__
+printf &#x27;%s\\n&#x27; &#x27;--- status checks ---&#x27;
+./jq -c &#x27;(&#x27; &lt;/dev/null &gt;/tmp/jq-compile-out 2&gt;/tmp/jq-compile-err; test &quot;&#x27;$? -eq 3
+printf &#x27;&quot;&#x27;%s\\n&#x27; &#x27;1&#x27; | ./jq -c &#x27;., 2&#x27; | python3 -c &#x27;import sys; assert sys.stdin.read() == \&quot;1\\\\n2\\\\n\&quot;&#x27;
+printf &#x27;%s\\n&#x27; &#x27;--- changed files ---&#x27;
+find . -maxdepth 2 -type f &quot;&#x27;! -path &#x27;&quot;&#x27;./sources/*&#x27; -print | sort&quot;`: CreateProcess { message: &quot;Rejected(\&quot;`/bin/bash -lc \\\&quot;python3 - &lt;&lt;&#x27;PY&#x27;\\nimport ast\\nimport inspect\\nfrom pathlib import Path\\nimport jq_lexer, jq_parser, jq_runtime\\nassert callable(jq_lexer.tokenize)\\nassert callable(jq_parser.parse)\\nassert callable(jq_runtime.evaluate)\\nassert inspect.isgeneratorfunction(jq_runtime.evaluate)\\nsource = Path(&#x27;jq_runtime.py&#x27;).read_text(encoding=&#x27;utf-8&#x27;)\\ntree = ast.parse(source)\\nimports = {node.names[0].name.split(&#x27;.&#x27;)[0] for node in ast.walk(tree) if isinstance(node, ast.Import) and node.names}\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.ImportFrom) and node.module:\\n        imports.add(node.module.split(&#x27;.&#x27;)[0])\\nstdlib = {&#x27;argparse&#x27;,&#x27;ast&#x27;,&#x27;base64&#x27;,&#x27;copy&#x27;,&#x27;datetime&#x27;,&#x27;decimal&#x27;,&#x27;functools&#x27;,&#x27;itertools&#x27;,&#x27;json&#x27;,&#x27;math&#x27;,&#x27;operator&#x27;,&#x27;os&#x27;,&#x27;re&#x27;,&#x27;sys&#x27;,&#x27;time&#x27;,&#x27;types&#x27;,&#x27; unicodedata&#x27;.strip()}\\nassert imports &lt;= stdlib, imports\\nPY\\npython3 -m unittest discover -s tests -v\\nrm -rf ./__pycache__ ./tests/__pycache__\\nprintf &#x27;%s\\\\\\\\n&#x27; &#x27;--- status checks ---&#x27;\\n./jq -c &#x27;(&#x27; &lt;/dev/null &gt;/tmp/jq-compile-out 2&gt;/tmp/jq-compile-err; test \\\&quot;&#x27;$? -eq 3\\nprintf &#x27;\\\&quot;&#x27;%s\\\\\\\\n&#x27; &#x27;1&#x27; | ./jq -c &#x27;., 2&#x27; | python3 -c &#x27;import sys; assert sys.stdin.read() == \\\\\\\&quot;1\\\\\\\\\\\\\\\\n2\\\\\\\\\\\\\\\\n\\\\\\\&quot;&#x27;\\nprintf &#x27;%s\\\\\\\\n&#x27; &#x27;--- changed files ---&#x27;\\nfind . -maxdepth 2 -type f \\\&quot;&#x27;! -path &#x27;\\\&quot;&#x27;./sources/*&#x27; -print | sort\\\&quot;` rejected: rm -f style commands are not permitted. Use a safer approach\&quot;)&quot; }
+</pre></article>
+</main>
+</body>
+</html>

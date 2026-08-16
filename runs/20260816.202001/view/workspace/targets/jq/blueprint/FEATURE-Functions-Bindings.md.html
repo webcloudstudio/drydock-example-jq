@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Functions-Bindings.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Functions-Bindings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Functions-Bindings.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Functions, Variables, Closures, and Destructuring</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Defines jq functions, lexical bindings, closures, and destructuring alternatives.</td></tr><tr><td>Depends On</td><td>FEATURE-Errors-Control.md, FEATURE-Parser.md, FEATURE-Generator-Runtime.md</td></tr><tr><td>Provides</td><td>user functions, filter parameters, value parameters, lexical bindings, destructuring, ?//</td></tr><tr><td>Consumes</td><td>jq parser and AST, generator evaluator, runtime control flow</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This feature implements jq&#x27;s lexical function and binding model. Function definitions are visible only to subsequent expressions, recursive definitions are supported, and function parameters retain jq&#x27;s distinction between filter arguments and value arguments.</p>
+<p>Bindings include scalar variables, nested object and array patterns, closures, recursive calls, and the <code>?//</code> destructuring alternative. Alternative branches must expose all variables used by the continuation, assigning <code>null</code> where a successful branch did not bind a name.</p>
+<h2>Behavior</h2>
+<ul><li><code>def name: filter;</code> and <code>def name(args): filter;</code> define callable filters.</li><li>Identifier parameters are filter parameters; binding parameters are evaluated values.</li><li>Function calls preserve generator ordering and backtracking.</li><li><code>as</code> binds each result of its left expression while the continuation receives the original input.</li><li>Bindings are immutable and lexically scoped.</li><li>Array and object patterns bind missing values as <code>null</code>.</li><li><code>?//</code> selects the first successful destructuring branch and retries a later branch when the</li></ul>
+<p>continuation raises an error.</p>
+<ul><li>Undefined variables, invalid patterns, and malformed definitions are compile errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC functions-bindings-suite ===<br>Intent: The supplied conformance corpus passes the functions, closures, bindings, and destructuring cases owned by this feature.<br>Suite: scoped</p>
+<p>import subprocess import os</p>
+<p>pattern = r&quot;def | as \$|destructur|closure|\\?//|reduce .* as&quot; result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: &quot;./jq&quot;}, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 === END AC functions-bindings-suite ===</p>
+<p>=== AC functions-generator-arguments ===<br>Intent: Filter and value parameters preserve jq&#x27;s distinct evaluation behavior. import subprocess import json</p>
+<p>program = &quot;def f(x): x|x; 5|f(.*2)&quot; input_value = &quot;null\n&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [20] assert actual == expected === END AC functions-generator-arguments ===</p>
+<p>=== AC bindings-and-patterns ===<br>Intent: Lexical bindings and nested destructuring produce the supplied bound values. import subprocess import json</p>
+<p>program = &quot;. as {a: $a, b: [$b, {c: $c}]} | [$a, $b, $c]&quot; input_value = &#x27;{&quot;a&quot;:1,&quot;b&quot;:[2,{&quot;c&quot;:3}]}\n&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [[1, 2, 3]] assert actual == expected === END AC bindings-and-patterns ===</p>
+<p>=== AC undefined-binding-compile-error ===<br>Intent: Referencing an undefined variable produces the documented compile exit status. import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as $x | $missing&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC undefined-binding-compile-error ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not treat filter parameters as eagerly evaluated values.</li><li>Do not leak bindings outside their lexical scope.</li><li>Do not retry a destructuring alternative after a successful branch unless its continuation</li></ul>
+<p>raises a runtime error.</p></article>
+</main>
+</body>
+</html>

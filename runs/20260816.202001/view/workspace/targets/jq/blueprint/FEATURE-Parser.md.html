@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Parser.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Parser.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Parser.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Parser</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Parses jq programs into executable abstract syntax trees using the supplied grammar and precedence rules.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Source-Staging.md, FEATURE-Lexer.md</td></tr><tr><td>Provides</td><td>jq parser and AST</td></tr><tr><td>Consumes</td><td>jq lexer token stream</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The parser consumes lexer tokens and produces an AST suitable for generator evaluation. It implements jq precedence and associativity for pipes, commas, defined-or, assignments, Boolean operators, comparisons, arithmetic, indexing, optional access, and format expressions.</p>
+<p>It supports literals, identity, fields, indexes, slices, iterators, arrays, objects, recursive descent, conditionals, try/catch, reductions, foreach, labels, breaks, bindings, destructuring, function definitions and calls, module declarations, imports, and includes.</p>
+<p>Static validation rejects malformed syntax, undefined bindings, invalid break labels, invalid object keys, nonconstant module metadata, and nonconstant import paths.</p>
+<h2>AST Boundary</h2>
+<p>Each parsed program exposes an executable AST object or equivalent immutable node graph. Nodes retain construct type and child expressions, while runtime state such as input values and lexical environments remains outside the AST.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parser-builds-ast ===<br>Intent: A valid jq program is parsed into a non-null AST. import jq_parser</p>
+<p>ast = jq_parser.parse(&quot;.foo | .bar&quot;) assert ast is not None === END AC parser-builds-ast ===</p>
+<p>=== AC parser-preserves-precedence ===<br>Intent: Arithmetic precedence is represented distinctly from addition. import jq_parser</p>
+<p>ast = jq_parser.parse(&quot;1 + 2 * 2&quot;) rendered = repr(ast) assert rendered assert &quot;1&quot; in rendered and &quot;2&quot; in rendered === END AC parser-preserves-precedence ===</p>
+<p>=== AC parser-supports-constructors ===<br>Intent: Array and object construction parse successfully. import jq_parser</p>
+<p>for program in (&quot;[.foo, .bar]&quot;, &quot;{foo: .bar}&quot;, &quot;if . then 1 else 2 end&quot;): assert jq_parser.parse(program) is not None === END AC parser-supports-constructors ===</p>
+<p>=== AC parser-rejects-malformed-program ===<br>Intent: Unterminated syntax is rejected as a compile error by the parser boundary. import jq_parser</p>
+<p>try: jq_parser.parse(&quot;{&quot;) except Exception: pass else: raise AssertionError(&quot;malformed program was accepted&quot;) === END AC parser-rejects-malformed-program ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Follow <code>sources/parser.y</code> for precedence, associativity, and construct coverage.</li><li>Do not defer syntax errors to runtime.</li><li>Do not load excluded module fixtures while validating module grammar.</li></ul></article>
+</main>
+</body>
+</html>

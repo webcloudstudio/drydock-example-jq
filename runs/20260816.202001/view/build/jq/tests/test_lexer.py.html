@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>import unittest
+
+import jq_lexer
+
+
+class LexerTests(unittest.TestCase):
+    def test_basic_source_has_identity_field_number_and_pipe(self) -&gt; None:
+        tokens = list(jq_lexer.tokenize(&quot;.foo | 42&quot;))
+        self.assertGreaterEqual(len(tokens), 4)
+        self.assertTrue(all(token.kind for token in tokens))
+        self.assertEqual([(token.kind, token.value) for token in tokens[:-1]],
+                         [(&quot;field&quot;, &quot;foo&quot;), (&quot;operator&quot;, &quot;|&quot;), (&quot;number&quot;, &quot;42&quot;)])
+
+    def test_format_token(self) -&gt; None:
+        token = jq_lexer.tokenize(&quot;@json&quot;)[0]
+        self.assertEqual((token.kind, token.value), (&quot;format&quot;, &quot;json&quot;))
+
+    def test_binding_token(self) -&gt; None:
+        token = jq_lexer.tokenize(&quot;$item&quot;)[0]
+        self.assertEqual((token.kind, token.value), (&quot;binding&quot;, &quot;item&quot;))
+
+    def test_invalid_escape_is_rejected(self) -&gt; None:
+        with self.assertRaises(jq_lexer.LexError):
+            jq_lexer.tokenize(r&#x27;&quot;u\vw&quot;&#x27;)
+
+    def test_interpolation_and_comment_continuation(self) -&gt; None:
+        tokens = jq_lexer.tokenize(&#x27;&quot;value=\\(.)&quot; # ignored \\\n+  still ignored\n&#x27;)
+        self.assertEqual([token.kind for token in tokens],
+                         [&quot;qqstring_start&quot;, &quot;qqstring_text&quot;, &quot;interpolation_start&quot;,
+                          &quot;operator&quot;, &quot;interpolation_end&quot;, &quot;qqstring_end&quot;, &quot;eof&quot;])
+
+    def test_mismatched_delimiter_is_rejected(self) -&gt; None:
+        with self.assertRaises(jq_lexer.LexError):
+            jq_lexer.tokenize(&quot;[1}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

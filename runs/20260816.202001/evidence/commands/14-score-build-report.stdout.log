@@ -1,0 +1,33 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+
+Build report: jq
+  evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/workspace/targets/jq/evidence
+  usage:    /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.202001/workspace/logs/llm.jsonl
+
+  Block                        AC  Calls     Cached  Uncached    Hit  Output     Time
+  ───────────────────────────────────────────────────────────────────────────────────
+  ✓ Block 1 · Foundational    4/4      1    208,896    27,408  88.4%   6,404   2m 07s
+  ✓ Block 2 · Foundational    3/3      1    943,360    93,690  91.0%   3,737   2m 23s
+  ✓ Block 3 · Service         4/4      1    587,264    65,639  89.9%   6,324   2m 10s
+  ✓ Block 4 · Service         4/4      1    982,272    75,067  92.9%   9,909   3m 20s
+  ✓ Block 5 · Service         4/4      1    448,256    59,977  88.2%   4,306   1m 41s
+  ✗ Block 6 · Service         2/3      3  2,706,432   278,277  90.7%  14,640   7m 28s
+  ───────────────────────────────────────────────────────────────────────────────────
+  TOTAL                     21/22      8  5,876,480   600,058  90.7%  45,320  19m 12s
+
+  Blocks: 5/6 verified · 5 on first call · 1 repaired
+  Model:  gpt-5.6-luna
+  Tokens: 5,876,480 cached · 600,058 uncached · 45,320 out
+
+  Repairs
+    Block 6 · Service [block-6]
+      initial build  failed  2/3 AC · 1,433,656 in · 92.9% hit · 3m 33s
+      repair 1       failed  2/3 AC · 1,292,597 in · 92.6% hit · 3m 23s
+      repair 2       failed  2/3 AC · 258,456 in · 68.6% hit · 31s
+                     stopped: deterministic acceptance score did not improve on 2 consecutive calls
+
+  Not verified
+    Block 6 · Service [block-6] — closed/failed
+      failing AC: formats-suite
+      stopped: deterministic acceptance score did not improve on 2 consecutive calls
+

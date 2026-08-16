@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Generator-Runtime.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Generator-Runtime.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Generator-Runtime.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Generator Runtime</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Evaluates jq filters as ordered zero-, one-, or many-value streams.</td></tr><tr><td>Depends On</td><td>FEATURE-Compile-Contract.md, FEATURE-Formats.md</td></tr><tr><td>Provides</td><td>generator evaluator, pipeline semantics, comma semantics</td></tr><tr><td>Consumes</td><td>jq parser and AST</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement jq&#x27;s generator evaluation model. Every filter consumes one input and yields an ordered stream; pipelines apply downstream filters to every upstream result.</p>
+<h2>Scope</h2>
+<ul><li>Identity, literals, comma, pipe, and empty stream evaluation.</li><li>Cartesian products for multi-result operands.</li><li>Ordered backtracking and partial output preservation.</li><li>Stream propagation through constructors and function calls.</li><li>Runtime evaluation state sufficient for later bindings, control flow, and builtins.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC generator-suite ===<br>Intent: The generator runtime passes its authoritative conformance slice.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;(^empty$|,|\|)&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC generator-suite ===</p>
+<p>=== AC generator-order ===<br>Intent: Comma and pipeline preserve ordered stream results.</p>
+<p>import json import subprocess</p>
+<p>input_value = [1, 2, 3] program = &quot;.[] | ., (.+10)&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(input_value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [] for item in input_value: expected.extend([item, item + 10]) assert actual == expected === END AC generator-order ===</p>
+<p>=== AC generator-empty ===<br>Intent: The empty filter produces no output and succeeds.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;empty&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout == &quot;&quot; === END AC generator-empty ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve zero, one, and multiple outputs as distinct stream events.</li><li>Never collapse a generator to a single value.</li><li>Preserve values emitted before a later runtime error.</li></ul></article>
+</main>
+</body>
+</html>

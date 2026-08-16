@@ -1,0 +1,16 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_runtime.py
+- tests/test_formats.py
+
+SUMMARY:
+Format tests and scoped conformance pass. Added non-finite JSON formatting coverage.
+
+BLOCKERS:
+- `formats-suite` invokes the harness without required `JQ`, returning harness error 2.
+- Full conformance exceeded 30 seconds and timed out.
+
+FAILURE_SUMMARY: Acceptance harness environment is missing JQ.
+
+FAILURE_DETAIL: The implementation passes `JQ="$PWD/jq" python3 sources/run_conformance.py --select '@|interpolation'`, but the declared acceptance subprocess omits `JQ`; staged harness files cannot be modified.

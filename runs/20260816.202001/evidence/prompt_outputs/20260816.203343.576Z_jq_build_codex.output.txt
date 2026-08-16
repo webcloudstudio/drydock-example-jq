@@ -1,0 +1,24 @@
+<reusable-compact filename="ARCHITECTURE.md">
+- Python standard-library jq architecture with boundaries: `jq_lexer.tokenize`, `jq_parser.parse`, generator-based `jq_runtime.evaluate`, builtin registry, CLI, and executable `jq`.
+- `./jq -c '<program>'` reads newline-delimited JSON and emits compact result streams.
+- Exit codes: 0 success, 3 compile failure, 5 runtime failure; diagnostics stderr only.
+- Preserve ordered generator semantics and partial output; prohibit third-party dependencies, network, subprocesses, and system jq.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- README.md
+- jq
+- jq_builtins.py
+- jq_cli.py
+- jq_lexer.py
+- jq_parser.py
+- jq_runtime.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented the standalone jq architecture and executable boundaries. All declared acceptance assertions pass, along with 4 focused architecture tests and CLI smoke checks.
+
+BLOCKERS:
+- None
