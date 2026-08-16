@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Paths-Discovery.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Paths-Discovery.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Paths-Discovery.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Paths Discovery</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provide jq path discovery and nested value lookup.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Control-Recursion.md, FEATURE-Eval-Core.md</td></tr><tr><td>Provides</td><td>path, paths, getpath</td></tr><tr><td>Consumes</td><td>ordered generator evaluator, indexing, recursion</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq path representations, exact and generated path expressions, recursive path enumeration, filtered paths, and nested lookup through <code>getpath</code>.</p>
+<h2>Behavior</h2>
+<ul><li><code>path</code> emits arrays containing string object keys and integer array indices.</li><li><code>paths</code> emits every non-root path; <code>paths(f)</code> emits paths whose selected values satisfy <code>f</code>.</li><li><code>getpath</code> returns the value at a path, or <code>null</code> for absent paths.</li><li>Invalid path expressions and invalid index types raise runtime errors.</li><li>Path traversal preserves document order and generator ordering.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-discovery-suite ===<br>Intent: The authoritative corpus passes the path-discovery cases owned by this capability.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>selectors = [&quot;path(&quot;, &quot;[paths&quot;, &quot;getpath(&quot;] for selector in selectors: result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector], capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC paths-discovery-suite ===</p>
+<p>=== AC paths-discovery-roundtrip ===<br>Intent: A discovered path can be consumed to retrieve the corresponding value. import json import subprocess</p>
+<p>source = {&quot;a&quot;: [{&quot;b&quot;: 7}]} program = &quot;[paths] as $paths | [$paths[] as $p | getpath($p)]&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) expected = [source[&quot;a&quot;], source[&quot;a&quot;][0], source[&quot;a&quot;][0][&quot;b&quot;]] assert actual == [expected] === END AC paths-discovery-roundtrip ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not confuse the root path <code>[]</code> with paths emitted by <code>paths</code>.</li><li>Do not mutate the input while discovering or reading paths.</li><li>Do not shell out to jq or use a third-party jq implementation.</li></ul></article>
+</main>
+</body>
+</html>

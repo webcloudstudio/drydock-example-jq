@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Language-Bindings.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Language-Bindings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Language-Bindings.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Language Bindings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provides jq lexical variable bindings and destructuring patterns.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Language-Functions.md, FEATURE-Eval-Cartesian.md</td></tr><tr><td>Provides</td><td>as bindings and array/object patterns</td></tr><tr><td>Consumes</td><td>evaluator, function scope, generator semantics</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement <code>as</code> bindings and array/object destructuring with lexical scope, generator-aware evaluation, keyword-compatible names, and null values for absent pattern members.</p>
+<h2>Behavior</h2>
+<ul><li><code>EXP as $name | BODY</code> evaluates <code>BODY</code> with the original input and each bound output.</li><li>Array patterns bind positional elements and use null for missing positions.</li><li>Object patterns bind named fields and nested patterns.</li><li>Bindings are immutable and lexically scoped.</li><li>Pattern bindings preserve upstream generator ordering.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC bindings-basic ===<br>Intent: Scalar bindings retain their value across a pipeline and repeated references.</p>
+<p>import json import subprocess</p>
+<p>payload = &quot;null\n&quot; program = &quot;1 as $x | 2 as $y | [$x, $y, $x]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 1]] === END AC bindings-basic ===</p>
+<p>=== AC bindings-patterns ===<br>Intent: Array and object destructuring bind present fields and null-fill absent array members.</p>
+<p>import json import subprocess</p>
+<p>source = [[1], {&quot;c&quot;: 3}] program = &quot;. as [$a, $b] | [$a, $b]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program), input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == [[[1], None], [{&quot;c&quot;: 3}, None]] === END AC bindings-patterns ===</p>
+<p>=== AC bindings-nested ===<br>Intent: Nested object and array patterns expose their declared values in lexical scope.</p>
+<p>import json import subprocess</p>
+<p>source = {&quot;a&quot;: 1, &quot;b&quot;: [2, {&quot;d&quot;: 3}]} program = &quot;. as {$a, b: [$c, {$d}]} | [$a, $c, $d]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 3]] === END AC bindings-nested ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Bindings must not be mutable assignments.</li><li>Bindings must not remain visible outside their lexical scope.</li><li>Missing pattern members must bind null rather than raising an incidental host-language error.</li></ul></article>
+</main>
+</body>
+</html>

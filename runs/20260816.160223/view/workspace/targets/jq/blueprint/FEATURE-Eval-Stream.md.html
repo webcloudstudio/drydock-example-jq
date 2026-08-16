@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Eval-Stream.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Eval-Stream.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Eval-Stream.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Eval Stream</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Evaluate jq filters as ordered zero-, one-, or many-valued streams.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Frontend-Parser.md, FEATURE-Frontend-Validation.md</td></tr><tr><td>Provides</td><td>ordered generator evaluator</td></tr><tr><td>Consumes</td><td>parser and AST</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The evaluator&#x27;s fundamental contract is stream evaluation. Every filter receives one input and may produce zero, one, or many outputs. Downstream filters run once for each upstream output, preserving jq ordering and outputs emitted before a later runtime error.</p>
+<h2>Stream Semantics</h2>
+<p>The evaluator must support:</p>
+<ul><li>empty streams;</li><li>ordered comma streams;</li><li>pipeline fan-out;</li><li>nested collection of streams;</li><li>independent processing of multiple JSON inputs;</li><li>runtime failure after earlier outputs without losing those outputs.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC eval-stream-fanout ===<br>Intent: A generator pipeline preserves every upstream value and its order.</p>
+<p>import json import subprocess</p>
+<p>input_value = [1, 2, 3] source = &quot;.[]&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, source], input=json.dumps(input_value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual == input_value === END AC eval-stream-fanout ===</p>
+<p>=== AC eval-stream-pipeline ===<br>Intent: Downstream filters execute once for each upstream generator output.</p>
+<p>import json import subprocess</p>
+<p>input_value = [1, 2, 3] source = &quot;.[] | . * 2&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, source], input=json.dumps(input_value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [value * 2 for value in input_value] assert actual == expected === END AC eval-stream-pipeline ===</p>
+<p>=== AC eval-stream-empty ===<br>Intent: The empty filter produces no output while completing successfully.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;empty&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout == &quot;&quot; === END AC eval-stream-empty ===</p>
+<p>=== AC eval-stream-order ===<br>Intent: Comma composition preserves left-to-right stream order.</p>
+<p>import json import subprocess</p>
+<p>input_value = [10, 20] source = &quot;.[] as $x | ($x, $x + 1)&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, source], input=json.dumps(input_value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [item for value in input_value for item in (value, value + 1)] assert actual == expected === END AC eval-stream-order ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not collapse streams into a single value.</li><li>Preserve output ordering and values emitted before runtime errors.</li><li>Do not implement evaluation by delegating to a system jq binary.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_values.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_values.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/jq_values.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;JSON value and compact serialization boundary for the jq runtime.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import json
+from typing import Any
+
+JsonValue = None | bool | int | float | str | list[&quot;JsonValue&quot;] | dict[str, &quot;JsonValue&quot;]
+
+
+def parse_json(text: str) -&gt; JsonValue:
+    return json.loads(text)
+
+
+def encode_compact(value: JsonValue) -&gt; str:
+    return json.dumps(value, ensure_ascii=False, separators=(&quot;,&quot;, &quot;:&quot;), allow_nan=False)
+</pre></article>
+</main>
+</body>
+</html>

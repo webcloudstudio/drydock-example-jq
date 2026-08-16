@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/builtin_compact.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/builtin_compact.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/builtin_compact.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;!-- Compacted from builtin.jq sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4 on 2026-08-16 by drydock build agent --&gt;</p>
+<p>Built-in contract surface: generator-aware filters include <code>map/1</code>, <code>select/1</code>, <code>sort_by/1</code>, <code>group_by/1</code>, <code>unique_by/1</code>, <code>max_by/1</code>, <code>min_by/1</code>, <code>add/0|1</code>, <code>recurse/0|1|2</code>, <code>while/2</code>, <code>until/2</code>, <code>limit/2</code>, <code>skip/2</code>, <code>first/0|1</code>, <code>last/0</code>, <code>nth/1|2</code>, <code>all/0|1|2</code>, <code>any/0|1|2</code>, <code>range/1|2|3</code>, <code>reduce</code>, and <code>foreach</code>. These consume and produce ordered jq streams, preserving backtracking and cartesian argument evaluation.</p>
+<p>Collection/path interfaces include <code>map_values/1</code>, <code>del/1</code>, <code>getpath/1</code>, <code>setpath/2</code>, <code>delpaths/1</code>, <code>path/1</code>, <code>paths/0|1</code>, <code>pick/1</code>, <code>tostream</code>, <code>fromstream/1</code>, and <code>truncate_stream/1</code>. <code>empty</code> produces no values; <code>select</code> retains its input only for truthy results; assignment updates paths immutably.</p>
+<p>Type/string/format interfaces include <code>type</code>, <code>length</code>, <code>keys</code>, <code>has</code>, <code>in</code>, <code>inside</code>, <code>join</code>, <code>split</code>, <code>splits</code>, <code>sub</code>, <code>gsub</code>, <code>match</code>, <code>test</code>, <code>capture</code>, <code>scan</code>, trimming/case functions, <code>tojson</code>, <code>fromjson</code>, <code>tostring</code>, and <code>@text|json|html|uri|urid|csv|tsv|sh|base64|base64d</code>.</p>
+<p>Error/control interfaces include <code>error</code>, <code>try/catch</code>, <code>halt</code>, <code>halt_error</code>, labels/breaks, and optional <code>?</code>; runtime errors must preserve values emitted before failure. SQL-style interfaces include <code>INDEX</code>, <code>JOIN</code>, and <code>IN</code>.</p></article>
+</main>
+</body>
+</html>

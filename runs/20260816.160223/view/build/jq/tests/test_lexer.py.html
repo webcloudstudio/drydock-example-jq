@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>import sys
+from pathlib import Path
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from jq_lexer import LexError, tokenize
+
+
+def kinds(source: str) -&gt; list[str]:
+    return [token.kind for token in tokenize(source)]
+
+
+def test_lexer_classifies_literals_fields_bindings_and_keywords():
+    tokens = tokenize(&#x27;42 .foo $value if .. @uri&#x27;)
+    assert [(token.kind, token.text) for token in tokens[:-1]] == [
+        (&quot;LITERAL&quot;, &quot;42&quot;),
+        (&quot;FIELD&quot;, &quot;foo&quot;),
+        (&quot;BINDING&quot;, &quot;value&quot;),
+        (&quot;if&quot;, &quot;if&quot;),
+        (&quot;..&quot;, &quot;..&quot;),
+        (&quot;FORMAT&quot;, &quot;uri&quot;),
+    ]
+
+
+def test_lexer_recognizes_longest_operators_in_source_order():
+    assert kinds(&quot;!= == &lt;= &gt;= ?// //= |= += -= *= /= %= ..&quot;) == [
+        &quot;!=&quot;, &quot;==&quot;, &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;?//&quot;, &quot;//=&quot;, &quot;|=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;, &quot;..&quot;, &quot;EOF&quot;,
+    ]
+
+
+def test_lexer_ignores_comments_but_not_comment_markers_in_strings():
+    tokens = tokenize(&#x27;&quot;# text&quot; # ignored\n 1&#x27;)
+    assert [token.text for token in tokens[:-1]] == [&#x27;&quot;# text&quot;&#x27;, &quot;1&quot;]
+
+
+def test_lexer_rejects_unterminated_strings_and_bad_escapes():
+    with pytest.raises(LexError):
+        tokenize(&#x27;&quot;unterminated&#x27;)
+    with pytest.raises(LexError):
+        tokenize(r&#x27;&quot;bad\q&quot;&#x27;)
+</pre></article>
+</main>
+</body>
+</html>

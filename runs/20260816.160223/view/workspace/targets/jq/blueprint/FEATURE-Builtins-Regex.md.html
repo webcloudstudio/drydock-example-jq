@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Regular-Expression Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provide jq-compatible regular-expression matching and substitution builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Builtins-Strings.md, FEATURE-Language-Functions.md</td></tr><tr><td>Provides</td><td>test, match, capture, scan, split, splits, sub, gsub</td></tr><tr><td>Consumes</td><td>evaluator and jq string values</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement the regex builtin family using Python&#x27;s standard-library <code>re</code> module. Support jq regex flags, named and unnamed captures, global matching, UTF-8 codepoint offsets, regex splitting, and substitution interpolation.</p>
+<h2>Behavior</h2>
+<ul><li><code>test</code> returns Boolean match results.</li><li><code>match</code> emits match objects with <code>offset</code>, <code>length</code>, <code>string</code>, and <code>captures</code>.</li><li><code>capture</code> returns named captures as an object.</li><li><code>scan</code> emits matched strings or capture arrays.</li><li><code>split</code> returns an array; <code>splits</code> emits a stream.</li><li><code>sub</code> replaces the first matching region; <code>gsub</code> replaces all non-overlapping regions.</li><li>Invalid patterns, unsupported inputs, and invalid flags raise jq runtime errors.</li><li>Generator-valued replacement expressions preserve jq output ordering.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC regex-runtime ===<br>Intent: The implementation supports matching, captures, scanning, splitting, and substitution through the public jq executable.</p>
+<p>import json import subprocess</p>
+<p>program = &#x27;[test(&quot;a+&quot;), match(&quot;(?&lt;x&gt;a+)&quot;), capture(&quot;(?&lt;x&gt;a+)-(?&lt;y&gt;b+)&quot;), [scan(&quot;[ab]+&quot;)], split(&quot;, &quot;), sub(&quot;a&quot;; &quot;X&quot;), gsub(&quot;a&quot;; &quot;X&quot;)]&#x27; source = &#x27;&quot;aa-bb, ab&quot;&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, capture_output=True, text=True) print(result.stdout) print(result.stderr) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] is True assert actual[1][&quot;string&quot;] == &quot;aa&quot; assert actual[2][&quot;x&quot;] == &quot;aa&quot; assert actual[2][&quot;y&quot;] == &quot;bb&quot; assert actual[3] == [&quot;aa&quot;, &quot;bb&quot;] assert actual[4] == [&quot;aa-bb&quot;, &quot;ab&quot;] assert actual[5] == &quot;Xa-bb, ab&quot; assert actual[6] == &quot;XX-bb, Xb&quot; === END AC regex-runtime ===</p>
+<p>=== AC regex-errors ===<br>Intent: Invalid regular-expression input produces the runtime failure exit code.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;test(&quot;[&quot;)&#x27;], input=&#x27;&quot;value&quot;&#x27;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 5 === END AC regex-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library regex facilities.</li><li>Do not shell out to jq or use third-party regex or jq libraries.</li></ul></article>
+</main>
+</body>
+</html>

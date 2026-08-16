@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_frontend_validation.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_frontend_validation.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_frontend_validation.py">Raw file</a></div></header>
+<article class="doc"><pre>import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent.parent
+
+
+def invoke(program: str, value: object = None) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_malformed_programs_fail_before_execution():
+    for program in (&quot;{&quot;, &quot;}&quot;, &quot;1 +&quot;, &quot;if true then 1&quot;):
+        assert invoke(program).returncode == 3
+
+
+def test_undefined_variable_and_break_label_are_compile_errors():
+    assert invoke(&quot;. as $known | $missing&quot;).returncode == 3
+    assert invoke(&quot;break $missing&quot;).returncode == 3
+
+
+def test_constant_non_string_object_key_is_compile_error():
+    assert invoke(&quot;{(0): 1}&quot;).returncode == 3
+
+
+def test_dynamic_object_key_and_bound_value_remain_valid():
+    result = invoke(&quot;. as $value | {(.a): $value}&quot;, {&quot;a&quot;: &quot;key&quot;})
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == {&quot;key&quot;: {&quot;a&quot;: &quot;key&quot;}}
+
+
+def test_label_scope_is_static_and_break_stops_label_stream():
+    assert invoke(&quot;label $out | break $out&quot;).returncode == 0
+    assert invoke(&quot;label $out | . as $x | break $x&quot;).returncode == 3
+</pre></article>
+</main>
+</body>
+</html>

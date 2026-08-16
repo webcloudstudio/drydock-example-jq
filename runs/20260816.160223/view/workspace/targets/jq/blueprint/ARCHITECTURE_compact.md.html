@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE_compact.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;!-- Compacted from ARCHITECTURE.md sha256=03fbda0643fbd44af66e0fb45cec64fb2847a84746eee35aa27e1a288c4a0070 on 2026-08-16 by drydock build agent --&gt;</p>
+<p>Root executable <code>jq</code> delegates to Python standard-library CLI, lexer, parser, values, evaluator, control, paths, and builtins boundaries. Evaluation is generator-based and preserves ordered streams/backtracking. Compile errors exit 3; runtime errors exit 5; prior outputs remain emitted. No third-party dependencies, jq subprocesses, or network access.</p></article>
+</main>
+</body>
+</html>

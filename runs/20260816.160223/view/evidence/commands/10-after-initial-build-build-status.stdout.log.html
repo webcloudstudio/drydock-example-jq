@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/10-after-initial-build-build-status.stdout.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/10-after-initial-build-build-status.stdout.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/10-after-initial-build-build-status.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Next: drydock build jq
+
+Blueprint: jq
+Target: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.160223/workspace/targets/jq
+Rows: &lt;state&gt; &lt;type&gt;  &lt;Name&gt;  [&lt;id&gt;]   — pass [&lt;id&gt;] to --step
+
+Block: Build Block 1 · Foundational  [block-1]   — 0/2 stories done
+  [unverified] story  Define the self-contained jq interpreter architecture and module boundaries.  [architecture]
+  [unverified] story  Stage the supplied jq conformance assets and harness.  [verify-assets]
+
+Block: Build Block 2 · Service  [block-2]   — 0/1 stories done
+  [unverified] story  Implement the executable jq entry point and JSON stdin/stdout loop.  [cli-entrypoint]
+
+Block: Build Block 3 · Service  [block-3]   — 0/1 stories done
+  [unverified] story  Implement jq lexical analysis.  [frontend-lexer]
+
+Block: Build Block 4 · Service  [block-4]   — 0/1 stories done
+  [unverified] story  Implement jq expression parsing and AST construction.  [frontend-parser]
+
+Block: Build Block 5 · Service  [block-5]   — 0/1 stories done
+  [unverified] story  Implement jq compile-time validation and rejection.  [frontend-validation]
+
+Block: Build Block 6 · Service  [block-6]   — 0/1 stories done
+  [unverified] story  Implement ordered stream-valued filter evaluation.  [eval-stream]
+
+Block: Build Block 7 · Service  [block-7]   — 0/1 stories done
+  [unverified] story  Implement jq core composition and indexing operators.  [eval-core]
+
+Block: Build Block 8 · Service  [block-8]   — 0/2 stories done
+  [unverified] story  Implement jq compile-time and runtime exit-code behavior.  [cli-errors]
+  [unverified] story  Document the jq executable interface and verification command.  [cli-documentation]
+
+Block: Build Block 9 · Service  [block-9]   — 0/1 stories done
+  [FAILED]  story  Implement cartesian evaluation of multi-output arguments.  [eval-cartesian]  &lt;- resume (repairs in place)
+
+Block: Build Block 10 · Service  [block-10]   — 0/1 stories done
+  [pending] story  Implement jq values and JSON input/output semantics.  [values-model]
+
+Block: Build Block 11 · Service  [block-11]   — 0/1 stories done
+  [pending] story  Implement arithmetic and type-dependent operators.  [values-arithmetic]
+
+Block: Build Block 12 · Service  [block-12]   — 0/1 stories done
+  [pending] story  Implement jq comparison, boolean, and truthiness operators.  [values-comparison]
+
+Block: Build Block 13 · Service  [block-13]   — 0/1 stories done
+  [pending] story  Implement conditionals, alternatives, and optional expressions.  [control-conditionals]
+
+Block: Build Block 14 · Service  [block-14]   — 0/1 stories done
+  [pending] story  Implement jq runtime errors, try/catch, halt, and halt_error.  [control-errors]
+
+Block: Build Block 15 · Service  [block-15]   — 0/1 stories done
+  [pending] story  Implement reductions and bounded iteration controls.  [control-reductions]
+
+Block: Build Block 16 · Service  [block-16]   — 0/1 stories done
+  [pending] story  Implement recursive and labelled control flow.  [control-recursion]
+
+Block: Build Block 17 · Service  [block-17]   — 0/1 stories done
+  [pending] story  Implement user-defined jq functions.  [language-functions]
+
+Block: Build Block 18 · Service  [block-18]   — 0/1 stories done
+  [QUESTIONS] story  Implement variable bindings and destructuring patterns.  [language-bindings]
+
+Block: Build Block 19 · Service  [block-19]   — 0/1 stories done
+  [pending] story  Implement destructuring alternatives.  [language-alternation]
+
+Block: Build Block 20 · Service  [block-20]   — 0/1 stories done
+  [pending] story  Implement jq path discovery and access.  [paths-discovery]
+
+Block: Build Block 21 · Service  [block-21]   — 0/1 stories done
+  [pending] story  Implement path mutation helpers.  [paths-helpers]
+
+Block: Build Block 22 · Service  [block-22]   — 0/1 stories done
+  [pending] story  Implement jq assignment operators.  [paths-assignment]
+
+Block: Build Block 23 · Service  [block-23]   — 0/1 stories done
+  [pending] story  Implement collection and object builtins.  [builtins-collections]
+
+Block: Build Block 24 · Service  [block-24]   — 0/1 stories done
+  [pending] story  Implement string and Unicode builtins.  [builtins-strings]
+
+Block: Build Block 25 · Service  [block-25]   — 0/1 stories done
+  [pending] story  Implement regular-expression builtins.  [builtins-regex]
+
+Block: Build Block 26 · Service  [block-26]   — 0/1 stories done
+  [pending] story  Implement formats and date builtins.  [builtins-formats]
+
+Block: Build Block 27 · Service  [block-27]   — 0/1 stories done
+  [pending] story  Implement traversal, streaming, environment, and utility builtins.  [builtins-utilities]
+
+Block: Build Block 28 · Service  [block-28]   — 0/1 stories done
+  [pending] story  Run the complete jq conformance suite as the release gate.  [verify-full]
+
+Steps: 30 total — 0 done, 0 in review, 18 pending, 1 blocked by questions, 1 failed (0% complete)
+Buildable now: block-9
+Failed (resume with drydock build, or --step &lt;id&gt;; --reset discards work instead): eval-cartesian
+Build score evidence: none
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.161727.322Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.161727.322Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.161727.322Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;parse-lexical-values&quot; stories=&quot;frontend-lexer,values-model&quot;&gt;
+We test escapes by matching them against Unicode codepoints
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-object-construction&quot; stories=&quot;frontend-parser&quot;&gt;
+# Dictionary construction syntax
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-invalid-programs&quot; stories=&quot;frontend-validation,cli-errors&quot;&gt;
+%%FAIL
+&lt;/requirement&gt;
+&lt;requirement name=&quot;evaluate-streams-and-pipes&quot; stories=&quot;eval-stream,eval-core&quot;&gt;
+# Multiple outputs, iteration
+&lt;/requirement&gt;
+&lt;requirement name=&quot;evaluate-cartesian-arguments&quot; stories=&quot;eval-cartesian&quot;&gt;
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-arithmetic&quot; stories=&quot;values-arithmetic&quot;&gt;
+# Basic numbers tests: integers, powers of two
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-comparison-and-truthiness&quot; stories=&quot;values-comparison&quot;&gt;
+# And some in/equality tests
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-conditionals&quot; stories=&quot;control-conditionals&quot;&gt;
+# Conditionals
+&lt;/requirement&gt;
+&lt;requirement name=&quot;handle-errors-and-optional-expressions&quot; stories=&quot;control-errors&quot;&gt;
+# Try/catch and general `?` operator
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-reductions-and-iteration&quot; stories=&quot;control-reductions&quot;&gt;
+[foreach .[] as $x (0; . + $x) as $x | $x]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-recursion-and-labels&quot; stories=&quot;control-recursion&quot;&gt;
+# test recursion
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-user-functions&quot; stories=&quot;language-functions&quot;&gt;
+# User-defined functions
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-bindings-and-destructuring&quot; stories=&quot;language-bindings&quot;&gt;
+# Variables
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-destructuring-alternatives&quot; stories=&quot;language-alternation&quot;&gt;
+# Destructuring with alternation
+&lt;/requirement&gt;
+&lt;requirement name=&quot;discover-and-access-paths&quot; stories=&quot;paths-discovery&quot;&gt;
+# Paths
+&lt;/requirement&gt;
+&lt;requirement name=&quot;mutate-paths-with-helpers&quot; stories=&quot;paths-helpers&quot;&gt;
+[&quot;foo&quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-assignment&quot; stories=&quot;paths-assignment&quot;&gt;
+# Assignment
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-collection-builtins&quot; stories=&quot;builtins-collections&quot;&gt;
+to_entries
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-string-builtins&quot; stories=&quot;builtins-strings&quot;&gt;
+# string operations
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-date-builtins&quot; stories=&quot;builtins-formats&quot;&gt;
+strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-utility-builtins&quot; stories=&quot;builtins-utilities&quot;&gt;
+# walk
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;verify-assets&quot;/&gt;
+&lt;unattached story=&quot;cli-entrypoint&quot;/&gt;
+&lt;unattached story=&quot;builtins-regex&quot;/&gt;
+&lt;unattached story=&quot;cli-documentation&quot;/&gt;
+&lt;unattached story=&quot;verify-full&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

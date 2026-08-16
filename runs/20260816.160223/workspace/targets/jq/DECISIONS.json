@@ -1,0 +1,92 @@
+[
+  {
+    "id": "analyze-display_name",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Display Name",
+    "description": "The display name Drydock will use for this project. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "jq",
+    "commander_direction": "jq"
+  },
+  {
+    "id": "analyze-short_description",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Short Description",
+    "description": "One-sentence description of what this project does. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "A self-contained Python interpreter for the jq language and its supplied conformance corpus.",
+    "commander_direction": "A self-contained Python interpreter for the jq language and its supplied conformance corpus."
+  },
+  {
+    "id": "plan-001",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Numeric representation",
+    "description": "The interpreter must represent jq numbers without third-party dependencies while preserving the corpus's required arithmetic and serialization behavior.",
+    "options": [
+      {
+        "value": "float",
+        "label": "Use IEEE-754 floats"
+      },
+      {
+        "value": "decimal",
+        "label": "Use standard-library decimal"
+      }
+    ],
+    "system_choice": "Use a hybrid standard-library representation: preserve lexical literals where required and use float-compatible arithmetic semantics, with decimal or textual handling only where needed for corpus-compatible literal preservation."
+  },
+  {
+    "id": "plan-002",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Interpreter implementation shape",
+    "description": "The implementation needs a stable separation between parsing, AST evaluation, builtins, and the executable wrapper.",
+    "options": [
+      {
+        "value": "single-script",
+        "label": "Single executable script"
+      },
+      {
+        "value": "package-wrapper",
+        "label": "Executable plus Python modules"
+      }
+    ],
+    "system_choice": "Use an executable root-level jq wrapper with adjacent Python modules for lexer, parser, evaluator, values, control flow, paths, and builtins."
+  },
+  {
+    "id": "acceptance-FEATURE-Language-Bindings.md-bindings-patterns-malformed",
+    "type": "text",
+    "severity": "blocking",
+    "origin": "plan",
+    "blueprint": "FEATURE-Language-Bindings.md",
+    "story": "language-bindings",
+    "status": "open",
+    "archived": false,
+    "title": "Acceptance criterion bindings-patterns cannot execute",
+    "description": "FEATURE-Language-Bindings.md [bindings-patterns]: criterion is not valid Python: closing parenthesis ')' does not match opening parenthesis '[' (line 6)\n\nThis criterion raises in its own frame before reaching the code under test, so it reports UNVERIFIED and gates nothing. Repair it in the Blueprint specification, or answer that the story is acceptable without it.",
+    "options": [],
+    "system_choice": "not answered"
+  }
+]

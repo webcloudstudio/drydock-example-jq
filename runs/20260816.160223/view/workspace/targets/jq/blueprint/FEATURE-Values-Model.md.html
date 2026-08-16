@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Values-Model.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Values-Model.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Values-Model.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Values and JSON Model</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Define jq values, numeric behavior, JSON parsing, and compact serialization.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Eval-Core.md</td></tr><tr><td>Provides</td><td>JSON value model and serialization</td></tr><tr><td>Consumes</td><td>ordered generator evaluator</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The runtime represents jq null, booleans, strings, arrays, objects, numbers, NaN, and infinities using only Python&#x27;s standard library. JSON input is parsed as a stream of values and results are serialized as compact JSON lines.</p>
+<p>Numeric literals preserve their source representation where jq requires it, while arithmetic follows jq-compatible floating-point behavior. <code>have_decnum</code> reports the supported non-decnum branch.</p>
+<h2>Behaviors</h2>
+<ul><li>JSON values retain jq type distinctions; booleans are not numbers.</li><li>Unicode strings and embedded NUL characters round-trip.</li><li>NaN and infinities are valid jq numeric values where the corpus requires them.</li><li><code>tojson</code>, <code>fromjson</code>, <code>tostring</code>, <code>type</code>, <code>isnan</code>, <code>isinfinite</code>, and <code>have_decnum</code> are available.</li><li>Serialization is compact and produces one complete JSON value per output.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC values-json-roundtrip ===<br>Intent: The implementation passes the authoritative JSON, value, and serialization corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;tojson|fromjson|tostring|type|embedded NUL|NaN|nan|infinite&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC values-json-roundtrip ===</p>
+<p>=== AC values-numeric-literals ===<br>Intent: The implementation passes the authoritative numeric literal and precision corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;decnum|literal numbers|large|precision|have_decnum&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC values-numeric-literals ===</p>
+<p>=== AC values-type-boundaries ===<br>Intent: The implementation passes the authoritative type and Unicode value corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;type|utf8|Unicode|unicode|length&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC values-type-boundaries ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Do not introduce a third-party jq implementation or invoke a system jq binary.</li><li>Preserve jq&#x27;s distinction between booleans and numbers.</li></ul></article>
+</main>
+</body>
+</html>

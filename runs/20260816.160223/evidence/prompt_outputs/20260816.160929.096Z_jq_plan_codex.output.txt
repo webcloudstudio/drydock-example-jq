@@ -1,0 +1,479 @@
+=== BEGIN ARTIFACT FEATURE-Values-Model.md ===
+# FEATURE: Values and JSON Model
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Define jq values, numeric behavior, JSON parsing, and compact serialization. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Eval-Core.md |
+| Provides    | JSON value model and serialization |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+The runtime represents jq null, booleans, strings, arrays, objects, numbers, NaN, and infinities using only Python's standard library. JSON input is parsed as a stream of values and results are serialized as compact JSON lines.
+
+Numeric literals preserve their source representation where jq requires it, while arithmetic follows jq-compatible floating-point behavior. `have_decnum` reports the supported non-decnum branch.
+
+## Behaviors
+
+- JSON values retain jq type distinctions; booleans are not numbers.
+- Unicode strings and embedded NUL characters round-trip.
+- NaN and infinities are valid jq numeric values where the corpus requires them.
+- `tojson`, `fromjson`, `tostring`, `type`, `isnan`, `isinfinite`, and `have_decnum` are available.
+- Serialization is compact and produces one complete JSON value per output.
+
+## Programmatic Acceptance
+
+=== AC values-json-roundtrip ===
+Intent: The implementation passes the authoritative JSON, value, and serialization corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "tojson|fromjson|tostring|type|embedded NUL|NaN|nan|infinite"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC values-json-roundtrip ===
+
+=== AC values-numeric-literals ===
+Intent: The implementation passes the authoritative numeric literal and precision corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "decnum|literal numbers|large|precision|have_decnum"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC values-numeric-literals ===
+
+=== AC values-type-boundaries ===
+Intent: The implementation passes the authoritative type and Unicode value corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "type|utf8|Unicode|unicode|length"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC values-type-boundaries ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Do not introduce a third-party jq implementation or invoke a system jq binary.
+- Preserve jq's distinction between booleans and numbers.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Values-Arithmetic.md ===
+# FEATURE: Arithmetic and Type-Dependent Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implement jq arithmetic, merge, repetition, division, modulo, and negation semantics. |
+| Depends On  | FEATURE-Values-Model.md, FEATURE-Eval-Cartesian.md |
+| Provides    | arithmetic, merge, string, and array operators |
+| Consumes    | JSON value model, ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Arithmetic operators evaluate both operands as jq filters over the same input and preserve generator ordering. Operators dispatch by jq value type: numeric arithmetic, array concatenation/subtraction, string concatenation/repetition/splitting, shallow object addition, recursive object multiplication, and null identity behavior.
+
+Invalid type combinations and division or remainder by zero raise runtime errors without losing values already emitted.
+
+## Behaviors
+
+- `+`, `-`, `*`, `/`, `%`, and unary `-` follow jq's type-dependent rules.
+- Object multiplication recursively merges nested objects.
+- String multiplication and division implement repetition and splitting.
+- Array subtraction removes matching elements.
+- Numeric overflow, NaN, infinity, and negative zero follow the selected jq-compatible representation.
+- Runtime diagnostics are emitted through the evaluator's structured error channel.
+
+## Programmatic Acceptance
+
+=== AC arithmetic-operators ===
+Intent: The implementation passes the authoritative arithmetic and numeric operator corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     r"^[^#].*(\+|\-|\*|/|%|negat|arithmetic|modulo)"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC arithmetic-operators ===
+
+=== AC arithmetic-types ===
+Intent: The implementation passes the authoritative type-dependent string, array, and object operator corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "recursive object merge|string repetition|string splitting|array subtraction|type-dependent"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC arithmetic-types ===
+
+=== AC arithmetic-errors ===
+Intent: The implementation passes the authoritative arithmetic runtime-error corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "divided because|cannot be added|cannot be subtracted|Repeat string result too long"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC arithmetic-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not perform implicit type conversions.
+- Do not shell out for arithmetic or delegate semantics to another jq implementation.
+- Preserve outputs emitted before a later arithmetic error.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Values-Comparison.md ===
+# FEATURE: Comparison and Boolean Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implement jq equality, ordering, boolean logic, and truthiness semantics. |
+| Depends On  | FEATURE-Values-Model.md, FEATURE-Eval-Cartesian.md |
+| Provides    | equality, ordering, and boolean operators |
+| Consumes    | JSON value model, ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Comparison operates on jq values without coercion. Equality is structural and type-aware; ordering follows jq's total type ordering and recursively compares arrays and objects. Boolean operators evaluate generator outputs independently, while only `false` and `null` are false in conditional contexts.
+
+## Behaviors
+
+- `==` and `!=` distinguish booleans, numbers, strings, arrays, objects, and null.
+- Relational operators use jq's ordering rules.
+- `and`, `or`, and `not` return booleans and preserve generator multiplicity.
+- False/null truthiness is distinct from Python truthiness.
+- NaN and infinities participate in the corpus-defined comparison behavior.
+
+## Programmatic Acceptance
+
+=== AC comparison-equality ===
+Intent: The implementation passes the authoritative structural equality and inequality corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "==|!=|equality|structural equality"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC comparison-equality ===
+
+=== AC comparison-ordering ===
+Intent: The implementation passes the authoritative jq ordering and relational comparison corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "comparison|ordering| > | < | >= | <= |sort"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC comparison-ordering ===
+
+=== AC comparison-boolean ===
+Intent: The implementation passes the authoritative boolean, not, and truthiness corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     " and | or |not|truth|false/null"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC comparison-boolean ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never equate booleans with numeric values.
+- Do not use Python truthiness as a substitute for jq truthiness.
+- Preserve cartesian ordering when comparison operands generate multiple values.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Conditionals.md ===
+# FEATURE: Conditionals and Alternative Expressions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implement jq conditionals, defined-or fallback, and optional expressions. |
+| Depends On  | FEATURE-Values-Comparison.md, FEATURE-Eval-Cartesian.md |
+| Provides    | if/then/elif/else/end, //, ? |
+| Consumes    | ordered generator evaluator, comparison operators |
+
+## Questions
+
+- None.
+
+## Intent
+
+Conditional constructs operate over streams. Each result of a condition selects a branch according to jq truthiness; absent branches use identity. The defined-or operator suppresses false and null values only when no defined left result exists. The optional operator catches errors from its expression and produces no output.
+
+## Behaviors
+
+- `if`, `then`, `elif`, `else`, and `end` support multiple condition outputs.
+- An omitted `else` behaves as identity.
+- `a // b` evaluates the fallback only when the left stream has no defined value.
+- `EXP?` suppresses errors from `EXP` while retaining successful outputs.
+- Empty streams and false/null results backtrack according to jq generator semantics.
+
+## Programmatic Acceptance
+
+=== AC conditionals-branches ===
+Intent: The implementation passes the authoritative if/then/elif/else/end corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "if .* then|elif|else .* end|Possibly unterminated 'if'"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC conditionals-branches ===
+
+=== AC conditionals-defined-or ===
+Intent: The implementation passes the authoritative defined-or and fallback corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "//|defined.or|default|//="],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC conditionals-defined-or ===
+
+=== AC conditionals-optional ===
+Intent: The implementation passes the authoritative optional-expression and empty-stream corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     r"\?|optional|empty stream|try \.a"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC conditionals-optional ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve all successful outputs produced before a later branch error.
+- Do not confuse `//` with boolean `or`.
+- Optional expressions suppress runtime errors only for the expression carrying `?`.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Errors.md ===
+# FEATURE: Runtime Errors and Recovery
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implement jq runtime errors, recovery handlers, halt behavior, and output preservation. |
+| Depends On  | FEATURE-Control-Conditionals.md, FEATURE-CLI-Errors.md |
+| Provides    | try/catch, error, halt, halt_error |
+| Consumes    | ordered generator evaluator, executable exit mapping |
+
+## Questions
+
+- None.
+
+## Intent
+
+Runtime failures are structured control transfers carrying jq values or messages. `try EXP catch HANDLER` evaluates the handler with the error value; `try EXP` suppresses the error. `error`, `halt`, and `halt_error` have distinct output and process-termination semantics.
+
+The evaluator must preserve values emitted before a failure. The executable maps ordinary uncaught runtime failures to exit 5 while allowing `halt` to terminate successfully and `halt_error` to select its requested code.
+
+## Behaviors
+
+- `error` raises the current input and `error(message)` raises the supplied value.
+- `try/catch` recovers errors and continues generator evaluation where applicable.
+- `halt` stops without an error status.
+- `halt_error` writes the raw input to stderr and exits with its requested status.
+- Uncaught runtime errors produce exit 5 and diagnostics on stderr.
+- Previously emitted stdout values remain available after a runtime failure.
+
+## Programmatic Acceptance
+
+=== AC errors-try-catch ===
+Intent: The implementation passes the authoritative try/catch and error-value corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "try|catch|error\\(|try error|caught"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC errors-try-catch ===
+
+=== AC errors-halting ===
+Intent: The implementation passes the authoritative halt and halt_error corpus slice.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "halt(_error)?|halt_error"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC errors-halting ===
+
+=== AC errors-output-preservation ===
+Intent: The implementation passes the authoritative corpus cases that emit values before runtime failure.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select",
+     "outputs before|prior outputs|first\\(1,error|OK.*error|error.*catch"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC errors-output-preservation ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never discard values emitted before an uncaught runtime error.
+- Keep diagnostics on stderr; stdout contains only JSON result values.
+- Do not convert compile-time failures into runtime failures.
+- Do not invoke an external jq binary or third-party implementation.
+
+=== END ARTIFACT ===

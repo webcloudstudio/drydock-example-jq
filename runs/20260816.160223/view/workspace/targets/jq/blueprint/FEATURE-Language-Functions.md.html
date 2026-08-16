@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Language-Functions.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Language-Functions.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Language-Functions.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Language Functions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provides jq user-defined functions, parameters, closures, and recursion.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Frontend-Parser.md, FEATURE-Eval-Cartesian.md, FEATURE-Control-Recursion.md</td></tr><tr><td>Provides</td><td>def declarations and function calls</td></tr><tr><td>Consumes</td><td>parser and AST, generator evaluator, lexical scope</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq function definitions and calls with filter parameters, value parameters, arity, lexical scoping, redefinition, closures, and recursion.</p>
+<h2>Behavior</h2>
+<ul><li><code>def name: FILTER;</code> defines a zero-argument filter.</li><li>Named arguments are filters; <code>$</code>-prefixed arguments are value expressions.</li><li>Calls preserve generator backtracking and cartesian argument order.</li><li>Functions may recurse and capture lexically visible definitions and values.</li><li>Redefinition is scoped to subsequent references and keyed by function arity.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC functions-filter-arguments ===<br>Intent: Filter arguments are evaluated against the current pipeline value and may be reused.</p>
+<p>import json import subprocess</p>
+<p>payload = json.dumps([[1, 2], [10, 20]]) + &quot;\n&quot; program = &quot;def addvalue(f): f as $x | map(. + $x); addvalue(.[0])&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual == [[[1, 2, 1, 2], [10, 20, 1, 2]]] === END AC functions-filter-arguments ===</p>
+<p>=== AC functions-recursion ===<br>Intent: User-defined recursive functions calculate each requested factorial.</p>
+<p>import json import subprocess</p>
+<p>source = [1, 2, 3, 4] program = &quot;def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 6, 24]] === END AC functions-recursion ===</p>
+<p>=== AC functions-closures ===<br>Intent: Lexical closures retain captured values independently of later pipeline inputs.</p>
+<p>import json import subprocess</p>
+<p>program = &quot;2000 as $x | def f(x): 1 as $x | [$x, x]; f($x)&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=&#x27;&quot;input&quot;\n&#x27;, capture_output=True, text=True) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2000]] === END AC functions-closures ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Function arguments must remain filters unless explicitly declared as value parameters.</li><li>Function scope must be lexical and must not leak bindings into callers.</li><li>Do not use a third-party jq implementation or invoke a system jq binary.</li></ul></article>
+</main>
+</body>
+</html>

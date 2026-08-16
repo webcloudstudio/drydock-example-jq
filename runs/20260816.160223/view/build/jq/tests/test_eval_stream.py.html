@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_eval_stream.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_eval_stream.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_eval_stream.py">Raw file</a></div></header>
+<article class="doc"><pre>import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent.parent
+
+
+def invoke(program: str, value: object) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+
+
+def outputs(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_stream_fanout_preserves_every_value_and_order() -&gt; None:
+    result = invoke(&quot;.[]&quot;, [1, 2, 3])
+    assert result.returncode == 0
+    assert outputs(result) == [1, 2, 3]
+
+
+def test_pipeline_runs_downstream_once_per_upstream_value() -&gt; None:
+    result = invoke(&quot;.[] | . * 2&quot;, [1, 2, 3])
+    assert result.returncode == 0
+    assert outputs(result) == [2, 4, 6]
+
+
+def test_empty_stream_completes_without_output() -&gt; None:
+    result = invoke(&quot;empty&quot;, None)
+    assert result.returncode == 0
+    assert result.stdout == &quot;&quot;
+
+
+def test_comma_stream_is_left_to_right_for_each_binding() -&gt; None:
+    result = invoke(&quot;.[] as $x | ($x, $x + 1)&quot;, [10, 20])
+    assert result.returncode == 0
+    assert outputs(result) == [10, 11, 20, 21]
+
+
+def test_outputs_before_a_later_generator_error_are_retained() -&gt; None:
+    result = invoke(&quot;.[1, 0/0]&quot;, [&quot;first&quot;, &quot;second&quot;])
+    assert result.returncode == 5
+    assert outputs(result) == [&quot;second&quot;]
+</pre></article>
+</main>
+</body>
+</html>

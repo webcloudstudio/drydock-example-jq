@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/ERRORS.md</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
+<article class="doc"><h1>BIG ERRORS — action required</h1>
+<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-16T16:53:25+00:00</li><li>Execution ID: 20260816.165223.003Z-b06127a7</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: eval-cartesian-function, eval-cartesian-order</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.160223/workspace/targets/jq/evidence/block-9.md</li></ul>
+<h2>Diagnostic</h2>
+<p>Block &quot;Block 9 · Service&quot; [block-9] failed its acceptance criteria. Story &quot;Implement cartesian evaluation of multi-output arguments.&quot; [eval-cartesian] does not meet its own acceptance criteria:</p>
+<ul><li>AC eval-cartesian-function — Function arguments retain all combinations when each argument is a generator.</li></ul>
+<p>assertion: assert actual == expected → AssertionError raised at: eval-cartesian-function.py:14 process exit code: 1 values at failure: actual = [0, 1, 2, 0, 1, 2, 3, 1, 2, 1, 2, 3] expected = [0, 1, 2, 0, 1, 2, 3] check stderr: Traceback (most recent call last): File &quot;eval-cartesian-function.py&quot;, line 14, in &lt;module&gt; assert actual == expected ^^^^^^^^^^^^^^^^^^ … (13 more lines truncated)</p>
+<h2>Recovery</h2>
+<p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
+</main>
+</body>
+</html>

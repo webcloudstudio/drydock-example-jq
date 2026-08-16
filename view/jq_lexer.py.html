@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jq_lexer.py</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>jq_lexer.py</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../jq_lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Small lexical boundary; the parser owns jq grammar decisions.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Token:
+    kind: str
+    text: str
+
+
+class LexError(ValueError):
+    pass
+
+
+def tokenize(source: str) -&gt; list[Token]:
+    tokens: list[Token] = []
+    index = 0
+    while index &lt; len(source):
+        char = source[index]
+        if char.isspace():
+            index += 1
+        elif char in &quot;.[]|,():{}$&quot;:
+            tokens.append(Token(char, char))
+            index += 1
+        elif char == &#x27;&quot;&#x27;:
+            end = index + 1
+            escaped = False
+            while end &lt; len(source):
+                if source[end] == &#x27;&quot;&#x27; and not escaped:
+                    break
+                escaped = source[end] == &quot;\\&quot; and not escaped
+                if source[end] != &quot;\\&quot;:
+                    escaped = False
+                end += 1
+            if end &gt;= len(source):
+                raise LexError(&quot;unterminated string&quot;)
+            tokens.append(Token(&quot;STRING&quot;, source[index : end + 1]))
+            index = end + 1
+        else:
+            end = index
+            while end &lt; len(source) and not source[end].isspace() and source[end] not in &quot;.[]|,():{}$\&quot;&quot;:
+                end += 1
+            text = source[index:end]
+            if text in {&quot;true&quot;, &quot;false&quot;, &quot;null&quot;}:
+                kind = &quot;LITERAL&quot;
+            elif text.replace(&quot;.&quot;, &quot;&quot;, 1).replace(&quot;-&quot;, &quot;&quot;, 1).isdigit():
+                kind = &quot;LITERAL&quot;
+            else:
+                kind = &quot;WORD&quot;
+            tokens.append(Token(kind, text))
+            index = end
+    tokens.append(Token(&quot;EOF&quot;, &quot;&quot;))
+    return tokens
+</pre></article>
+</main>
+</body>
+</html>

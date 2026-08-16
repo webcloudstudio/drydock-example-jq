@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.161037.528Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.161037.528Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.161037.528Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Control-Reductions.md ===
+# FEATURE: Control Reductions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq reductions and bounded generator controls. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Eval-Stream.md, FEATURE-Control-Errors.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth |
+| Consumes    | ordered generator evaluator, runtime error handling |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement reduction and bounded-generator semantics while preserving jq stream ordering, backtracking, short-circuiting, and cartesian argument evaluation.
+
+## Behavior
+
+- `reduce EXP as $x (INIT; UPDATE)` evaluates each output of `EXP` in order and feeds the accumulator through `UPDATE`.
+- `foreach` emits each extracted intermediate result.
+- `limit`, `skip`, `first`, `last`, and `nth` consume generator output without evaluating unnecessary values.
+- Multiple-output arguments produce jq-defined cartesian combinations.
+- Negative bounds that jq rejects raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC reductions-basic ===
+Intent: Reductions and foreach preserve ordered accumulation and extraction.
+
+import json
+import subprocess
+
+source = [1, 2, 3]
+payload = json.dumps(source) + &quot;\n&quot;
+programs = [
+    (&quot;reduce .[] as $x (0; . + $x)&quot;, [sum(source)]),
+    (&quot;[foreach .[] as $x (0; . + $x)]&quot;, [1, 3, 6]),
+]
+for program, expected in programs:
+    result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True)
+    assert result.returncode == 0
+    actual = [json.loads(line) for line in result.stdout.splitlines()]
+    assert actual == expected
+=== END AC reductions-basic ===
+
+=== AC reductions-bounds ===
+Intent: Bounded generator controls select the requested ordered outputs.
+
+import json
+import subprocess
+
+source = list(range(10))
+payload = json.dumps(source) + &quot;\n&quot;
+cases = [
+    (&quot;[limit(3; .[])]&quot;, source[:3]),
+    (&quot;[skip(3; .[])]&quot;, source[3:]),
+    (&quot;[first(.[]), last(.[]), nth(5; .[])]&quot;, [source[0], source[-1], source[5]]),
+]
+for program, expected in cases:
+    result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [expected]
+=== END AC reductions-bounds ===
+
+=== AC reductions-errors ===
+Intent: Invalid negative bounds fail at runtime with jq&#x27;s runtime exit class.
+
+import subprocess
+
+for program in (&quot;limit(-1; error)&quot;, &quot;skip(-1; error)&quot;, &quot;nth(-1; range(3))&quot;):
+    result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, f&quot;try ({program}) catch .&quot;], input=&quot;null\n&quot;, capture_output=True, text=True)
+    assert result.returncode == 0
+    assert result.stdout.splitlines()
+=== END AC reductions-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve outputs already emitted before a later generator or update failure.
+- Do not collapse streams into a single value during reduction control.
+- Do not alter the supplied conformance corpus or harness.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Recursion.md ===
+# FEATURE: Control Recursion
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq recursive generators and lexical labelled control flow. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Control-Errors.md, FEATURE-Control-Reductions.md |
+| Provides    | while, until, repeat, recurse, label, break |
+| Consumes    | ordered generator evaluator, runtime error handling |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement recursive generator constructs and lexical labels without losing stream order or allowing invalid label access.
+
+## Behavior
+
+- `while` emits each value while its condition is true.
+- `until` repeatedly applies its update until its condition becomes true.
+- `recurse` emits the current value and recursively produced descendants.
+- `repeat` continues until an error terminates it.
+- `label` establishes a lexical break target; `break` exits the labelled computation.
+- A break referring to no visible label is a compile-time failure.
+
+## Programmatic Acceptance
+
+=== AC recursion-generators ===
+Intent: Recursive generators, while, and until produce the expected finite streams.
+
+import json
+import subprocess
+
+cases = [
+    (&quot;[while(. &lt; 100; . * 2)]&quot;, &quot;1\n&quot;, [1, 2, 4, 8, 16, 32, 64]),
+    (&quot;[recurse(.[]?)]&quot;, json.dumps([1, [2]]) + &quot;\n&quot;, [[1, [2]], 1, [2], 2]),
+    (&quot;[.,1] | until(.[0] &lt; 1; [.[0] - 1, .[1] * .[0]]) | .[1]&quot;, &quot;4\n&quot;, [24]),
+]
+for program, payload, expected in cases:
+    result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == expected
+=== END AC recursion-generators ===
+
+=== AC recursion-labels ===
+Intent: Lexical labels and break preserve values emitted before the break.
+
+import json
+import subprocess
+
+source = [0, 1, 2]
+program = &#x27;[(label $out | .[] | if . &gt; 1 then break $out else . end), &quot;done&quot;]&#x27;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[0, 1, &quot;done&quot;]]
+=== END AC recursion-labels ===
+
+=== AC recursion-invalid-label ===
+Intent: A break without a visible lexical label is rejected during compilation.
+
+import subprocess
+
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;break $missing&quot;], input=&quot;null\n&quot;, capture_output=True, text=True)
+assert result.returncode == 3
+=== END AC recursion-invalid-label ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Recursion must preserve generator ordering and avoid unbounded eager materialization where tail evaluation is possible.
+- Labels are lexical; a binding with the same name must not create an implicit break target.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Language-Functions.md ===
+# FEATURE: Language Functions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq user-defined functions, parameters, closures, and recursion. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Frontend-Parser.md, FEATURE-Eval-Cartesian.md, FEATURE-Control-Recursion.md |
+| Provides    | def declarations and function calls |
+| Consumes    | parser and AST, generator evaluator, lexical scope |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq function definitions and calls with filter parameters, value parameters, arity, lexical scoping, redefinition, closures, and recursion.
+
+## Behavior
+
+- `def name: FILTER;` defines a zero-argument filter.
+- Named arguments are filters; `$`-prefixed arguments are value expressions.
+- Calls preserve generator backtracking and cartesian argument order.
+- Functions may recurse and capture lexically visible definitions and values.
+- Redefinition is scoped to subsequent references and keyed by function arity.
+
+## Programmatic Acceptance
+
+=== AC functions-filter-arguments ===
+Intent: Filter arguments are evaluated against the current pipeline value and may be reused.
+
+import json
+import subprocess
+
+payload = json.dumps([[1, 2], [10, 20]]) + &quot;\n&quot;
+program = &quot;def addvalue(f): f as $x | map(. + $x); addvalue(.[0])&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == [[[1, 2, 1, 2], [10, 20, 1, 2]]]
+=== END AC functions-filter-arguments ===
+
+=== AC functions-recursion ===
+Intent: User-defined recursive functions calculate each requested factorial.
+
+import json
+import subprocess
+
+source = [1, 2, 3, 4]
+program = &quot;def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 6, 24]]
+=== END AC functions-recursion ===
+
+=== AC functions-closures ===
+Intent: Lexical closures retain captured values independently of later pipeline inputs.
+
+import json
+import subprocess
+
+program = &quot;2000 as $x | def f(x): 1 as $x | [$x, x]; f($x)&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=&#x27;&quot;input&quot;\n&#x27;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2000]]
+=== END AC functions-closures ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function arguments must remain filters unless explicitly declared as value parameters.
+- Function scope must be lexical and must not leak bindings into callers.
+- Do not use a third-party jq implementation or invoke a system jq binary.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Language-Bindings.md ===
+# FEATURE: Language Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq lexical variable bindings and destructuring patterns. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Language-Functions.md, FEATURE-Eval-Cartesian.md |
+| Provides    | as bindings and array/object patterns |
+| Consumes    | evaluator, function scope, generator semantics |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement `as` bindings and array/object destructuring with lexical scope, generator-aware evaluation, keyword-compatible names, and null values for absent pattern members.
+
+## Behavior
+
+- `EXP as $name | BODY` evaluates `BODY` with the original input and each bound output.
+- Array patterns bind positional elements and use null for missing positions.
+- Object patterns bind named fields and nested patterns.
+- Bindings are immutable and lexically scoped.
+- Pattern bindings preserve upstream generator ordering.
+
+## Programmatic Acceptance
+
+=== AC bindings-basic ===
+Intent: Scalar bindings retain their value across a pipeline and repeated references.
+
+import json
+import subprocess
+
+payload = &quot;null\n&quot;
+program = &quot;1 as $x | 2 as $y | [$x, $y, $x]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 1]]
+=== END AC bindings-basic ===
+
+=== AC bindings-patterns ===
+Intent: Array and object destructuring bind present fields and null-fill absent array members.
+
+import json
+import subprocess
+
+source = [[1], {&quot;c&quot;: 3}]
+program = &quot;. as [$a, $b] | [$a, $b]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program), input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[[1], None], [{&quot;c&quot;: 3}, None]]
+=== END AC bindings-patterns ===
+
+=== AC bindings-nested ===
+Intent: Nested object and array patterns expose their declared values in lexical scope.
+
+import json
+import subprocess
+
+source = {&quot;a&quot;: 1, &quot;b&quot;: [2, {&quot;d&quot;: 3}]}
+program = &quot;. as {$a, b: [$c, {$d}]} | [$a, $c, $d]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [[1, 2, 3]]
+=== END AC bindings-nested ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Bindings must not be mutable assignments.
+- Bindings must not remain visible outside their lexical scope.
+- Missing pattern members must bind null rather than raising an incidental host-language error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Language-Alternation.md ===
+# FEATURE: Language Alternation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq destructuring alternatives with null bindings and error fallback. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Language-Bindings.md, FEATURE-Control-Errors.md |
+| Provides    | ?// destructuring alternative |
+| Consumes    | lexical bindings, runtime error handling |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the `?//` destructuring alternative operator, including pattern selection, shared variable visibility, null exposure for variables absent from the selected pattern, and fallback after downstream errors.
+
+## Behavior
+
+- Alternatives are attempted in order.
+- The first pattern that successfully destructures the input supplies the downstream bindings.
+- Variables declared only by another alternative are visible as null.
+- Errors during downstream evaluation cause the next alternative to be attempted when defined by jq semantics.
+- The final alternative propagates its runtime error.
+
+## Programmatic Acceptance
+
+=== AC alternation-shapes ===
+Intent: Destructuring alternatives select the matching object or array shape and expose shared bindings.
+
+import json
+import subprocess
+
+source = [{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: {&quot;d&quot;: 3}}, [4, {&quot;b&quot;: 5, &quot;c&quot;: 6}, 7]]
+program = &quot;.[] as {$a, b: [$c, {$d}]} ?// [$a, {$b}, $e] | [$a, $b, $c, $d, $e]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == [[1, None, 2, 3, None], [4, 5, None, None, 7]]
+=== END AC alternation-shapes ===
+
+=== AC alternation-null-bindings ===
+Intent: Variables declared only by the unsuccessful alternative are available as null.
+
+import json
+import subprocess
+
+source = [[3]]
+program = &quot;.[] as [$a] ?// [$b] | {$a, $b}&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [{&quot;a&quot;: None, &quot;b&quot;: 3}]
+=== END AC alternation-null-bindings ===
+
+=== AC alternation-runtime-fallback ===
+Intent: A downstream error in an earlier pattern can select a later successful pattern.
+
+import json
+import subprocess
+
+source = [[3]]
+program = &quot;.[] as [$a] ?// [$b] | if $a != null then error(\&quot;err\&quot;) else {$a, $b} end&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [{&quot;a&quot;: None, &quot;b&quot;: 3}]
+=== END AC alternation-runtime-fallback ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not treat a merely absent optional field as a failed alternative when jq binds it as null.
+- Preserve the final alternative&#x27;s runtime errors.
+- Keep alternative bindings lexically scoped to the downstream expression.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,366 @@
+=== BEGIN ARTIFACT FEATURE-Builtins-Regex.md ===
+# FEATURE: Regular-Expression Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provide jq-compatible regular-expression matching and substitution builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Builtins-Strings.md, FEATURE-Language-Functions.md |
+| Provides    | test, match, capture, scan, split, splits, sub, gsub |
+| Consumes    | evaluator and jq string values |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the regex builtin family using Python's standard-library `re` module. Support jq regex flags, named and unnamed captures, global matching, UTF-8 codepoint offsets, regex splitting, and substitution interpolation.
+
+## Behavior
+
+- `test` returns Boolean match results.
+- `match` emits match objects with `offset`, `length`, `string`, and `captures`.
+- `capture` returns named captures as an object.
+- `scan` emits matched strings or capture arrays.
+- `split` returns an array; `splits` emits a stream.
+- `sub` replaces the first matching region; `gsub` replaces all non-overlapping regions.
+- Invalid patterns, unsupported inputs, and invalid flags raise jq runtime errors.
+- Generator-valued replacement expressions preserve jq output ordering.
+
+## Programmatic Acceptance
+
+=== AC regex-runtime ===
+Intent: The implementation supports matching, captures, scanning, splitting, and substitution through the public jq executable.
+
+import json
+import subprocess
+
+program = '[test("a+"), match("(?<x>a+)"), capture("(?<x>a+)-(?<y>b+)"), [scan("[ab]+")], split(", "), sub("a"; "X"), gsub("a"; "X")]'
+source = '"aa-bb, ab"'
+result = subprocess.run(["./jq", "-c", program], input=source, capture_output=True, text=True)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual[0] is True
+assert actual[1]["string"] == "aa"
+assert actual[2]["x"] == "aa"
+assert actual[2]["y"] == "bb"
+assert actual[3] == ["aa", "bb"]
+assert actual[4] == ["aa-bb", "ab"]
+assert actual[5] == "Xa-bb, ab"
+assert actual[6] == "XX-bb, Xb"
+=== END AC regex-runtime ===
+
+=== AC regex-errors ===
+Intent: Invalid regular-expression input produces the runtime failure exit code.
+
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", 'test("[")'],
+    input='"value"',
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 5
+=== END AC regex-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library regex facilities.
+- Do not shell out to jq or use third-party regex or jq libraries.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Formats.md ===
+# FEATURE: Formats and Date Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provide jq-compatible serialization, escaping, encoding, and date helpers. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Values-Model.md, FEATURE-Builtins-Strings.md |
+| Provides    | JSON/text/URI/HTML/CSV/TSV/shell/base64 formats, date and time helpers |
+| Consumes    | jq values and string builtins |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq format filters and standard-library date/time functions without external dependencies.
+
+## Behavior
+
+Support `tojson`, `fromjson`, `@text`, `@json`, `@html`, `@uri`, `@urid`, `@csv`, `@tsv`, `@sh`, `@base64`, and `@base64d`. Implement ISO-8601 conversion plus `strptime`, `strftime`, `strflocaltime`, `gmtime`, `localtime`, and `mktime` where supported by the standard library.
+
+Formatting errors and invalid input types produce runtime errors. JSON output remains compact and structurally valid.
+
+## Programmatic Acceptance
+
+=== AC formats-roundtrip ===
+Intent: JSON, URI, HTML, CSV, TSV, shell, and base64 formats produce reversible or contract-defined values.
+
+import json
+import subprocess
+
+source = '"!()<>&\'\\"\\t"'
+program = '[@text, @json, @html, (@uri | @urid), ([1,.] | @csv), ([1,.] | @tsv), (@base64 | @base64d)]'
+result = subprocess.run(["./jq", "-c", program], input=source, capture_output=True, text=True)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+values = json.loads(result.stdout)
+assert values[0] == json.loads(source)
+assert json.loads(values[1]) == json.loads(source)
+assert values[2] == "!()&lt;&gt;&amp;&apos;&quot;\\t"
+assert values[3] == json.loads(source)
+assert values[4] == "1,\"!()<>&'\"\"\\t\""
+assert values[5] == "1\\t!()<>&'\"\\\\t"
+assert values[6] == json.loads(source)
+=== END AC formats-roundtrip ===
+
+=== AC dates ===
+Intent: ISO date conversion and low-level date formatting round-trip through the jq executable.
+
+import json
+import subprocess
+
+date_text = "2015-03-05T23:51:47Z"
+program = 'fromdateiso8601 | todateiso8601'
+result = subprocess.run(["./jq", "-c", program], input=json.dumps(date_text), capture_output=True, text=True)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+assert json.loads(result.stdout) == date_text
+=== END AC dates ===
+
+=== AC format-errors ===
+Intent: Invalid format input reports a runtime failure.
+
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", '@csv'],
+    input='"not-an-array"',
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 5
+=== END AC format-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library encoding, URL, JSON, shell-escaping, and datetime facilities.
+- Do not introduce locale-dependent behavior where UTC behavior is specified.
+- Do not add third-party runtime dependencies.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Utilities.md ===
+# FEATURE: Traversal, Streaming, Environment, and Utility Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provide jq traversal, streaming, environment, debugging, and utility builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Builtins-Collections.md, FEATURE-Builtins-Formats.md, FEATURE-Paths-Discovery.md, FEATURE-Control-Recursion.md |
+| Provides    | walk, transpose, bsearch, tostream, fromstream, truncate_stream, env, debug, utility builtins |
+| Consumes    | evaluator, paths, values, and string builtins |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement `walk`, `transpose`, `bsearch`, `tostream`, `fromstream`, `truncate_stream`, `env`, `debug`, `stderr`, `input`, `inputs`, `builtins`, and related documented utility functions. Preserve generator order and jq stream representations.
+
+## Behavior
+
+- `walk` transforms children before their containing arrays or objects.
+- `transpose` pads jagged rows with null.
+- `bsearch` returns an index or insertion-point encoding.
+- `tostream` and `fromstream` round-trip supported JSON values.
+- `env` exposes the process environment without mutating it.
+- `debug` writes diagnostics to stderr while preserving its input output.
+- Utility functions preserve jq stream and error semantics.
+
+## Programmatic Acceptance
+
+=== AC utilities ===
+Intent: Traversal, matrix, search, streaming, and environment utilities operate through the jq executable.
+
+import json
+import os
+import subprocess
+
+program = '[walk(if type == "array" then length else . end), transpose, bsearch(2), (tostream | fromstream), (env | has("PATH"))]'
+source = '[[[1,2],[3]], [[1],[2,3]], [1,2,3]]'
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=source,
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ_ACCEPTANCE_MARKER": "present"},
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+values = json.loads(result.stdout)
+assert values[0] == [2, 1]
+assert values[1] == [[1, 2], [3, None]]
+assert values[2] == -1
+assert values[3] == json.loads(source)
+assert values[4] is True
+=== END AC utilities ===
+
+=== AC debug-preserves-output ===
+Intent: Debugging writes diagnostics without changing the value stream.
+
+import json
+import subprocess
+
+source = "42"
+result = subprocess.run(
+    ["./jq", "-c", "debug"],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+assert json.loads(result.stdout) == json.loads(source)
+assert result.stderr != ""
+=== END AC debug-preserves-output ===
+
+=== AC environment ===
+Intent: Environment access reflects an inherited environment variable.
+
+import json
+import os
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "env.JQ_ACCEPTANCE_MARKER"],
+    input="null",
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ_ACCEPTANCE_MARKER": "present"},
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+assert json.loads(result.stdout) == "present"
+=== END AC environment ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve input and output ordering for all generator and streaming utilities.
+- Extend inherited environments when invoking tools; never replace the process environment.
+- Use only standard-library functionality.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Verification-Assets.md ===
+# FEATURE: Verification Assets
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Preserve the supplied jq specifications, corpus, exclusions, and conformance harness under sources. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | sources/jq.test, sources/run_conformance.py, sources/full_test.sh, sources/exclusions.txt, sources/jq-manual.txt, sources/parser.y, sources/lexer.l, sources/builtin.jq |
+| Consumes    | supplied source assets |
+
+## Questions
+
+- None.
+
+## Scope
+
+Stage each supplied asset byte-for-byte at its documented build-relative path under `sources/`. The corpus, exclusions, scoring script, and conformance runner are read-only grading assets and must remain unchanged.
+
+## Programmatic Acceptance
+
+- None. This is a governed byte-for-byte staging operation; Drydock verifies the declared copies and the terminal conformance story executes the preserved harness.
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not modify `sources/jq.test`, `sources/run_conformance.py`, `sources/full_test.sh`, or `sources/exclusions.txt`.
+- Do not filter, skip, reinterpret, or rewrite corpus cases.
+- Do not add module-loader exclusions beyond the supplied exclusions file.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Verification-Full.md ===
+# FEATURE: Full Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Prove the completed interpreter against the complete supplied jq conformance corpus. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CLI-Entrypoint.md, FEATURE-CLI-Errors.md, FEATURE-Frontend-Validation.md, FEATURE-Eval-Cartesian.md, FEATURE-Values-Comparison.md, FEATURE-Control-Recursion.md, FEATURE-Language-Alternation.md, FEATURE-Paths-Assignment.md, FEATURE-Builtins-Utilities.md, FEATURE-Verification-Assets.md |
+| Provides    | full conformance acceptance |
+| Consumes    | executable jq and all interpreter capabilities |
+
+## Questions
+
+- None.
+
+## Scope
+
+Run the supplied acceptance command from the completed application root:
+
+`sh sources/full_test.sh`
+
+This is the sole full-suite release gate. It must execute the unmodified corpus and exclusions, preserve diagnostics for investigation, and use the harness exit status as the verdict.
+
+## Programmatic Acceptance
+
+=== AC full-conformance ===
+Intent: The completed executable passes the complete supplied jq 1.8.2 conformance suite.
+
+Suite: full
+Requires: executable=sh; scope=test
+Requires: executable=python3; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+=== END AC full-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- This is the only story acceptance that runs the complete suite.
+- Do not assert on summary text, case counts, stdout contents, or stderr wording.
+- Do not modify the supplied corpus, exclusions, runner, or scoring script.
+- The release verdict is the supplied harness exit status.
+=== END ARTIFACT ===

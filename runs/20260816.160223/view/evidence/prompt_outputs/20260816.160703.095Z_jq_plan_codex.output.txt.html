@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.160703.095Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.160703.095Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.160703.095Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Frontend-Parser.md ===
+# FEATURE: Frontend Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Parse jq programs into an executable abstract syntax tree. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Frontend-Lexer.md |
+| Provides    | jq parser and AST |
+| Consumes    | jq tokenizer |
+
+## Questions
+
+- None.
+
+## Intent
+
+The parser consumes lexer tokens and constructs AST nodes for jq filters, operators, constructors, control flow, functions, bindings, assignments, and module syntax. It must preserve jq precedence, associativity, generator structure, and source locations needed by diagnostics.
+
+## Scope
+
+Supported grammar includes:
+
+- identity, literals, fields, indexing, iteration, slicing, pipes, commas, and parentheses;
+- arrays, objects, string interpolation, formats, and unary operators;
+- arithmetic, comparison, boolean, alternative, and assignment operators;
+- conditionals, `try`, `reduce`, `foreach`, labels, bindings, and function definitions;
+- module/import syntax sufficient to validate supported and rejected forms.
+
+The parser must not evaluate programs or perform filesystem module loading.
+
+## Programmatic Acceptance
+
+=== AC frontend-parser-basic ===
+Intent: The parser accepts representative jq expressions and the executable evaluates them successfully.
+
+import json
+import subprocess
+
+source = &#x27;[.[] | . + 1]&#x27;
+input_value = [1, 2, 3]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = [value + 1 for value in input_value]
+assert actual == expected
+=== END AC frontend-parser-basic ===
+
+=== AC frontend-parser-constructors ===
+Intent: The parser accepts object construction, interpolation, and precedence-bearing expressions.
+
+import json
+import subprocess
+
+source = &#x27;{value: (.x + 1), text: &quot;item \\(.x)&quot;}&#x27;
+input_value = {&quot;x&quot;: 4}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual[&quot;value&quot;] == input_value[&quot;x&quot;] + 1
+assert actual[&quot;text&quot;] == &quot;item &quot; + str(input_value[&quot;x&quot;])
+=== END AC frontend-parser-constructors ===
+
+=== AC frontend-parser-definitions ===
+Intent: The parser accepts function definitions, bindings, reductions, and assignments.
+
+import json
+import subprocess
+
+source = &#x27;def inc: . + 1; reduce .[] as $x (0; . + $x) | inc&#x27;
+input_value = [1, 2, 3]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual == sum(input_value) + 1
+=== END AC frontend-parser-definitions ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator-producing AST structure and operator precedence.
+- Do not shell out to jq or use a third-party parser.
+- Do not load module files while parsing.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Frontend-Validation.md ===
+# FEATURE: Frontend Validation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Reject invalid jq programs before evaluation with compile-status diagnostics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Frontend-Parser.md |
+| Provides    | static validation and compile diagnostics |
+| Consumes    | jq parser and AST |
+
+## Questions
+
+- None.
+
+## Intent
+
+Compilation must fail before evaluation when syntax, bindings, labels, object keys, or module forms violate jq&#x27;s grammar and static rules. Compile failures use exit status `3`; diagnostics are written to stderr and are not part of the behavioral contract.
+
+## Validation Rules
+
+The compiler rejects:
+
+- malformed or incomplete expressions;
+- undefined variables and invalid break labels;
+- non-string constant object keys;
+- invalid module metadata and non-constant import metadata;
+- malformed module syntax and unsupported module-loader forms when their grammar is invalid.
+
+Valid programs must not be rejected during validation.
+
+## Programmatic Acceptance
+
+=== AC frontend-validation-syntax ===
+Intent: Malformed jq syntax is rejected with the compile-error status.
+
+import subprocess
+
+invalid_programs = [&quot;{&quot;, &quot;}&quot;, &quot;1 +&quot;, &quot;if true then 1&quot;]
+for source in invalid_programs:
+    result = subprocess.run(
+        [&quot;./jq&quot;, &quot;-c&quot;, source],
+        input=&quot;null\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+=== END AC frontend-validation-syntax ===
+
+=== AC frontend-validation-bindings ===
+Intent: Undefined variables and invisible labels are rejected before runtime.
+
+import subprocess
+
+invalid_programs = [
+    &quot;. as $known | $missing&quot;,
+    &quot;break $missing&quot;,
+]
+for source in invalid_programs:
+    result = subprocess.run(
+        [&quot;./jq&quot;, &quot;-c&quot;, source],
+        input=&quot;null\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+=== END AC frontend-validation-bindings ===
+
+=== AC frontend-validation-object-keys ===
+Intent: Invalid constant object keys are rejected at compile time.
+
+import subprocess
+
+source = &quot;{(0): 1}&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC frontend-validation-object-keys ===
+
+=== AC frontend-validation-valid-program ===
+Intent: Valid programs pass static validation and reach normal execution.
+
+import json
+import subprocess
+
+source = &quot;. as $value | {value: $value}&quot;
+input_value = {&quot;a&quot;: 1}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout)[&quot;value&quot;] == input_value
+=== END AC frontend-validation-valid-program ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must use exit status `3`, not runtime status `5`.
+- Diagnostics go to stderr and are never required to match exact jq wording.
+- Validation must complete before any program output is emitted.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Eval-Stream.md ===
+# FEATURE: Eval Stream
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Evaluate jq filters as ordered zero-, one-, or many-valued streams. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Frontend-Parser.md, FEATURE-Frontend-Validation.md |
+| Provides    | ordered generator evaluator |
+| Consumes    | parser and AST |
+
+## Questions
+
+- None.
+
+## Intent
+
+The evaluator&#x27;s fundamental contract is stream evaluation. Every filter receives one input and may produce zero, one, or many outputs. Downstream filters run once for each upstream output, preserving jq ordering and outputs emitted before a later runtime error.
+
+## Stream Semantics
+
+The evaluator must support:
+
+- empty streams;
+- ordered comma streams;
+- pipeline fan-out;
+- nested collection of streams;
+- independent processing of multiple JSON inputs;
+- runtime failure after earlier outputs without losing those outputs.
+
+## Programmatic Acceptance
+
+=== AC eval-stream-fanout ===
+Intent: A generator pipeline preserves every upstream value and its order.
+
+import json
+import subprocess
+
+input_value = [1, 2, 3]
+source = &quot;.[]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == input_value
+=== END AC eval-stream-fanout ===
+
+=== AC eval-stream-pipeline ===
+Intent: Downstream filters execute once for each upstream generator output.
+
+import json
+import subprocess
+
+input_value = [1, 2, 3]
+source = &quot;.[] | . * 2&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [value * 2 for value in input_value]
+assert actual == expected
+=== END AC eval-stream-pipeline ===
+
+=== AC eval-stream-empty ===
+Intent: The empty filter produces no output while completing successfully.
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;empty&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout == &quot;&quot;
+=== END AC eval-stream-empty ===
+
+=== AC eval-stream-order ===
+Intent: Comma composition preserves left-to-right stream order.
+
+import json
+import subprocess
+
+input_value = [10, 20]
+source = &quot;.[] as $x | ($x, $x + 1)&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [item for value in input_value for item in (value, value + 1)]
+assert actual == expected
+=== END AC eval-stream-order ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not collapse streams into a single value.
+- Preserve output ordering and values emitted before runtime errors.
+- Do not implement evaluation by delegating to a system jq binary.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Eval-Core.md ===
+# FEATURE: Eval Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implement jq&#x27;s core composition, construction, iteration, and indexing operations. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Eval-Stream.md |
+| Provides    | identity, literals, pipes, commas, iteration, collection, empty, indexing, slicing |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+The core evaluator executes the AST operations shared by all later jq features. It must implement identity and literals, composition, collection, iteration over arrays and objects, field and computed indexing, optional access, and array or string slices.
+
+## Core Behaviors
+
+- Identity returns the current value.
+- Pipes feed every left-hand output into the right-hand filter.
+- Commas concatenate output streams.
+- Array collection gathers all outputs into one array.
+- Iteration emits array elements or object values.
+- Missing object fields produce null.
+- Slices use jq&#x27;s inclusive-start, exclusive-end behavior and support omitted or negative bounds.
+
+## Programmatic Acceptance
+
+=== AC eval-core-identity ===
+Intent: Identity and literal filters return their input-derived and constant values.
+
+import json
+import subprocess
+
+input_value = {&quot;x&quot;: 7}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;., 3&quot;],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == [input_value, 3]
+=== END AC eval-core-identity ===
+
+=== AC eval-core-collection ===
+Intent: Collection gathers all outputs of a generator into one array.
+
+import json
+import subprocess
+
+input_value = [1, 2, 3]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;[.[]]&quot;],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == input_value
+=== END AC eval-core-collection ===
+
+=== AC eval-core-indexing ===
+Intent: Field, computed index, and iteration access the corresponding input values.
+
+import json
+import subprocess
+
+input_value = {&quot;items&quot;: [4, 5], &quot;name&quot;: &quot;jq&quot;}
+source = &quot;[.name, .items[1], [.items[]]]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual[0] == input_value[&quot;name&quot;]
+assert actual[1] == input_value[&quot;items&quot;][1]
+assert actual[2] == input_value[&quot;items&quot;]
+=== END AC eval-core-indexing ===
+
+=== AC eval-core-slices ===
+Intent: Array and string slicing follows jq&#x27;s bounds and ordering semantics.
+
+import json
+import subprocess
+
+array_value = [0, 1, 2, 3, 4]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[1:4]&quot;],
+    input=json.dumps(array_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == array_value[1:4]
+
+text_value = &quot;abcdef&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[-2:]&quot;],
+    input=json.dumps(text_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == text_value[-2:]
+=== END AC eval-core-slices ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve jq stream ordering when collecting or iterating.
+- Optional access suppresses access errors without suppressing valid values.
+- Do not mutate input values during indexing or collection.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Eval-Cartesian.md ===
+# FEATURE: Eval Cartesian
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Evaluate multi-output operator and function arguments in jq cartesian order. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Eval-Core.md |
+| Provides    | cartesian argument evaluation |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Expressions that combine generator-valued arguments evaluate every output combination in jq&#x27;s defined order. This applies to binary operators, function arguments, and constructors. Each argument is evaluated against the same input context before combinations are emitted.
+
+## Programmatic Acceptance
+
+=== AC eval-cartesian-binary ===
+Intent: Binary operators produce the cartesian product of multi-output operands.
+
+import json
+import subprocess
+
+input_value = [1, 2]
+source = &quot;.[] + .[]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [left + right for left in input_value for right in input_value]
+assert actual == expected
+=== END AC eval-cartesian-binary ===
+
+=== AC eval-cartesian-function ===
+Intent: Function arguments retain all combinations when each argument is a generator.
+
+import json
+import subprocess
+
+source = &#x27;range(0, 1; 3, 4)&#x27;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = list(range(0, 3)) + list(range(0, 4))
+assert actual == expected
+=== END AC eval-cartesian-function ===
+
+=== AC eval-cartesian-constructor ===
+Intent: Array constructors collect every output from generator-valued elements in order.
+
+import json
+import subprocess
+
+input_value = [2, 4]
+source = &quot;[.[], .[] + 1]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = input_value + [value + 1 for value in input_value]
+assert actual == expected
+=== END AC eval-cartesian-constructor ===
+
+=== AC eval-cartesian-order ===
+Intent: Multiple input values are evaluated independently without cross-input mixing.
+
+import json
+import subprocess
+
+input_values = [2, 5]
+source = &quot;.[]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, source],
+    input=&quot;\n&quot;.join(json.dumps(value) for value in input_values) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = input_values
+assert actual == expected
+=== END AC eval-cartesian-order ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve jq-defined nesting and left-to-right ordering.
+- Evaluate each generator argument against the correct input context.
+- Do not deduplicate or collapse repeated cartesian outputs.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

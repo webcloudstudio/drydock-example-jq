@@ -1,0 +1,25 @@
+<reusable-compact filename="full_test.sh">
+Requires executable `./jq`; runs `python3 sources/run_conformance.py` with `JQ="$PWD/jq"`. Exit status is the acceptance verdict.
+</reusable-compact>
+
+<reusable-compact filename="run_conformance.py">
+Runs newline-delimited jq corpus cases, compares structured JSON outputs, requires compile errors to exit 3 and runtime errors to exit 5, and returns 0 only when all non-skipped cases pass.
+</reusable-compact>
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_cli.py
+- jq_lexer.py
+- jq_parser.py
+- jq_evaluator.py
+- tests/test_architecture.py
+
+SUMMARY:
+CLI acceptance tests pass: arithmetic, multiple inputs, compact output, and generator ordering. Project tests: 6 passed. Full conformance timed out after 25 seconds because the existing interpreter remains incomplete beyond this CLI block.
+
+BLOCKERS:
+- Full `sources/full_test.sh` conformance does not complete successfully.
+
+FAILURE_SUMMARY: Full conformance suite timed out.
+FAILURE_DETAIL: The CLI block is implemented and focused tests pass, but broader interpreter constructs cause the staged conformance run to exceed the timeout; complete the interpreter core before rerunning.

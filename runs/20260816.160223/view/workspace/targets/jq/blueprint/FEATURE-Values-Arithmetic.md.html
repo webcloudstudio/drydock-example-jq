@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Values-Arithmetic.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Values-Arithmetic.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Values-Arithmetic.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Arithmetic and Type-Dependent Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implement jq arithmetic, merge, repetition, division, modulo, and negation semantics.</td></tr><tr><td>Depends On</td><td>FEATURE-Values-Model.md, FEATURE-Eval-Cartesian.md</td></tr><tr><td>Provides</td><td>arithmetic, merge, string, and array operators</td></tr><tr><td>Consumes</td><td>JSON value model, ordered generator evaluator</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Arithmetic operators evaluate both operands as jq filters over the same input and preserve generator ordering. Operators dispatch by jq value type: numeric arithmetic, array concatenation/subtraction, string concatenation/repetition/splitting, shallow object addition, recursive object multiplication, and null identity behavior.</p>
+<p>Invalid type combinations and division or remainder by zero raise runtime errors without losing values already emitted.</p>
+<h2>Behaviors</h2>
+<ul><li><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, and unary <code>-</code> follow jq&#x27;s type-dependent rules.</li><li>Object multiplication recursively merges nested objects.</li><li>String multiplication and division implement repetition and splitting.</li><li>Array subtraction removes matching elements.</li><li>Numeric overflow, NaN, infinity, and negative zero follow the selected jq-compatible representation.</li><li>Runtime diagnostics are emitted through the evaluator&#x27;s structured error channel.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC arithmetic-operators ===<br>Intent: The implementation passes the authoritative arithmetic and numeric operator corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^[^#].<em>(\+|\-|\</em>|/|%|negat|arithmetic|modulo)&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC arithmetic-operators ===</p>
+<p>=== AC arithmetic-types ===<br>Intent: The implementation passes the authoritative type-dependent string, array, and object operator corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;recursive object merge|string repetition|string splitting|array subtraction|type-dependent&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC arithmetic-types ===</p>
+<p>=== AC arithmetic-errors ===<br>Intent: The implementation passes the authoritative arithmetic runtime-error corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;divided because|cannot be added|cannot be subtracted|Repeat string result too long&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC arithmetic-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not perform implicit type conversions.</li><li>Do not shell out for arithmetic or delegate semantics to another jq implementation.</li><li>Preserve outputs emitted before a later arithmetic error.</li></ul></article>
+</main>
+</body>
+</html>

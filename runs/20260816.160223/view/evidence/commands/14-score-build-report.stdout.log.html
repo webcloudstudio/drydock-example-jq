@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/14-score-build-report.stdout.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/14-score-build-report.stdout.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/14-score-build-report.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+
+Build report: jq
+  evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.160223/workspace/targets/jq/evidence
+  usage:    /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.160223/workspace/logs/llm.jsonl
+
+  Block                        AC  Calls     Cached  Uncached    Hit  Output     Time
+  ───────────────────────────────────────────────────────────────────────────────────
+  ✓ Block 1 · Foundational    3/3      1    359,424    37,435  90.6%   7,314   4m 06s
+  ✓ Block 2 · Service         3/3      1    491,264    35,763  93.2%   5,187   3m 51s
+  ✓ Block 3 · Service         3/3      1    720,896    71,192  91.0%   5,950   2m 10s
+  ✓ Block 4 · Service         3/3      2  1,250,304   142,630  89.8%  11,077   3m 53s
+  ✓ Block 5 · Service         4/4      1  1,980,416    82,127  96.0%   8,651   4m 48s
+  ✓ Block 6 · Service         4/4      1    834,816    84,711  90.8%   4,160   1m 37s
+  ✓ Block 7 · Service         4/4      1  1,200,128    84,070  93.5%   5,983   3m 31s
+  ✓ Block 8 · Service         5/5      1    486,912    53,971  90.0%   3,371   2m 26s
+  ✗ Block 9 · Service         2/4      3  2,267,904   187,094  92.4%  10,738   6m 25s
+  ───────────────────────────────────────────────────────────────────────────────────
+  TOTAL                     31/33     12  9,592,064   778,993  92.5%  62,431  32m 51s
+
+  Blocks: 8/9 verified · 7 on first call · 2 repaired
+  Model:  gpt-5.6-luna
+  Tokens: 9,592,064 cached · 778,993 uncached · 62,431 out
+
+  Repairs
+    Block 4 · Service [block-4]
+      initial build  failed  3/3 AC · 819,586 in · 91.5% hit · 2m 45s
+      repair 1       built   3/3 AC · 573,348 in · 87.3% hit · 1m 07s
+    Block 9 · Service [block-9]
+      initial build  failed  2/4 AC · 1,819,385 in · 94.9% hit · 4m 35s
+      repair 1       failed  2/4 AC · 291,370 in · 84.2% hit · 48s
+      repair 2       failed  2/4 AC · 344,243 in · 86.0% hit · 1m 01s
+                     stopped: deterministic acceptance score did not improve on 2 consecutive calls
+
+  Not verified
+    Block 9 · Service [block-9] — closed/failed
+      failing AC: eval-cartesian-function, eval-cartesian-order
+      stopped: deterministic acceptance score did not improve on 2 consecutive calls
+
+</pre></article>
+</main>
+</body>
+</html>

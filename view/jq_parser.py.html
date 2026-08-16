@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jq_parser.py</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>jq_parser.py</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../jq_parser.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Precedence-aware parser for the foundational jq expression subset.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from typing import Any
+
+from jq_lexer import Token, tokenize
+
+
+class ParseError(ValueError):
+    pass
+
+
+@dataclass(frozen=True)
+class Identity:
+    pass
+
+
+@dataclass(frozen=True)
+class Literal:
+    value: Any
+
+
+@dataclass(frozen=True)
+class Field:
+    name: str
+
+
+@dataclass(frozen=True)
+class Iterate:
+    pass
+
+
+@dataclass(frozen=True)
+class Pipe:
+    left: Any
+    right: Any
+
+
+@dataclass(frozen=True)
+class Comma:
+    left: Any
+    right: Any
+
+
+@dataclass(frozen=True)
+class Array:
+    expression: Any
+
+
+class Parser:
+    def __init__(self, tokens: list[Token]):
+        self.tokens = tokens
+        self.position = 0
+
+    def current(self) -&gt; Token:
+        return self.tokens[self.position]
+
+    def take(self, kind: str) -&gt; Token:
+        token = self.current()
+        if token.kind != kind:
+            raise ParseError(f&quot;expected {kind}&quot;)
+        self.position += 1
+        return token
+
+    def parse(self) -&gt; Any:
+        expression = self.parse_comma()
+        self.take(&quot;EOF&quot;)
+        return expression
+
+    def parse_comma(self) -&gt; Any:
+        expression = self.parse_pipe()
+        while self.current().kind == &quot;,&quot;:
+            self.position += 1
+            expression = Comma(expression, self.parse_pipe())
+        return expression
+
+    def parse_pipe(self) -&gt; Any:
+        expression = self.parse_primary()
+        while self.current().kind == &quot;|&quot;:
+            self.position += 1
+            expression = Pipe(expression, self.parse_primary())
+        return expression
+
+    def parse_primary(self) -&gt; Any:
+        token = self.current()
+        if token.kind == &quot;.&quot;:
+            self.position += 1
+            if self.current().kind == &quot;WORD&quot;:
+                expression: Any = Field(self.tokens[self.position].text)
+                self.position += 1
+            else:
+                expression = Identity()
+        elif token.kind == &quot;LITERAL&quot;:
+            self.position += 1
+            expression = Literal(json.loads(token.text))
+        elif token.kind == &quot;STRING&quot;:
+            self.position += 1
+            expression = Literal(json.loads(token.text))
+        elif token.kind == &quot;[&quot;:
+            self.position += 1
+            expression = Array(self.parse_comma())
+            self.take(&quot;]&quot;)
+        else:
+            raise ParseError(&quot;unexpected token&quot;)
+        if self.current().kind == &quot;[&quot;:
+            self.position += 1
+            self.take(&quot;]&quot;)
+            expression = Iterate()
+        return expression
+
+
+def parse(source: str) -&gt; Any:
+    return Parser(tokenize(source)).parse()
+</pre></article>
+</main>
+</body>
+</html>

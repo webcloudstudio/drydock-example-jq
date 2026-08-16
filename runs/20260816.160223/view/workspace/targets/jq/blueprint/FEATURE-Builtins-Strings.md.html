@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtins-Strings.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtins-Strings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtins-Strings.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Builtins Strings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Provide jq Unicode-aware string and codepoint builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Values-Model.md, FEATURE-Eval-Cartesian.md</td></tr><tr><td>Provides</td><td>trimming, splitting, joining, case conversion, explode, implode, indices, index, rindex, string predicates</td></tr><tr><td>Consumes</td><td>jq value model and ordered evaluator</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement Unicode-aware string predicates, trimming, splitting, joining, ASCII case conversion, codepoint conversion, substring indices, embedded-NUL handling, and string-specific errors.</p>
+<h2>Behavior</h2>
+<ul><li><code>startswith</code> and <code>endswith</code> require string inputs and return booleans.</li><li><code>ltrimstr</code>, <code>rtrimstr</code>, and <code>trimstr</code> remove matching prefixes and suffixes without changing other content.</li><li><code>trim</code>, <code>ltrim</code>, and <code>rtrim</code> recognize jq’s Unicode whitespace set.</li><li><code>split</code>, <code>join</code>, <code>indices</code>, <code>index</code>, and <code>rindex</code> preserve empty fields and overlapping-match semantics.</li><li><code>explode</code> returns Unicode codepoints; <code>implode</code> replaces invalid codepoints according to jq behavior.</li><li><code>ascii_upcase</code> and <code>ascii_downcase</code> affect only ASCII letters.</li><li>Embedded NULs remain ordinary string content.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-strings-suite ===<br>Intent: The authoritative corpus passes the string and Unicode-builtin cases owned by this capability.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>selectors = [&quot;startswith&quot;, &quot;endswith&quot;, &quot;split&quot;, &quot;join&quot;, &quot;trim&quot;, &quot;ltrim&quot;, &quot;rtrim&quot;, &quot;explode&quot;, &quot;implode&quot;, &quot;ascii_upcase&quot;, &quot;ascii_downcase&quot;, &quot;indices&quot;, &quot;index(&quot;, &quot;rindex(&quot;] for selector in selectors: result = subprocess.run( [&quot;python3&quot;, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector], capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC builtins-strings-suite ===</p>
+<p>=== AC builtins-strings-roundtrip ===<br>Intent: String splitting and joining preserve supplied ASCII input and codepoint conversion round-trips valid values. import json import subprocess</p>
+<p>source = &quot;a,b,c&quot; program = &#x27;split(&quot;,&quot;) | join(&quot;,&quot;)&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == source</p>
+<p>codepoints = [65, 66, 67] result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;implode | explode&quot;], input=json.dumps(codepoints) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == codepoints === END AC builtins-strings-roundtrip ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Measure string offsets and lengths in Unicode codepoints as jq specifies.</li><li>Preserve embedded NULs and empty leading, trailing, and repeated split fields.</li><li>Do not use third-party Unicode or regex packages; use Python standard-library facilities only.</li></ul></article>
+</main>
+</body>
+</html>

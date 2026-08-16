@@ -1,0 +1,25 @@
+<reusable-compact filename="ARCHITECTURE.md">
+Root executable `jq` delegates to Python standard-library CLI, lexer, parser, values, evaluator, control, paths, and builtins boundaries. Evaluation is generator-based and preserves ordered streams/backtracking. Compile errors exit 3; runtime errors exit 5; prior outputs remain emitted. No third-party dependencies, jq subprocesses, or network access.
+</reusable-compact>
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq
+- jq_cli.py
+- jq_evaluator.py
+- jq_lexer.py
+- jq_parser.py
+- jq_values.py
+- README.md
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented the foundational executable architecture. All three declared architecture assertions and three local tests pass. Supplied assets remained unchanged. Full conformance currently reports 36 passed, 501 failed, 0 errored, 13 skipped.
+
+BLOCKERS:
+- Full jq conformance is not yet implemented.
+
+FAILURE_SUMMARY: Full conformance suite failed
+
+FAILURE_DETAIL: The foundational interpreter supports only a small expression subset; 501 corpus cases fail and require downstream parser, evaluator, builtin, control-flow, and path implementation blocks.

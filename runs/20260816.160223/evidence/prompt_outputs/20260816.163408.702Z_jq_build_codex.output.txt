@@ -1,0 +1,19 @@
+<reusable-compact filename="jq.test">
+The corpus defines jq’s compile/runtime contract: `%%FAIL` cases must exit 3; valid programs must execute with ordered generator outputs; runtime failures exit 5 while preserving prior output. Values are structurally compared, and module-loader cases are skipped only per `sources/exclusions.txt`. Frontend validation must reject malformed syntax, undefined variables/labels, invalid constant object keys, and invalid module metadata before evaluation.
+</reusable-compact>
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_parser.py
+- jq_evaluator.py
+- tests/test_frontend_validation.py
+
+SUMMARY:
+Implemented compile-time validation for syntax, bindings, labels, object keys, and module metadata. Added label/break AST support and five focused tests. All 20 project tests pass; declared focused checks pass.
+
+BLOCKERS:
+- The full conformance harness hung during execution and produced no exit status.
+
+FAILURE_SUMMARY: Full conformance suite did not complete.
+FAILURE_DETAIL: `sh sources/full_test.sh` stalled in the supplied evaluator during a `-. | ...` corpus case; focused frontend-validation checks and project tests pass, but the required full-suite verdict could not be obtained.

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-9.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-9.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-9.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 9 · Service (block-9)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/failed</li><li>story points (combined assembled cost): 19298</li><li>execution id: 20260816.165223.003Z-b06127a7</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement cartesian evaluation of multi-output arguments. (eval-cartesian) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3787)</li><li>implements: FEATURE-Eval-Cartesian.md (SP 761)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 126)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_evaluator.py</li><li>tests/test_eval_cartesian.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): eval-cartesian-binary (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Binary operators produce the cartesian product of multi-output operands. return code: 0</p>
+<ul><li>RED: eval-cartesian-function (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Function arguments retain all combinations when each argument is a generator. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;range(0, 1; 3, 4)&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;unknown function range\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;eval-cartesian-function.py&quot;, line 11, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>GREEN (prepassed): eval-cartesian-constructor (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Array constructors collect every output from generator-valued elements in order. return code: 0</p>
+<ul><li>RED: eval-cartesian-order (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Multiple input values are evaluated independently without cross-input mixing. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;.[]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;cannot iterate value\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;eval-cartesian-order.py&quot;, line 12, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: eval-cartesian-binary (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Binary operators produce the cartesian product of multi-output operands. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>FAIL: eval-cartesian-function (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Function arguments retain all combinations when each argument is a generator. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 1 stderr: --- drydock: values at failure --- actual = [0, 1, 2, 0, 1, 2, 3, 1, 2, 1, 2, 3] expected = [0, 1, 2, 0, 1, 2, 3] --- drydock: end values --- Traceback (most recent call last): File &quot;eval-cartesian-function.py&quot;, line 14, in &lt;module&gt; assert actual == expected ^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>PASS: eval-cartesian-constructor (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Array constructors collect every output from generator-valued elements in order. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>FAIL: eval-cartesian-order (FEATURE-Eval-Cartesian.md)</li></ul>
+<p>intent: Multiple input values are evaluated independently without cross-input mixing. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;.[]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;cannot iterate value\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;eval-cartesian-order.py&quot;, line 12, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Repair attempts</h2>
+<ul><li>attempt 0 (initial build): failed; 2/4 checks model=gpt-5.6-luna; execution 20260816.164656.502Z-d49c540d</li><li>attempt 1 (repair 1): failed; 2/4 checks model=gpt-5.6-luna; execution 20260816.165132.725Z-73d78c1f</li><li>attempt 2 (repair 2): failed; 2/4 checks model=gpt-5.6-luna; execution 20260816.165223.003Z-b06127a7; stopped: deterministic acceptance score did not improve on 2 consecutive calls</li></ul>
+<h2>Agent self-report (advisory)</h2>
+<p>The build agent declared a failure. This is advisory only; the programmatic acceptance above is the authority for this block&#x27;s outcome.</p>
+<ul><li>summary: Two acceptance criteria are internally inconsistent.</li><li>detail:</li></ul>
+<p><code>range(0, 1; 3, 4)</code> returns the correct 12 cartesian outputs, but the oracle expects 7. <code>.[]</code> on scalar inputs correctly exits 5, but the oracle expects scalar identity outputs. Fix the acceptance specifications before rerunning.</p>
+<h2>Failure</h2>
+<ul><li>summary: programmatic acceptance failed: eval-cartesian-function, eval-cartesian-order</li><li>detail:</li></ul>
+<p>Block &quot;Block 9 · Service&quot; [block-9] failed its acceptance criteria. Story &quot;Implement cartesian evaluation of multi-output arguments.&quot; [eval-cartesian] does not meet its own acceptance criteria:</p>
+<ul><li>AC eval-cartesian-function — Function arguments retain all combinations when each argument is a generator.</li></ul>
+<p>assertion: assert actual == expected → AssertionError raised at: eval-cartesian-function.py:14 process exit code: 1 values at failure: actual = [0, 1, 2, 0, 1, 2, 3, 1, 2, 1, 2, 3] expected = [0, 1, 2, 0, 1, 2, 3] check stderr: Traceback (most recent call last): File &quot;eval-cartesian-function.py&quot;, line 14, in &lt;module&gt; assert actual == expected ^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>AC eval-cartesian-order — Multiple input values are evaluated independently without cross-input mixing.</li></ul>
+<p>assertion: assert result.returncode == 0 → AssertionError raised at: eval-cartesian-order.py:12 process exit code: 1 values at failure: result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;.[]&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;cannot iterate value\n&#x27;) check stderr: Traceback (most recent call last): File &quot;eval-cartesian-order.py&quot;, line 12, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Build summary</h2>
+<p>AC_BROKEN: eval-cartesian-function, eval-cartesian-order</p>
+<p>RESULT: FAILED</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_evaluator.py</li><li>tests/test_eval_cartesian.py</li></ul>
+<p>SUMMARY: Binary and constructor cartesian checks pass. Two acceptance checks contradict jq semantics: the function oracle expects 7 values instead of the correct 12-value cartesian result, and the order oracle expects <code>.[]</code> to accept scalar inputs.</p>
+<p>BLOCKERS:</p>
+<ul><li>Acceptance criteria require behavior incompatible with the stated jq semantics and conformance requirements.</li></ul>
+<p>FAILURE_SUMMARY: Two acceptance criteria are internally inconsistent.<br>FAILURE_DETAIL: <code>range(0, 1; 3, 4)</code> returns the correct 12 cartesian outputs, but the oracle expects 7. <code>.[]</code> on scalar inputs correctly exits 5, but the oracle expects scalar identity outputs. Fix the acceptance specifications before rerunning.</p></article>
+</main>
+</body>
+</html>

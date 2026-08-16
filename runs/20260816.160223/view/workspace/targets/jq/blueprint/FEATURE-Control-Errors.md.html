@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Control-Errors.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Control-Errors.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Control-Errors.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Runtime Errors and Recovery</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implement jq runtime errors, recovery handlers, halt behavior, and output preservation.</td></tr><tr><td>Depends On</td><td>FEATURE-Control-Conditionals.md, FEATURE-CLI-Errors.md</td></tr><tr><td>Provides</td><td>try/catch, error, halt, halt_error</td></tr><tr><td>Consumes</td><td>ordered generator evaluator, executable exit mapping</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Runtime failures are structured control transfers carrying jq values or messages. <code>try EXP catch HANDLER</code> evaluates the handler with the error value; <code>try EXP</code> suppresses the error. <code>error</code>, <code>halt</code>, and <code>halt_error</code> have distinct output and process-termination semantics.</p>
+<p>The evaluator must preserve values emitted before a failure. The executable maps ordinary uncaught runtime failures to exit 5 while allowing <code>halt</code> to terminate successfully and <code>halt_error</code> to select its requested code.</p>
+<h2>Behaviors</h2>
+<ul><li><code>error</code> raises the current input and <code>error(message)</code> raises the supplied value.</li><li><code>try/catch</code> recovers errors and continues generator evaluation where applicable.</li><li><code>halt</code> stops without an error status.</li><li><code>halt_error</code> writes the raw input to stderr and exits with its requested status.</li><li>Uncaught runtime errors produce exit 5 and diagnostics on stderr.</li><li>Previously emitted stdout values remain available after a runtime failure.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC errors-try-catch ===<br>Intent: The implementation passes the authoritative try/catch and error-value corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;try|catch|error\\(|try error|caught&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC errors-try-catch ===</p>
+<p>=== AC errors-halting ===<br>Intent: The implementation passes the authoritative halt and halt_error corpus slice.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;halt(_error)?|halt_error&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC errors-halting ===</p>
+<p>=== AC errors-output-preservation ===<br>Intent: The implementation passes the authoritative corpus cases that emit values before runtime failure.<br>Suite: scoped</p>
+<p>import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;outputs before|prior outputs|first\\(1,error|OK.*error|error.*catch&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC errors-output-preservation ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never discard values emitted before an uncaught runtime error.</li><li>Keep diagnostics on stderr; stdout contains only JSON result values.</li><li>Do not convert compile-time failures into runtime failures.</li><li>Do not invoke an external jq binary or third-party implementation.</li></ul></article>
+</main>
+</body>
+</html>

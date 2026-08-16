@@ -1,0 +1,12 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- README.md
+- jq_cli.py
+- tests/test_cli_errors.py
+
+SUMMARY:
+Implemented exit codes 3/5, preserved prior runtime output, documented the CLI, and added focused tests. `pytest -q`: 35 passed.
+
+BLOCKERS:
+- None

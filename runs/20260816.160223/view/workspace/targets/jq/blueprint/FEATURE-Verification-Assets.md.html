@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Verification-Assets.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Verification-Assets.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Verification-Assets.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Verification Assets</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Preserve the supplied jq specifications, corpus, exclusions, and conformance harness under sources.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>sources/jq.test, sources/run_conformance.py, sources/full_test.sh, sources/exclusions.txt, sources/jq-manual.txt, sources/parser.y, sources/lexer.l, sources/builtin.jq</td></tr><tr><td>Consumes</td><td>supplied source assets</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Stage each supplied asset byte-for-byte at its documented build-relative path under <code>sources/</code>. The corpus, exclusions, scoring script, and conformance runner are read-only grading assets and must remain unchanged.</p>
+<h2>Programmatic Acceptance</h2>
+<ul><li>None. This is a governed byte-for-byte staging operation; Drydock verifies the declared copies and the terminal conformance story executes the preserved harness.</li></ul>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not modify <code>sources/jq.test</code>, <code>sources/run_conformance.py</code>, <code>sources/full_test.sh</code>, or <code>sources/exclusions.txt</code>.</li><li>Do not filter, skip, reinterpret, or rewrite corpus cases.</li><li>Do not add module-loader exclusions beyond the supplied exclusions file.</li></ul></article>
+</main>
+</body>
+</html>

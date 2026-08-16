@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jq_cli.py</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>jq_cli.py</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../jq_cli.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Command-line boundary and jq-compatible compile/runtime exit mapping.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import sys
+
+from jq_evaluator import RuntimeErrorJq, evaluate
+from jq_parser import ParseError, parse
+from jq_values import encode_compact, parse_json
+
+
+def main(argv: list[str]) -&gt; int:
+    if len(argv) != 2 or argv[0] != &quot;-c&quot;:
+        print(&quot;usage: jq -c PROGRAM&quot;, file=sys.stderr)
+        return 3
+    try:
+        program = parse(argv[1])
+    except (ParseError, ValueError) as error:
+        print(str(error), file=sys.stderr)
+        return 3
+    try:
+        for line in sys.stdin:
+            if not line.strip():
+                continue
+            value = parse_json(line)
+            for result in evaluate(program, value):
+                print(encode_compact(result))
+    except (RuntimeErrorJq, ValueError) as error:
+        print(str(error), file=sys.stderr)
+        return 5
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main(sys.argv[1:]))
+</pre></article>
+</main>
+</body>
+</html>

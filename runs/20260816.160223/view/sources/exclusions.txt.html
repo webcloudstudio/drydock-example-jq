@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sources/exclusions.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>sources/exclusions.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../sources/exclusions.txt">Raw file</a></div></header>
+<article class="doc"><pre># exclusions.txt — corpus cases this kit cannot run, and why.
+#
+# The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case
+# cannot run under this kit&#x27;s harness, it is named here instead, so every skip is visible,
+# reasoned, and auditable against the upstream file. This file is a scoring asset: it is
+# hash-verified against the import and restored before grading.
+#
+# One verbatim program line per entry. An entry that matches no case in the corpus is a hard
+# error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run
+# if the corpus pin ever moved.
+#
+# Nothing is excluded for being hard. The module-loader cases below are excluded because the
+# kit physically cannot deliver their inputs, not because the semantics are difficult.
+
+# --------------------------------------------------------------------------------------------
+# Module loading from disk.
+#
+# These cases resolve `import` and `include` against a module search path supplied by jq&#x27;s -L
+# flag, reading roughly twenty fixture files spread across nested directories upstream
+# (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit&#x27;s declared sources into the
+# application flattened by basename, so that directory tree cannot be carried, and the interface
+# this kit fixes exercises no flag but -c.
+#
+# Only the loader cases are excluded. The module *grammar* cases — `module (.+1); 0`,
+# `module []; 0`, `include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`,
+# `include &quot;\(a)&quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a
+# correct front end rejects without ever touching the filesystem.
+# --------------------------------------------------------------------------------------------
+
+import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]
+import &quot;c&quot; as foo; [foo::a, foo::c]
+include &quot;c&quot;; [a, c]
+import &quot;data&quot; as $e; import &quot;data&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(&quot;;&quot;)
+import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f
+include &quot;shadow1&quot;; e
+include &quot;shadow1&quot;; include &quot;shadow2&quot;; e
+import &quot;shadow1&quot; as f; import &quot;shadow2&quot; as f; import &quot;shadow1&quot; as e; [e::e, f::e]
+import &quot;syntaxerror&quot; as e; .
+import &quot;test_bind_order&quot; as check; check::check
+
+# `modulemeta` reports a module&#x27;s declared dependencies and definitions. Its three cases take
+# the module name &quot;c&quot; as input and read tests/modules/c/c.jq from the search path, so they fail
+# for the same reason as the loader cases above.
+modulemeta
+modulemeta | .deps | length
+modulemeta | .defs | length
+</pre></article>
+</main>
+</body>
+</html>
