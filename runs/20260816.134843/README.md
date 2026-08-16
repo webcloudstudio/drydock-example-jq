@@ -11,7 +11,7 @@
 | Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
 | Acceptance score passed | UNPROVEN | No acceptance score was recorded for this run. | — |
 | Release score passed | UNPROVEN | No release score was recorded for this run. | — |
-| Integrity verification passed | PASS | 98 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 100 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
@@ -51,8 +51,8 @@
 |---|---|---|---|---|
 | 01-init | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock init jq` | 0 | 1.7s | [stdout](evidence/commands/01-init.stdout.log) · [stderr](evidence/commands/01-init.stderr.log) |
 | 02-import-sources | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock import jq sources --format markdown` | 0 | 3.2s | [stdout](evidence/commands/02-import-sources.stdout.log) · [stderr](evidence/commands/02-import-sources.stderr.log) |
-| 03-analyze | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock analyze jq` | 0 | 84.5s | [stdout](evidence/commands/03-analyze.stdout.log) · [stderr](evidence/commands/03-analyze.stderr.log) · [llm](evidence/llm_logs/20260816.134850.204Z_jq_analyze_codex.llm.log) |
-| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 1 | 521.6s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/llm_logs/20260816.135016.742Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135149.418Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135258.043Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135405.514Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135508.970Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135609.659Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135713.438Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135801.881Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135823.382Z_jq_plan_codex.llm.log) · [llm](evidence/llm_logs/20260816.135839.009Z_jq_plan_codex.llm.log) |
+| 03-analyze | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock analyze jq` | 0 | 84.5s | [stdout](evidence/commands/03-analyze.stdout.log) · [stderr](evidence/commands/03-analyze.stderr.log) · [llm](evidence/commands/03-analyze.llm.log) |
+| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 1 | 521.6s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/commands/04-plan.llm.log) |
 
 ## Evidence
 
