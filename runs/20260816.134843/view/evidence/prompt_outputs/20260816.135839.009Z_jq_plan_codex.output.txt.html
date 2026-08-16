@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.135839.009Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.135839.009Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.135839.009Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Command-Line-Entry.md ===
+# FEATURE: Command-Line Entry
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides the executable jq entry point and its compact filter invocation contract. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | ./jq -c program execution |
+| Consumes    | interpreter module boundaries |
+
+## Questions
+
+- None.
+
+## Workflow
+
+1. Start the executable at the application root.
+2. Accept `-c` followed by one jq program.
+3. Read JSON input from stdin.
+4. Evaluate the program for each input value.
+5. Emit every produced value as compact JSON on its own stdout line.
+6. Return the interpreter&#x27;s documented status.
+
+The command must run directly from the application directory without installation or network access.
+
+## Interface
+
+```text
+./jq -c &#x27;&lt;program&gt;&#x27;
+stdin: JSON values
+stdout: one compact JSON value per produced result, per line
+```
+
+Only `-c` is required by the supplied corpus. Unsupported options may be rejected.
+
+## Programmatic Acceptance
+
+=== AC entry-executable ===
+Intent: The root jq executable accepts the documented compact-filter invocation.
+
+import subprocess
+
+payload = &quot;null\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+
+=== END AC entry-executable ===
+
+=== AC entry-stdin-output ===
+Intent: The executable evaluates a filter supplied through -c and emits a JSON result.
+
+import json
+import subprocess
+
+payload = &#x27;{&quot;value&quot;: 7}\n&#x27;
+program = &quot;.value&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+values = [json.loads(line) for line in result.stdout.splitlines()]
+assert values == [json.loads(payload)[&quot;value&quot;]]
+
+=== END AC entry-stdin-output ===
+
+=== AC entry-multiple-results ===
+Intent: The executable preserves multiple produced values as separate output lines.
+
+import json
+import subprocess
+
+payload = &quot;null\n&quot;
+program = &quot;1,2&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == [1, 2]
+
+=== END AC entry-multiple-results ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The executable must be named `jq` and be executable at the application root.
+- Do not require installation, network access, or configuration outside the supplied contract.
+- Do not alter output order or collapse multiple generated values.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

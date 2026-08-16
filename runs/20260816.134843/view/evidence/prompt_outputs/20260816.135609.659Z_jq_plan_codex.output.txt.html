@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.135609.659Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.135609.659Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.135609.659Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Numeric-Builtins.md ===
+# FEATURE: Numeric Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq numeric conversion, mathematical functions, special values, rounding, and numeric capability metadata. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Operators-and-Comparisons.md |
+| Provides    | numeric conversion, special values, rounding, trigonometric functions, powers, roots, numeric metadata |
+| Consumes    | jq operators and comparisons |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the numeric builtin surface described by the jq manual and exercised by the conformance corpus.
+
+## Behavior
+
+Support numeric conversion and boolean conversion, IEEE-style special values, numeric predicates, rounding and truncation, standard one-, two-, and three-argument mathematical functions, powers and roots, and the `have_decnum` and `have_literal_numbers` capability filters. Preserve jq numeric equality, literal handling, and generator behavior.
+
+## Programmatic Acceptance
+
+=== AC numeric-conformance ===
+Intent: The numeric builtin implementation passes its authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+import sys
+
+selector = &quot;tonumber|toboolean|infinite|nan|isfinite|isnan|isinfinite|isnormal|floor|sqrt|pow|sin|cos|round|have_decnum|have_literal_numbers&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC numeric-conformance ===
+
+=== AC numeric-cli-contract ===
+Intent: Numeric filters execute through the declared jq executable contract.
+import json
+import subprocess
+
+source = &quot;1\n&quot;
+program = &quot;[., . + 1, floor, sqrt]&quot;
+result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, capture_output=True, text=True)
+assert result.returncode == 0
+values = [json.loads(line) for line in result.stdout.splitlines()]
+assert len(values) == 1
+assert values[0][0] == json.loads(source)
+assert values[0][1] == values[0][0] + 1
+=== END AC numeric-cli-contract ===
+
+=== AC numeric-error-contract ===
+Intent: Invalid numeric conversion produces the runtime failure status.
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;tonumber&quot;],
+    input=&#x27;&quot;not-a-number&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC numeric-error-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library numeric facilities.
+- Do not shell out to jq or use a third-party jq implementation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Date-and-Time.md ===
+# FEATURE: Date and Time
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq UTC date parsing, formatting, epoch conversion, and broken-down time builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Numeric-Builtins.md |
+| Provides    | date parsing, formatting, epoch conversion, broken-down time conversion, UTC behavior |
+| Consumes    | numeric and mathematical builtins |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the date and time builtin surface required by the jq manual and conformance corpus.
+
+## Behavior
+
+Support `fromdateiso8601`, `todateiso8601`, `fromdate`, `todate`, `strptime`, `strftime`, `strflocaltime`, `mktime`, `gmtime`, `localtime`, and `now` as applicable under the fixed interface. Date calculations use UTC for the documented high-level and low-level operations.
+
+## Programmatic Acceptance
+
+=== AC date-conformance ===
+Intent: The date and time implementation passes its authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+import sys
+
+selector = &quot;fromdate|todate|strptime|strftime|strflocaltime|mktime|gmtime|localtime|now&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC date-conformance ===
+
+=== AC date-round-trip ===
+Intent: An ISO date value round-trips through the public executable.
+import json
+import subprocess
+
+date_text = &quot;2015-03-05T23:51:47Z&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601 | todateiso8601&quot;],
+    input=json.dumps(date_text) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual == date_text
+=== END AC date-round-trip ===
+
+=== AC date-invalid-input ===
+Intent: Invalid date input produces the runtime failure status.
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601&quot;],
+    input=&#x27;&quot;not-a-date&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC date-invalid-input ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Date and time behavior must be deterministic for UTC operations.
+- Use only Python standard-library date and time facilities.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-IO-and-Streaming.md ===
+# FEATURE: Input, Diagnostics, and Streaming
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq input access, environment inspection, diagnostics, and stream conversion builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Command-Line-IO.md, FEATURE-Generator-Core.md |
+| Provides    | input, inputs, environment, debug, stderr, tostream, fromstream, truncate_stream |
+| Consumes    | JSON stdin reader and JSON-lines stdout writer |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the jq I/O and streaming builtin surface under the fixed `-c` executable contract.
+
+## Behavior
+
+Support `input` and `inputs` over remaining JSON input values, `$ENV` and `env`, diagnostic filters that write only to stderr, and `tostream`, `fromstream`, and `truncate_stream`. Preserve output ordering and ensure diagnostics do not become produced JSON values.
+
+## Programmatic Acceptance
+
+=== AC io-streaming-conformance ===
+Intent: The I/O, environment, diagnostics, and streaming implementation passes its authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+import sys
+
+selector = &quot;input|inputs|ENV|env|debug|stderr|tostream|fromstream|truncate_stream&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC io-streaming-conformance ===
+
+=== AC inputs-order ===
+Intent: The inputs builtin preserves the order and multiplicity of remaining JSON inputs.
+import json
+import subprocess
+
+payload = &quot;1\n2\n3\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [json.loads(line) for line in payload.splitlines()]
+assert actual == expected
+=== END AC inputs-order ===
+
+=== AC diagnostics-routing ===
+Intent: Diagnostic output does not become a JSON value on stdout.
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;debug&quot;],
+    input=&#x27;{&quot;value&quot;: 1}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert len(result.stdout.splitlines()) == 1
+assert result.stderr != &quot;&quot;
+=== END AC diagnostics-routing ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics go to stderr; produced JSON values go to stdout.
+- Do not access the network or require external services.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtin-Library.md ===
+# FEATURE: Builtin Library
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides the jq-defined builtin function library and its internal helper semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Paths-and-Assignments.md, FEATURE-User-Functions.md, FEATURE-Regular-Expressions.md, FEATURE-Iteration-and-Reduction.md |
+| Provides    | builtin jq function library and internal helpers |
+| Consumes    | paths and assignments, user-defined functions and closures, string and regex builtins |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the language-level builtin definitions supplied in `sources/builtin.jq`, together with the internal helpers required by those definitions.
+
+## Behavior
+
+Provide the documented arities and generator semantics for collection, filtering, recursion, reduction helpers, path helpers, string helpers, regex wrappers, iteration helpers, stream helpers, structural traversal, SQL-style helpers, and assignment support. Preserve ordering, multiplicity, backtracking, lexical function arguments, and immutable values.
+
+## Programmatic Acceptance
+
+=== AC builtin-library-conformance ===
+Intent: The jq-defined builtin library passes its authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+import sys
+
+selector = &quot;map|select|sort_by|group_by|unique_by|max_by|min_by|add|del\\(|recurse|to_entries|from_entries|with_entries|flatten|while|until|limit|skip|first|isempty|any|all|walk|INDEX|JOIN|IN&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC builtin-library-conformance ===
+
+=== AC builtin-generator-semantics ===
+Intent: A language-level builtin preserves generator multiplicity and order.
+import json
+import subprocess
+
+program = &quot;[map(., .), range(3)]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+values = [json.loads(line) for line in result.stdout.splitlines()]
+assert len(values) == 1
+assert values[0][1] == [0, 1, 2]
+=== END AC builtin-generator-semantics ===
+
+=== AC builtin-structural-roundtrip ===
+Intent: Entry conversion preserves object keys and values through the public filters.
+import json
+import subprocess
+
+value = {&quot;a&quot;: 1, &quot;b&quot;: 2}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;to_entries | from_entries&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+=== END AC builtin-structural-roundtrip ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve the supplied `sources/builtin.jq` asset unchanged.
+- Do not replace builtin semantics with a third-party jq implementation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Modules.md ===
+# FEATURE: Modules
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Provides jq module grammar validation and preserves the declared unsupported loader exclusions. |
+| Depends On  | ARCHITECTURE.md, FEATURE-JQ-Parser.md, FEATURE-Builtin-Library.md |
+| Provides    | module, import, include grammar and loader exclusions |
+| Consumes    | jq AST parser and compile validation |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement module, import, and include syntax sufficiently to validate supported grammar and reject invalid module forms without attempting unsupported filesystem loading.
+
+## Behavior
+
+Accept valid module declarations where supported by the interpreter. Reject non-constant or non-object module metadata, non-constant import paths and metadata, invalid escapes, and malformed module syntax with compile exit status 3. Preserve the supplied loader cases in `sources/exclusions.txt`; do not broaden exclusions or load external module fixtures.
+
+## Programmatic Acceptance
+
+=== AC module-conformance ===
+Intent: Module grammar and exclusion behavior passes its authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+import sys
+
+selector = &quot;module|import|include|modulemeta|%::&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC module-conformance ===
+
+=== AC module-compile-errors ===
+Intent: Invalid module metadata is rejected as a compile failure.
+import subprocess
+
+programs = [&quot;module (.+1); 0&quot;, &quot;module []; 0&quot;, &#x27;include &quot;\\ &quot;; 0&#x27;, &quot;%::wat&quot;]
+for program in programs:
+    result = subprocess.run(
+        [&quot;./jq&quot;, &quot;-c&quot;, program],
+        input=&quot;null\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+=== END AC module-compile-errors ===
+
+=== AC module-loader-scope ===
+Intent: Unsupported filesystem loader cases remain excluded by the supplied exclusion list.
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &#x27;import &quot;a&quot;|include &quot;c&quot;|modulemeta&#x27;],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC module-loader-scope ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve `sources/exclusions.txt` unchanged.
+- Do not attempt filesystem loading for excluded module-loader cases.
+- Module grammar cases that are not excluded must remain scored.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

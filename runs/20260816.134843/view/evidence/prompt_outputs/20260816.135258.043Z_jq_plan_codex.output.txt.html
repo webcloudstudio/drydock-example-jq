@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.135258.043Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.135258.043Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.135258.043Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-JQ-Parser.md ===
+# FEATURE: jq Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Parses jq programs into validated executable filter structures. |
+| Depends On  | ARCHITECTURE.md, FEATURE-JQ-Lexer.md |
+| Provides    | jq AST parser and compile validation |
+| Consumes    | jq tokenization |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The parser consumes lexer tokens and produces an executable jq filter representation. It follows the supplied grammar for precedence, associativity, terms, collections, objects, conditionals, bindings, definitions, reductions, assignments, and module declarations.
+
+Compile-time failures return exit status 3 through the executable boundary. Invalid module metadata, invalid object keys, undefined bindings or labels, malformed delimiters, and invalid syntax must be rejected without filesystem loading.
+
+## Programmatic Acceptance
+
+=== AC parser-conformance ===
+Intent: The parser passes the authoritative corpus cases covering grammar, precedence, definitions, bindings, and compile-time rejection.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;,
+     r&quot;%%FAIL|def |module |include |import | as |\?//|reduce |foreach |if |try |label |break |[{}]&quot;],
+    capture_output=True, text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC parser-conformance ===
+
+=== AC parser-rejects-invalid-programs ===
+Intent: Invalid jq programs are rejected with the declared compile-failure status.
+
+import subprocess
+
+programs = [&quot;{&quot;, &quot;}&quot;, &quot;. as [] | null&quot;, &quot;. as $foo | $bar&quot;]
+for program in programs:
+    result = subprocess.run(
+        [&quot;./jq&quot;, &quot;-c&quot;, program],
+        input=&quot;null\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+=== END AC parser-rejects-invalid-programs ===
+
+=== AC parser-preserves-generator-grammar ===
+Intent: Parser output preserves the ordering and multiplicity of representative comma, pipe, collection, and definition expressions.
+
+import json
+import subprocess
+
+program = &quot;def f: ., .; [1,2] | .[] | f&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1, 1, 2, 2]
+assert actual == expected
+=== END AC parser-preserves-generator-grammar ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not invoke a system jq executable or third-party jq implementation.
+- Do not load excluded module fixtures while parsing.
+- Preserve lexer and parser source assets unchanged.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-JQ-Strings-and-Formats.md ===
+# FEATURE: jq Strings and Formats
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implements interpolated strings and jq output-format syntax. |
+| Depends On  | ARCHITECTURE.md, FEATURE-JQ-Lexer.md, FEATURE-JQ-Parser.md |
+| Provides    | interpolated strings and @format expressions |
+| Consumes    | jq AST parser and compile validation |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The interpreter evaluates string literals, escaped text, interpolation expressions, and `@text`, `@json`, `@html`, `@uri`, `@urid`, `@csv`, `@tsv`, `@sh`, `@base64`, and `@base64d` expressions. Interpolations are generator-aware and each produced interpolation value participates in the surrounding string result.
+
+## Programmatic Acceptance
+
+=== AC string-format-conformance ===
+Intent: The authoritative corpus passes the interpolation and output-format cases.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;,
+     r&quot;interpolation|@text|@json|@csv|@tsv|@html|@uri|@urid|@sh|@base64&quot;],
+    capture_output=True, text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC string-format-conformance ===
+
+=== AC interpolation-produces-values ===
+Intent: Interpolation evaluates the input expression and returns the resulting formatted string.
+
+import json
+import subprocess
+
+input_value = 42
+program = &#x27;&quot;value=\(.)&quot;&#x27;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = &quot;value=&quot; + str(input_value)
+assert actual == expected
+=== END AC interpolation-produces-values ===
+
+=== AC format-round-trip ===
+Intent: Base64 encoding and decoding preserve the supplied text.
+
+import json
+import subprocess
+
+value = &quot;This is a message&quot;
+encoded = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;@base64&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert encoded.returncode == 0
+encoded_value = json.loads(encoded.stdout)
+decoded = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;@base64d&quot;],
+    input=json.dumps(encoded_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert decoded.returncode == 0
+assert json.loads(decoded.stdout) == value
+=== END AC format-round-trip ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve JSON escape semantics and Unicode code points.
+- Format filters must write produced values to stdout through the normal JSON output path.
+- Diagnostics must remain on stderr.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: Generator Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Evaluates jq filters as ordered streams of immutable JSON values. |
+| Depends On  | ARCHITECTURE.md, FEATURE-JQ-Parser.md |
+| Provides    | ordered filter streams, pipes, commas, literals, identity, iteration, collection, empty |
+| Consumes    | jq AST parser and compile validation |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Every filter evaluation returns an ordered stream. The evaluator preserves zero, one, or many outputs, pipe cartesian behavior, comma concatenation, array collection, object construction, iteration, identity, and `empty` backtracking.
+
+## Programmatic Acceptance
+
+=== AC generator-core-conformance ===
+Intent: The authoritative corpus passes the core generator, pipe, comma, iteration, collection, and empty cases.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;,
+     r&quot;\.\[\]|1,1|1,\.$|\[\.|\[range|while|limit|skip|first\(|last\(|nth\(&quot;],
+    capture_output=True, text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC generator-core-conformance ===
+
+=== AC stream-order-and-multiplicity ===
+Intent: A generator pipeline preserves ordered multiplicity across iteration and downstream evaluation.
+
+import json
+import subprocess
+
+program = &quot;[.[] | ., .]&quot;
+input_value = [1, 2, 3]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = [1, 1, 2, 2, 3, 3]
+assert actual == expected
+=== END AC stream-order-and-multiplicity ===
+
+=== AC empty-collection-semantics ===
+Intent: Empty removes values from a collected generator without producing a replacement value.
+
+import json
+import subprocess
+
+program = &quot;[1, empty, 2]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = [1, 2]
+assert actual == expected
+=== END AC empty-collection-semantics ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve output order, multiplicity, cartesian products, and backtracking.
+- Do not collapse filters into single-value functions.
+- Values remain immutable from the evaluator&#x27;s perspective.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Indexing-and-Slicing.md ===
+# FEATURE: Indexing and Slicing
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implements jq indexing, iteration, optional access, and slicing semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Generator-Core.md |
+| Provides    | object, array, string, iterator, optional, negative-index, and slice operations |
+| Consumes    | ordered filter streams |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Index expressions support objects, arrays, strings, dynamic keys, negative indices, iterators, optional access, and slices with omitted or negative bounds. Invalid operations raise jq runtime errors unless the optional operator suppresses them.
+
+## Programmatic Acceptance
+
+=== AC indexing-conformance ===
+Intent: The authoritative corpus passes indexing, iteration, optional access, negative-index, and slice cases.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;,
+     r&quot;\.\w+|\.\[|negative array indices|Slices|\.\\?|\.\[\]\?&quot;],
+    capture_output=True, text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC indexing-conformance ===
+
+=== AC array-and-string-slices ===
+Intent: Array and string slices return the values selected by their supplied bounds.
+
+import json
+import subprocess
+
+array_value = [0, 1, 2, 3, 4]
+array_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[1:4]&quot;],
+    input=json.dumps(array_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert array_result.returncode == 0
+array_expected = array_value[1:4]
+assert json.loads(array_result.stdout) == array_expected
+
+string_value = &quot;abcdef&quot;
+string_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[-3:]&quot;],
+    input=json.dumps(string_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert string_result.returncode == 0
+string_expected = string_value[-3:]
+assert json.loads(string_result.stdout) == string_expected
+=== END AC array-and-string-slices ===
+
+=== AC optional-indexing-errors ===
+Intent: Optional indexing suppresses invalid access while ordinary invalid indexing reports a runtime failure.
+
+import json
+import subprocess
+
+optional = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.foo?&quot;],
+    input=json.dumps(True) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert optional.returncode == 0
+assert json.loads(optional.stdout) is None
+
+ordinary = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.foo&quot;],
+    input=json.dumps(True) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert ordinary.returncode == 5
+=== END AC optional-indexing-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Negative array indices must not silently create elements during reads.
+- Optional access suppresses the associated runtime error only.
+- Preserve generator output order for dynamic index expressions.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Operators-and-Comparisons.md ===
+# FEATURE: Operators and Comparisons
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Implements jq arithmetic, composition, comparison, boolean, and alternative operators. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Generator-Core.md |
+| Provides    | arithmetic, concatenation, merging, division, modulo, equality, ordering, boolean, and alternative operators |
+| Consumes    | ordered filter streams |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Operators evaluate operands against the same input and preserve generator cartesian products. Arithmetic follows jq type rules; arrays concatenate, strings concatenate or repeat, objects merge, comparisons use jq ordering, boolean operators use jq truthiness, and `//` selects non-null and non-false outputs.
+
+## Programmatic Acceptance
+
+=== AC operators-conformance ===
+Intent: The authoritative corpus passes arithmetic, concatenation, comparison, boolean, and alternative-operator cases.
+Suite: scoped
+
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;,
+     r&quot;\+|\-|\*|/|%| == | != | &lt; | &gt; | &lt;= | &gt;= | and | or | //|contains|sort&quot;],
+    capture_output=True, text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC operators-conformance ===
+
+=== AC typed-operator-results ===
+Intent: Numeric addition, array concatenation, string concatenation, and object merging follow jq&#x27;s typed operator behavior.
+
+import json
+import subprocess
+
+cases = [
+    (&quot;1 + 2&quot;, None, 3),
+    (&quot;[1] + [2]&quot;, None, [1, 2]),
+    (&#x27;&quot;a&quot; + &quot;b&quot;&#x27;, None, &quot;ab&quot;),
+    (&#x27;{&quot;a&quot;:1} + {&quot;b&quot;:2}&#x27;, None, {&quot;a&quot;: 1, &quot;b&quot;: 2}),
+]
+for program, input_value, expected in cases:
+    result = subprocess.run(
+        [&quot;./jq&quot;, &quot;-c&quot;, program],
+        input=json.dumps(input_value) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == expected
+=== END AC typed-operator-results ===
+
+=== AC division-by-zero-runtime-error ===
+Intent: Division by zero produces the declared runtime-failure status.
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 / 0&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC division-by-zero-runtime-error ===
+
+=== AC alternative-truthiness ===
+Intent: The alternative operator selects the supplied fallback for false and null values and preserves other values.
+
+import json
+import subprocess
+
+program = &quot;[false // 7, null // 8, 9 // 10]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = [7, 8, 9]
+assert actual == expected
+=== END AC alternative-truthiness ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not coerce incompatible JSON types implicitly.
+- Preserve jq&#x27;s distinction between booleans and numbers.
+- Division and remainder by zero must raise runtime errors with exit status 5.
+- Preserve operand generator cartesian products and jq ordering rules.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

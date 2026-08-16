@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260816.135801.881Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260816.135801.881Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260816.135801.881Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT ARCHITECTURE.md ===
+# ARCHITECTURE: jq Interpreter
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260816 V1 |
+| Description | Architecture and boundaries for a standalone Python standard-library jq interpreter. |
+| Depends On  | TECHNOLOGY_STACK.md, COMPASS.md |
+| Provides    | interpreter module boundaries, executable contract |
+| Consumes    | — |
+
+## Questions
+
+- None.
+
+## Intent
+
+The application is a standalone command-line jq-language interpreter. The root executable `jq` accepts `-c &#x27;&lt;program&gt;&#x27;`, reads JSON values from standard input, evaluates the program as an ordered stream of values, and writes compact JSON values to standard output.
+
+## Boundaries
+
+| Boundary | Responsibility |
+|---|---|
+| `jq` entry point | Argument validation, process startup, and exit-code mapping. |
+| Lexer | jq tokens, literals, strings, comments, formats, and interpolation delimiters. |
+| Parser/compiler | Grammar, precedence, AST construction, static validation, definitions, and module grammar. |
+| Evaluator | Generator streams, lexical environments, functions, errors, control flow, and immutable values. |
+| Builtin library | jq-defined functions and Python standard-library builtin implementations. |
+| Input/output layer | JSON-lines input, compact serialization, diagnostics, environment, and auxiliary input streams. |
+| Conformance assets | Read-only corpus, manual, grammar references, exclusions, and scoring harness. |
+
+The evaluator must represent a filter as a stream-producing computation. It must preserve output order, multiplicity, cartesian products, backtracking, and short-circuit behavior. Values are immutable from the language&#x27;s perspective; assignments produce replacement values.
+
+## Technology Stack
+
+- Python 3.11 or newer, standard library only, for the interpreter and tests.
+- POSIX shell for the supplied conformance entry point.
+- No third-party runtime dependency, jq binding, system jq invocation, network access, or installation step.
+
+## Process Contract
+
+The executable accepts only the exercised `-c` interface. Compile failures exit `3`; runtime failures exit `5`; successful completion exits `0`. Diagnostics go to stderr. Produced JSON values go to stdout, one compact value per line.
+
+The implementation must never shell out to a system jq executable.
+
+## Source Assets
+
+The supplied files under `sources/` are immutable scoring and specification assets. The implementation may read them but must not modify `jq.test`, `exclusions.txt`, `run_conformance.py`, `full_test.sh`, `builtin.jq`, the manual, lexer, or parser references.
+
+## Programmatic Acceptance
+
+=== AC architecture-boundaries ===
+Intent: The architecture declares the required executable and interpreter boundaries.
+
+from pathlib import Path
+
+text = Path(&quot;ARCHITECTURE.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+required = [
+    &quot;Lexer&quot;,
+    &quot;Parser/compiler&quot;,
+    &quot;Evaluator&quot;,
+    &quot;Builtin library&quot;,
+    &quot;Input/output layer&quot;,
+    &quot;Conformance assets&quot;,
+    &quot;`jq` entry point&quot;,
+]
+for token in required:
+    assert token in text
+
+=== END AC architecture-boundaries ===
+
+=== AC architecture-contract ===
+Intent: The architecture records the externally governed process contract.
+
+from pathlib import Path
+
+text = Path(&quot;ARCHITECTURE.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+contract = [&quot;`-c &#x27;&lt;program&gt;&#x27;`&quot;, &quot;exit `3`&quot;, &quot;exit `5`&quot;, &quot;stderr&quot;, &quot;stdout&quot;]
+for token in contract:
+    assert token in text
+
+=== END AC architecture-contract ===
+
+=== AC architecture-guardrails ===
+Intent: The architecture preserves the standard-library and no-system-jq constraints.
+
+from pathlib import Path
+
+text = Path(&quot;ARCHITECTURE.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+assert &quot;standard library only&quot; in text
+assert &quot;must never shell out to a system jq executable&quot; in text
+
+=== END AC architecture-guardrails ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve the supplied source assets and scoring harness.
+- Do not invoke a system jq executable or use a third-party jq implementation.
+- Preserve generator ordering, multiplicity, and backtracking semantics.
+- Keep diagnostics on stderr and produced JSON values on stdout.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>
