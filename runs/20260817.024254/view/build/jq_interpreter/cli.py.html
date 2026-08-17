@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq_interpreter/cli.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq_interpreter/cli.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq_interpreter/cli.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Process boundary for the compact jq executable contract.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import sys
+
+from .data_model import parse_json_text, serialize_compact
+from .diagnostics import CompileError, RuntimeJqError
+from .evaluator import evaluate
+from .parser import parse
+
+
+def _arguments(argv: list[str]) -&gt; argparse.Namespace:
+    parser = argparse.ArgumentParser(prog=&quot;jq&quot;)
+    parser.add_argument(&quot;-c&quot;, dest=&quot;program&quot;, required=True)
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -&gt; int:
+    try:
+        arguments = _arguments(sys.argv[1:] if argv is None else argv)
+        filter_ast = parse(arguments.program)
+    except (CompileError, SystemExit) as exc:
+        if isinstance(exc, SystemExit):
+            return int(exc.code)
+        print(str(exc), file=sys.stderr)
+        return 3
+
+    try:
+        for line in sys.stdin:
+            if not line.strip():
+                continue
+            input_value = parse_json_text(line)
+            for output in evaluate(filter_ast, input_value):
+                print(serialize_compact(output), flush=True)
+    except (RuntimeJqError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 5
+    return 0
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EVAL-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EVAL-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EVAL-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Generator Control Constructs</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>jq reductions, bounded generators, recursive loops, labels, and breaks preserve stream control semantics.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-002.md, FEATURE-FRONTEND-003.md</td></tr><tr><td>Provides</td><td>reduce, foreach, limit, skip, first, last, nth, while, until, repeat, labels, breaks</td></tr><tr><td>Consumes</td><td>generator evaluator, functions, error handling</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This capability implements jq constructs whose meaning depends on controlled traversal of generator streams. It must support reductions and intermediate extraction, bounded consumption, recursive iteration, short-circuiting, lexical labels, and partial-output behavior.</p>
+<h2>Behavior</h2>
+<ul><li><code>reduce</code> accumulates every generator output in order.</li><li><code>foreach</code> exposes each intermediate accumulator through its extraction filter.</li><li><code>limit</code>, <code>skip</code>, <code>first</code>, <code>last</code>, and <code>nth</code> consume only the required stream values.</li><li><code>while</code>, <code>until</code>, and <code>repeat</code> recurse with jq&#x27;s stream semantics.</li><li>Labels and breaks terminate the corresponding lexical generator scope.</li><li>Control constructs preserve cartesian products, short-circuiting, and runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC eval-003-reduction ===<br>Intent: The implementation passes the authoritative corpus cases for reduce and foreach.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;reduce|foreach|intermediate|accumul&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-003-reduction ===</p>
+<p>=== AC eval-003-bounds ===<br>Intent: The implementation passes the authoritative corpus cases for limit, skip, first, last, and nth.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;limit|skip|first\(|last\(|nth\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-003-bounds ===</p>
+<p>=== AC eval-003-recursion ===<br>Intent: The implementation passes the authoritative corpus cases for while, until, repeat, labels, breaks, and recursive generators.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;while|until|repeat|label|break|Recursion|recurse&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-003-recursion ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not materialize unbounded generators unnecessarily.</li><li>Ensure bounded constructs stop consuming input after their contract is satisfied.</li><li>Keep labels lexical and prevent breaks from escaping their visible scope.</li></ul></article>
+</main>
+</body>
+</html>

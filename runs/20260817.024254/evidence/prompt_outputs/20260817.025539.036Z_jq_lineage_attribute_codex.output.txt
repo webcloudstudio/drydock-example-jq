@@ -1,0 +1,20 @@
+<requirement name="stage-conformance-assets" stories="verify-001">
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+</requirement>
+<requirement name="candidate-command-interface" stories="cli-001">
+JQ         command that runs the candidate. Required -- this harness is language-neutral
+               and deliberately has no default implementation language.
+</requirement>
+<requirement name="diagnostic-exit-contract" stories="cli-002">
+0   every case that ran passed
+1   at least one case failed or errored
+2   the harness could not run: bad usage, missing corpus, or a stale exclusion
+</requirement>
+<requirement name="bounded-validated-conformance-run" stories="verify-002">
+A case that has not produced output in this long is not going to. jq's own suite runs the
+whole corpus in under a second; anything near this bound is a runaway generator.
+</requirement>
+<requirement name="jq-conformance" stories="frontend-001,frontend-002,frontend-003,eval-001,eval-002,eval-003,data-001,data-002,data-003,builtin-001,builtin-002,builtin-003,builtin-004,builtin-005,verify-003">
+Run the upstream jq conformance corpus against a candidate implementation.
+</requirement>
+<unattached story="architecture"/>

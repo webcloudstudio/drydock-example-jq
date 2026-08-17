@@ -1,0 +1,10 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Fixed generator-core path evaluation, null-root `setpath`, invalid path validation, and deep-path guards. Declared acceptance selectors pass; local tests: 25 passed.
+
+BLOCKERS:
+- Full corpus still has pre-existing failures outside this block: 287 passed, 250 failed, 0 errored, 13 skipped.

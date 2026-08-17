@@ -1,0 +1,4 @@
+2026-08-17T04:02:16.861180Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq_interpreter/parser.py: No such file or directory (os error 2)
+2026-08-17T04:03:44.282209Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq_interpreter/evaluator.py: No such file or directory (os error 2)
+2026-08-17T04:04:15.374540Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq/jq_interpreter/evaluator.py:
+        return [prefix] if any(is_truthy(v) for v in ev(condition, _get_path(root, prefix), env)) else []

@@ -1,0 +1,45 @@
+<requirement name="parse-jq-syntax" stories="frontend-001,frontend-002">
+# Simple value tests to check parser
+</requirement>
+<requirement name="support-functions-bindings" stories="frontend-003">
+# Variables
+</requirement>
+<requirement name="evaluate-streams" stories="eval-001">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="evaluate-operators-conditionals" stories="eval-002">
+# Conditionals
+</requirement>
+<requirement name="evaluate-generators" stories="eval-003">
+# Check that limit does work for each value produced by n!
+</requirement>
+<requirement name="operate-on-json-values" stories="data-001">
+# Builtin functions
+</requirement>
+<requirement name="discover-and-mutate-paths" stories="data-002">
+# Paths
+</requirement>
+<requirement name="assign-and-update-values" stories="data-003">
+# Assignment
+</requirement>
+<requirement name="provide-collection-builtins" stories="builtin-001">
+# Object construction
+</requirement>
+<requirement name="provide-string-unicode-builtins" stories="builtin-002">
+# string operations
+</requirement>
+<requirement name="provide-date-math-builtins" stories="builtin-004">
+# Check day-of-week and day of year computations
+</requirement>
+<requirement name="provide-streaming-io-builtins" stories="builtin-005">
+# calling input/0, or debug/0 in a test doesn't crash jq
+</requirement>
+<requirement name="verify-regression-boundaries" stories="verify-002">
+# regression tests for CVE-2026-33947 (use of fmt after free)
+</requirement>
+<unattached story="architecture"/>
+<unattached story="cli-001"/>
+<unattached story="cli-002"/>
+<unattached story="builtin-003"/>
+<unattached story="verify-001"/>
+<unattached story="verify-003"/>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.025236.878Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.025236.878Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.025236.878Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;preserve-upstream-corpus&quot; stories=&quot;verify-001&quot;&gt;
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;audit-exclusion-entries&quot; stories=&quot;verify-002&quot;&gt;
+This file is a scoring asset: it is hash-verified against the import and restored before grading.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-unmatched-exclusions&quot; stories=&quot;cli-002&quot;&gt;
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;exclude-module-loader-cases&quot; stories=&quot;verify-003&quot;&gt;
+Only the loader cases are excluded.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;retain-module-grammar-cases&quot; stories=&quot;frontend-001,frontend-002&quot;&gt;
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`, `include &quot;\(a)&quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;cli-001&quot;/&gt;
+&lt;unattached story=&quot;frontend-003&quot;/&gt;
+&lt;unattached story=&quot;eval-001&quot;/&gt;
+&lt;unattached story=&quot;eval-002&quot;/&gt;
+&lt;unattached story=&quot;eval-003&quot;/&gt;
+&lt;unattached story=&quot;data-001&quot;/&gt;
+&lt;unattached story=&quot;data-002&quot;/&gt;
+&lt;unattached story=&quot;data-003&quot;/&gt;
+&lt;unattached story=&quot;builtin-001&quot;/&gt;
+&lt;unattached story=&quot;builtin-002&quot;/&gt;
+&lt;unattached story=&quot;builtin-003&quot;/&gt;
+&lt;unattached story=&quot;builtin-004&quot;/&gt;
+&lt;unattached story=&quot;builtin-005&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

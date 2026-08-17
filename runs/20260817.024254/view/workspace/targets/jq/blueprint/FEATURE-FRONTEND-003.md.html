@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FRONTEND-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FRONTEND-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FRONTEND-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Functions, Bindings, and Destructuring</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>User-defined functions, lexical bindings, closures, recursion, and destructuring behave according to jq semantics.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FRONTEND-002.md</td></tr><tr><td>Provides</td><td>def functions, filter arguments, value arguments, lexical bindings, closures, destructuring</td></tr><tr><td>Consumes</td><td>jq parser, AST</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This capability extends the parsed jq language with executable lexical scope. Functions may accept filter arguments or value arguments, refer to earlier definitions, recurse, and capture bindings. Binding patterns support scalar variables, arrays, objects, and destructuring alternatives.</p>
+<h2>Behavior</h2>
+<ul><li><code>def</code> definitions are lexically scoped and support zero or more arguments.</li><li>Filter arguments are re-evaluated against the current input; value arguments preserve the evaluated value.</li><li>Bindings are immutable and visible only to the expression on their right.</li><li>Recursive functions and closures preserve generator ordering and backtracking.</li><li>Array and object patterns bind missing values as <code>null</code>.</li><li><code>?//</code> tries subsequent destructuring alternatives when an earlier pattern or downstream expression fails.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC frontend-003-functions ===<br>Intent: The implementation passes the authoritative corpus cases for user-defined functions, arguments, closures, and recursion.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;def |function|closure|recursion|recursive|addvalue|Many arguments|test multiple function arities&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC frontend-003-functions ===</p>
+<p>=== AC frontend-003-bindings ===<br>Intent: The implementation passes the authoritative corpus cases for lexical bindings and destructuring.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;Variables|Destructuring| as \$|closures and lexical scoping|destructuring&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC frontend-003-bindings ===</p>
+<p>=== AC frontend-003-alternatives ===<br>Intent: The implementation passes the authoritative corpus cases for destructuring alternatives and generator backtracking through functions.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;\?//|backtracking through function calls|Destructuring with alternation&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC frontend-003-alternatives ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not implement bindings as mutable global variables.</li><li>Do not evaluate filter arguments only once at function definition time.</li><li>Preserve generator multiplicity and lexical scope across recursive calls.</li></ul></article>
+</main>
+</body>
+</html>

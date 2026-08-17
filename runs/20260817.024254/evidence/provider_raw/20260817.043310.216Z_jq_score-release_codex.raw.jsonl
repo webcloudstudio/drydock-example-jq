@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a00dfe-b184-7933-bc6b-4c0c427bbaa6"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"{\"criteria\":[{\"id\":\"st-001\",\"verdict\":\"NOT MET\",\"rationale\":\"The supplied full scoring script exited with code 1, reporting 320 passed and 217 failed conformance cases.\",\"evidence\":[\"governed gate sh sources/full_test.sh: return code 1\",\"jq conformance: 320 passed, 217 failed, 13 skipped\"]}],\"improvements\":[\"Make sh sources/full_test.sh pass all required conformance cases.\"]}"}}
+{"type":"turn.completed","usage":{"input_tokens":33743,"cached_input_tokens":8960,"cache_write_input_tokens":0,"output_tokens":151,"reasoning_output_tokens":49}}

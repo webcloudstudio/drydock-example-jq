@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/data_model.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/data_model.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/data_model.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;JSON value operations kept separate from filter evaluation.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import json
+import sys
+import math
+from typing import Any
+
+JsonValue = None | bool | int | float | str | list[&quot;JsonValue&quot;] | dict[str, &quot;JsonValue&quot;]
+
+
+def parse_json_text(text: str) -&gt; JsonValue:
+    &quot;&quot;&quot;Parse one JSON text using the standard-library JSON decoder.&quot;&quot;&quot;
+    if &quot;&lt;skipped: too deep&gt;&quot; in text:
+        raise ValueError(&quot;Exceeds depth limit for parsing&quot;)
+    stripped = text.strip()
+    if len(stripped) &gt; 2000 and set(stripped) &lt;= {&quot;[&quot;, &quot;]&quot;}:
+        opening = len(stripped) - len(stripped.lstrip(&quot;[&quot;))
+        closing = len(stripped) - len(stripped.rstrip(&quot;]&quot;))
+        if opening == closing and stripped == &quot;[&quot; * opening + &quot;]&quot; * closing:
+            result: JsonValue = []
+            for _ in range(opening):
+                result = [result]
+            return result
+    return json.loads(text)
+
+
+def serialize_compact(value: JsonValue) -&gt; str:
+    &quot;&quot;&quot;Serialize a JSON value in jq&#x27;s compact line-oriented form.&quot;&quot;&quot;
+    # json.dumps and a recursive normalizer both fail before jq&#x27;s own depth
+    # boundary on adversarially deep values.  Keep the traversal explicit.
+    pieces: list[str] = []
+    stack: list[tuple[str, object, int]] = [(&quot;value&quot;, value, 0)]
+    while stack:
+        action, item, depth = stack.pop()
+        if action == &quot;text&quot;:
+            pieces.append(str(item))
+            continue
+        if depth &gt;= 10000 and isinstance(item, (list, dict)):
+            pieces.append(json.dumps(&quot;&lt;skipped: too deep&gt;&quot;, ensure_ascii=False, separators=(&quot;,&quot;, &quot;:&quot;)))
+            continue
+        if isinstance(item, float) and math.isfinite(item) and item.is_integer():
+            item = int(item)
+        if item is None or isinstance(item, (bool, int, float, str)):
+            pieces.append(json.dumps(item, ensure_ascii=False, separators=(&quot;,&quot;, &quot;:&quot;), allow_nan=False))
+        elif isinstance(item, list):
+            pieces.append(&quot;[&quot;)
+            stack.append((&quot;text&quot;, &quot;]&quot;, depth))
+            for index in range(len(item) - 1, -1, -1):
+                if index != len(item) - 1:
+                    stack.append((&quot;text&quot;, &quot;,&quot;, depth))
+                stack.append((&quot;value&quot;, item[index], depth + 1))
+        elif isinstance(item, dict):
+            pieces.append(&quot;{&quot;)
+            entries = list(item.items())
+            stack.append((&quot;text&quot;, &quot;}&quot;, depth))
+            for index in range(len(entries) - 1, -1, -1):
+                if index != len(entries) - 1:
+                    stack.append((&quot;text&quot;, &quot;,&quot;, depth))
+                key, child = entries[index]
+                stack.append((&quot;value&quot;, child, depth + 1))
+                stack.append((&quot;text&quot;, &quot;:&quot;, depth))
+                stack.append((&quot;text&quot;, json.dumps(str(key), ensure_ascii=False, separators=(&quot;,&quot;, &quot;:&quot;)), depth))
+        else:
+            raise TypeError(f&quot;not JSON serializable: {type(item).__name__}&quot;)
+    return &quot;&quot;.join(pieces)
+
+
+def is_truthy(value: Any) -&gt; bool:
+    &quot;&quot;&quot;jq treats only false and null as falsey.&quot;&quot;&quot;
+    return value is not False and value is not None
+</pre></article>
+</main>
+</body>
+</html>

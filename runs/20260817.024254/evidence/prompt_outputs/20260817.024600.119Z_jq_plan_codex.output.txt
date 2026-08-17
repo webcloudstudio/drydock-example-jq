@@ -1,0 +1,506 @@
+=== BEGIN ARTIFACT ARCHITECTURE.md ===
+# ARCHITECTURE: jq Interpreter
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines the standalone Python architecture and module boundaries for the jq interpreter. |
+| Depends On  | — |
+| Provides    | interpreter module boundaries, jq executable contract |
+| Consumes    | — |
+
+## Questions
+
+- None.
+
+## Intent
+
+The application is a standalone jq-language interpreter implemented with Python's standard library. It exposes an executable named `jq`, accepts `-c '<program>'`, reads a stream of JSON texts from standard input, evaluates each program as an ordered generator, and writes compact JSON values to standard output.
+
+## Module Boundaries
+
+| Module area | Responsibility |
+|---|---|
+| CLI | Argument validation, stdin JSON-text framing, output serialization, and process exit status |
+| Lexer | jq tokens, comments, strings, interpolation, formats, operators, delimiters, and source locations |
+| Parser/compiler | Precedence, AST construction, static validation, function definitions, bindings, and control syntax |
+| Evaluator | Lazy ordered streams, generator multiplicity, backtracking, environments, errors, and control flow |
+| Data model | JSON values, numeric representation, equality, ordering, indexing, slicing, and containment |
+| Paths and mutation | Path discovery, immutable replacement, deletion, and assignment operators |
+| Builtins | Collection, string, regular-expression, formatting, date, math, I/O, streaming, and SQL-style filters |
+| Verification | Focused project tests and the supplied conformance harness |
+
+The evaluator must represent filters as lazy Python iterators or equivalent resumable streams. A filter may produce zero, one, or many values, and downstream filters run once for every upstream value. Runtime errors must preserve values already emitted.
+
+## Data and Error Model
+
+Use a literal-preserving hybrid numeric representation: retain source spelling where jq preserves an untouched numeric literal, while using standard-library numeric operations for arithmetic and comparisons. JSON values remain immutable from the evaluator's perspective; assignments produce replacement trees.
+
+Compilation errors are distinct from runtime errors. The CLI returns `3` for syntax or static failures and `5` for runtime failures. Diagnostics are written only to standard error.
+
+## Technology Stack
+
+| Technology | Application |
+|---|---|
+| Python 3.11 or newer | Lexer, parser, evaluator, data model, builtins, CLI, and focused tests |
+| POSIX sh | Supplied conformance entry point |
+
+The implementation uses only Python standard-library modules and never invokes a system jq executable, third-party jq implementation, package installer, or network service.
+
+## Persistence and External Boundaries
+
+The interpreter has no persistent store, database, authentication boundary, or external service. Runtime input and output are confined to standard input, standard output, and standard error. The `input` and `inputs` builtins consume the CLI's remaining JSON input stream.
+
+## Programmatic Acceptance
+
+=== AC architecture-stream-contract ===
+Intent: The completed executable accepts the declared compact-filter interface and returns a valid JSON value derived from supplied input.
+import json
+import subprocess
+
+payload = {"architecture": ["stream", "generator"]}
+source = json.dumps(payload)
+result = subprocess.run(
+    ["./jq", "-c", "."],
+    input=source + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual == payload
+=== END AC architecture-stream-contract ===
+
+=== AC architecture-generator-order ===
+Intent: The evaluator preserves ordered generator multiplicity for comma expressions.
+import json
+import subprocess
+
+input_value = None
+expected = [1, 1, 2]
+result = subprocess.run(
+    ["./jq", "-c", "1, 1, 2"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == expected
+=== END AC architecture-generator-order ===
+
+=== AC architecture-runtime-status ===
+Intent: Runtime failures use the documented runtime exit status while keeping diagnostics off standard output.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "error"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+assert result.stdout == ""
+=== END AC architecture-runtime-status ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not shell out to a system jq executable.
+- Do not use third-party jq implementations or bindings.
+- Preserve supplied source assets and the acceptance harness.
+- Preserve generator ordering, multiplicity, backtracking, and partial output.
+- Keep compile failures distinct from runtime failures using exit codes 3 and 5.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CLI-001.md ===
+# FEATURE: CLI Command Interface
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines the executable jq command interface for compact JSON filtering. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | ./jq -c, stdin JSON stream processing, compact JSON output |
+| Consumes    | interpreter module boundaries |
+
+## Questions
+
+- None.
+
+## Workflow
+
+1. Start the executable as `./jq -c '<program>'`.
+2. Read successive JSON texts from standard input.
+3. Evaluate the compiled filter once for each input value.
+4. Emit every produced value as one compact JSON text followed by a newline.
+5. Return zero after all inputs and outputs complete successfully.
+
+The implementation need support only the exercised `-c` interface. It must preserve output order and multiplicity across multiple input texts.
+
+## Interface Contract
+
+| Input | Contract |
+|---|---|
+| Program | One jq filter supplied after `-c` |
+| Standard input | One or more JSON texts |
+| Standard output | One compact JSON value per produced result |
+| Successful exit | `0` |
+
+## Programmatic Acceptance
+
+=== AC cli-001-single-input ===
+Intent: The executable evaluates a compact filter against one JSON input and emits the parsed result.
+import json
+import subprocess
+
+input_value = {"name": "jq", "enabled": True}
+result = subprocess.run(
+    ["./jq", "-c", ".name"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [input_value["name"]]
+assert actual == expected
+=== END AC cli-001-single-input ===
+
+=== AC cli-001-multiple-inputs ===
+Intent: The executable processes multiple JSON texts from standard input independently and in order.
+import json
+import subprocess
+
+input_values = [{"value": 1}, {"value": 2}, {"value": 3}]
+result = subprocess.run(
+    ["./jq", "-c", ".value"],
+    input="".join(json.dumps(value) + "\n" for value in input_values),
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [value["value"] for value in input_values]
+assert actual == expected
+=== END AC cli-001-multiple-inputs ===
+
+=== AC cli-001-generator-output ===
+Intent: The executable emits each generator result as a separate compact JSON line in generator order.
+import json
+import subprocess
+
+input_value = None
+result = subprocess.run(
+    ["./jq", "-c", "range(3)"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = list(range(3))
+assert actual == expected
+=== END AC cli-001-generator-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The executable must be named `jq` and be executable at the application root.
+- Support `-c` as exercised by the supplied harness.
+- Emit no diagnostics on standard output.
+- Do not modify or reinterpret the supplied conformance harness.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CLI-002.md ===
+# FEATURE: CLI Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines jq compilation and runtime diagnostics and their exit-status distinction. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CLI-001.md |
+| Provides    | compile exit 3, runtime exit 5, stderr diagnostics |
+| Consumes    | ./jq -c, lexer/parser, evaluator |
+
+## Questions
+
+- None.
+
+## Error Contract
+
+| Condition | Exit | Output behavior |
+|---|---:|---|
+| Syntax or static compilation failure | 3 | Diagnostic on stderr; no normal result output |
+| Runtime failure after compilation | 5 | Diagnostic on stderr; values emitted before failure remain available |
+| Successful completion | 0 | Results on stdout; diagnostics, if any, remain on stderr |
+
+The exact diagnostic wording is not part of the contract. The status code and stream placement are normative.
+
+## Programmatic Acceptance
+
+=== AC cli-002-compile-error ===
+Intent: Invalid jq syntax is rejected with compile exit status 3 and a stderr diagnostic.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "{"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+assert result.stderr != ""
+assert result.stdout == ""
+=== END AC cli-002-compile-error ===
+
+=== AC cli-002-runtime-error ===
+Intent: A compiled filter that raises at runtime returns exit status 5 and keeps diagnostics off stdout.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "error"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+assert result.stderr != ""
+assert result.stdout == ""
+=== END AC cli-002-runtime-error ===
+
+=== AC cli-002-partial-output ===
+Intent: Results emitted before a runtime error remain on stdout while the process returns runtime exit status 5.
+import json
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "1, error"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1]
+assert actual == expected
+=== END AC cli-002-partial-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Exit `3` is reserved for compilation failures.
+- Exit `5` is used for runtime failures.
+- Diagnostics must be written to standard error.
+- Preserve values produced before a runtime failure.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-001.md ===
+# FEATURE: jq Lexical Analysis
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines lexical analysis for jq programs, including literals, bindings, strings, and operators. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | jq tokenization |
+| Consumes    | interpreter module boundaries |
+
+## Questions
+
+- None.
+
+## Lexical Scope
+
+The lexer recognizes:
+
+- JSON-like literals, identifiers, field names, and variable bindings.
+- Keywords including `def`, `if`, `then`, `else`, `end`, `as`, `reduce`, `foreach`, `try`, `catch`, `label`, and `break`.
+- Operators including arithmetic, comparison, Boolean, alternative, assignment, and recursive-descent operators.
+- Delimiters for parentheses, arrays, objects, and interpolated strings.
+- `@format` tokens.
+- Double-quoted strings with JSON escapes and `\(filter)` interpolation.
+- `#` comments, including escaped line continuations.
+- Invalid escapes, characters, and mismatched delimiters as lexical errors.
+
+Source locations must be retained sufficiently for diagnostics such as line and column reporting.
+
+## Programmatic Acceptance
+
+=== AC frontend-001-literals-and-fields ===
+Intent: Lexically valid literals, fields, and bindings compile and evaluate through the public executable.
+import json
+import subprocess
+
+input_value = {"field": 7}
+result = subprocess.run(
+    ["./jq", "-c", ".field, 42, $value"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC frontend-001-literals-and-fields ===
+
+=== AC frontend-001-strings-and-interpolation ===
+Intent: Valid escaped strings and interpolation are accepted and produce the value derived from supplied input.
+import json
+import subprocess
+
+input_value = "jq"
+program = '"prefix-\\(.)"'
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = ["prefix-" + input_value]
+assert actual == expected
+=== END AC frontend-001-strings-and-interpolation ===
+
+=== AC frontend-001-invalid-escape ===
+Intent: An invalid string escape is rejected during compilation.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", '"u\\vw"'],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC frontend-001-invalid-escape ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Follow the supplied lexer token and state behavior.
+- Reject malformed escapes and mismatched delimiters at compile time.
+- Ignore comments without altering tokens in strings.
+- Do not depend on a generated lexer or external parser tool at runtime.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-002.md ===
+# FEATURE: jq Parser and AST
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines parsing and executable AST construction for jq expressions and declarations. |
+| Depends On  | ARCHITECTURE.md, FEATURE-FRONTEND-001.md |
+| Provides    | jq parser, AST, precedence and syntax validation |
+| Consumes    | jq tokenization |
+
+## Questions
+
+- None.
+
+## Parser Contract
+
+The parser must construct an executable representation for jq queries, including:
+
+- Identity, literals, field access, indexing, slicing, iteration, arrays, and objects.
+- Parentheses, pipes, comma generators, operators, conditionals, optional filters, and errors.
+- Function definitions and calls, bindings, destructuring, reductions, foreach, labels, and breaks.
+- String interpolation and format expressions.
+- Assignment operators and module grammar.
+- The precedence and associativity declared by the supplied parser grammar.
+
+Invalid syntax and statically invalid constructs must fail compilation with exit status `3`.
+
+## Programmatic Acceptance
+
+=== AC frontend-002-precedence ===
+Intent: The parser applies jq arithmetic precedence and evaluates the resulting AST.
+import json
+import subprocess
+
+input_value = None
+result = subprocess.run(
+    ["./jq", "-c", "1 + 2 * 2"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1 + 2 * 2]
+assert actual == expected
+=== END AC frontend-002-precedence ===
+
+=== AC frontend-002-collections-and-pipeline ===
+Intent: The parser accepts collection and pipeline syntax and preserves the collected values.
+import json
+import subprocess
+
+input_value = [1, 2, 3]
+result = subprocess.run(
+    ["./jq", "-c", "[.[] | . + 1]"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[value + 1 for value in input_value]]
+assert actual == expected
+=== END AC frontend-002-collections-and-pipeline ===
+
+=== AC frontend-002-invalid-syntax ===
+Intent: The parser rejects an unterminated object expression with compile exit status 3.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "{"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC frontend-002-invalid-syntax ===
+
+=== AC frontend-002-assignment-syntax ===
+Intent: The parser accepts assignment syntax and the evaluator applies the parsed update.
+import json
+import subprocess
+
+input_value = {"count": 1}
+result = subprocess.run(
+    ["./jq", "-c", ".count += 1"],
+    input=json.dumps(input_value) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [{"count": input_value["count"] + 1}]
+assert actual == expected
+=== END AC frontend-002-assignment-syntax ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve the precedence, associativity, and syntax boundaries in the supplied parser grammar.
+- Produce an AST or equivalent executable representation; do not translate programs by invoking jq.
+- Keep compile-time rejection distinct from runtime evaluation.
+- Support module grammar validation without requiring module-loader filesystem fixtures.
+
+=== END ARTIFACT ===

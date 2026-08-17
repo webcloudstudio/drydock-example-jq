@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/09-initial-build-1.stdout.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/09-initial-build-1.stdout.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/09-initial-build-1.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Build: jq
+scope: entire project
+frontier: architecture
+WARNING: override waived story-question for verify-001: Acceptance criterion verify-001-harness-list cannot pass
+
+LLM BUILD: Block 1 · Foundational [block-1]
+  stories: Define the standalone jq interpreter architecture and module boundaries. [architecture]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: architecture — closed/verified · execution 20260817.025627.341Z-0902c853
+
+LLM BUILD: Block 2 · Service [block-2]
+  stories: Implement the executable jq command interface. [cli-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: cli-001 — closed/verified · execution 20260817.025852.137Z-e533a99b
+
+LLM BUILD: Block 3 · Service [block-3]
+  stories: Implement jq compile and runtime diagnostics with documented exit codes. [cli-002]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: cli-002 — closed/verified · execution 20260817.030420.278Z-6b166c8c
+
+LLM BUILD: Block 4 · Service [block-4]
+  stories: Implement jq lexical analysis. [frontend-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: frontend-001 — closed/verified · execution 20260817.030638.389Z-133c4f48
+
+LLM BUILD: Block 5 · Service [block-5]
+  stories: Implement jq parsing and executable AST construction. [frontend-002]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 4/4 AC passed
+
+LLM BUILD: Block 5 · Service [block-5]
+  stories: Implement jq parsing and executable AST construction. [frontend-002]
+  call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
+  failing: agent-reported failure
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 2 · 4/4 AC passed
+built: frontend-002 — closed/verified · execution 20260817.031547.211Z-7b0bb521
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Implement jq functions, lexical bindings, closures, and destructuring. [frontend-003]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/3 AC passed · failed: frontend-003-bindings (20/61 cases)
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Implement jq functions, lexical bindings, closures, and destructuring. [frontend-003]
+  call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
+  failing: frontend-003-bindings (20/61 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 2 · 2/3 AC passed · failed: frontend-003-bindings (45/61 cases)
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Implement jq functions, lexical bindings, closures, and destructuring. [frontend-003]
+  call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
+  failing: frontend-003-bindings (45/61 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 3 · 2/3 AC passed · failed: frontend-003-bindings (55/61 cases)
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Implement jq functions, lexical bindings, closures, and destructuring. [frontend-003]
+  call: 4 of up to 7 · automatic repair 3 of 6 · codex/gpt-5.6-luna
+  failing: frontend-003-bindings (55/61 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 4 · 3/3 AC passed
+built: frontend-003 — closed/verified · execution 20260817.034609.413Z-2c686db2
+
+LLM BUILD: Block 7 · Foundational [block-7]
+  stories: Stage the supplied jq conformance assets unchanged. [verify-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/2 AC passed
+built: verify-001 — closed/verified · execution 20260817.035740.885Z-c066740a
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement the stream-based generator evaluation core. [eval-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 1/3 AC passed · failed: eval-001-streams (11/13 cases), eval-001-backtracking (12/14 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement the stream-based generator evaluation core. [eval-001]
+  call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
+  failing: eval-001-streams (11/13 cases), eval-001-backtracking (12/14 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 2 · 3/3 AC passed
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement the stream-based generator evaluation core. [eval-001]
+  call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
+  failing: agent-reported failure
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 3 · 3/3 AC passed
+built: eval-001 — closed/verified · execution 20260817.041240.888Z-83d84521
+
+LLM BUILD: Block 9 · Service [block-9]
+  stories: Implement jq operators and conditional control flow. [eval-002]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+failed: eval-002 — closed/failed · execution 20260817.041936.737Z-8b7f720a
+
+result: 8 built, 1 failed, 0 unchanged
+elapsed: 1 hour 32 minutes 8 seconds
+
+---- OVERRIDE SUMMARY (1 gate bypassed) ----
+  story-question             verify-001 — Acceptance criterion verify-001-harness-list cannot pass
+This run is not governed: the waived gates were never answered.
+
+========================================================================
+BUILD FAILED: jq  (1 step)
+========================================================================
+
+  Failure
+    Provenance
+      Target: jq
+      Block: Block 9 · Service [block-9]
+      Story: Implement jq operators and conditional control flow. [eval-002]
+    Cause: target verification interrupted by build agent
+    agent summary:
+      Implemented jq operators, conditionals, `//`, `try`/`catch`,
+      optional filters, error propagation, `any`/`all`, recursive
+      paths, and focused tests. Scoped eval-002 conformance
+      passed: 13 passed, 0 failed.
+    agent blockers:
+      - Full conformance run stalled without producing a verdict;
+      acceptance could not be confirmed.
+    A target verification command was interrupted inside the build-agent session. Drydock did not configure an LLM execution timeout for this build. Scoped acceptance and project tests pass, but `sh sources/full_test.sh` stalled in the broader corpus and was interrupted; isolate the hanging case before rerunning.
+    execution: 20260817.041936.737Z-8b7f720a
+    evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/evidence/block-9.md
+
+  Next
+    rerun drydock build to continue this step (repairs in place);
+    add --reset to discard its work and rebuild from scratch
+========================================================================
+
+========================================================================
+POST-LLM FAILURE  ·  build  ·  target verification interrupted by build agent
+========================================================================
+
+  A target verification command was interrupted inside the build-agent
+  session. Drydock did not configure an LLM execution timeout for this
+  build. Scoped acceptance and project tests pass, but `sh
+  sources/full_test.sh` stalled in the broader corpus and was
+  interrupted; isolate the hanging case before rerunning.
+
+  Recovery
+    Inspect the execution evidence, correct the execution issue,
+    then run: drydock build jq --step block-9
+
+========================================================================
+2026-08-17 00:28:33 EDT  Calling CODEX/gpt-5.6-luna (diagnose)...
+  Completed CODEX/gpt-5.6-luna (diagnose)  rc=0
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

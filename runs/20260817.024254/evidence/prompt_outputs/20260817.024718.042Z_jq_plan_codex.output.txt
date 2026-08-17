@@ -1,0 +1,518 @@
+=== BEGIN ARTIFACT FEATURE-FRONTEND-003.md ===
+# FEATURE: Functions, Bindings, and Destructuring
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | User-defined functions, lexical bindings, closures, recursion, and destructuring behave according to jq semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-FRONTEND-002.md |
+| Provides    | def functions, filter arguments, value arguments, lexical bindings, closures, destructuring |
+| Consumes    | jq parser, AST |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability extends the parsed jq language with executable lexical scope. Functions may accept filter arguments or value arguments, refer to earlier definitions, recurse, and capture bindings. Binding patterns support scalar variables, arrays, objects, and destructuring alternatives.
+
+## Behavior
+
+- `def` definitions are lexically scoped and support zero or more arguments.
+- Filter arguments are re-evaluated against the current input; value arguments preserve the evaluated value.
+- Bindings are immutable and visible only to the expression on their right.
+- Recursive functions and closures preserve generator ordering and backtracking.
+- Array and object patterns bind missing values as `null`.
+- `?//` tries subsequent destructuring alternatives when an earlier pattern or downstream expression fails.
+
+## Programmatic Acceptance
+
+=== AC frontend-003-functions ===
+Intent: The implementation passes the authoritative corpus cases for user-defined functions, arguments, closures, and recursion.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"def |function|closure|recursion|recursive|addvalue|Many arguments|test multiple function arities"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC frontend-003-functions ===
+
+=== AC frontend-003-bindings ===
+Intent: The implementation passes the authoritative corpus cases for lexical bindings and destructuring.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Variables|Destructuring| as \$|closures and lexical scoping|destructuring"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC frontend-003-bindings ===
+
+=== AC frontend-003-alternatives ===
+Intent: The implementation passes the authoritative corpus cases for destructuring alternatives and generator backtracking through functions.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"\?//|backtracking through function calls|Destructuring with alternation"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC frontend-003-alternatives ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not implement bindings as mutable global variables.
+- Do not evaluate filter arguments only once at function definition time.
+- Preserve generator multiplicity and lexical scope across recursive calls.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-EVAL-001.md ===
+# FEATURE: Generator Evaluation Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | jq filters evaluate as ordered streams with correct piping, collection, iteration, multiplicity, and backtracking. |
+| Depends On  | ARCHITECTURE.md, FEATURE-FRONTEND-002.md, FEATURE-FRONTEND-003.md |
+| Provides    | identity, literals, pipes, commas, iteration, collection, empty, backtracking |
+| Consumes    | jq parser, AST, functions and bindings |
+
+## Questions
+
+- None.
+
+## Intent
+
+The evaluator treats every filter as a generator from one input to zero or more outputs. Pipeline evaluation feeds each output into the next filter, comma concatenates streams, collections materialize all outputs, and empty backtracks to the preceding generator.
+
+## Behavior
+
+- Identity and literals produce one output per input.
+- Pipes preserve downstream evaluation order for every upstream output.
+- Commas preserve left-to-right stream order.
+- Array and object constructors collect generator outputs with jq multiplicity.
+- Array and object iteration produce values in jq order.
+- `empty` produces no output without terminating unrelated sibling generators.
+- Multi-output arguments form the required cartesian products.
+
+## Programmatic Acceptance
+
+=== AC eval-001-streams ===
+Intent: The implementation passes the authoritative corpus cases for identity, literals, pipes, commas, iteration, and empty.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Simple value tests|Field access, piping|Multiple outputs, iteration|empty|Comma|Pipe"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-001-streams ===
+
+=== AC eval-001-collections ===
+Intent: The implementation passes the authoritative corpus cases for array and object collection and generator multiplicity.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Dictionary construction syntax|Array construction|cartesian|collection|Multiple outputs"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-001-collections ===
+
+=== AC eval-001-backtracking ===
+Intent: The implementation passes the authoritative corpus cases proving empty and backtracking preserve sibling output order.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"empty|backtracking|first\(1,error|cartesian"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-001-backtracking ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not collapse a filter stream into a single value.
+- Preserve output order, multiplicity, and partial results.
+- Ensure `empty` backtracks only within the active generator evaluation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-EVAL-002.md ===
+# FEATURE: Operators and Conditional Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | jq arithmetic, comparison, Boolean, alternative, conditional, optional, and error-handling operators follow jq semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-EVAL-001.md, FEATURE-FRONTEND-002.md |
+| Provides    | arithmetic, comparison, Boolean operators, alternative, conditionals, try/catch |
+| Consumes    | generator evaluator, jq AST |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability evaluates jq's operators and control expressions over generator streams. It distinguishes jq truthiness from host-language truthiness, propagates runtime errors with partial output, and supports recovery through `try`, `catch`, and optional filters.
+
+## Behavior
+
+- Arithmetic dispatches by jq value type and rejects unsupported combinations.
+- Comparisons use jq's total value ordering and strict equality semantics.
+- `and`, `or`, and `not` use only `false` and `null` as false values.
+- `//` selects non-null, non-false outputs and evaluates its fallback when needed.
+- Conditionals evaluate the appropriate branch for each condition output.
+- `try`, `catch`, and `?` suppress or transform runtime errors while preserving stream behavior.
+- Division and remainder by zero are runtime errors.
+
+## Programmatic Acceptance
+
+=== AC eval-002-operators ===
+Intent: The implementation passes the authoritative corpus cases for arithmetic, comparison, equality, ordering, and type-dispatched operations.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Builtin functions|Basic numbers tests|numeric comparison|equality|containment operator|division|remainder"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-002-operators ===
+
+=== AC eval-002-conditionals ===
+Intent: The implementation passes the authoritative corpus cases for jq truthiness, Boolean operators, conditionals, and defined-or.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Conditionals|if-then-else|Alternative operator|short-circuiting| and | or |not"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-002-conditionals ===
+
+=== AC eval-002-errors ===
+Intent: The implementation passes the authoritative corpus cases for runtime errors, try/catch, and optional filters.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Try/catch|try-catch|Error Suppression|optional operator|division by zero|runtime error"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-002-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not use Python truthiness in place of jq truthiness.
+- Do not convert runtime failures into compile failures.
+- Preserve outputs produced before an uncaught runtime error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-EVAL-003.md ===
+# FEATURE: Generator Control Constructs
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | jq reductions, bounded generators, recursive loops, labels, and breaks preserve stream control semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-EVAL-002.md, FEATURE-FRONTEND-003.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth, while, until, repeat, labels, breaks |
+| Consumes    | generator evaluator, functions, error handling |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability implements jq constructs whose meaning depends on controlled traversal of generator streams. It must support reductions and intermediate extraction, bounded consumption, recursive iteration, short-circuiting, lexical labels, and partial-output behavior.
+
+## Behavior
+
+- `reduce` accumulates every generator output in order.
+- `foreach` exposes each intermediate accumulator through its extraction filter.
+- `limit`, `skip`, `first`, `last`, and `nth` consume only the required stream values.
+- `while`, `until`, and `repeat` recurse with jq's stream semantics.
+- Labels and breaks terminate the corresponding lexical generator scope.
+- Control constructs preserve cartesian products, short-circuiting, and runtime errors.
+
+## Programmatic Acceptance
+
+=== AC eval-003-reduction ===
+Intent: The implementation passes the authoritative corpus cases for reduce and foreach.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"reduce|foreach|intermediate|accumul"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-003-reduction ===
+
+=== AC eval-003-bounds ===
+Intent: The implementation passes the authoritative corpus cases for limit, skip, first, last, and nth.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"limit|skip|first\(|last\(|nth\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-003-bounds ===
+
+=== AC eval-003-recursion ===
+Intent: The implementation passes the authoritative corpus cases for while, until, repeat, labels, breaks, and recursive generators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"while|until|repeat|label|break|Recursion|recurse"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC eval-003-recursion ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not materialize unbounded generators unnecessarily.
+- Ensure bounded constructs stop consuming input after their contract is satisfied.
+- Keep labels lexical and prevent breaks from escaping their visible scope.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-DATA-001.md ===
+# FEATURE: JSON Values and Structural Operations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | jq JSON values, indexing, slicing, iteration, typing, equality, ordering, containment, and numeric behavior are compatible with the corpus. |
+| Depends On  | ARCHITECTURE.md, FEATURE-EVAL-001.md, FEATURE-EVAL-002.md |
+| Provides    | JSON values, indexing, slicing, iteration, type, equality, ordering, containment |
+| Consumes    | generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability defines jq's immutable JSON value model and structural operations using Python's standard library. It covers null, booleans, numbers, strings, arrays, and objects, including Unicode-aware behavior and jq-compatible numeric edge cases.
+
+## Behavior
+
+- JSON values retain jq's distinctions between null, booleans, numbers, strings, arrays, and objects.
+- Object keys and array indices support jq indexing and optional indexing behavior.
+- Slices work for arrays and strings with omitted, negative, fractional, and out-of-range bounds.
+- Iteration preserves array order and object value traversal.
+- `type`, `length`, Unicode byte length, equality, ordering, and containment follow jq semantics.
+- Numbers support literal-preserving output where required and floating-point arithmetic compatibility.
+- Compact serialization emits one valid JSON value per line, including jq-compatible handling of non-finite values.
+
+## Programmatic Acceptance
+
+=== AC data-001-structure ===
+Intent: The implementation passes the authoritative corpus cases for JSON values, indexing, slicing, iteration, typing, and Unicode lengths.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"Types and Values|Field access|Array/String Slice|Array/Object Value Iterator|Slicing|length|utf8bytelength|type"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC data-001-structure ===
+
+=== AC data-001-ordering ===
+Intent: The implementation passes the authoritative corpus cases for equality, ordering, sorting order, and containment.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"equality|comparison|sort|contains|inside|keys|has\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC data-001-ordering ===
+
+=== AC data-001-numbers ===
+Intent: The implementation passes the authoritative corpus cases for numeric literals, floating-point behavior, NaN, infinity, and compact JSON conversion.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+import sys
+
+pattern = r"number|numbers|nan|infinite|decnum|literal number|tojson|fromjson"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", pattern],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC data-001-numbers ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not conflate booleans with numbers.
+- Preserve immutable value semantics across structural operations.
+- Do not shell out for JSON parsing, serialization, or numeric behavior.
+=== END ARTIFACT ===

@@ -1,0 +1,80 @@
+<requirement name="track-token-locations" stories="frontend-001">
+#define YY_USER_ACTION                           \
+  do {                                           \
+    yylloc->start = yyget_extra(yyscanner);      \
+    yylloc->end = yylloc->start + yyleng;        \
+    yyset_extra(yylloc->end, yyscanner);        \
+  } while (0);
+</requirement>
+<requirement name="scan-comments-and-whitespace" stories="frontend-001">
+"#" { yy_push_state(IN_COMMENT, yyscanner); }
+</requirement>
+<requirement name="recognize-control-operators" stories="eval-002">
+"!=" { return NEQ; }
+"==" { return EQ; }
+"if" { return IF; }
+"then" { return THEN; }
+"else" { return ELSE; }
+"elif" { return ELSE_IF; }
+"and" { return AND; }
+"or" { return OR; }
+"|=" { return SETPIPE; }
+"+=" { return SETPLUS; }
+"-=" { return SETMINUS; }
+"*=" { return SETMULT; }
+"/=" { return SETDIV; }
+"%=" { return SETMOD; }
+"//=" { return SETDEFINEDOR; }
+</requirement>
+<requirement name="recognize-generator-constructs" stories="eval-003">
+"reduce" { return REDUCE; }
+"foreach" { return FOREACH; }
+"try" { return TRY; }
+"catch" { return CATCH; }
+"label" { return LABEL; }
+"break" { return BREAK; }
+</requirement>
+<requirement name="parse-literals" stories="data-001">
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval->literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+</requirement>
+<requirement name="parse-strings-and-interpolation" stories="frontend-003">
+"\"" {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+</requirement>
+<requirement name="recognize-format-directives" stories="builtin-004">
+"@"[a-zA-Z0-9_]+ {
+  yylval->literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+</requirement>
+<requirement name="recognize-identifiers-and-bindings" stories="frontend-003">
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return BINDING;}
+</requirement>
+<requirement name="manage-delimited-scanner-states" stories="frontend-001">
+"["|"{"|"(" {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+"]"|"}"|")" {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+</requirement>
+<unattached story="architecture"/>
+<unattached story="cli-001"/>
+<unattached story="cli-002"/>
+<unattached story="frontend-002"/>
+<unattached story="verify-001"/>
+<unattached story="eval-001"/>
+<unattached story="data-002"/>
+<unattached story="data-003"/>
+<unattached story="builtin-001"/>
+<unattached story="builtin-002"/>
+<unattached story="builtin-003"/>
+<unattached story="builtin-005"/>
+<unattached story="verify-002"/>
+<unattached story="verify-003"/>

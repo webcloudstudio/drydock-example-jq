@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260817.031547.211Z_jq_build_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260817.031547.211Z_jq_build_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260817.031547.211Z_jq_build_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>System Instructions</h1>
+<p>This prompt is divided into three sections:</p>
+<ol><li><strong>System Instructions</strong> (this section) — structural orientation only. Do not treat this</li></ol>
+<p>section as task input.</p>
+<ol><li><strong>Input Context</strong> — begins with the heading <code># Input Context</code>. All blocks are wrapped in</li></ol>
+<p><code>&lt;pblock&gt;</code> tags. Two block types:</p>
+<ul><li>File blocks: <code>&lt;pblock filename=&quot;&lt;name&gt;&quot; role=&quot;&lt;role&gt;&quot; guidance=&quot;...&quot;&gt;</code> — optional</li></ul>
+<p><code>guidance</code> attribute carries context-specific instructions; content is in a fenced block.</p>
+<ul><li>Metadata/section blocks: <code>&lt;pblock label=&quot;&lt;label&gt;&quot; kind=&quot;&lt;kind&gt;&quot;&gt;</code> — job parameters,</li></ul>
+<p>rules, instructions, or group headers.</p>
+<ol><li><strong>Agent Task</strong> — begins with the heading <code># Agent Task</code>. Defines your persona, constraints,</li></ol>
+<p>and required outputs. Read all input context before acting on this section.</p>
+<h1>Input Context</h1>
+<p>&lt;pblock label=&quot;Build block job&quot; kind=&quot;job&quot;&gt;</p>
+<h2>Build block job</h2>
+<ul><li>TARGET: jq</li><li>BUILD_DIRECTORY: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq</li><li>WORKING_DIRECTORY: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq</li><li>BUILD_BLOCK: Block 5 · Service (block-5)</li><li>STORIES: Implement jq parsing and executable AST construction. (frontend-002)</li><li>DATE: 2026-08-16</li><li>BUILD_SCOPE: exactly one MANIFEST.md build block</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Stories in this block&quot; kind=&quot;section&quot;&gt;</p>
+<h2>Stories in this block</h2>
+<ul><li>Implement jq parsing and executable AST construction. (frontend-002) [story]</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Files on disk&quot; kind=&quot;section&quot;&gt;</p>
+<h2>Files on disk in the build directory</h2>
+<ul><li>sources/builtin.jq</li><li>sources/exclusions.txt</li><li>sources/full_test.sh</li><li>sources/jq-manual.txt</li><li>sources/jq.test</li><li>sources/lexer.l</li><li>sources/parser.y</li><li>sources/run_conformance.py</li></ul>
+<p>These are the only imported files present on disk. Every other file named in this prompt is supplied as prompt context and is not on disk; read it here and do not report it as a missing input.</p>
+<p>&lt;/pblock&gt;</p>
+<h2>COMPASS - Target Orientation</h2>
+<p>&lt;pblock filename=&quot;COMPASS.md&quot; role=&quot;compass&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/COMPASS.md&quot; guidance=&quot;Important: This is the core project intent, constraints, and guardrails. It should have presecedence in conflicts.&quot;&gt;</p>
+<pre><code># COMPASS: jq
+
+## Compass
+Build a standalone jq-language interpreter for developers and automated tools that need to transform JSON. The product is an executable named `jq`; it reads JSON from standard input, evaluates a jq filter as an ordered generator, and emits compact JSON values to standard output.
+
+## Constraints
+
+- Implement in Python using only the standard library.
+- Provide an executable named `jq` at the application root.
+- Support the exercised `-c &lt;program&gt;` interface.
+- Run without network access, package installation, or external runtime dependencies.
+- Preserve the supplied source assets and acceptance harness.
+
+## Guardrails
+
+- Do not shell out to a system jq executable.
+- Do not use third-party jq implementations or bindings.
+- Do not modify the supplied corpus, exclusions, harness, or scoring script.
+- Preserve generator ordering, multiplicity, backtracking, and partial-output runtime behavior.
+- Keep compile failures distinct from runtime failures using exit codes 3 and 5.
+
+&lt;!-- drydock:build-write-guardrail:start --&gt;
+## Build Write Guardrail
+
+- Authorized build directory: `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq`
+- Authorized Target directory: `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq`
+- Build agents have permission to create, modify, and remove files required by the active build block inside these authorized directories.
+- No path outside these authorized directories may be modified.
+- Protected Drydock artifacts:
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/blueprint/`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/MANIFEST.md`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/COMPASS.md`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/QuarterDeck/`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/evidence/`
+&lt;!-- drydock:build-write-guardrail:end --&gt;
+
+&lt;!-- Drydock author intent sha256=a2d2f2fb97c42dc444f8c616af6ed4cdc095855838f14d18051e2db386505997 source=INSTRUCTIONS.md --&gt;
+
+# Build Instructions: A jq Interpreter
+
+## Objective
+
+Build an interpreter for the jq language as described in `sources/jq-manual.txt`.
+Correctness is measured by the upstream jq conformance corpus, `sources/jq.test`, taken
+verbatim from jq 1.8.2. The goal is to pass every case the corpus supplies, with none
+failed and none errored. The suite&#x27;s size is a property of the pinned corpus; never
+assert a case count.
+
+The implementation language is Python, fixed by this Target&#x27;s `TECHNOLOGY_STACK.md` and
+governed by `stack/python.md`.
+
+jq is a small language with a large semantic core. Almost every filter is a **generator**:
+it takes one input and produces a stream of zero, one, or many outputs, and downstream
+filters run once per upstream output. Backtracking through that stream is not an
+optimisation, it is the evaluation model, and `reduce`, `foreach`, `limit`, `first`,
+`label`/`break`, and the `?//` destructuring alternative are all defined in terms of it. An
+implementation that treats a filter as a function returning one value will pass the early
+cases and then stall permanently. Decide the evaluation model before writing builtins.
+
+## Run Harness
+
+`sources/full_test.sh` is the single scoring entry point. It is supplied, not authored: it
+is staged verbatim into the build directory alongside the other imported assets, and
+`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes
+its exit code and output as the score. It reads:
+
+```sh
+#!/bin/sh
+# full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.
+set -eu
+if [ ! -x ./jq ]; then
+    echo &quot;error: no executable ./jq at the application root.&quot; &gt;&amp;2
+    echo &quot;The deliverable is an executable named jq that reads JSON on stdin.&quot; &gt;&amp;2
+    exit 1
+fi
+JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py
+```
+
+Before relying on any path above, run `ls sources/` in the application directory and
+correct the paths in the harness against what is actually on disk. Correcting a path is
+the only edit permitted to this script. Do not add flags, filters, skips, or a redirection
+of the exit code.
+
+The interface check is deliberately separate from the conformance run so that a missing
+program and a genuine conformance failure are distinguishable in the evidence. `JQ` is the
+harness&#x27;s only knowledge of the implementation language; the harness itself is
+language-neutral.
+
+## Read-only scoring assets
+
+These four files are the exam. They are hash-verified against the import and restored
+before grading, so a modification is reported as tampering rather than honoured:
+
+- `sources/full_test.sh` — the scoring entry point
+- `sources/run_conformance.py` — the scoring instrument
+- `sources/exclusions.txt` — the declared skips
+- `sources/jq.test` — the conformance corpus
+
+Do not write to them. Build `./jq` so that the supplied entry point succeeds; changing the
+entry point is not a repair, and a repair pass spent editing one of these files is wasted.
+
+## Interface contract
+
+The program is a filter: an executable file named `jq` at the application root, invoked as
+
+```
+./jq -c &#x27;&lt;program&gt;&#x27;
+```
+
+with JSON on **stdin**. It writes each value the program produces to **stdout** as one
+compact JSON value per line, and exits `0`.
+
+`-c` is the only option exercised. The program need not implement any other jq
+command-line option, and the manual&#x27;s &quot;Invoking jq&quot; section is omitted from
+`sources/jq-manual.txt` for that reason.
+
+Exit codes follow jq&#x27;s own, and the distinction is load-bearing because the harness grades
+on it:
+
+| Exit | Meaning |
+|---|---|
+| `0` | the program compiled and ran to completion |
+| `3` | the program did not compile — a syntax or static error |
+| `5` | the program compiled but raised at run time |
+
+A case may legitimately emit several values and then raise; the harness compares the values
+produced before the raise, so exit `5` is not by itself a failure. Exit `3` on a valid
+program is always a failure. Diagnostics go to **stderr** and are never compared.
+
+Any implementation shape that satisfies this contract is acceptable. A
+`#!/usr/bin/env python3` script named `jq` that imports the real work from a package
+alongside it is the obvious one; `main` should parse arguments and delegate.
+
+## Test / verification process
+
+The imported source files are placed in a `sources/` subdirectory of the application
+directory. The only tools required are `python3` and a POSIX `sh`, both already present.
+No installation step, no package download, and no network access are required at any
+point.
+
+```bash
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py                     # the scored run
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py -v                  # list passing cases too
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --json              # machine-readable
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --list              # print cases, run nothing
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # one construct at a time
+```
+
+During development, `sh sources/full_test.sh` does the interface check and the conformance
+run together, and is the same command the score is taken from.
+
+`--select` takes a regular expression matched against the case&#x27;s program text and exists
+for development only. The acceptance gate always runs the whole corpus; there is no scoped
+gate and none may be created.
+
+**Exactly one acceptance check runs the suite.** One terminal story — the last one — runs
+`sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured
+stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea
+Trial. No other acceptance check may invoke `full_test.sh` or `run_conformance.py`, and no
+acceptance check may assert that an imported or staged file merely exists — a file-presence
+check is not acceptance.
+
+The summary line is:
+
+```
+jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)
+```
+
+The harness reserves exit `2` for its own faults — a missing corpus, an unset `JQ`, a
+stale exclusion. Exit `2` never means the interpreter is wrong.
+
+## The corpus format
+
+`sources/jq.test` documents its own format in its header. Cases are separated by blank
+lines; blank lines and `#` lines are ignored. A case is a program line, an input line, and
+then the expected output values, one per line. A case preceded by `%%FAIL` is a program
+that must be **rejected at compile time**: the following lines are upstream jq&#x27;s
+diagnostic, which this harness records but never compares. Reproducing jq&#x27;s exact error
+text is reverse-engineering a C implementation, not conforming to a specification, so a
+`%%FAIL` case passes on exit `3` alone.
+
+Values are compared structurally, not textually. `1` and `1.0` are the same jq value; so
+are two objects whose keys are printed in a different order. Formatting of output is
+therefore not under test, but the **number and order** of values is.
+
+## Declared exclusions
+
+`sources/exclusions.txt` names the corpus cases this kit cannot run, with the reason. They
+are the module-loader cases: `import` and `include` resolved against a search path of
+fixture files that this kit&#x27;s flat source import cannot carry. They are reported as
+`skipped` and are not part of the score.
+
+The module *grammar* cases are **not** excluded and must pass. `module (.+1); 0`,
+`module []; 0`, `include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`,
+`include &quot;\(a)&quot;; 0`, and `%::wat` are all `%%FAIL` cases: the front end must parse the
+module syntax far enough to reject them, without ever touching the filesystem.
+
+## Source Roles
+
+Record this table in the Analysis so every asset is staged onto disk in the build
+directory. `sources/jq-manual.txt`, `sources/jq.test`, `sources/parser.y`, and
+`sources/lexer.l` are large and must be readable from disk during implementation rather
+than carried in prompt text.
+
+| Source | Role | Plan disposition | Build disposition |
+|---|---|---|---|
+| `jq-manual.txt` | normative specification | context | stage |
+| `jq.test` | conformance test suite | context | stage |
+| `parser.y` | normative specification | context | stage |
+| `lexer.l` | normative specification | context | stage |
+| `builtin.jq` | reference implementation | context | stage |
+| `run_conformance.py` | conformance harness | context | stage |
+| `full_test.sh` | conformance harness | context | stage |
+| `exclusions.txt` | conformance harness | context | stage |
+| `INSTRUCTIONS.md` | author intent | context | prompt-only |
+
+What each staged file is for:
+
+- `sources/jq-manual.txt` — the jq language manual at 1.8.2, rendered to plain text. The
+  primary specification, and the normative description of every builtin.
+- `sources/jq.test` — the conformance corpus. Also the most precise available statement of
+  the semantics, especially for generators and backtracking.
+- `sources/parser.y` — upstream&#x27;s yacc grammar. The authority on operator precedence,
+  associativity, and the shape of every syntactic form.
+- `sources/lexer.l` — upstream&#x27;s lexer. The authority on tokens, string interpolation, and
+  escape handling.
+- `sources/builtin.jq` — the subset of jq&#x27;s builtins that upstream defines in jq itself.
+  Read it as a specification of those builtins&#x27; semantics.
+- `sources/run_conformance.py`, `sources/full_test.sh`, `sources/exclusions.txt` — the
+  scoring instruments, read-only as stated above.
+
+## Suggested implementation order
+
+The difficulty is concentrated in one place — the evaluation model — and not spread evenly
+across the corpus. Build the core correctly before reaching for coverage.
+
+1. **Lexer and parser.** Follow `sources/lexer.l` and `sources/parser.y` directly. Produce
+   an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all
+   settled there. Reject invalid programs with exit `3`.
+2. **The generator core.** Evaluate a filter as something that yields a stream of values:
+   `.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and
+   `empty`. Every later feature is expressed in terms of this. Get `[.[] | f]`,
+   cartesian products over multi-output arguments, and short-circuiting right.
+3. **Paths and assignment.** `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then
+   `=`, `|=`, `+=`, and friends. Assignment is defined over path expressions, so this
+   cannot precede step 2.
+4. **Control flow.** `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`,
+   `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`,
+   `recurse`. This is where backtracking is tested hardest.
+5. **Functions, variables, and destructuring.** `def` with arity and closures, `as`
+   bindings, object and array patterns, and the `?//` alternative operator.
+6. **Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays,
+   objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh`
+   formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+7. **Numbers and edge cases.** `nan`, `infinite`, integer/float equality, large literals,
+   and the `have_decnum` builtin — return `false` from it and the corpus takes its
+   non-decNumber branch, which native floats satisfy.
+
+The manual is normative and the corpus is precise. Follow both directly rather than
+inferring behaviour from jq&#x27;s printed output.
+
+## Definition of Done
+
+- `sh sources/full_test.sh` runs cleanly with zero errors and exits zero.
+- The program satisfies the `./jq -c` → stdin → one-JSON-value-per-line → exit-code
+  contract.
+- Every corpus case that runs passes: the failed and errored counts are both zero, and the
+  skipped count matches the declared exclusions. The harness exit status is the verdict and
+  the whole verdict — assert `returncode == 0` and stop there. Do not assert on the text of
+  the summary line at all: the case totals belong to the pinned corpus, and a check that
+  reads a runner&#x27;s printed output is measuring the runner rather than the interpreter.
+- Do not create acceptance checks asserting that imported or staged files merely exist.
+- The interpreter is written from the specification. **Every third-party jq
+  implementation or binding is forbidden** — `jq.py`, `pyjq`, `jqlang`, `gojq`, `jaq`, and
+  any other — as is shelling out to a system `jq` binary. A wrapper around real jq scores
+  perfectly and makes the exercise meaningless.
+- The project declares no third-party runtime dependency. The standard library is
+  sufficient: `json`, `decimal`, `math`, `re`, `datetime`, `time`, `base64`, `unicodedata`,
+  `itertools`, `functools`, `dataclasses`, `argparse`, `sys`.
+- No network access at any point, including at test time. No package is installed, and no
+  tool beyond `python3` and POSIX `sh` is invoked.
+- Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit
+  codes, and the `sh sources/full_test.sh` command.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>STACK - Technology HOW</h2>
+<p>&lt;pblock filename=&quot;python_compact.md&quot; role=&quot;stack&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/Rigging/stack/python_compact.md&quot;&gt;</p>
+<pre><code>&lt;!-- Compacted from rigging/stack/python.md on 2026-07-16 (manual update to match python.md V3) --&gt;
+
+# Python — Compact
+
+## Configuration Management
+
+One typed frozen-dataclass `Config` is the only env reader — never read `os.environ` elsewhere. No `Dev`/`Prod`/`Test` subclasses; the environment (`.env`) selects configuration. Never hardcode secrets, ports, or paths. Secret hygiene and `.env.example`: see `stack/env_variables_and_secrets.md`.
+
+```python
+# config.py
+import os
+from dataclasses import dataclass
+from dotenv import load_dotenv
+load_dotenv()
+
+@dataclass(frozen=True)
+class Config:
+    secret_key: str
+    database_path: str
+    port: int
+    debug: bool = False
+
+    @classmethod
+    def load(cls) -&gt; &quot;Config&quot;:
+        try:
+            return cls(
+                secret_key=os.environ[&quot;SECRET_KEY&quot;],
+                database_path=os.environ.get(&quot;DATABASE_PATH&quot;, &quot;data/app.db&quot;),
+                port=int(os.environ.get(&quot;APP_PORT&quot;, &quot;5001&quot;)),
+                debug=os.environ.get(&quot;APP_DEBUG&quot;) == &quot;1&quot;,
+            )
+        except KeyError as e:
+            raise RuntimeError(f&quot;Missing required env var: {e}&quot;) from e
+```
+
+## Code Style and Understandability
+
+Code must be understandable through naming, structure, small focused units, explicit types, clear interfaces, appropriate abstractions, and tests. Names state intent; one responsibility per module; functions do one thing at one level of abstraction; no speculative abstraction layers. Comments state constraints the code cannot express — never restate mechanics.
+
+## Type Hints and Static Typing
+
+Modern hints on all public interfaces; typed structures across boundaries; run a type checker when practical.
+
+- Built-in generics (`list[str]`, `dict[str, int]`) and `X | None` — never `typing.List`, `Optional`, `Union`
+- Type every public function, method, and class attribute
+- Schemas/serializers/services/data structures are typed classes: frozen dataclasses internally, Pydantic/`TypedDict` at serialization boundaries
+- No bare `dict`, positional tuples, or `Any` crossing a module boundary
+- `uv add --dev mypy` then `uv run mypy .` (or pyright) alongside ruff and pytest in CI
+
+## Logging
+
+Use `logging` with named loggers, never `print()`. Configure formatter + console and file handlers at startup (`data/logs/app.log`); level from `APP_DEBUG`.
+
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.info(&#x27;Server starting on port %s&#x27;, port)
+```
+
+## Environment Separation
+
+Distinct `.env` per environment; same typed `Config` reads whichever is present. Never run debug in production.
+
+| Setting | Dev | Test | Prod |
+|---------|-----|------|------|
+| APP_DEBUG | 1 | 0 | 0 |
+| DATABASE_PATH | data/app.db | :memory: | data/app.db |
+| SECRET_KEY | .env value | .env value | .env value (required) |
+| LOGGING | DEBUG | WARNING | INFO |
+
+## Testing
+
+`pytest` with fixtures; fresh in-memory DB per test; test at the boundary. Every Python build must include a complete pytest suite regardless of the specification — no tests, no ACTIVE conformity.
+
+```python
+# tests/conftest.py
+import pytest
+
+@pytest.fixture
+def app(monkeypatch):
+    monkeypatch.setenv(&quot;SECRET_KEY&quot;, &quot;test&quot;)
+    monkeypatch.setenv(&quot;DATABASE_PATH&quot;, &quot;:memory:&quot;)
+    from app import create_app
+    from config import Config
+    yield create_app(Config.load())
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
+```
+
+**test_smoke.py** — app factory works; `GET /health` returns 200 `{&quot;status&quot;: &quot;ok&quot;}`; `GET /` returns 200.
+
+**test_routes.py** — one test per route: `GET` pages assert 200; `POST` APIs assert status in `{200, 201, 204}`; HTMX routes send `HX-Request: true`; `{id}` routes use fixture-created records.
+
+**test_db.py** (only if DATABASE.md exists) — expected tables exist; round-trip per major table; invalid FK raises `IntegrityError` (`PRAGMA foreign_keys=ON`).
+
+Do not test third-party internals, config loading, or private helpers.
+
+```ini
+# pytest.ini
+[pytest]
+testpaths = tests
+addopts = -v
+```
+
+## Security
+
+Validate all user input; parameterized queries exclusively; never trust client data.
+
+- `?` placeholders, never f-strings, for all DB operations
+- `secure_filename()` for user-supplied paths
+- Length and type validation on inputs
+- Secret key from environment, never hardcoded
+- Never expose stack traces to end users
+
+## Dependency Management (uv)
+
+`uv` only; `pyproject.toml` is the manifest; `uv.lock` committed; `.venv/` gitignored. Full toolchain conventions: `stack/uv_ruff.md`.
+
+```bash
+uv venv                          # creates .venv/
+uv add flask python-dotenv       # runtime deps → pyproject.toml + uv.lock
+uv add --dev pytest ruff mypy    # dev deps
+uv sync --frozen                 # CI — fail if lock is stale
+```
+
+- Never bare `pip install` or `python -m venv`
+- Dev deps in `[project.optional-dependencies].dev`; runtime deps minimal
+
+## Startup Validation
+
+`Config.load()` already validates required env vars; startup validation confirms DB connectivity. Crash early on misconfiguration.
+
+```python
+def validate_startup(config: Config, db: Database):
+    try:
+        db.healthcheck()          # SELECT 1 inside the Database class
+    except Exception as e:
+        raise RuntimeError(f&#x27;Database not accessible: {e}&#x27;)
+    logger.info(&#x27;Startup validation passed&#x27;)
+```
+
+## Directory Layout
+
+```
+project-name/
+├── app.py              # Entry point / app factory
+├── routes.py           # Route handlers
+├── models.py           # Data models and type registries
+├── db.py               # Database class: typed tables, connection, schema, migrations
+├── ops.py              # Business logic and operations
+├── config.py           # typed Config class — the only env reader
+├── templates/          # base.html + types/ partials
+├── static/             # css/, js/
+├── tests/              # conftest.py, test_*.py
+├── bin/                # (from common.md)
+├── data/               # (from common.md)
+├── pyproject.toml
+├── uv.lock
+├── .env                # gitignored; .env.example committed
+└── .gitignore
+```</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>CONTEXT - Read-Only Support</h2>
+<p>&lt;pblock filename=&quot;parser.y&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/blueprint/parser.y&quot;&gt;</p>
+<pre><code>%{
+#include &lt;assert.h&gt;
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &quot;compile.h&quot;
+#include &quot;jv_alloc.h&quot;
+#include &quot;builtin.h&quot;
+#define YYMALLOC jv_mem_alloc
+#define YYFREE jv_mem_free
+%}
+%code requires {
+#include &quot;locfile.h&quot;
+struct lexer_param;
+
+#define YYLTYPE location
+#define YYLLOC_DEFAULT(Loc, Rhs, N)             \
+  do {                                          \
+    if (N) {                                    \
+      (Loc).start = YYRHSLOC(Rhs, 1).start;     \
+      (Loc).end = YYRHSLOC(Rhs, N).end;         \
+    } else {                                    \
+      (Loc).start = YYRHSLOC(Rhs, 0).end;       \
+      (Loc).end = YYRHSLOC(Rhs, 0).end;         \
+    }                                           \
+  } while (0)
+}
+
+%locations
+%define parse.error verbose
+%define api.pure
+%union {
+  jv literal;
+  block blk;
+}
+
+%destructor { jv_free($$); } &lt;literal&gt;
+%destructor { block_free($$); } &lt;blk&gt;
+
+%parse-param {block* answer}
+%parse-param {int* errors}
+%parse-param {struct locfile* locations}
+%parse-param {struct lexer_param* lexer_param_ptr}
+%lex-param {block* answer}
+%lex-param {int* errors}
+%lex-param {struct locfile* locations}
+%lex-param {struct lexer_param* lexer_param_ptr}
+
+
+%token INVALID_CHARACTER
+%token &lt;literal&gt; IDENT
+%token &lt;literal&gt; FIELD
+%token &lt;literal&gt; BINDING
+%token &lt;literal&gt; LITERAL
+%token &lt;literal&gt; FORMAT
+%token REC &quot;..&quot;
+%token SETMOD &quot;%=&quot;
+%token EQ &quot;==&quot;
+%token NEQ &quot;!=&quot;
+%token DEFINEDOR &quot;//&quot;
+%token AS &quot;as&quot;
+%token DEF &quot;def&quot;
+%token MODULE &quot;module&quot;
+%token IMPORT &quot;import&quot;
+%token INCLUDE &quot;include&quot;
+%token IF &quot;if&quot;
+%token THEN &quot;then&quot;
+%token ELSE &quot;else&quot;
+%token ELSE_IF &quot;elif&quot;
+%token REDUCE &quot;reduce&quot;
+%token FOREACH &quot;foreach&quot;
+%token END &quot;end&quot;
+%token AND &quot;and&quot;
+%token OR &quot;or&quot;
+%token TRY &quot;try&quot;
+%token CATCH &quot;catch&quot;
+%token LABEL &quot;label&quot;
+%token BREAK &quot;break&quot;
+%token LOC &quot;$__loc__&quot;
+%token SETPIPE &quot;|=&quot;
+%token SETPLUS &quot;+=&quot;
+%token SETMINUS &quot;-=&quot;
+%token SETMULT &quot;*=&quot;
+%token SETDIV &quot;/=&quot;
+%token SETDEFINEDOR &quot;//=&quot;
+%token LESSEQ &quot;&lt;=&quot;
+%token GREATEREQ &quot;&gt;=&quot;
+%token ALTERNATION &quot;?//&quot;
+
+%token QQSTRING_START
+%token &lt;literal&gt; QQSTRING_TEXT
+%token QQSTRING_INTERP_START
+%token QQSTRING_INTERP_END
+%token QQSTRING_END
+
+/* Instead of raising this, find a way to use precedence to resolve
+ * shift-reduce conflicts. */
+%expect 0
+
+%precedence FUNCDEF
+%right &#x27;|&#x27;
+%left &#x27;,&#x27;
+%right &quot;//&quot;
+%nonassoc &#x27;=&#x27; SETPIPE SETPLUS SETMINUS SETMULT SETDIV SETMOD SETDEFINEDOR
+%left OR
+%left AND
+%nonassoc NEQ EQ &#x27;&lt;&#x27; &#x27;&gt;&#x27; LESSEQ GREATEREQ
+%left &#x27;+&#x27; &#x27;-&#x27;
+%left &#x27;*&#x27; &#x27;/&#x27; &#x27;%&#x27;
+%precedence NONOPT /* non-optional; rules for which a specialized
+                      &#x27;?&#x27; rule should be preferred over Expr &#x27;?&#x27; */
+%precedence &#x27;?&#x27; &#x27;.&#x27; &#x27;[&#x27; FIELD
+%precedence &quot;try&quot;
+%precedence &quot;catch&quot;
+
+
+%type &lt;blk&gt; Query Expr Term
+%type &lt;blk&gt; DictPairs DictPair DictExpr
+%type &lt;blk&gt; ElseBody
+%type &lt;blk&gt; String QQString
+%type &lt;blk&gt; FuncDef FuncDefs
+%type &lt;blk&gt; Module Import Imports ImportWhat ImportFrom
+%type &lt;blk&gt; Param Params Arg Args
+%type &lt;blk&gt; Patterns RepPatterns Pattern ArrayPats ObjPats ObjPat
+%type &lt;literal&gt; Keyword
+%type &lt;literal&gt; StringStart
+%{
+#include &quot;lexer.h&quot;
+struct lexer_param {
+  yyscan_t lexer;
+};
+#define FAIL(loc, msg)                                             \
+  do {                                                             \
+    location l = loc;                                              \
+    yyerror(&amp;l, answer, errors, locations, lexer_param_ptr, msg);  \
+    /*YYERROR*/;                                                   \
+  } while (0)
+
+void yyerror(YYLTYPE* loc, block* answer, int* errors,
+             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){
+  (*errors)++;
+  locfile_locate(locations, *loc, &quot;jq: error: %s&quot;, s);
+}
+
+int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, block* answer, int* errors,
+          struct locfile* locations, struct lexer_param* lexer_param_ptr) {
+  yyscan_t lexer = lexer_param_ptr-&gt;lexer;
+  int tok = jq_yylex(yylval, yylloc, lexer);
+  if ((tok == LITERAL || tok == QQSTRING_TEXT) &amp;&amp; !jv_is_valid(yylval-&gt;literal)) {
+    jv msg = jv_invalid_get_msg(jv_copy(yylval-&gt;literal));
+    if (jv_get_kind(msg) == JV_KIND_STRING) {
+      FAIL(*yylloc, jv_string_value(msg));
+    } else {
+      FAIL(*yylloc, &quot;Invalid literal&quot;);
+    }
+    jv_free(msg);
+    jv_free(yylval-&gt;literal);
+    yylval-&gt;literal = jv_null();
+  }
+  return tok;
+}
+
+/* Returns string message if the block is a constant that is not valid as an
+ * object key. */
+static jv check_object_key(block k) {
+  if (block_is_const(k) &amp;&amp; block_const_kind(k) != JV_KIND_STRING) {
+    char errbuf[30];
+    return jv_string_fmt(&quot;Cannot use %s (%s) as object key&quot;,
+        jv_kind_name(block_const_kind(k)),
+        jv_dump_string_trunc(block_const(k), errbuf, sizeof(errbuf)));
+  }
+  return jv_invalid();
+}
+
+static block gen_index(block obj, block key) {
+  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX));
+}
+
+static block gen_index_opt(block obj, block key) {
+  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX_OPT));
+}
+
+static block gen_slice_index(block obj, block start, block end, opcode idx_op) {
+  block key = BLOCK(gen_subexp(gen_const(jv_object())),
+                    gen_subexp(gen_const(jv_string(&quot;start&quot;))),
+                    gen_subexp(start),
+                    gen_op_simple(INSERT),
+                    gen_subexp(gen_const(jv_string(&quot;end&quot;))),
+                    gen_subexp(end),
+                    gen_op_simple(INSERT));
+  return BLOCK(key, obj, gen_op_simple(idx_op));
+}
+
+static block constant_fold(block a, block b, int op) {
+  if (!block_is_single(a) || !block_is_const(a) ||
+      !block_is_single(b) || !block_is_const(b))
+    return gen_noop();
+
+  jv jv_a = block_const(a);
+  block_free(a);
+  jv jv_b = block_const(b);
+  block_free(b);
+
+  jv res = jv_invalid();
+  switch (op) {
+  case &#x27;+&#x27;: res = binop_plus(jv_a, jv_b); break;
+  case &#x27;-&#x27;: res = binop_minus(jv_a, jv_b); break;
+  case &#x27;*&#x27;: res = binop_multiply(jv_a, jv_b); break;
+  case &#x27;/&#x27;: res = binop_divide(jv_a, jv_b); break;
+  case &#x27;%&#x27;: res = binop_mod(jv_a, jv_b); break;
+  case EQ: res = binop_equal(jv_a, jv_b); break;
+  case NEQ: res = binop_notequal(jv_a, jv_b); break;
+  case &#x27;&lt;&#x27;: res = binop_less(jv_a, jv_b); break;
+  case &#x27;&gt;&#x27;: res = binop_greater(jv_a, jv_b); break;
+  case LESSEQ: res = binop_lesseq(jv_a, jv_b); break;
+  case GREATEREQ: res = binop_greatereq(jv_a, jv_b); break;
+  }
+
+  if (jv_is_valid(res))
+    return gen_const(res);
+
+  return gen_error(jv_invalid_get_msg(res));
+}
+
+static block gen_binop(block a, block b, int op) {
+  block folded = constant_fold(a, b, op);
+  if (!block_is_noop(folded))
+    return folded;
+
+  const char* funcname = 0;
+  switch (op) {
+  case &#x27;+&#x27;: funcname = &quot;_plus&quot;; break;
+  case &#x27;-&#x27;: funcname = &quot;_minus&quot;; break;
+  case &#x27;*&#x27;: funcname = &quot;_multiply&quot;; break;
+  case &#x27;/&#x27;: funcname = &quot;_divide&quot;; break;
+  case &#x27;%&#x27;: funcname = &quot;_mod&quot;; break;
+  case EQ: funcname = &quot;_equal&quot;; break;
+  case NEQ: funcname = &quot;_notequal&quot;; break;
+  case &#x27;&lt;&#x27;: funcname = &quot;_less&quot;; break;
+  case &#x27;&gt;&#x27;: funcname = &quot;_greater&quot;; break;
+  case LESSEQ: funcname = &quot;_lesseq&quot;; break;
+  case GREATEREQ: funcname = &quot;_greatereq&quot;; break;
+  }
+  assert(funcname);
+
+  return gen_call(funcname, BLOCK(gen_lambda(a), gen_lambda(b)));
+}
+
+static block gen_format(block a, jv fmt) {
+  return BLOCK(a, gen_call(&quot;format&quot;, gen_lambda(gen_const(fmt))));
+}
+
+static block gen_definedor_assign(block object, block val) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+  return BLOCK(gen_op_simple(DUP),
+               val, tmp,
+               gen_call(&quot;_modify&quot;, BLOCK(gen_lambda(object),
+                                         gen_lambda(gen_definedor(gen_noop(),
+                                                                  gen_op_bound(LOADV, tmp))))));
+}
+
+static block gen_update(block object, block val, int optype) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+  return BLOCK(gen_op_simple(DUP),
+               val,
+               tmp,
+               gen_call(&quot;_modify&quot;, BLOCK(gen_lambda(object),
+                                         gen_lambda(gen_binop(gen_noop(),
+                                                              gen_op_bound(LOADV, tmp),
+                                                              optype)))));
+}
+
+static block gen_loc_object(location *loc, struct locfile *locations) {
+  return gen_const(JV_OBJECT(jv_string(&quot;file&quot;), jv_copy(locations-&gt;fname),
+                             jv_string(&quot;line&quot;), jv_number(locfile_get_line(locations, loc-&gt;start) + 1)));
+}
+
+%}
+
+%%
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+
+Module:
+%empty {
+  $$ = gen_noop();
+} |
+&quot;module&quot; Query &#x27;;&#x27; {
+  if (!block_is_const($2)) {
+    FAIL(@2, &quot;Module metadata must be constant&quot;);
+    $$ = gen_noop();
+    block_free($2);
+  } else if (block_const_kind($2) != JV_KIND_OBJECT) {
+    FAIL(@2, &quot;Module metadata must be an object&quot;);
+    $$ = gen_noop();
+    block_free($2);
+  } else {
+    $$ = gen_module($2);
+  }
+}
+
+Imports:
+%empty {
+  $$ = gen_noop();
+} |
+Import Imports {
+  $$ = BLOCK($1, $2);
+}
+
+FuncDefs:
+%empty {
+  $$ = gen_noop();
+} |
+FuncDef FuncDefs {
+  $$ = block_join($1, $2);
+}
+
+
+Query:
+FuncDef Query %prec FUNCDEF {
+  $$ = block_bind_referenced($1, $2, OP_IS_CALL_PSEUDO);
+} |
+Expr &quot;as&quot; Patterns &#x27;|&#x27; Query {
+  $$ = gen_destructure($1, $3, $5);
+} |
+&quot;label&quot; BINDING &#x27;|&#x27; Query {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));
+  $$ = gen_location(@$, locations, gen_label(jv_string_value(v), $4));
+  jv_free($2);
+  jv_free(v);
+} |
+Query &#x27;|&#x27; Query {
+  $$ = block_join($1, $3);
+} |
+Query &#x27;,&#x27; Query {
+  $$ = gen_both($1, $3);
+} |
+Expr {
+  $$ = $1;
+}
+
+
+Expr:
+Expr &quot;//&quot; Expr {
+  $$ = gen_definedor($1, $3);
+} |
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;or&quot; Expr {
+  $$ = gen_or($1, $3);
+} |
+Expr &quot;and&quot; Expr {
+  $$ = gen_and($1, $3);
+} |
+Expr &quot;//=&quot; Expr {
+  $$ = gen_definedor_assign($1, $3);
+} |
+Expr &quot;|=&quot; Expr {
+  $$ = gen_call(&quot;_modify&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &#x27;+&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;+&#x27;);
+} |
+Expr &quot;+=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;+&#x27;);
+} |
+Expr &#x27;-&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;-&#x27;);
+} |
+Expr &quot;-=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;-&#x27;);
+} |
+Expr &#x27;*&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;*&#x27;);
+} |
+Expr &quot;*=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;*&#x27;);
+} |
+Expr &#x27;/&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;/&#x27;);
+} |
+Expr &#x27;%&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;%&#x27;);
+} |
+Expr &quot;/=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;/&#x27;);
+} |
+Expr SETMOD Expr {
+  $$ = gen_update($1, $3, &#x27;%&#x27;);
+} |
+Expr &quot;==&quot; Expr {
+  $$ = gen_binop($1, $3, EQ);
+} |
+Expr &quot;!=&quot; Expr {
+  $$ = gen_binop($1, $3, NEQ);
+} |
+Expr &#x27;&lt;&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;&lt;&#x27;);
+} |
+Expr &#x27;&gt;&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;&gt;&#x27;);
+} |
+Expr &quot;&lt;=&quot; Expr {
+  $$ = gen_binop($1, $3, LESSEQ);
+} |
+Expr &quot;&gt;=&quot; Expr {
+  $$ = gen_binop($1, $3, GREATEREQ);
+} |
+Term %prec NONOPT {
+  $$ = $1;
+}
+
+
+Import:
+ImportWhat &#x27;;&#x27; {
+  $$ = $1;
+} |
+ImportWhat Query &#x27;;&#x27; {
+  if (!block_is_const($2)) {
+    FAIL(@2, &quot;Module metadata must be constant&quot;);
+    $$ = gen_noop();
+    block_free($1);
+    block_free($2);
+  } else if (block_const_kind($2) != JV_KIND_OBJECT) {
+    FAIL(@2, &quot;Module metadata must be an object&quot;);
+    $$ = gen_noop();
+    block_free($1);
+    block_free($2);
+  } else {
+    $$ = gen_import_meta($1, $2);
+  }
+}
+
+ImportWhat:
+&quot;import&quot; ImportFrom &quot;as&quot; BINDING {
+  $$ = gen_import(block_const($2), $4, 1);
+  block_free($2);
+} |
+&quot;import&quot; ImportFrom &quot;as&quot; IDENT {
+  $$ = gen_import(block_const($2), $4, 0);
+  block_free($2);
+} |
+&quot;include&quot; ImportFrom {
+  $$ = gen_import(block_const($2), jv_invalid(), 0);
+  block_free($2);
+}
+
+ImportFrom:
+String {
+  if (!block_is_const($1)) {
+    FAIL(@1, &quot;Import path must be constant&quot;);
+    $$ = gen_const(jv_string(&quot;&quot;));
+    block_free($1);
+  } else {
+    $$ = $1;
+  }
+}
+
+FuncDef:
+&quot;def&quot; IDENT &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), gen_noop(), $4);
+  jv_free($2);
+} |
+
+&quot;def&quot; IDENT &#x27;(&#x27; Params &#x27;)&#x27; &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), $4, $7);
+  jv_free($2);
+}
+
+Params:
+Param {
+  $$ = $1;
+} |
+Params &#x27;;&#x27; Param {
+  $$ = BLOCK($1, $3);
+}
+
+Param:
+BINDING {
+  $$ = gen_param_regular(jv_string_value($1));
+  jv_free($1);
+} |
+IDENT {
+  $$ = gen_param(jv_string_value($1));
+  jv_free($1);
+}
+
+
+StringStart:
+FORMAT QQSTRING_START {
+  $$ = $1;
+} |
+QQSTRING_START {
+  $$ = jv_string(&quot;text&quot;);
+}
+
+
+String:
+StringStart QQString QQSTRING_END {
+  $$ = $2;
+  jv_free($1);
+};
+
+
+QQString:
+%empty {
+  $$ = gen_const(jv_string(&quot;&quot;));
+} |
+QQString QQSTRING_TEXT {
+  $$ = gen_binop($1, gen_const($2), &#x27;+&#x27;);
+} |
+QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {
+  $$ = gen_binop($1, gen_format($3, jv_copy($&lt;literal&gt;0)), &#x27;+&#x27;);
+}
+
+
+ElseBody:
+&quot;elif&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;else&quot; Query &quot;end&quot; {
+  $$ = $2;
+} |
+&quot;end&quot; {
+  $$ = gen_noop();
+}
+
+
+Term:
+&#x27;.&#x27; {
+  $$ = gen_noop();
+} |
+REC {
+  $$ = gen_call(&quot;recurse&quot;, gen_noop());
+} |
+BREAK BINDING {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));     // impossible symbol
+  $$ = gen_location(@$, locations,
+                    BLOCK(gen_op_unbound(LOADV, jv_string_value(v)),
+                    gen_call(&quot;error&quot;, gen_noop())));
+  jv_free(v);
+  jv_free($2);
+} |
+BREAK error {
+  FAIL(@$, &quot;break requires a label to break to&quot;);
+  $$ = gen_noop();
+} |
+Term FIELD &#x27;?&#x27; {
+  $$ = gen_index_opt($1, gen_const($2));
+} |
+FIELD &#x27;?&#x27; {
+  $$ = gen_index_opt(gen_noop(), gen_const($1));
+} |
+Term &#x27;.&#x27; String &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $3);
+} |
+&#x27;.&#x27; String &#x27;?&#x27; {
+  $$ = gen_index_opt(gen_noop(), $2);
+} |
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+FIELD %prec NONOPT {
+  $$ = gen_index(gen_noop(), gen_const($1));
+} |
+Term &#x27;.&#x27; String %prec NONOPT {
+  $$ = gen_index($1, $3);
+} |
+&#x27;.&#x27; String %prec NONOPT {
+  $$ = gen_index(gen_noop(), $2);
+} |
+&#x27;.&#x27; error {
+  FAIL(@$, &quot;try .[\&quot;field\&quot;] instead of .field for unusually named fields&quot;);
+  $$ = gen_noop();
+} |
+&#x27;.&#x27; IDENT error {
+  jv_free($2);
+  FAIL(@$, &quot;try .[\&quot;field\&quot;] instead of .field for unusually named fields&quot;);
+  $$ = gen_noop();
+} |
+/* FIXME: string literals */
+Term &#x27;[&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $3);
+} |
+Term &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $3);
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $4);
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $4);
+} |
+Term &#x27;[&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = block_join($1, gen_op_simple(EACH_OPT));
+} |
+Term &#x27;[&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = block_join($1, gen_op_simple(EACH_OPT));
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, $3, $5, INDEX_OPT);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, $3, gen_const(jv_null()), INDEX_OPT);
+} |
+Term &#x27;[&#x27; &#x27;:&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, gen_const(jv_null()), $4, INDEX_OPT);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, $3, $5, INDEX);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, $3, gen_const(jv_null()), INDEX);
+} |
+Term &#x27;[&#x27; &#x27;:&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, gen_const(jv_null()), $4, INDEX);
+} |
+Term &#x27;?&#x27; {
+  $$ = gen_try($1, gen_op_simple(BACKTRACK));
+} |
+LITERAL {
+  $$ = gen_const($1);
+} |
+String {
+  $$ = $1;
+} |
+FORMAT {
+  $$ = gen_format(gen_noop(), $1);
+} |
+&#x27;-&#x27; Term {
+  $$ = BLOCK($2, gen_call(&quot;_negate&quot;, gen_noop()));
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; {
+  $$ = $2;
+} |
+&#x27;[&#x27; Query &#x27;]&#x27; {
+  $$ = gen_collect($2);
+} |
+&#x27;[&#x27; &#x27;]&#x27; {
+  $$ = gen_const(jv_array());
+} |
+&#x27;{&#x27; DictPairs &#x27;}&#x27; {
+  block o = gen_const_object($2);
+  if (o.first != NULL)
+    $$ = o;
+  else
+    $$ = BLOCK(gen_subexp(gen_const(jv_object())), $2, gen_op_simple(POP));
+} |
+&quot;reduce&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, gen_noop());
+} |
+&quot;if&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;if&quot; Query &quot;then&quot; error {
+  FAIL(@$, &quot;Possibly unterminated &#x27;if&#x27; statement&quot;);
+  $$ = $2;
+} |
+&quot;try&quot; Expr &quot;catch&quot; Expr {
+  $$ = gen_try($2, $4);
+} |
+&quot;try&quot; Expr &quot;catch&quot; error {
+  FAIL(@$, &quot;Possibly unterminated &#x27;try&#x27; statement&quot;);
+  $$ = $2;
+} |
+&quot;try&quot; Expr {
+  $$ = gen_try($2, gen_op_simple(BACKTRACK));
+} |
+/*
+ * This `$$$$varname` hack is strictly private to jq builtins.  DO NOT USE!!
+ *
+ * This is used in `_modify`, in src/builtin.jq, to avoid holding on to a
+ * reference to `.`.
+ *
+ * We could just have the compiler emit bytecode for `_modify` so it can use
+ * LOADVN w/o needing jq syntax for LOADVN.
+ *
+ * This syntax, `$$$$varname`, violates referential transparency: it has
+ * side-effects that are surprising.
+ *
+ * DO NOT USE!!  I will break your jq code if you do use this outside
+ * src/builtin.jq.
+ */
+&#x27;$&#x27; &#x27;$&#x27; &#x27;$&#x27; BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADVN, jv_string_value($4)));
+  jv_free($4);
+} |
+BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));
+  jv_free($1);
+} |
+&quot;$__loc__&quot; {
+  $$ = gen_loc_object(&amp;@$, locations);
+} |
+IDENT {
+  const char *s = jv_string_value($1);
+  if (strcmp(s, &quot;false&quot;) == 0)
+    $$ = gen_const(jv_false());
+  else if (strcmp(s, &quot;true&quot;) == 0)
+    $$ = gen_const(jv_true());
+  else if (strcmp(s, &quot;null&quot;) == 0)
+    $$ = gen_const(jv_null());
+  else
+    $$ = gen_location(@$, locations, gen_call(s, gen_noop()));
+  jv_free($1);
+} |
+IDENT &#x27;(&#x27; Args &#x27;)&#x27; {
+  $$ = gen_call(jv_string_value($1), $3);
+  $$ = gen_location(@1, locations, $$);
+  jv_free($1);
+} |
+&#x27;(&#x27; error &#x27;)&#x27; { $$ = gen_noop(); } |
+&#x27;[&#x27; error &#x27;]&#x27; { $$ = gen_noop(); } |
+Term &#x27;[&#x27; error &#x27;]&#x27; { $$ = $1; } |
+&#x27;{&#x27; error &#x27;}&#x27; { $$ = gen_noop(); }
+
+Args:
+Arg {
+  $$ = $1;
+} |
+Args &#x27;;&#x27; Arg {
+  $$ = BLOCK($1, $3);
+}
+
+Arg:
+Query {
+  $$ = gen_lambda($1);
+}
+
+RepPatterns:
+RepPatterns &quot;?//&quot; Pattern {
+  $$ = BLOCK($1, gen_destructure_alt($3));
+} |
+Pattern {
+  $$ = gen_destructure_alt($1);
+}
+
+Patterns:
+RepPatterns &quot;?//&quot; Pattern {
+  $$ = BLOCK($1, $3);
+} |
+Pattern {
+  $$ = $1;
+}
+
+Pattern:
+BINDING {
+  $$ = gen_op_unbound(STOREV, jv_string_value($1));
+  jv_free($1);
+} |
+&#x27;[&#x27; ArrayPats &#x27;]&#x27; {
+  $$ = BLOCK($2, gen_op_simple(POP));
+} |
+&#x27;{&#x27; ObjPats &#x27;}&#x27; {
+  $$ = BLOCK($2, gen_op_simple(POP));
+}
+
+ArrayPats:
+Pattern {
+  $$ = gen_array_matcher(gen_noop(), $1);
+} |
+ArrayPats &#x27;,&#x27; Pattern {
+  $$ = gen_array_matcher($1, $3);
+}
+
+ObjPats:
+ObjPat {
+  $$ = $1;
+} |
+ObjPats &#x27;,&#x27; ObjPat {
+  $$ = BLOCK($1, $3);
+}
+
+ObjPat:
+BINDING {
+  $$ = gen_object_matcher(gen_const($1), gen_op_unbound(STOREV, jv_string_value($1)));
+} |
+BINDING &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), BLOCK(gen_op_simple(DUP), gen_op_unbound(STOREV, jv_string_value($1)), $3));
+} |
+IDENT &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), $3);
+} |
+Keyword &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), $3);
+} |
+String &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher($1, $3);
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; &#x27;:&#x27; Pattern {
+  jv msg = check_object_key($2);
+  if (jv_is_valid(msg)) {
+    FAIL(@2, jv_string_value(msg));
+  }
+  jv_free(msg);
+  $$ = gen_object_matcher($2, $5);
+} |
+error &#x27;:&#x27; Pattern {
+  FAIL(@$, &quot;May need parentheses around object key expression&quot;);
+  $$ = $3;
+}
+
+Keyword:
+&quot;as&quot; {
+  $$ = jv_string(&quot;as&quot;);
+} |
+&quot;def&quot; {
+  $$ = jv_string(&quot;def&quot;);
+} |
+&quot;module&quot; {
+  $$ = jv_string(&quot;module&quot;);
+} |
+&quot;import&quot; {
+  $$ = jv_string(&quot;import&quot;);
+} |
+&quot;include&quot; {
+  $$ = jv_string(&quot;include&quot;);
+} |
+&quot;if&quot; {
+  $$ = jv_string(&quot;if&quot;);
+} |
+&quot;then&quot; {
+  $$ = jv_string(&quot;then&quot;);
+} |
+&quot;else&quot; {
+  $$ = jv_string(&quot;else&quot;);
+} |
+&quot;elif&quot; {
+  $$ = jv_string(&quot;elif&quot;);
+} |
+&quot;reduce&quot; {
+  $$ = jv_string(&quot;reduce&quot;);
+} |
+&quot;foreach&quot; {
+  $$ = jv_string(&quot;foreach&quot;);
+} |
+&quot;end&quot; {
+  $$ = jv_string(&quot;end&quot;);
+} |
+&quot;and&quot; {
+  $$ = jv_string(&quot;and&quot;);
+} |
+&quot;or&quot; {
+  $$ = jv_string(&quot;or&quot;);
+} |
+&quot;try&quot; {
+  $$ = jv_string(&quot;try&quot;);
+} |
+&quot;catch&quot; {
+  $$ = jv_string(&quot;catch&quot;);
+} |
+&quot;label&quot; {
+  $$ = jv_string(&quot;label&quot;);
+} |
+&quot;break&quot; {
+  $$ = jv_string(&quot;break&quot;);
+}
+
+
+DictPairs:
+%empty {
+  $$ = gen_noop();
+} |
+DictPair {
+  $$ = $1;
+} |
+DictPair &#x27;,&#x27; DictPairs {
+  $$ = block_join($1, $3);
+}
+
+DictPair:
+IDENT &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_const($1), $3);
+} |
+Keyword &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_const($1), $3);
+} |
+String &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair($1, $3);
+} |
+String {
+  $$ = gen_dictpair($1, BLOCK(gen_op_simple(POP), gen_op_simple(DUP2),
+                              gen_op_simple(DUP2), gen_op_simple(INDEX)));
+} |
+BINDING &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1))),
+                    $3);
+  jv_free($1);
+} |
+BINDING {
+  $$ = gen_dictpair(gen_const($1),
+                    gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1))));
+} |
+IDENT {
+  $$ = gen_dictpair(gen_const(jv_copy($1)),
+                    gen_index(gen_noop(), gen_const($1)));
+} |
+&quot;$__loc__&quot; {
+  $$ = gen_dictpair(gen_const(jv_string(&quot;__loc__&quot;)),
+                    gen_loc_object(&amp;@$, locations));
+} |
+Keyword {
+  $$ = gen_dictpair(gen_const(jv_copy($1)),
+                    gen_index(gen_noop(), gen_const($1)));
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; &#x27;:&#x27; DictExpr {
+  jv msg = check_object_key($2);
+  if (jv_is_valid(msg)) {
+    FAIL(@2, jv_string_value(msg));
+  }
+  jv_free(msg);
+  $$ = gen_dictpair($2, $5);
+} |
+error &#x27;:&#x27; DictExpr {
+  FAIL(@1, &quot;May need parentheses around object key expression&quot;);
+  $$ = $3;
+}
+
+DictExpr:
+DictExpr &#x27;|&#x27; DictExpr {
+  $$ = block_join($1, $3);
+} |
+Expr {
+  $$ = $1;
+}
+%%
+
+int jq_parse(struct locfile* locations, block* answer) {
+  struct lexer_param scanner;
+  YY_BUFFER_STATE buf;
+  jq_yylex_init_extra(0, &amp;scanner.lexer);
+  buf = jq_yy_scan_bytes(locations-&gt;data, locations-&gt;length, scanner.lexer);
+  int errors = 0;
+  *answer = gen_noop();
+  yyparse(answer, &amp;errors, locations, &amp;scanner);
+  jq_yy_delete_buffer(buf, scanner.lexer);
+  jq_yylex_destroy(scanner.lexer);
+  if (errors &gt; 0) {
+    block_free(*answer);
+    *answer = gen_noop();
+  }
+  return errors;
+}
+
+int jq_parse_library(struct locfile* locations, block* answer) {
+  int errs = jq_parse(locations, answer);
+  if (errs) return errs;
+  if (block_has_main(*answer)) {
+    locfile_locate(locations, UNKNOWN_LOCATION, &quot;jq: error: library should only have function definitions, not a main expression&quot;);
+    return 1;
+  }
+  assert(block_has_only_binders_and_imports(*answer, OP_IS_CALL_PSEUDO));
+  return 0;
+}</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;lexer.l&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/blueprint/lexer.l&quot;&gt;</p>
+<pre><code>%{
+#include &lt;assert.h&gt;
+#include &quot;jv_alloc.h&quot;
+#include &quot;compile.h&quot;
+
+struct lexer_param;
+
+#include &quot;parser.h&quot;  /* Generated by bison. */
+
+#define YY_USER_ACTION                           \
+  do {                                           \
+    yylloc-&gt;start = yyget_extra(yyscanner);      \
+    yylloc-&gt;end = yylloc-&gt;start + yyleng;        \
+    yyset_extra(yylloc-&gt;end, yyscanner);         \
+  } while (0);
+
+%}
+
+%s IN_PAREN
+%s IN_BRACKET
+%s IN_BRACE
+%s IN_QQINTERP
+%x IN_QQSTRING
+%x IN_COMMENT
+%{
+  static int enter(int opening, int state, yyscan_t yyscanner);
+  static int try_exit(int closing, int state, yyscan_t yyscanner);
+%}
+
+%option noyywrap nounput noinput nodefault
+%option noyyalloc noyyrealloc noyyfree
+%option reentrant
+%option extra-type=&quot;int&quot;
+%option bison-bridge bison-locations
+%option prefix=&quot;jq_yy&quot;
+%option stack
+
+
+%%
+
+&quot;#&quot; { yy_push_state(IN_COMMENT, yyscanner); }
+&lt;IN_COMMENT&gt;{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+&lt;IN_COMMENT&gt;&lt;&lt;EOF&gt;&gt; { yy_pop_state(yyscanner); }
+
+&quot;!=&quot; { return NEQ; }
+&quot;==&quot; { return EQ; }
+&quot;as&quot; { return AS; }
+&quot;import&quot; { return IMPORT; }
+&quot;include&quot; { return INCLUDE; }
+&quot;module&quot; { return MODULE; }
+&quot;def&quot; { return DEF; }
+&quot;if&quot; { return IF; }
+&quot;then&quot; { return THEN; }
+&quot;else&quot; { return ELSE; }
+&quot;elif&quot; { return ELSE_IF; }
+&quot;and&quot; { return AND; }
+&quot;or&quot; { return OR; }
+&quot;end&quot; { return END; }
+&quot;reduce&quot; { return REDUCE; }
+&quot;foreach&quot; { return FOREACH; }
+&quot;//&quot; { return DEFINEDOR; }
+&quot;try&quot; { return TRY; }
+&quot;catch&quot; { return CATCH; }
+&quot;label&quot; { return LABEL; }
+&quot;break&quot; { return BREAK; }
+&quot;$__loc__&quot; { return LOC; }
+&quot;|=&quot; { return SETPIPE; }
+&quot;+=&quot; { return SETPLUS; }
+&quot;-=&quot; { return SETMINUS; }
+&quot;*=&quot; { return SETMULT; }
+&quot;/=&quot; { return SETDIV; }
+&quot;%=&quot; { return SETMOD; }
+&quot;//=&quot; { return SETDEFINEDOR; }
+&quot;&lt;=&quot; { return LESSEQ; }
+&quot;&gt;=&quot; { return GREATEREQ; }
+&quot;..&quot; { return REC; }
+&quot;?//&quot; { return ALTERNATION; }
+&quot;.&quot;|&quot;?&quot;|&quot;=&quot;|&quot;;&quot;|&quot;,&quot;|&quot;:&quot;|&quot;|&quot;|&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;|&quot;%&quot;|&quot;\$&quot;|&quot;&lt;&quot;|&quot;&gt;&quot; { return yytext[0];}
+
+&quot;[&quot;|&quot;{&quot;|&quot;(&quot; {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+&quot;]&quot;|&quot;}&quot;|&quot;)&quot; {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+
+&quot;@&quot;[a-zA-Z0-9_]+ {
+  yylval-&gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval-&gt;literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+
+&quot;\&quot;&quot; {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+
+&lt;IN_QQSTRING&gt;{
+  &quot;\\(&quot; {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+  &quot;\&quot;&quot; {
+    yy_pop_state(yyscanner);
+    return QQSTRING_END;
+  }
+  (\\[^u(]|\\u[a-zA-Z0-9]{0,4})+ {
+    /* pass escapes to the json parser */
+    jv escapes = jv_string_fmt(&quot;\&quot;%.*s\&quot;&quot;, (int)yyleng, yytext);
+    yylval-&gt;literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));
+    jv_free(escapes);
+    return QQSTRING_TEXT;
+  }
+  [^\\\&quot;]+ {
+    yylval-&gt;literal = jv_string_sized(yytext, yyleng);
+    return QQSTRING_TEXT;
+  }
+  . {
+    return INVALID_CHARACTER;
+  }
+}
+
+
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return BINDING;}
+
+[ \r\n\t]+  {}
+
+. { return INVALID_CHARACTER; }
+
+%%
+/* perhaps these should be calls... */
+/*
+&quot;true&quot; { return TRUE; }
+&quot;false&quot; { return FALSE; }
+&quot;null&quot; { return NULL; }
+*/
+static int try_exit(int c, int state, yyscan_t yyscanner) {
+  char match = 0;
+  int ret;
+  switch (state) {
+  case IN_PAREN: match = ret = &#x27;)&#x27;; break;
+  case IN_BRACKET: match = ret = &#x27;]&#x27;; break;
+  case IN_BRACE: match = ret = &#x27;}&#x27;; break;
+
+  case IN_QQINTERP:
+    match = &#x27;)&#x27;;
+    ret = QQSTRING_INTERP_END;
+    break;
+
+  default:
+    // may not be the best error to give
+    return INVALID_CHARACTER;
+  }
+  assert(match);
+  if (match == c) {
+    yy_pop_state(yyscanner);
+    return ret;
+  } else {
+    // FIXME: should we pop? Give a better error at least
+    return INVALID_CHARACTER;
+  }
+}
+
+static int enter(int c, int currstate, yyscan_t yyscanner) {
+  int state = 0;
+  switch (c) {
+  case &#x27;(&#x27;: state = IN_PAREN; break;
+  case &#x27;[&#x27;: state = IN_BRACKET; break;
+  case &#x27;{&#x27;: state = IN_BRACE; break;
+  case QQSTRING_INTERP_START: state = IN_QQINTERP; break;
+  }
+  assert(state);
+  yy_push_state(state, yyscanner);
+  return c;
+}
+
+void* yyalloc(size_t sz, void* extra) {
+  return jv_mem_alloc(sz);
+}
+void* yyrealloc(void* p, size_t sz, void* extra) {
+  return jv_mem_realloc(p, sz);
+}
+void yyfree(void* p, void* extra) {
+  jv_mem_free(p);
+}</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;ARCHITECTURE_compact.md&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/blueprint/ARCHITECTURE_compact.md&quot;&gt;</p>
+<pre><code>&lt;!-- Compacted from ARCHITECTURE.md sha256=f901d4810a6ccb373c41e83a62b08ef85c48d5832f5f377190a3d8261140199c on 2026-08-16 by drydock build agent --&gt;
+
+Standalone Python jq interpreter contract: executable `./jq -c &#x27;&lt;program&gt;&#x27;`; JSON stdin to compact JSON lines on stdout. Exit `0` success, `3` compile/static failure, `5` runtime failure. Boundaries: CLI, lexer, parser/compiler, lazy evaluator, data model, paths/mutation, builtins, diagnostics, verification. Standard library only; no persistence, network, system jq, or third-party jq implementation. Evaluator preserves ordered generator multiplicity and partial output before runtime errors.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>IMPLEMENTS - Authoritative Step Specifications</h2>
+<p>&lt;pblock label=&quot;Implementation recency anchor&quot; kind=&quot;section&quot;&gt; The files in this section are the load-bearing specifications for this build block. Build these files exactly. Treat earlier sections as constraints and context.</p>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;FEATURE-FRONTEND-002.md&quot; role=&quot;implements&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/blueprint/FEATURE-FRONTEND-002.md&quot; guidance=&quot;Feature Specification&quot;&gt;</p>
+<pre><code># FEATURE: jq Parser and AST
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Defines parsing and executable AST construction for jq expressions and declarations. |
+| Depends On  | ARCHITECTURE.md, FEATURE-FRONTEND-001.md |
+| Provides    | jq parser, AST, precedence and syntax validation |
+| Consumes    | jq tokenization |
+
+## Parser Contract
+
+The parser must construct an executable representation for jq queries, including:
+
+- Identity, literals, field access, indexing, slicing, iteration, arrays, and objects.
+- Parentheses, pipes, comma generators, operators, conditionals, optional filters, and errors.
+- Function definitions and calls, bindings, destructuring, reductions, foreach, labels, and breaks.
+- String interpolation and format expressions.
+- Assignment operators and module grammar.
+- The precedence and associativity declared by the supplied parser grammar.
+
+Invalid syntax and statically invalid constructs must fail compilation with exit status `3`.
+
+## Programmatic Acceptance
+
+=== AC frontend-002-precedence ===
+Intent: The parser applies jq arithmetic precedence and evaluates the resulting AST.
+import json
+import subprocess
+
+input_value = None
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 + 2 * 2&quot;],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1 + 2 * 2]
+assert actual == expected
+=== END AC frontend-002-precedence ===
+
+=== AC frontend-002-collections-and-pipeline ===
+Intent: The parser accepts collection and pipeline syntax and preserves the collected values.
+import json
+import subprocess
+
+input_value = [1, 2, 3]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;[.[] | . + 1]&quot;],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[value + 1 for value in input_value]]
+assert actual == expected
+=== END AC frontend-002-collections-and-pipeline ===
+
+=== AC frontend-002-invalid-syntax ===
+Intent: The parser rejects an unterminated object expression with compile exit status 3.
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC frontend-002-invalid-syntax ===
+
+=== AC frontend-002-assignment-syntax ===
+Intent: The parser accepts assignment syntax and the evaluator applies the parsed update.
+import json
+import subprocess
+
+input_value = {&quot;count&quot;: 1}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.count += 1&quot;],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [{&quot;count&quot;: input_value[&quot;count&quot;] + 1}]
+assert actual == expected
+=== END AC frontend-002-assignment-syntax ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve the precedence, associativity, and syntax boundaries in the supplied parser grammar.
+- Produce an AST or equivalent executable representation; do not translate programs by invoking jq.
+- Keep compile-time rejection distinct from runtime evaluation.
+- Support module grammar validation without requiring module-loader filesystem fixtures.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Build instructions&quot; kind=&quot;instructions&quot;&gt;</p>
+<h3>Build instructions for this block</h3>
+<h4>Implement jq parsing and executable AST construction. (frontend-002)</h4>
+<p>Build the parser and AST/compiler representation following the supplied precedence, associativity, expression, object, array, assignment, control-flow, module-grammar, and interpolation forms. Compile invalid programs distinctly from executable programs.</p>
+<p>&lt;/pblock&gt;</p>
+<h1>Agent Task</h1>
+<p>You are a Drydock build agent implementing exactly one build step of a larger plan. The build job block below names the target, the build working directory, and the step. Everything you need is stacked into this prompt under role headings:</p>
+<ul><li><code>compass</code> — the Target&#x27;s COMPASS.md orientation.</li><li><code>implements</code> — the Typed Specification files this step builds. These are</li></ul>
+<p>authoritative; implement them exactly.</p>
+<ul><li><code>context</code> — read-only support specifications. Do not reimplement them.</li><li><code>stack</code> — enterprise stack and technology rules. Honor them.</li><li><code>rules</code> — governance and branding rules. Honor them.</li></ul>
+<p>Operating contract:</p>
+<ol><li>Follow the write authorization and protected paths in the stacked <code>COMPASS.md</code> exactly.</li></ol>
+<p>That persisted guardrail is the sole authority for paths this build may modify.</p>
+<ol><li>Start by inspecting the build working directory. Preserve existing application</li></ol>
+<p>files unless this step&#x27;s specifications require a change. Its <code>sources/</code> subdirectory holds staged build assets — imported test corpora, conformance harnesses, and fixtures — placed there for you. They are read-only inputs: run them, import them, and write code against them, but never create, rewrite, trim, regenerate, or substitute one, even to make a check pass. A step that modifies a staged asset fails and the asset is restored. If an asset you expect is absent, report that; do not author a replacement.</p>
+<ol><li>Implement only this step. Use <code>context</code>, <code>stack</code>, and <code>rules</code> as constraints,</li></ol>
+<p>not as additional work to perform.</p>
+<ol><li>Follow the stack and rules for languages, structure, naming, and branding.</li><li>The programmatic acceptance assertions in the <code>implements</code> specifications are</li></ol>
+<p>this step&#x27;s <strong>Definition of Done</strong> — human-owned, declared before the build, and fixed. Build the story and, in this same step, write the deterministic tests that prove each declared assertion, as a TDD master would; add finer tests for coverage. Every test you write follows the same rule the acceptance assertions do: <strong>act on the system, read the state back, compare to expected.</strong> The oracle is a return value, parsed JSON, a status code, a stored row, file contents read back, or an exit status — never a substring of captured stdout or stderr, a test-runner tally, or a log line. Write tests in the project&#x27;s own language using that language&#x27;s libraries; an in-language HTTP client yields a status code and a parsed body, where <code>curl</code> yields text to scrape. Round-trip anything that stores state: act, then read back through the public interface. Assert declared failure signals on negative paths, never message wording. You may add tests but must never remove, soften, or weaken a declared acceptance assertion. A <code>Suite: full</code> conformance check gates on the entire imported test suite: the step is done only when it passes in full, never on a representative subset — reproduce the standard exactly rather than wrapping a third-party library that approximates it. For a suite, the runner&#x27;s exit status is the verdict and the whole verdict: print its captured output for diagnosis, never assert on the text of its summary. When an assertion is a static or filesystem scan (import boundary, &quot;X never appears outside Y,&quot; grep/AST gate), honor the scope the specification states and never widen it: scan production source only, exclude <code>.venv/</code>, <code>site-packages</code>, and vendored or generated code, and do not flag test doubles or fixtures that use the guarded dependency. Run every declared acceptance assertion before returning. For a conformance suite, use its section or example filters to diagnose coherent root-cause clusters, but rerun the full declared scope before reporting the result. Treat failing examples as a work queue for fixing general behavior; never add example-specific exceptions.</p>
+<ol><li>Grow the project&#x27;s own test suite as you write the code, and treat it as the project&#x27;s</li></ol>
+<p>real coverage. The acceptance assertions in <code>implements</code> are gates: few, fixed, and written before any code existed, so every expectation in them is a prediction. The tests you write are written <em>beside</em> the finished code, so their expected values are observed rather than predicted — which is why exhaustive coverage belongs here and not there. Extend the suite in the project&#x27;s established location and runner, keep it runnable by the project&#x27;s declared test command, and leave it green when you return. Cover, at minimum: every public entry point and every verb it declares, including declared error paths; the boundaries — empty, exactly one, many, absent optional fields, declared maxima; declared idempotence, applied twice; one behavior per test, named for the behavior; and isolation — each test arranges its own data, with a fresh store or explicit teardown, so a run leaves no residue behind in the build directory. Where a staged authoritative suite already covers a surface, that suite is the coverage: run it, and do not restate its cases. Report the suite&#x27;s pass/fail counts in your <code>SUMMARY</code> so a reader can see coverage moving across steps.</p>
+<ol><li>Treat <code>User Acceptance</code> entries as review evidence requirements. Implement</li></ol>
+<p>the supporting behavior, but do not claim to have performed human judgment.</p>
+<ol><li>The <code>implements</code> section is authoritative and intentionally stacked late in</li></ol>
+<p>the prompt as the recency anchor. Build that WHAT exactly; do not substitute generic framework defaults.</p>
+<ol><li>Before adding or installing Python dependencies, verify each package name</li></ol>
+<p>against the declared registry. Do not invent package names. If a needed package cannot be verified or appears newly published, fail explicitly instead of installing it.</p>
+<ol><li>Use the stack&#x27;s required package manager workflow for dependency changes.</li></ol>
+<p>When the stack requires <code>uv</code>, update manifests through <code>uv</code> conventions rather than bare <code>pip install</code>.</p>
+<ol><li>Do not claim success unless you actually created or modified project files in</li></ol>
+<p>the build working directory. If you cannot write files or cannot complete the step, report failure explicitly.</p>
+<ol><li>Do not run <code>git add</code>, <code>git commit</code>, create branches, create tags, rewrite</li></ol>
+<p>history, or otherwise mutate Git history. Drydock owns the final build directory commit after you return.</p>
+<ol><li>End your response with this exact closing structure:</li></ol>
+<pre><code>RESULT: SUCCESS | FAILED
+
+FILES CHANGED:
+- relative/path
+
+SUMMARY:
+&lt;brief reviewable summary&gt;
+
+BLOCKERS:
+- &lt;only if any&gt;</code></pre>
+<p>Before <code>RESULT</code>, you may emit one optional JSON payload when implementation required a bounded choice not already settled by the owning specification. This records what you did; it does not ask permission, create a questionnaire, or excuse incomplete work:</p>
+<pre><code>&lt;blueprint-decisions&gt;
+[{&quot;spec&quot;:&quot;FEATURE-Example.md&quot;,&quot;severity&quot;:&quot;Material&quot;,&quot;subject&quot;:&quot;Chosen behavior&quot;,&quot;decision&quot;:&quot;Options A and B were available. I implemented B because ... Is that acceptable, or should this change on replan?&quot;}]
+&lt;/blueprint-decisions&gt;</code></pre>
+<p>Name only a specification implemented by this build block. Use <code>Low</code> or <code>Material</code>; Build never emits a Blocking decision. Omit the payload when no implementation decision was necessary.</p>
+<ol><li><code>FILES CHANGED</code> must list only files actually written in the build working</li></ol>
+<p>directory. If no files were written, use <code>RESULT: FAILED</code>.</p>
+<ol><li>On <code>RESULT: FAILED</code>, append two additional lines so the failure is actionable</li></ol>
+<p>without opening logs. <code>FAILURE_SUMMARY</code> is one line naming the cause; <code>FAILURE_DETAIL</code> states what happened, why, and what to change before a rerun. Name concrete conditions when they apply: token or context limit exceeded, could not execute commands in this environment, a required input was missing, or a specific tool or command failed.</p>
+<pre><code>FAILURE_SUMMARY: &lt;one line naming the cause&gt;
+FAILURE_DETAIL: &lt;what happened, why, and what to change before rerunning&gt;</code></pre>
+<ol><li>When a declared acceptance criterion cannot pass no matter how the code is written,</li></ol>
+<p>say so with this exact token. You may not edit the criterion — it is staged and restored before grading:</p>
+<pre><code>AC_BROKEN: &lt;check-id&gt;[, &lt;check-id&gt;]</code></pre>
+<p>This is a report, not a verdict, and it stops nothing. A criterion reaches you only when its expected value is one its author could not have invented — a status code, a staged suite&#x27;s exit status, a value the criterion itself supplied as input — so your claim that the criterion rather than the code is at fault is the less likely explanation, and the budget is spent as it would be for any other failure. A criterion whose expectation <em>was</em> hand-typed already settles <code>DISPUTED</code> on its own, without you naming it. Emit the token only after running the criterion and confirming the underlying command succeeded while the assertion still failed. Name the affected check ids, emit it alongside your normal <code>RESULT</code> line, state the reasoning in <code>FAILURE_DETAIL</code>, and emit it even when <code>RESULT: SUCCESS</code>. Do not use it for a criterion you merely failed to satisfy.</p>
+<h1>Active Commander guidance</h1>
+<h2>Commander decisions</h2>
+<p>Apply these decisions as constraints; do not recreate them as questions.</p>
+<h3>analyze-display_name</h3>
+<ul><li>Title: Display Name</li><li>Decision: jq Interpreter</li><li>Severity: material</li><li>Blueprint: ARCHITECTURE.md</li></ul>
+<h3>analyze-short_description</h3>
+<ul><li>Title: Short Description</li><li>Decision: A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values.</li><li>Severity: material</li><li>Blueprint: ARCHITECTURE.md</li></ul>
+<h1>Repair Feedback</h1>
+<h2>Repair pass</h2>
+<p>A previous build pass wrote partial work into BUILD_DIRECTORY and did not pass every deterministic acceptance check. Iterate the existing files in BUILD_DIRECTORY to make the checks below pass. Do not restart from scratch, do not weaken or remove any declared acceptance assertion, and keep every check that already passes green.</p>
+<p>The diagnostic excerpts below are truncated. Before editing, rerun each failing acceptance assertion from its authoritative specification and inspect the complete failure output. For a conformance suite, use its section or example filters to diagnose coherent root-cause clusters, then rerun the full declared scope. Fix the general parser or renderer behavior; do not add example-specific exceptions. Keep working through failing examples while the deterministic tally is improving.</p>
+<p>If a check below cannot pass however the code is written — the command it runs succeeds and the assertion still fails — do not keep repairing. Report it with <code>AC_BROKEN: &lt;check-id&gt;</code> and explain the contradiction in <code>FAILURE_DETAIL</code>. That ends the repair budget and sends the criterion back for repair in the Blueprint, which is where a broken assertion has to be fixed.</p>
+<h3>Regression — fix this first</h3>
+<p>The criteria below belong to earlier stories that were already proven. They were green before this block ran and are red now, so this block&#x27;s edits broke them. Restore the behavior they assert without discarding this block&#x27;s own work, and do not edit the criteria.</p>
+<ul><li>frontend-001-literals-and-fields (FEATURE-FRONTEND-001.md): Lexically valid literals, fields, and bindings compile and evaluate through the public executable.</li></ul>
+<p>assertion: assert result.returncode == 3 → AssertionError output: --- drydock: end values --- Traceback (most recent call last): File &quot;frontend-001-literals-and-fields.py&quot;, line 11, in &lt;module&gt; assert result.returncode == 3 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h3>Previous agent note</h3>
+<ul><li>Full jq conformance suite does not pass.</li></ul>
+<p>The implementation satisfies the declared frontend smoke checks but fails broad corpus coverage across later language features; these features must be implemented before rerunning acceptance.</p>
+<h3>Files written so far</h3>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_frontend_002.py</li></ul></article>
+</main>
+</body>
+</html>

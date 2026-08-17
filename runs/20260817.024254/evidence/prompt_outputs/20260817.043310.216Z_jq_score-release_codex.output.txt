@@ -1,0 +1,1 @@
+{"criteria":[{"id":"st-001","verdict":"NOT MET","rationale":"The supplied full scoring script exited with code 1, reporting 320 passed and 217 failed conformance cases.","evidence":["governed gate sh sources/full_test.sh: return code 1","jq conformance: 320 passed, 217 failed, 13 skipped"]}],"improvements":["Make sh sources/full_test.sh pass all required conformance cases."]}

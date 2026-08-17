@@ -1,0 +1,63 @@
+<requirement name="define-evaluation-model" stories="architecture,eval-001">
+jq is a small language with a large semantic core. Almost every filter is a **generator**: it takes one input and produces a stream of zero, one, or many outputs, and downstream filters run once per upstream output. Backtracking through that stream is not an optimisation, it is the evaluation model, and `reduce`, `foreach`, `limit`, `first`, `label`/`break`, and the `?//` destructuring alternative are all defined in terms of it. An implementation that treats a filter as a function returning one value will pass the early cases and then stall permanently. Decide the evaluation model before writing builtins.
+</requirement>
+<requirement name="run-conformance-harness" stories="verify-001,verify-003">
+`sources/full_test.sh` is the single scoring entry point. It is supplied, not authored: it is staged verbatim into the build directory alongside the other imported assets, and `drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.
+</requirement>
+<requirement name="preserve-scoring-assets" stories="verify-001">
+These four files are the exam. They are hash-verified against the import and restored before grading, so a modification is reported as tampering rather than honoured:
+</requirement>
+<requirement name="implement-jq-interface" stories="cli-001">
+The program is a filter: an executable file named `jq` at the application root, invoked as
+</requirement>
+<requirement name="implement-exit-codes" stories="cli-002">
+Exit codes follow jq's own, and the distinction is load-bearing because the harness grades on it:
+</requirement>
+<requirement name="implement-lexer" stories="frontend-001">
+**Lexer and parser.** Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there. Reject invalid programs with exit `3`.
+</requirement>
+<requirement name="implement-parser-and-ast" stories="frontend-002">
+**Lexer and parser.** Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there. Reject invalid programs with exit `3`.
+</requirement>
+<requirement name="implement-functions-and-bindings" stories="frontend-003">
+**Functions, variables, and destructuring.** `def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.
+</requirement>
+<requirement name="implement-generator-core" stories="eval-001">
+**The generator core.** Evaluate a filter as something that yields a stream of values: `.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`. Every later feature is expressed in terms of this. Get `[.[] | f]`, cartesian products over multi-output arguments, and short-circuiting right.
+</requirement>
+<requirement name="implement-operators-and-conditionals" stories="eval-002">
+**Control flow.** `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.
+</requirement>
+<requirement name="implement-json-and-structural-operations" stories="data-001">
+Implement JSON values and structural jq operations.
+</requirement>
+<requirement name="implement-path-mutation" stories="data-002">
+**Paths and assignment.** `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends. Assignment is defined over path expressions, so this cannot precede step 2.
+</requirement>
+<requirement name="implement-assignment-operators" stories="data-003">
+**Paths and assignment.** `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends. Assignment is defined over path expressions, so this cannot precede step 2.
+</requirement>
+<requirement name="implement-collection-builtins" stories="builtin-001">
+**Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="implement-string-builtins" stories="builtin-002">
+**Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="implement-regex-builtins" stories="builtin-003">
+The manual is normative and the corpus is precise. Follow both directly rather than inferring behaviour from jq's printed output.
+</requirement>
+<requirement name="implement-format-and-runtime-builtins" stories="builtin-004">
+**Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="implement-streaming-and-io-builtins" stories="builtin-005">
+**Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="verify-interpreter" stories="verify-002">
+During development, `sh sources/full_test.sh` does the interface check and the conformance run together, and is the same command the score is taken from.
+</requirement>
+<requirement name="run-acceptance-gate" stories="verify-003">
+Exactly one acceptance check runs the suite. One terminal story — the last one — runs `sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea Trial.
+</requirement>
+<unattached story="eval-003"/>
+<unattached story="builtin-003"/>
+<unattached story="README"/>

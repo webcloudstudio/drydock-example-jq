@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-VERIFY-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-VERIFY-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-VERIFY-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Bounded Implementation Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Provide focused deterministic verification for the interpreter&#x27;s core behavior and CLI contract.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CLI-002.md, FEATURE-FRONTEND-003.md, FEATURE-EVAL-003.md, FEATURE-DATA-003.md, FEATURE-BUILTIN-005.md</td></tr><tr><td>Provides</td><td>focused implementation verification</td></tr><tr><td>Consumes</td><td>./jq -c, interpreter modules</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Add bounded diagnostic verification for representative lexer, parser, generator, structural, assignment, builtin, compile-error, and runtime-error behavior. These checks are independent of the complete acceptance gate and must remain deterministic, local, and standard-library-only.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC verify-002-cli-success ===<br>Intent: The executable accepts a compact jq program and returns success with one result per produced value.</p>
+<p>import json import subprocess</p>
+<p>payload = json.dumps([1, 2, 3]) result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[]&quot;], input=payload, capture_output=True, text=True, ) assert result.returncode == 0 assert len([line for line in result.stdout.splitlines() if line]) == len(json.loads(payload)) === END AC verify-002-cli-success ===</p>
+<p>=== AC verify-002-compile-error ===<br>Intent: A syntactically invalid jq program returns the compile-error exit status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC verify-002-compile-error ===</p>
+<p>=== AC verify-002-runtime-error ===<br>Intent: A compiled jq program that raises at runtime returns the runtime-error exit status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC verify-002-runtime-error ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep verification bounded and deterministic.</li><li>Assert exit status or parsed state, never diagnostic message text.</li><li>Do not invoke the complete conformance suite from this story.</li></ul></article>
+</main>
+</body>
+</html>

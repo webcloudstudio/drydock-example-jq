@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/13-score-acceptance.stdout.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/13-score-acceptance.stdout.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/13-score-acceptance.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+
+Acceptance verification: jq  (2026-08-17T04:28:49+00:00)
+  PASS 24   FAIL 23   UNVERIFIED 0   PREPASSED 13   (60 AC)
+
+  ✓ PASS        architecture-stream-contract            architecture  ARCHITECTURE.md
+  ✓ PASS        architecture-generator-order            architecture  ARCHITECTURE.md
+  ✓ PASS        architecture-runtime-status             architecture  ARCHITECTURE.md
+  ✓ PASS        cli-001-single-input                    cli-001       FEATURE-CLI-001.md
+  ✓ PASS        cli-001-multiple-inputs                 cli-001       FEATURE-CLI-001.md
+  ✓ PASS        cli-001-generator-output                cli-001       FEATURE-CLI-001.md
+  ~ PREPASSED   cli-002-compile-error                   cli-002       FEATURE-CLI-002.md
+        intent: Invalid jq syntax is rejected with compile exit status 3 and a stderr diagnostic.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   cli-002-runtime-error                   cli-002       FEATURE-CLI-002.md
+        intent: A compiled filter that raises at runtime returns exit status 5 and keeps diagnostics off stdout.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   cli-002-partial-output                  cli-002       FEATURE-CLI-002.md
+        intent: Results emitted before a runtime error remain on stdout while the process returns runtime exit status 5.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   frontend-001-literals-and-fields        frontend-001  FEATURE-FRONTEND-001.md
+        intent: Lexically valid literals, fields, and bindings compile and evaluate through the public executable.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✓ PASS        frontend-001-strings-and-interpolation  frontend-001  FEATURE-FRONTEND-001.md
+  ~ PREPASSED   frontend-001-invalid-escape             frontend-001  FEATURE-FRONTEND-001.md
+        intent: An invalid string escape is rejected during compilation.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   frontend-002-precedence                 frontend-002  FEATURE-FRONTEND-002.md
+        intent: The parser applies jq arithmetic precedence and evaluates the resulting AST.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   frontend-002-collections-and-pipeline   frontend-002  FEATURE-FRONTEND-002.md
+        intent: The parser accepts collection and pipeline syntax and preserves the collected values.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   frontend-002-invalid-syntax             frontend-002  FEATURE-FRONTEND-002.md
+        intent: The parser rejects an unterminated object expression with compile exit status 3.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✓ PASS        frontend-002-assignment-syntax          frontend-002  FEATURE-FRONTEND-002.md
+  ✓ PASS        frontend-003-functions                  frontend-003  FEATURE-FRONTEND-003.md
+  ✗ FAIL        frontend-003-bindings                   frontend-003  FEATURE-FRONTEND-003.md
+        intent: The implementation passes the authoritative corpus cases for lexical bindings and destructuring.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: frontend-003-bindings.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;Variables|Destructuring| as \\$|closures and lexical scoping|destructuring&#x27;], returncode=1, stdout=&quot;FAIL jq.test:490  output mismatch\n    program:  reduce range(65540;65536;-1) as $i ([]; .[$i] = $i)|.[65536:]\n    input:    null\n    expected: [&#x27;[null,65537,65538,65539,65540… (+192 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;Variables|Destructuring| as \$|closures and lexical scoping|destructuring&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+          FAIL jq.test:490  output mismatch
+              program:  reduce range(65540;65536;-1) as $i ([]; .[$i] = $i)|.[65536:]
+              input:    null
+              expected: [&#x27;[null,65537,65538,65539,65540]&#x27;]
+              actual:   (no output)
+              stderr:   Cannot update field at array index of string
+          jq conformance: 60 passed, 1 failed, 0 errored, 2 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;frontend-003-bindings.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        frontend-003-alternatives               frontend-003  FEATURE-FRONTEND-003.md
+  ~ PREPASSED   verify-001-harness-list                 verify-001    FEATURE-VERIFY-001.md
+        intent: The staged conformance runner can parse the staged corpus and exclusions without a harness error.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   verify-001-script-contract              verify-001    FEATURE-VERIFY-001.md
+        intent: The staged scoring script is executable by POSIX sh and reaches the candidate interface check.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✓ PASS        eval-001-streams                        eval-001      FEATURE-EVAL-001.md
+  ~ PREPASSED   eval-001-collections                    eval-001      FEATURE-EVAL-001.md
+        intent: The implementation passes the authoritative corpus cases for array and object collection and generator multiplicity.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✓ PASS        eval-001-backtracking                   eval-001      FEATURE-EVAL-001.md
+  ~ PREPASSED   eval-002-operators                      eval-002      FEATURE-EVAL-002.md
+        intent: The implementation passes the authoritative corpus cases for arithmetic, comparison, equality, ordering, and type-dispatched operations.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✓ PASS        eval-002-conditionals                   eval-002      FEATURE-EVAL-002.md
+  ~ PREPASSED   eval-002-errors                         eval-002      FEATURE-EVAL-002.md
+        intent: The implementation passes the authoritative corpus cases for runtime errors, try/catch, and optional filters.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✗ FAIL        eval-003-reduction                      eval-003      FEATURE-EVAL-003.md
+        intent: The implementation passes the authoritative corpus cases for reduce and foreach.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: eval-003-reduction.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;reduce|foreach|intermediate|accumul&#x27;], returncode=1, stdout=&quot;FAIL jq.test:490  output mismatch\n    program:  reduce range(65540;65536;-1) as $i ([]; .[$i] = $i)|.[65536:]\n    input:    null\n    expected: [&#x27;[null,65537,65538,65539,65540]&#x27;]\n    actual:   (no output)\n    std… (+153 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;reduce|foreach|intermediate|accumul&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+          FAIL jq.test:490  output mismatch
+              program:  reduce range(65540;65536;-1) as $i ([]; .[$i] = $i)|.[65536:]
+              input:    null
+              expected: [&#x27;[null,65537,65538,65539,65540]&#x27;]
+              actual:   (no output)
+              stderr:   Cannot update field at array index of string
+          jq conformance: 31 passed, 1 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;eval-003-reduction.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        eval-003-bounds                         eval-003      FEATURE-EVAL-003.md
+        intent: The implementation passes the authoritative corpus cases for limit, skip, first, last, and nth.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: eval-003-bounds.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;limit|skip|first\\(|last\\(|nth\\(&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:361  program did not compile: unknown function limit/2\n    program:  [limit(3; .[])]\n    input:    [11,22,33,44,55,66,77,88,99]\n    expected: [\&#x27;[11,22,33]\&#x27;]\n    actual:   (no output)\n    stderr:   … (+3178 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;limit|skip|first\(|last\(|nth\(&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+          FAIL jq.test:425  output mismatch
+              program:  [nth(5,7; range(9;0;-1))]
+              input:    null
+              expected: [&#x27;[4,2]&#x27;]
+              actual:   [&#x27;[4,4,4,4,4,4,4,4,4,2,2,2,2,2,2,2,2,2]&#x27;]
+          FAIL jq.test:1895  program did not compile: unknown function strptime/1
+              program:  last(range(365 * 67)|(&quot;1970-03-01T01:02:03Z&quot;|strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|mktime) + (86400 * .)|strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;))
+              input:    null
+              expected: [&#x27;[2037,1,11,1,2,3,3,41]&#x27;]
+              actual:   (no output)
+              stderr:   unknown function strptime/1
+          jq conformance: 5 passed, 14 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;eval-003-bounds.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        eval-003-recursion                      eval-003      FEATURE-EVAL-003.md
+        intent: The implementation passes the authoritative corpus cases for while, until, repeat, labels, breaks, and recursive generators.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: eval-003-recursion.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;while|until|repeat|label|break|Recursion|recurse&#x27;], returncode=1, stdout=&quot;FAIL jq.test:311  program did not compile: unknown function while/2\n    program:  [while(.&lt;100; .*2)]\n    input:    1\n    expected: [&#x27;[1,2,4,8,16,32,64]&#x27;]\n    actual:   (no output)\n    stderr:   unk… (+392 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;while|until|repeat|label|break|Recursion|recurse&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+              program:  [while(.&lt;100; .*2)]
+              input:    1
+              expected: [&#x27;[1,2,4,8,16,32,64]&#x27;]
+              actual:   (no output)
+              stderr:   unknown function while/2
+          FAIL jq.test:329  program did not compile: unknown function until/2
+              program:  [.[]|[.,1]|until(.[0] &lt; 1; [.[0] - 1, .[1] * .[0]])|.[1]]
+              input:    [1,2,3,4,5]
+              expected: [&#x27;[1,2,6,24,120]&#x27;]
+              actual:   (no output)
+              stderr:   unknown function until/2
+          jq conformance: 7 passed, 2 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;eval-003-recursion.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        data-001-structure                      data-001      FEATURE-DATA-001.md
+        intent: The implementation passes the authoritative corpus cases for JSON values, indexing, slicing, iteration, typing, and Unicode lengths.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: data-001-structure.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;Types and Values|Field access|Array/String Slice|Array/Object Value Iterator|Slicing|length|utf8bytelength|type&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:741  output mismatch\n    program:  utf8bytelength\n    input:    &quot;asdf\\u03bc&quot;\n    expected: [\&#x27;6\&#x27;]\n    actual:   [\&#x27;5\&#x27;]\n… (+1137 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;Types and Values|Field access|Array/String Slice|Array/Object Value Iterator|Slicing|length|utf8bytelength|type&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+              program:  builtins|length &gt; 10
+              input:    null
+              expected: [&#x27;true&#x27;]
+              actual:   (no output)
+              stderr:   unknown filter at position 0
+          FAIL jq.test:2275  output mismatch
+              program:  [1E+1000,-1E+1000 | length | tojson] | unique == if have_decnum then [&quot;1E+1000&quot;] else [&quot;1.7976931348623157e+308&quot;] end
+              input:    null
+              expected: [&#x27;true&#x27;]
+              actual:   (no output)
+              stderr:   Out of range float values are not JSON compliant: inf
+          jq conformance: 5 passed, 4 failed, 0 errored, 2 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-001-structure.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        data-001-ordering                       data-001      FEATURE-DATA-001.md
+        intent: The implementation passes the authoritative corpus cases for equality, ordering, sorting order, and containment.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: data-001-ordering.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;equality|comparison|sort|contains|inside|keys|has\\(&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:1677  program did not compile: unknown function sort_by/1\n    program:  (sort_by(.b) | sort_by(.a)), sort_by(.a, .b), sort_by(.b, .c), group_by(.b), group_by(.a + .b - .c == 2)\n    inp… (+1043 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;equality|comparison|sort|contains|inside|keys|has\(&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+              program:  (sort_by(.b) | sort_by(.a)), sort_by(.a, .b), sort_by(.b, .c), group_by(.b), group_by(.a + .b - .c == 2)
+              input:    [{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}]
+              expected: [&#x27;[{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}]&#x27;, &#x27;[{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}]&#x27;, &#x27;[{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}]&#x27;, &#x27;[[{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}], [{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}], [{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}]]&#x27;, &#x27;[[{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}], [{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}]]&#x27;]
+              actual:   (no output)
+              stderr:   unknown function sort_by/1
+          FAIL jq.test:1733  output mismatch
+              program:  has(nan)
+              input:    [0,1,2]
+              expected: [&#x27;false&#x27;]
+              actual:   (no output)
+              stderr:   unknown function nan
+          jq conformance: 26 passed, 2 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-001-ordering.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        data-001-numbers                        data-001      FEATURE-DATA-001.md
+        intent: The implementation passes the authoritative corpus cases for numeric literals, floating-point behavior, NaN, infinity, and compact JSON conversion.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: data-001-numbers.py:14
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;number|numbers|nan|infinite|decnum|literal number|tojson|fromjson&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:689  output mismatch\n    program:  [(infinite, -infinite) % (1, -1, infinite)]\n    input:    null\n    expected: [\&#x27;[0,0,0,0,0,-1]\&#x27;]\n    actual:   (no output)\n    stder… (+5659 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | pattern = r&quot;number|numbers|nan|infinite|decnum|literal number|tojson|fromjson&quot;
+             6 | result = subprocess.run(
+             7 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern],
+             8 |     capture_output=True,
+             9 |     text=True,
+            10 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            11 | )
+            12 | print(result.stdout)
+            13 | print(result.stderr, file=sys.stderr)
+          &gt; 14 | assert result.returncode == 0
+        observed output:
+              stderr:   unknown function nan
+          FAIL jq.test:2475  output mismatch
+              program:  try ([range(3)] | .[nan] = 9) catch .
+              input:    null
+              expected: [&#x27;&quot;Cannot set array element at NaN index&quot;&#x27;]
+              actual:   [&#x27;&quot;invalid update path&quot;&#x27;]
+          FAIL jq.test:2498  output mismatch
+              program:  try fromjson catch .
+              input:    &quot;{&#x27;a&#x27;: 123}&quot;
+              expected: [&#x27;&quot;Invalid string literal; expected \\&quot;, but got \&#x27; at line 1, column 5 (while parsing \&#x27;{\&#x27;a\&#x27;: 123}\&#x27;)&quot;&#x27;]
+              actual:   [&#x27;&quot;Expecting property name enclosed in double quotes: line 1 column 2 (char 1)&quot;&#x27;]
+          jq conformance: 9 passed, 22 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-001-numbers.py&quot;, line 14, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        data-002-path-roundtrip                 data-002      FEATURE-DATA-002.md
+        intent: Path lookup and replacement round-trip through the executable.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: data-002-path-roundtrip.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[path(.a.b[1]), getpath([&quot;a&quot;,&quot;b&quot;,1]), setpath([&quot;a&quot;,&quot;b&quot;,1]; 9)]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function path/1\n&#x27;)
+        criterion code:
+             1 | import json
+             2 | import subprocess
+             3 |
+             4 | source = &#x27;{&quot;a&quot;:{&quot;b&quot;:[0,1]}}&#x27;
+             5 | program = &#x27;[path(.a.b[1]), getpath([&quot;a&quot;,&quot;b&quot;,1]), setpath([&quot;a&quot;,&quot;b&quot;,1]; 9)]&#x27;
+             6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt;  7 | assert result.returncode == 0
+             8 | values = [json.loads(line) for line in result.stdout.splitlines()]
+             9 | assert values[0][0] == [&quot;a&quot;, &quot;b&quot;, 1]
+            10 | assert values[0][1] == 1
+            11 | assert values[0][2][&quot;a&quot;][&quot;b&quot;][1] == 9
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-002-path-roundtrip.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        data-002-discovery                      data-002      FEATURE-DATA-002.md
+        intent: Recursive path discovery returns every non-root structural path.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: data-002-discovery.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[paths]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown filter at position 1\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;{&quot;a&quot;:[1,{&quot;b&quot;:2}]}&#x27;
+            5 | program = &#x27;[paths]&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == [[&quot;a&quot;], [&quot;a&quot;, 0], [&quot;a&quot;, 1], [&quot;a&quot;, 1, &quot;b&quot;]]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-002-discovery.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        data-002-deletion                       data-002      FEATURE-DATA-002.md
+  ✗ FAIL        data-003-plain-assignment               data-003      FEATURE-DATA-003.md
+        intent: Plain assignment reads the right-hand side from the original input.
+        assertion: assert actual == {&quot;a&quot;: 20, &quot;b&quot;: 20} → AssertionError
+        raised at: data-003-plain-assignment.py:9
+        process exit code: 1
+        values at failure:
+          actual = {&#x27;a&#x27;: 10, &#x27;b&#x27;: 20}
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;{&quot;a&quot;:{&quot;b&quot;:10},&quot;b&quot;:20}&#x27;
+            5 | program = &#x27;.a = .b&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+            7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+          &gt; 9 | assert actual == {&quot;a&quot;: 20, &quot;b&quot;: 20}
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;data-003-plain-assignment.py&quot;, line 9, in &lt;module&gt;
+              assert actual == {&quot;a&quot;: 20, &quot;b&quot;: 20}
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        data-003-update-assignment              data-003      FEATURE-DATA-003.md
+  ✓ PASS        data-003-complex-assignment             data-003      FEATURE-DATA-003.md
+  ✓ PASS        data-003-empty-update                   data-003      FEATURE-DATA-003.md
+  ✗ FAIL        builtin-001-collections                 builtin-001   FEATURE-BUILTIN-001.md
+        intent: Mapping and selection preserve array order and filter values.
+        assertion: assert actual == [6, 4, 2] → AssertionError
+        raised at: builtin-001-collections.py:9
+        process exit code: 1
+        values at failure:
+          actual = [6, 4]
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;[1,5,3,0]&#x27;
+            5 | program = &#x27;map(select(. &gt;= 2) | . + 1)&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+            7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+          &gt; 9 | assert actual == [6, 4, 2]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-001-collections.py&quot;, line 9, in &lt;module&gt;
+              assert actual == [6, 4, 2]
+                     ^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        builtin-001-sorting                     builtin-001   FEATURE-BUILTIN-001.md
+  ✗ FAIL        builtin-001-objects                     builtin-001   FEATURE-BUILTIN-001.md
+        intent: Entry conversion and object updates preserve keys and values.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-001-objects.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;to_entries | map(.key |= &quot;x_&quot; + .) | from_entries&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown filter at position 0\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;{&quot;a&quot;:1,&quot;b&quot;:2}&#x27;
+            5 | program = &#x27;to_entries | map(.key |= &quot;x_&quot; + .) | from_entries&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == {&quot;x_a&quot;: 1, &quot;x_b&quot;: 2}
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-001-objects.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-001-aggregates                  builtin-001   FEATURE-BUILTIN-001.md
+        intent: Grouping and flattening produce deterministic aggregate values.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-001-aggregates.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[group_by(.k), ([1,[2],[[3]]] | flatten)]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function group_by/1\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;[{&quot;k&quot;:2},{&quot;k&quot;:1},{&quot;k&quot;:2}]&#x27;
+            5 | program = &#x27;[group_by(.k), ([1,[2],[[3]]] | flatten)]&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == [[[{&quot;k&quot;: 1}], [{&quot;k&quot;: 2}, {&quot;k&quot;: 2}]], [1, 2, 3]]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-001-aggregates.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-002-string-operations           builtin-002   FEATURE-BUILTIN-002.md
+        intent: String splitting, joining, trimming, and indexing return jq-compatible values.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-002-string-operations.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[trim, split(&quot;,&quot;), (split(&quot;,&quot;) | join(&quot;-&quot;)), indices(&quot;a&quot;)]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown filter at position 1\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;&quot;  a,b  &quot;&#x27;
+            5 | program = &#x27;[trim, split(&quot;,&quot;), (split(&quot;,&quot;) | join(&quot;-&quot;)), indices(&quot;a&quot;)]&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == [&quot;a,b&quot;, [&quot;  a&quot;, &quot;b  &quot;], &quot;  a-b  &quot;, [2]]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-002-string-operations.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-002-unicode                     builtin-002   FEATURE-BUILTIN-002.md
+        intent: Explode and implode round-trip Unicode codepoints.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-002-unicode.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;explode | implode&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown filter at position 0\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;&quot;μé&quot;&#x27;
+            5 | program = &#x27;explode | implode&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == json.loads(source)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-002-unicode.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        builtin-002-conversion                  builtin-002   FEATURE-BUILTIN-002.md
+  ✓ PASS        builtin-002-error                       builtin-002   FEATURE-BUILTIN-002.md
+  ✗ FAIL        builtin-003-test                        builtin-003   FEATURE-BUILTIN-003.md
+        intent: Regex test supports matching and case-insensitive flags.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-003-test.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;map(test(&quot;abc&quot;; &quot;i&quot;))&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function test/2\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;[&quot;abc&quot;,&quot;ABC&quot;,&quot;xyz&quot;]&#x27;
+            5 | program = &#x27;map(test(&quot;abc&quot;; &quot;i&quot;))&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == [True, True, False]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-003-test.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-003-match                       builtin-003   FEATURE-BUILTIN-003.md
+        intent: Global matching returns match objects with offsets and lengths.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-003-match.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;[match(&quot;ab&quot;; &quot;g&quot;) | {offset, length, string}]&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function match/2\n&#x27;)
+        criterion code:
+             1 | import json
+             2 | import subprocess
+             3 |
+             4 | source = &#x27;&quot;ab ab&quot;&#x27;
+             5 | program = &#x27;[match(&quot;ab&quot;; &quot;g&quot;) | {offset, length, string}]&#x27;
+             6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt;  7 | assert result.returncode == 0
+             8 | actual = json.loads(result.stdout)
+             9 | assert actual == [
+            10 |     {&quot;offset&quot;: 0, &quot;length&quot;: 2, &quot;string&quot;: &quot;ab&quot;},
+            11 |     {&quot;offset&quot;: 3, &quot;length&quot;: 2, &quot;string&quot;: &quot;ab&quot;},
+            12 | ]
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-003-match.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-003-capture                     builtin-003   FEATURE-BUILTIN-003.md
+        intent: Named captures are returned by capture and scan.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-003-capture.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;capture(&quot;(?&lt;word&gt;[a-z]+)-(?&lt;number&gt;[0-9]+)&quot;)&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function capture/1\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;&quot;abc-42&quot;&#x27;
+            5 | program = &#x27;capture(&quot;(?&lt;word&gt;[a-z]+)-(?&lt;number&gt;[0-9]+)&quot;)&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == {&quot;word&quot;: &quot;abc&quot;, &quot;number&quot;: &quot;42&quot;}
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-003-capture.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-003-substitution                builtin-003   FEATURE-BUILTIN-003.md
+        intent: Global substitution replaces every non-overlapping match.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-003-substitution.py:7
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;gsub(&quot;a&quot;; &quot;X&quot;)&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;unknown function gsub/2\n&#x27;)
+        criterion code:
+            1 | import json
+            2 | import subprocess
+            3 |
+            4 | source = &#x27;&quot;abcabc&quot;&#x27;
+            5 | program = &#x27;gsub(&quot;a&quot;; &quot;X&quot;)&#x27;
+            6 | result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True)
+          &gt; 7 | assert result.returncode == 0
+            8 | actual = json.loads(result.stdout)
+            9 | assert actual == &quot;XbcXbc&quot;
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-003-substitution.py&quot;, line 7, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-004-formats                     builtin-004   FEATURE-BUILTIN-004.md
+        intent: The implementation passes the authoritative corpus cases for jq formatting filters.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-004-formats.py:13
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;^(@text|@json|@csv|@tsv|@html|@uri|@urid|@sh|@base64|@base64d)&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:72  output mismatch\n    program:  @text,@json,([1,.]|@csv,@tsv),@html,(@uri|.,@urid),@sh,(@base64|.,@base64d)\n    input:    &quot;!()&lt;&gt;&amp;\&#x27;\\&quot;\\t&quot;\n    expected: [\&#x27;&quot;!()&lt;&gt;&amp;\\\&#x27;\\\\… (+1502 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | result = subprocess.run(
+             6 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(@text|@json|@csv|@tsv|@html|@uri|@urid|@sh|@base64|@base64d)&quot;],
+             7 |     capture_output=True,
+             8 |     text=True,
+             9 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            10 | )
+            11 | print(result.stdout)
+            12 | print(result.stderr, file=sys.stderr)
+          &gt; 13 | assert result.returncode == 0
+        observed output:
+              program:  @urid
+              input:    &quot;%CE%BC&quot;
+              expected: [&#x27;&quot;\\u03bc&quot;&#x27;]
+              actual:   (no output)
+              stderr:   unsupported filter
+          FAIL jq.test:102  program did not compile: unexpected token at position 6
+              program:  @html &quot;&lt;b&gt;\(.)&lt;/b&gt;&quot;
+              input:    &quot;&lt;script&gt;hax&lt;/script&gt;&quot;
+              expected: [&#x27;&quot;&lt;b&gt;&amp;lt;script&amp;gt;hax&amp;lt;/script&amp;gt;&lt;/b&gt;&quot;&#x27;]
+              actual:   (no output)
+              stderr:   unexpected token at position 6
+          jq conformance: 0 passed, 6 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-004-formats.py&quot;, line 13, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        builtin-004-dates-math                  builtin-004   FEATURE-BUILTIN-004.md
+        intent: The implementation passes the authoritative corpus cases for date and mathematical builtins.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-004-dates-math.py:13
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;^(fromdate|todate|strptime|strftime|mktime|gmtime|atan|sqrt|pow|floor|infinite|nan|have_decnum)&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:847  program did not compile: unknown filter at position 0\n    program:  atan * 4 * 1000000|floor / 1000000\n    input:    1\n    expected: [\… (+1671 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | result = subprocess.run(
+             6 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(fromdate|todate|strptime|strftime|mktime|gmtime|atan|sqrt|pow|floor|infinite|nan|have_decnum)&quot;],
+             7 |     capture_output=True,
+             8 |     text=True,
+             9 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            10 | )
+            11 | print(result.stdout)
+            12 | print(result.stderr, file=sys.stderr)
+          &gt; 13 | assert result.returncode == 0
+        observed output:
+              program:  gmtime
+              input:    1425599507
+              expected: [&#x27;[2015,2,5,23,51,47,4,63]&#x27;]
+              actual:   (no output)
+              stderr:   unknown filter at position 0
+          FAIL jq.test:1863  program did not compile: unknown filter at position 0
+              program:  gmtime[5]
+              input:    1425599507.25
+              expected: [&#x27;47.25&#x27;]
+              actual:   (no output)
+              stderr:   unknown filter at position 0
+          jq conformance: 0 passed, 7 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-004-dates-math.py&quot;, line 13, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        builtin-005-streaming                   builtin-005   FEATURE-BUILTIN-005.md
+  ✗ FAIL        builtin-005-sql-debug                   builtin-005   FEATURE-BUILTIN-005.md
+        intent: The implementation passes the authoritative corpus cases for debugging and SQL-style builtins.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: builtin-005-sql-debug.py:13
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&#x27;, &#x27;sources/run_conformance.py&#x27;, &#x27;--select&#x27;, &#x27;^(debug|INDEX|JOIN|IN)&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:2089  program did not compile: unknown function INDEX/2\n    program:  INDEX(range(5)|[., &quot;foo\\(.)&quot;]; .[0])\n    input:    null\n    expected: [\&#x27;{&quot;0&quot;:[0,&quot;foo0&quot;],&quot;1&quot;:[1,&quot;foo1&quot;],&quot;2&quot;:[2,&quot;foo2&quot;],&quot;3&quot;:[3,&quot;foo3&quot;],&quot;4&quot;:[4,&quot;… (+764 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | result = subprocess.run(
+             6 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(debug|INDEX|JOIN|IN)&quot;],
+             7 |     capture_output=True,
+             8 |     text=True,
+             9 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            10 | )
+            11 | print(result.stdout)
+            12 | print(result.stderr, file=sys.stderr)
+          &gt; 13 | assert result.returncode == 0
+        observed output:
+              program:  JOIN({&quot;0&quot;:[0,&quot;abc&quot;],&quot;1&quot;:[1,&quot;bcd&quot;],&quot;2&quot;:[2,&quot;def&quot;],&quot;3&quot;:[3,&quot;efg&quot;],&quot;4&quot;:[4,&quot;fgh&quot;]}; .[0]|tostring)
+              input:    [[5,&quot;foo&quot;],[3,&quot;bar&quot;],[1,&quot;foobar&quot;]]
+              expected: [&#x27;[[[5,&quot;foo&quot;],null],[[3,&quot;bar&quot;],[3,&quot;efg&quot;]],[[1,&quot;foobar&quot;],[1,&quot;bcd&quot;]]]&#x27;]
+              actual:   (no output)
+              stderr:   unknown function JOIN/2
+          FAIL jq.test:2341  program did not compile: unknown filter at position 0
+              program:  debug
+              input:    1
+              expected: [&#x27;1&#x27;]
+              actual:   (no output)
+              stderr:   unknown filter at position 0
+          jq conformance: 2 passed, 3 failed, 0 errored, 0 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;builtin-005-sql-debug.py&quot;, line 13, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✓ PASS        verify-002-cli-success                  verify-002    FEATURE-VERIFY-002.md
+  ✓ PASS        verify-002-compile-error                verify-002    FEATURE-VERIFY-002.md
+  ✓ PASS        verify-002-runtime-error                verify-002    FEATURE-VERIFY-002.md
+  ✗ FAIL        verify-003-full-conformance             verify-003    FEATURE-VERIFY-003.md
+        intent: The finished interpreter passes the complete supplied jq conformance gate.
+        assertion: assert result.returncode == 0 → AssertionError
+        raised at: verify-003-full-conformance.py:13
+        process exit code: 1
+        values at failure:
+          result = CompletedProcess(args=[&#x27;sh&#x27;, &#x27;sources/full_test.sh&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:39  program did not compile: expected } at position 19\n    program:  {x:-1},{x:-.},{x:-.|abs}\n    input:    1\n    expected: [\&#x27;{&quot;x&quot;:-1}\&#x27;, \&#x27;{&quot;x&quot;:-1}\&#x27;, \&#x27;{&quot;x&quot;:1}\&#x27;]\n    actual:   (no output)\n    stderr:   expected } at position 19\nFAIL jq.test:48  output mismatch\n    program:  .\n    input:    \ufeff&quot;b… (+56896 chars)
+        criterion code:
+             1 | import os
+             2 | import subprocess
+             3 | import sys
+             4 |
+             5 | result = subprocess.run(
+             6 |     [&quot;sh&quot;, &quot;sources/full_test.sh&quot;],
+             7 |     capture_output=True,
+             8 |     text=True,
+             9 |     env={**os.environ},
+            10 | )
+            11 | print(result.stdout)
+            12 | print(result.stderr, file=sys.stderr)
+          &gt; 13 | assert result.returncode == 0
+        observed output:
+          FAIL jq.test:2533  output mismatch
+              program:  try [&quot;OK&quot;, setpath([[1]]; 1)] catch [&quot;KO&quot;, .]
+              input:    []
+              expected: [&#x27;[&quot;KO&quot;,&quot;Cannot update field at array index of array&quot;]&#x27;]
+              actual:   [&#x27;[&quot;KO&quot;,&quot;Cannot update field at array index of string&quot;]&#x27;]
+          FAIL jq.test:2548  program did not compile: unknown function strflocaltime/1
+              program:  strflocaltime(&quot;&quot; | ., @uri)
+              input:    0
+              expected: [&#x27;&quot;&quot;&#x27;, &#x27;&quot;&quot;&#x27;]
+              actual:   (no output)
+              stderr:   unknown function strflocaltime/1
+          jq conformance: 320 passed, 217 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;verify-003-full-conformance.py&quot;, line 13, in &lt;module&gt;
+              assert result.returncode == 0
+                     ^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+
+  Proof coverage: 24 of 60 criteria are proof — green here, and observed red before the work that turned them green.
+    13 are not. Each names a story whose acceptance did not test it.
+
+    PREPASSED  cli-002-compile-error  cli-002  FEATURE-CLI-002.md
+               green before its block built
+    PREPASSED  cli-002-runtime-error  cli-002  FEATURE-CLI-002.md
+               green before its block built
+    PREPASSED  cli-002-partial-output  cli-002  FEATURE-CLI-002.md
+               green before its block built
+    PREPASSED  frontend-001-literals-and-fields  frontend-001  FEATURE-FRONTEND-001.md
+               green before its block built
+    PREPASSED  frontend-001-invalid-escape  frontend-001  FEATURE-FRONTEND-001.md
+               green before its block built
+    PREPASSED  frontend-002-precedence  frontend-002  FEATURE-FRONTEND-002.md
+               green before its block built
+    PREPASSED  frontend-002-collections-and-pipeline  frontend-002  FEATURE-FRONTEND-002.md
+               green before its block built
+    PREPASSED  frontend-002-invalid-syntax  frontend-002  FEATURE-FRONTEND-002.md
+               green before its block built
+    PREPASSED  verify-001-harness-list  verify-001  FEATURE-VERIFY-001.md
+               green before its block built
+    PREPASSED  verify-001-script-contract  verify-001  FEATURE-VERIFY-001.md
+               green before its block built
+    PREPASSED  eval-001-collections  eval-001  FEATURE-EVAL-001.md
+               green before its block built
+    PREPASSED  eval-002-operators  eval-002  FEATURE-EVAL-002.md
+               green before its block built
+    PREPASSED  eval-002-errors  eval-002  FEATURE-EVAL-002.md
+               green before its block built
+
+Soundings: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/SOUNDINGS.md
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

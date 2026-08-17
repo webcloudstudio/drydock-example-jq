@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Lexer for jq source text.
+
+The lexer deliberately retains source positions and leaves filter interpolation
+as source fragments for the parser.  This keeps lexical validation (especially
+JSON escapes and delimiter matching) separate from expression semantics.
+&quot;&quot;&quot;
+from __future__ import annotations
+
+from dataclasses import dataclass
+import json
+import re
+
+from .diagnostics import CompileError
+
+
+@dataclass(frozen=True)
+class Token:
+    kind: str
+    value: object
+    position: int
+    line: int = 1
+    column: int = 1
+
+
+_WORDS = {&quot;as&quot;, &quot;import&quot;, &quot;include&quot;, &quot;module&quot;, &quot;def&quot;, &quot;if&quot;, &quot;then&quot;, &quot;else&quot;,
+          &quot;elif&quot;, &quot;and&quot;, &quot;or&quot;, &quot;end&quot;, &quot;reduce&quot;, &quot;foreach&quot;, &quot;try&quot;, &quot;catch&quot;,
+          &quot;label&quot;, &quot;break&quot;, &quot;true&quot;, &quot;false&quot;, &quot;null&quot;, &quot;empty&quot;, &quot;error&quot;}
+_OPERATORS = (&quot;//=&quot;, &quot;?//&quot;, &quot;|=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;, &quot;==&quot;, &quot;!=&quot;,
+              &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;..&quot;, &quot;//&quot;)
+_SINGLE = set(&quot;.?=;,,:|+-*/%&lt;&gt;()[]{}@$!&quot;)
+_IDENT = re.compile(r&quot;[A-Za-z_][A-Za-z_0-9]*&quot;)
+_NUMBER = re.compile(r&quot;(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?&quot;)
+
+
+def _loc(source: str, offset: int) -&gt; tuple[int, int]:
+    line = source.count(&quot;\n&quot;, 0, offset) + 1
+    last = source.rfind(&quot;\n&quot;, 0, offset)
+    return line, offset - last
+
+
+def _token(kind: str, value: object, source: str, position: int) -&gt; Token:
+    line, column = _loc(source, position)
+    return Token(kind, value, position, line, column)
+
+
+def _quoted(source: str, start: int) -&gt; tuple[object, int]:
+    &quot;&quot;&quot;Read a jq quoted string, returning a plain string or template parts.&quot;&quot;&quot;
+    i = start + 1
+    plain: list[str] = []
+    parts: list[tuple[str, str]] = []
+    while i &lt; len(source):
+        if source[i] == &#x27;&quot;&#x27;:
+            if parts:
+                if plain:
+                    parts.append((&quot;text&quot;, &quot;&quot;.join(plain)))
+                return parts, i + 1
+            return &quot;&quot;.join(plain), i + 1
+        if source[i] == &quot;\\&quot; and i + 1 &lt; len(source) and source[i + 1] == &quot;(&quot;:
+            if plain:
+                parts.append((&quot;text&quot;, &quot;&quot;.join(plain)))
+                plain = []
+            depth, j = 1, i + 2
+            quote = False
+            while j &lt; len(source) and depth:
+                c = source[j]
+                if c == &quot;\\&quot;:
+                    j += 2
+                    continue
+                if c == &#x27;&quot;&#x27;:
+                    quote = not quote
+                elif not quote and c == &quot;(&quot;:
+                    depth += 1
+                elif not quote and c == &quot;)&quot;:
+                    depth -= 1
+                j += 1
+            if depth:
+                raise CompileError(f&quot;unterminated interpolation at position {i}&quot;)
+            parts.append((&quot;expr&quot;, source[i + 2:j - 1]))
+            i = j
+            continue
+        if source[i] == &quot;\\&quot;:
+            if i + 1 &gt;= len(source):
+                raise CompileError(f&quot;invalid escape at position {i}&quot;)
+            if source[i + 1] == &quot;u&quot;:
+                raw = source[i:i + 6]
+                if len(raw) != 6 or not re.fullmatch(r&quot;\\u[0-9a-fA-F]{4}&quot;, raw):
+                    raise CompileError(f&quot;invalid escape at position {i}&quot;)
+                end = i + 6
+            else:
+                end = i + 2
+                if source[i + 1] not in &#x27;&quot;\\/bfnrt&#x27;:
+                    raise CompileError(f&quot;invalid escape at position {i}&quot;)
+            try:
+                plain.append(json.loads(&#x27;&quot;&#x27; + source[i:end] + &#x27;&quot;&#x27;))
+            except json.JSONDecodeError as exc:
+                raise CompileError(f&quot;invalid escape at position {i}&quot;) from exc
+            i = end
+            continue
+        plain.append(source[i])
+        i += 1
+    raise CompileError(f&quot;unterminated string at position {start}&quot;)
+
+
+def tokenize(program: str) -&gt; list[Token]:
+    tokens: list[Token] = []
+    stack: list[str] = []
+    i = 0
+    while i &lt; len(program):
+        c = program[i]
+        if c.isspace():
+            i += 1
+            continue
+        if c == &#x27;#&#x27;:
+            i += 1
+            while i &lt; len(program):
+                if program[i] == &quot;\\&quot; and i + 1 &lt; len(program) and program[i + 1] in &quot;\r\n&quot;:
+                    i += 2
+                elif program[i] in &quot;\r\n&quot;:
+                    break
+                else:
+                    i += 1
+            continue
+        if c == &#x27;&quot;&#x27;:
+            start = i
+            value, i = _quoted(program, i)
+            tokens.append(_token(&quot;STRING&quot;, value, program, start))
+            continue
+        match = _NUMBER.match(program, i)
+        if match:
+            raw = match.group(0)
+            # jq accepts the shorthand `.5`; JSON&#x27;s decoder requires `0.5`.
+            tokens.append(_token(&quot;NUMBER&quot;, json.loads(&quot;0&quot; + raw if raw.startswith(&quot;.&quot;) else raw), program, i))
+            i = match.end()
+            continue
+        if c == &#x27;@&#x27;:
+            match = re.match(r&quot;@[A-Za-z0-9_]+&quot;, program[i:])
+            if not match:
+                raise CompileError(f&quot;invalid format at position {i}&quot;)
+            raw = match.group(0)
+            tokens.append(_token(&quot;FORMAT&quot;, raw[1:], program, i)); i += len(raw); continue
+        if c == &#x27;$&#x27;:
+            match = re.match(r&quot;\$([A-Za-z_][A-Za-z_0-9]*(?:::[A-Za-z_][A-Za-z_0-9]*)*)&quot;, program[i:])
+            if not match:
+                raise CompileError(f&quot;invalid binding at position {i}&quot;)
+            raw = match.group(1)
+            tokens.append(_token(&quot;BINDING&quot;, raw, program, i)); i += len(match.group(0)); continue
+        if c == &#x27;.&#x27; and i + 1 &lt; len(program) and (program[i + 1].isalpha() or program[i + 1] == &#x27;_&#x27;):
+            match = _IDENT.match(program, i + 1); assert match
+            tokens.append(_token(&quot;FIELD&quot;, match.group(0), program, i)); i = match.end(); continue
+        match = _IDENT.match(program, i)
+        if match:
+            raw = match.group(0); tokens.append(_token(&quot;IDENT&quot;, raw, program, i)); i = match.end(); continue
+        op = next((x for x in _OPERATORS if program.startswith(x, i)), None)
+        if op:
+            tokens.append(_token(op, op, program, i)); i += len(op); continue
+        if c in _SINGLE:
+            if c in &quot;([{&quot;: stack.append({&quot;(&quot;: &quot;)&quot;, &quot;[&quot;: &quot;]&quot;, &quot;{&quot;: &quot;}&quot;}[c])
+            elif c in &quot;)]}&quot;:
+                if not stack or stack.pop() != c: raise CompileError(f&quot;mismatched delimiter at position {i}&quot;)
+            tokens.append(_token(c, c, program, i)); i += 1; continue
+        raise CompileError(f&quot;invalid character at position {i}&quot;)
+    if stack:
+        raise CompileError(&quot;unterminated delimiter&quot;)
+    tokens.append(_token(&quot;EOF&quot;, None, program, len(program)))
+    return tokens
+</pre></article>
+</main>
+</body>
+</html>

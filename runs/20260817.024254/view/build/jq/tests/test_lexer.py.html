@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>import pytest
+
+from jq_interpreter.diagnostics import CompileError
+from jq_interpreter.lexer import tokenize
+
+
+def kinds(program: str) -&gt; list[str]:
+    return [token.kind for token in tokenize(program)]
+
+
+def test_lexer_recognizes_fields_bindings_formats_and_operators() -&gt; None:
+    tokens = tokenize(&#x27;.name $value @base64 ?// //= ..&#x27;)
+    assert [(token.kind, token.value) for token in tokens[:-1]] == [
+        (&#x27;FIELD&#x27;, &#x27;name&#x27;), (&#x27;BINDING&#x27;, &#x27;value&#x27;), (&#x27;FORMAT&#x27;, &#x27;base64&#x27;),
+        (&#x27;?//&#x27;, &#x27;?//&#x27;), (&#x27;//=&#x27;, &#x27;//=&#x27;), (&#x27;..&#x27;, &#x27;..&#x27;),
+    ]
+
+
+def test_lexer_decodes_json_escapes_and_retains_location() -&gt; None:
+    token = tokenize(&#x27;\n  &quot;a\\n\\u0042&quot;&#x27;)[0]
+    assert token.kind == &#x27;STRING&#x27;
+    assert token.value == &#x27;a\nB&#x27;
+    assert (token.line, token.column) == (2, 3)
+
+
+def test_lexer_preserves_interpolation_as_expression_source() -&gt; None:
+    token = tokenize(&#x27;&quot;prefix-\\(.name)&quot;&#x27;)[0]
+    assert token.value == [(&#x27;text&#x27;, &#x27;prefix-&#x27;), (&#x27;expr&#x27;, &#x27;.name&#x27;)]
+
+
+@pytest.mark.parametrize(&#x27;program&#x27;, [&#x27;&quot;bad\\q&quot;&#x27;, &#x27;&quot;bad\\u12&quot;&#x27;, &#x27;[&#x27;, &#x27;{&#x27;, &#x27;(]&#x27;])
+def test_lexer_rejects_invalid_escapes_and_delimiters(program: str) -&gt; None:
+    with pytest.raises(CompileError):
+        tokenize(program)
+
+
+def test_lexer_ignores_comments_and_escaped_line_continuations() -&gt; None:
+    assert kinds(&#x27;# comment\\\n . # trailing\n | 1&#x27;) == [&#x27;|&#x27;, &#x27;NUMBER&#x27;, &#x27;EOF&#x27;]
+</pre></article>
+</main>
+</body>
+</html>

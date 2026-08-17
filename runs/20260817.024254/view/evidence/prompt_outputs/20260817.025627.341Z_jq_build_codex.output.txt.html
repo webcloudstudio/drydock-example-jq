@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.025627.341Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.025627.341Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.025627.341Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;reusable-compact filename=&quot;ARCHITECTURE.md&quot;&gt;
+Standalone Python jq interpreter contract: executable `./jq -c &#x27;&lt;program&gt;&#x27;`; JSON stdin to compact JSON lines on stdout. Exit `0` success, `3` compile/static failure, `5` runtime failure. Boundaries: CLI, lexer, parser/compiler, lazy evaluator, data model, paths/mutation, builtins, diagnostics, verification. Standard library only; no persistence, network, system jq, or third-party jq implementation. Evaluator preserves ordered generator multiplicity and partial output before runtime errors.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;parser.y&quot;&gt;
+Parser contract: jq supports identity `.`, literals, comma generators, field/index access, slices, arrays/objects, operators, conditionals, try/catch, reduce/foreach, bindings/patterns, functions, modules/imports, interpolation, formats, and assignments. Operator precedence is defined by the grammar; compile errors must be distinct from runtime errors. Module syntax must parse and reject invalid metadata without filesystem access.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;lexer.l&quot;&gt;
+Lexer contract: recognize jq keywords, identifiers, bindings, fields, literals, formats, comments, operators, delimiters, recursive descent, strings with JSON escapes, and string interpolation. Preserve source locations and reject invalid characters or malformed literals during compilation.
+&lt;/reusable-compact&gt;
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- README.md
+- jq
+- jq_interpreter/__init__.py
+- jq_interpreter/builtins.py
+- jq_interpreter/cli.py
+- jq_interpreter/data_model.py
+- jq_interpreter/diagnostics.py
+- jq_interpreter/evaluator.py
+- jq_interpreter/lexer.py
+- jq_interpreter/parser.py
+- jq_interpreter/paths.py
+- tests/__init__.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented the standalone Python interpreter architecture with clear module boundaries, executable `jq` contract, lazy ordered generators, distinct exit statuses, README documentation, and focused tests. All 3 declared acceptance assertions and 4 project tests pass. Staged source assets remain unchanged.
+
+BLOCKERS:
+- None</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-4.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-4.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-4.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 4 · Service (block-4)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 7383</li><li>execution id: 20260817.030638.389Z-133c4f48</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement jq lexical analysis. (frontend-001) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3799)</li><li>implements: FEATURE-FRONTEND-001.md (SP 689)</li><li>context: lexer.l (SP 1137)</li><li>context: ARCHITECTURE_compact.md (SP 162)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>tests/test_lexer.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): frontend-001-literals-and-fields (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: Lexically valid literals, fields, and bindings compile and evaluate through the public executable. return code: 0</p>
+<ul><li>RED: frontend-001-strings-and-interpolation (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: Valid escaped strings and interpolation are accepted and produce the value derived from supplied input. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;&quot;prefix-\\(.)&quot;&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;invalid string\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;frontend-001-strings-and-interpolation.py&quot;, line 12, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>GREEN (prepassed): frontend-001-invalid-escape (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: An invalid string escape is rejected during compilation. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: frontend-001-literals-and-fields (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: Lexically valid literals, fields, and bindings compile and evaluate through the public executable. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: frontend-001-strings-and-interpolation (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: Valid escaped strings and interpolation are accepted and produce the value derived from supplied input. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: frontend-001-invalid-escape (FEATURE-FRONTEND-001.md)</li></ul>
+<p>intent: An invalid string escape is rejected during compilation. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>jq_interpreter/evaluator.py</li><li>tests/test_lexer.py</li></ul>
+<p>SUMMARY: Implemented jq lexical analysis with escapes, interpolation, comments, operators, formats, bindings, locations, and delimiter validation. All 3 declared acceptance checks pass; 19 tests pass.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

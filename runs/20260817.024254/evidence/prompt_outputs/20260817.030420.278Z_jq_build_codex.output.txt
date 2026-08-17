@@ -1,0 +1,11 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/cli.py
+- tests/test_cli_interface.py
+
+SUMMARY:
+Implemented stderr diagnostics with distinct compile exit `3` and runtime exit `5`, preserving partial stdout output. Added tests for all three acceptance behaviors. `pytest`: 10 passed; CLI acceptance: 3 passed.
+
+BLOCKERS:
+- Full conformance run was interrupted by an unrelated runaway existing case.

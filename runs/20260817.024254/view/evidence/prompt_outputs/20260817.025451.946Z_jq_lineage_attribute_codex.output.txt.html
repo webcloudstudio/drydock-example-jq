@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.025451.946Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.025451.946Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.025451.946Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;parse-expressions&quot; stories=&quot;frontend-002,eval-002&quot;&gt;
+Expr &quot;or&quot; Expr {
+  $$ = gen_or($1, $3);
+} |
+Expr &quot;and&quot; Expr {
+  $$ = gen_and($1, $3);
+} |
+Expr &#x27;+&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;+&#x27;);
+} |
+Expr &quot;==&quot; Expr {
+  $$ = gen_binop($1, $3, EQ);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-generator-composition&quot; stories=&quot;frontend-002,eval-001&quot;&gt;
+Query &#x27;|&#x27; Query {
+  $$ = block_join($1, $3);
+} |
+Query &#x27;,&#x27; Query {
+  $$ = gen_both($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-data-access-and-construction&quot; stories=&quot;frontend-002,data-001,data-002&quot;&gt;
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+Term &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $3);
+} |
+&#x27;[&#x27; Query &#x27;]&#x27; {
+  $$ = gen_collect($2);
+} |
+&#x27;{&#x27; DictPairs &#x27;}&#x27; {
+  block o = gen_const_object($2);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-assignment-and-updates&quot; stories=&quot;frontend-002,data-002,data-003&quot;&gt;
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;|=&quot; Expr {
+  $$ = gen_call(&quot;_modify&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;+=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;+&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-functions-bindings-and-destructuring&quot; stories=&quot;frontend-002,frontend-003&quot;&gt;
+FuncDef:
+&quot;def&quot; IDENT &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), gen_noop(), $4);
+} |
+&quot;def&quot; IDENT &#x27;(&#x27; Params &#x27;)&#x27; &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), $4, $7);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-modules-and-imports&quot; stories=&quot;frontend-002,frontend-003&quot;&gt;
+Module:
+%empty {
+  $$ = gen_noop();
+} |
+&quot;module&quot; Query &#x27;;&#x27; {
+  if (!block_is_const($2)) {
+    FAIL(@2, &quot;Module metadata must be constant&quot;);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-control-and-generator-constructs&quot; stories=&quot;frontend-002,eval-002,eval-003&quot;&gt;
+&quot;if&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;reduce&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-strings-and-formatting&quot; stories=&quot;frontend-002,builtin-004&quot;&gt;
+StringStart:
+FORMAT QQSTRING_START {
+  $$ = $1;
+} |
+QQSTRING_START {
+  $$ = jv_string(&quot;text&quot;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;report-parser-errors&quot; stories=&quot;cli-002&quot;&gt;
+void yyerror(YYLTYPE* loc, block* answer, int* errors,
+             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){
+  (*errors)++;
+  locfile_locate(locations, *loc, &quot;jq: error: %s&quot;, s);
+}
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;cli-001&quot;/&gt;
+&lt;unattached story=&quot;frontend-001&quot;/&gt;
+&lt;unattached story=&quot;verify-001&quot;/&gt;
+&lt;unattached story=&quot;builtin-001&quot;/&gt;
+&lt;unattached story=&quot;builtin-002&quot;/&gt;
+&lt;unattached story=&quot;builtin-003&quot;/&gt;
+&lt;unattached story=&quot;builtin-005&quot;/&gt;
+&lt;unattached story=&quot;verify-002&quot;/&gt;
+&lt;unattached story=&quot;verify-003&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

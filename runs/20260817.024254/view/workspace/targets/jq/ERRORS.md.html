@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/ERRORS.md</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
+<article class="doc"><h1>BIG ERRORS — action required</h1>
+<ul><li>Command: <code>build</code></li><li>Phase: LLM execution</li><li>State: Error</li><li>Timestamp: 2026-08-17T04:28:33+00:00</li><li>Execution ID: 20260817.041936.737Z-8b7f720a</li><li>Challenge Execution ID: -</li><li>Classification: target verification interrupted by build agent</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/workspace/targets/jq/evidence/block-9.md</li></ul>
+<h2>Diagnostic</h2>
+<p>A target verification command was interrupted inside the build-agent session. Drydock did not configure an LLM execution timeout for this build. Scoped acceptance and project tests pass, but <code>sh sources/full_test.sh</code> stalled in the broader corpus and was interrupted; isolate the hanging case before rerunning.</p>
+<h2>Recovery</h2>
+<p>Inspect the execution evidence, correct the execution issue, then run: drydock build jq --step block-9</p>
+<h2>Diagnosis</h2>
+<p>CAUSE: The implementation still fails multiple authoritative conditional/parser cases, and the broader conformance run stalled before completion.<br>DO: Fix <code>jq_interpreter/evaluator.py</code> so <code>any</code>/<code>all</code> handle scalar predicates and empty inputs correctly.<br>DO: Fix <code>jq_interpreter/parser.py</code> for the reported <code>try/catch</code>, assignment, and <code>IN/1</code> cases.<br>DO: Run <code>drydock build jq --step block-9</code>.</p></article>
+</main>
+</body>
+</html>

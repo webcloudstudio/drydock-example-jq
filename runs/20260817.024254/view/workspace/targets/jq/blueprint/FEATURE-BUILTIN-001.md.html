@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTIN-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTIN-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTIN-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Collection and Object Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Provide jq collection, filtering, sorting, grouping, object, and aggregate builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-EVAL-003.md, FEATURE-DATA-003.md</td></tr><tr><td>Provides</td><td>map, select, reduce helpers, sorting, grouping, uniqueness, entries, joins, flattening</td></tr><tr><td>Consumes</td><td>generator evaluator, structural operations, path mutation</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement the collection and object helpers defined by jq, including map/select, sorting and grouping, uniqueness, min/max, entries conversion, joins, flattening, combinations, transpose, containment, and related object utilities. Preserve jq ordering and stream multiplicity.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtin-001-collections ===<br>Intent: Mapping and selection preserve array order and filter values. import json import subprocess</p>
+<p>source = &#x27;[1,5,3,0]&#x27; program = &#x27;map(select(. &gt;= 2) | . + 1)&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == [6, 4, 2] === END AC builtin-001-collections ===</p>
+<p>=== AC builtin-001-sorting ===<br>Intent: Sorting and uniqueness use jq value ordering. import json import subprocess</p>
+<p>source = &#x27;[3,1,3,2]&#x27; program = &#x27;[sort, unique]&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == [[1, 2, 3, 3], [1, 2, 3]] === END AC builtin-001-sorting ===</p>
+<p>=== AC builtin-001-objects ===<br>Intent: Entry conversion and object updates preserve keys and values. import json import subprocess</p>
+<p>source = &#x27;{&quot;a&quot;:1,&quot;b&quot;:2}&#x27; program = &#x27;to_entries | map(.key |= &quot;x_&quot; + .) | from_entries&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == {&quot;x_a&quot;: 1, &quot;x_b&quot;: 2} === END AC builtin-001-objects ===</p>
+<p>=== AC builtin-001-aggregates ===<br>Intent: Grouping and flattening produce deterministic aggregate values. import json import subprocess</p>
+<p>source = &#x27;[{&quot;k&quot;:2},{&quot;k&quot;:1},{&quot;k&quot;:2}]&#x27; program = &#x27;[group_by(.k), ([1,[2],[[3]]] | flatten)]&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, text=True, capture_output=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == [[[{&quot;k&quot;: 1}], [{&quot;k&quot;: 2}, {&quot;k&quot;: 2}]], [1, 2, 3]] === END AC builtin-001-aggregates ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve stable jq generator order and multiplicity.</li><li>Object helpers must not discard unrelated keys.</li><li>Collection builtins must use the evaluator and path semantics rather than duplicate incompatible rules.</li></ul></article>
+</main>
+</body>
+</html>

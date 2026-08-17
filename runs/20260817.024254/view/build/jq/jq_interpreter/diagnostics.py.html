@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/diagnostics.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/diagnostics.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/diagnostics.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Typed failures shared by compilation and execution boundaries.&quot;&quot;&quot;
+
+
+class CompileError(Exception):
+    &quot;&quot;&quot;The program is syntactically or statically invalid.&quot;&quot;&quot;
+
+
+class RuntimeJqError(Exception):
+    &quot;&quot;&quot;The program compiled but failed while processing a value.&quot;&quot;&quot;
+</pre></article>
+</main>
+</body>
+</html>

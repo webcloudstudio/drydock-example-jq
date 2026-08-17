@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EVAL-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EVAL-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EVAL-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Generator Evaluation Core</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>jq filters evaluate as ordered streams with correct piping, collection, iteration, multiplicity, and backtracking.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FRONTEND-002.md, FEATURE-FRONTEND-003.md</td></tr><tr><td>Provides</td><td>identity, literals, pipes, commas, iteration, collection, empty, backtracking</td></tr><tr><td>Consumes</td><td>jq parser, AST, functions and bindings</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The evaluator treats every filter as a generator from one input to zero or more outputs. Pipeline evaluation feeds each output into the next filter, comma concatenates streams, collections materialize all outputs, and empty backtracks to the preceding generator.</p>
+<h2>Behavior</h2>
+<ul><li>Identity and literals produce one output per input.</li><li>Pipes preserve downstream evaluation order for every upstream output.</li><li>Commas preserve left-to-right stream order.</li><li>Array and object constructors collect generator outputs with jq multiplicity.</li><li>Array and object iteration produce values in jq order.</li><li><code>empty</code> produces no output without terminating unrelated sibling generators.</li><li>Multi-output arguments form the required cartesian products.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC eval-001-streams ===<br>Intent: The implementation passes the authoritative corpus cases for identity, literals, pipes, commas, iteration, and empty.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;Simple value tests|Field access, piping|Multiple outputs, iteration|empty|Comma|Pipe&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-001-streams ===</p>
+<p>=== AC eval-001-collections ===<br>Intent: The implementation passes the authoritative corpus cases for array and object collection and generator multiplicity.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;Dictionary construction syntax|Array construction|cartesian|collection|Multiple outputs&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-001-collections ===</p>
+<p>=== AC eval-001-backtracking ===<br>Intent: The implementation passes the authoritative corpus cases proving empty and backtracking preserve sibling output order.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;empty|backtracking|first\(1,error|cartesian&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC eval-001-backtracking ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not collapse a filter stream into a single value.</li><li>Preserve output order, multiplicity, and partial results.</li><li>Ensure <code>empty</code> backtracks only within the active generator evaluation.</li></ul></article>
+</main>
+</body>
+</html>

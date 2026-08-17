@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>inputs/DECISIONS.json</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>inputs/DECISIONS.json</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../inputs/DECISIONS.json">Raw file</a></div></header>
+<article class="doc"><pre>[
+  {
+    &quot;id&quot;: &quot;Q-001&quot;,
+    &quot;type&quot;: &quot;choice&quot;,
+    &quot;severity&quot;: &quot;low&quot;,
+    &quot;origin&quot;: &quot;plan&quot;,
+    &quot;blueprint&quot;: &quot;ARCHITECTURE.md&quot;,
+    &quot;story&quot;: &quot;architecture&quot;,
+    &quot;status&quot;: &quot;recommended&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Numeric representation&quot;,
+    &quot;description&quot;: &quot;Choose the standard-library numeric strategy for jq-compatible number parsing and arithmetic.&quot;,
+    &quot;options&quot;: [
+      {
+        &quot;value&quot;: &quot;float&quot;,
+        &quot;label&quot;: &quot;Native Python floats&quot;
+      },
+      {
+        &quot;value&quot;: &quot;hybrid&quot;,
+        &quot;label&quot;: &quot;Literal-preserving hybrid&quot;
+      }
+    ],
+    &quot;system_choice&quot;: &quot;hybrid&quot;
+  },
+  {
+    &quot;id&quot;: &quot;Q-002&quot;,
+    &quot;type&quot;: &quot;choice&quot;,
+    &quot;severity&quot;: &quot;low&quot;,
+    &quot;origin&quot;: &quot;plan&quot;,
+    &quot;blueprint&quot;: &quot;ARCHITECTURE.md&quot;,
+    &quot;story&quot;: &quot;architecture&quot;,
+    &quot;status&quot;: &quot;recommended&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Evaluation representation&quot;,
+    &quot;description&quot;: &quot;Choose the internal representation for jq&#x27;s ordered multi-result evaluation.&quot;,
+    &quot;options&quot;: [
+      {
+        &quot;value&quot;: &quot;iterators&quot;,
+        &quot;label&quot;: &quot;Lazy Python iterators&quot;
+      },
+      {
+        &quot;value&quot;: &quot;lists&quot;,
+        &quot;label&quot;: &quot;Materialized result lists&quot;
+      }
+    ],
+    &quot;system_choice&quot;: &quot;lazy Python iterators&quot;
+  },
+  {
+    &quot;id&quot;: &quot;acceptance-FEATURE-VERIFY-001.md-verify-001-harness-list-staged-env&quot;,
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;severity&quot;: &quot;blocking&quot;,
+    &quot;origin&quot;: &quot;plan&quot;,
+    &quot;blueprint&quot;: &quot;FEATURE-VERIFY-001.md&quot;,
+    &quot;story&quot;: &quot;verify-001&quot;,
+    &quot;status&quot;: &quot;open&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Acceptance criterion verify-001-harness-list cannot pass&quot;,
+    &quot;description&quot;: &quot;FEATURE-VERIFY-001.md [verify-001-harness-list]: invokes staged asset sources/run_conformance.py without JQ, which that asset declares required; supply it as env={**os.environ, &#x27;JQ&#x27;: ...}\n\nThe staged asset exits on its own usage code when the variable is absent, so this criterion is false under every implementation. Supply the variable in the Blueprint specification, or answer that the story is acceptable without the criterion. Never repair it by editing the staged asset: it is restored before grading and the edit is reported as tampering.&quot;,
+    &quot;options&quot;: [],
+    &quot;system_choice&quot;: &quot;not answered&quot;
+  },
+  {
+    &quot;id&quot;: &quot;analyze-display_name&quot;,
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;severity&quot;: &quot;material&quot;,
+    &quot;origin&quot;: &quot;analyze-questionnaire&quot;,
+    &quot;blueprint&quot;: &quot;ARCHITECTURE.md&quot;,
+    &quot;story&quot;: null,
+    &quot;status&quot;: &quot;answered&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Display Name&quot;,
+    &quot;description&quot;: &quot;The display name Drydock will use for this project. Edit to override the proposal.&quot;,
+    &quot;options&quot;: [],
+    &quot;system_choice&quot;: &quot;jq Interpreter&quot;,
+    &quot;commander_direction&quot;: &quot;jq Interpreter&quot;
+  },
+  {
+    &quot;id&quot;: &quot;analyze-short_description&quot;,
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;severity&quot;: &quot;material&quot;,
+    &quot;origin&quot;: &quot;analyze-questionnaire&quot;,
+    &quot;blueprint&quot;: &quot;ARCHITECTURE.md&quot;,
+    &quot;story&quot;: null,
+    &quot;status&quot;: &quot;answered&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Short Description&quot;,
+    &quot;description&quot;: &quot;One-sentence description of what this project does. Edit to override the proposal.&quot;,
+    &quot;options&quot;: [],
+    &quot;system_choice&quot;: &quot;A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values.&quot;,
+    &quot;commander_direction&quot;: &quot;A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;build-env-feature-verify-001.md-verify-001-harness-list-jq&quot;,
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;severity&quot;: &quot;material&quot;,
+    &quot;origin&quot;: &quot;build&quot;,
+    &quot;blueprint&quot;: &quot;FEATURE-VERIFY-001.md&quot;,
+    &quot;story&quot;: &quot;verify-001&quot;,
+    &quot;status&quot;: &quot;recommended&quot;,
+    &quot;archived&quot;: false,
+    &quot;title&quot;: &quot;Acceptance environment supplied: verify-001-harness-list&quot;,
+    &quot;description&quot;: &quot;verify-001-harness-list invokes staged asset sources/run_conformance.py without JQ, which that asset declares required. Drydock supplied JQ=&#x27;./jq&#x27; for this grading, taken from the sources/run_conformance.py usage line. The Blueprint was not modified; repair the criterion in FEATURE-VERIFY-001.md to make this permanent.&quot;,
+    &quot;options&quot;: [],
+    &quot;system_choice&quot;: &quot;JQ=./jq&quot;
+  }
+]
+</pre></article>
+</main>
+</body>
+</html>

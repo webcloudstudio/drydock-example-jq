@@ -1,0 +1,5 @@
+2026-08-17T03:41:34.047722Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq/jq_interpreter/evaluator.py:
+        elif name=='tojson': yield json.dumps(x,ensure_ascii=False,separators=(',',':'))
+2026-08-17T03:43:17.726557Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.024254/build/jq/jq_interpreter/evaluator.py:
+    if isinstance(a, list) and isinstance(b, list): return all(any(_contains(candidate, wanted) for candidate in a) for wanted in b)
+    if isinstance(a,dict) and isinstance(b,dict): return all(k in a and _contains(a[k],v) for k,v in b.items())

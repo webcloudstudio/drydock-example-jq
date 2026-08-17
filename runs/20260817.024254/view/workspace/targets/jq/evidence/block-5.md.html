@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-5.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-5.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-5.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 5 · Service (block-5)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 13141</li><li>execution id: 20260817.031547.211Z-7b0bb521</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement jq parsing and executable AST construction. (frontend-002) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3799)</li><li>implements: FEATURE-FRONTEND-002.md (SP 849)</li><li>context: parser.y (SP 5596)</li><li>context: lexer.l (SP 1137)</li><li>context: ARCHITECTURE_compact.md (SP 162)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_frontend_002.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): frontend-002-precedence (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser applies jq arithmetic precedence and evaluates the resulting AST. return code: 0</p>
+<ul><li>GREEN (prepassed): frontend-002-collections-and-pipeline (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser accepts collection and pipeline syntax and preserves the collected values. return code: 0</p>
+<ul><li>GREEN (prepassed): frontend-002-invalid-syntax (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser rejects an unterminated object expression with compile exit status 3. return code: 0</p>
+<ul><li>RED: frontend-002-assignment-syntax (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser accepts assignment syntax and the evaluator applies the parsed update. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;.count += 1&#x27;], returncode=5, stdout=&#x27;&#x27;, stderr=&#x27;unsupported operator\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;frontend-002-assignment-syntax.py&quot;, line 11, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: frontend-002-precedence (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser applies jq arithmetic precedence and evaluates the resulting AST. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: frontend-002-collections-and-pipeline (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser accepts collection and pipeline syntax and preserves the collected values. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: frontend-002-invalid-syntax (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser rejects an unterminated object expression with compile exit status 3. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: frontend-002-assignment-syntax (FEATURE-FRONTEND-002.md)</li></ul>
+<p>intent: The parser accepts assignment syntax and the evaluator applies the parsed update. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Repair attempts</h2>
+<ul><li>attempt 0 (initial build): failed; 4/4 checks model=gpt-5.6-luna; execution 20260817.030926.939Z-58fe9198</li><li>attempt 1 (repair 1): built; 4/4 checks model=gpt-5.6-luna; execution 20260817.031547.211Z-7b0bb521</li></ul>
+<h2>Agent self-report (advisory)</h2>
+<p>The build agent declared a failure. This is advisory only; the programmatic acceptance above is the authority for this block&#x27;s outcome.</p>
+<ul><li>summary: Full conformance suite timed out</li><li>detail:</li></ul>
+<p>Frontend and regression checks pass, but the imported full suite could not finish because later jq features remain unsupported.</p>
+<h2>Build summary</h2>
+<p>RESULT: FAILED</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/parser.py</li><li>tests/test_frontend_002.py</li></ul>
+<p>SUMMARY:</p>
+<ul><li>Restored compile-time rejection for unbound variables.</li><li>All 25 local tests and declared frontend checks pass.</li><li>Full conformance suite did not complete within the timeout.</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>Broader jq language conformance remains incomplete.</li></ul>
+<p>FAILURE_SUMMARY: Full conformance suite timed out<br>FAILURE_DETAIL: Frontend and regression checks pass, but the imported full suite could not finish because later jq features remain unsupported.</p></article>
+</main>
+</body>
+</html>

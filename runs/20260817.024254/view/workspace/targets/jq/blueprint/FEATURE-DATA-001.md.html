@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-DATA-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-DATA-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-DATA-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: JSON Values and Structural Operations</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>jq JSON values, indexing, slicing, iteration, typing, equality, ordering, containment, and numeric behavior are compatible with the corpus.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-001.md, FEATURE-EVAL-002.md</td></tr><tr><td>Provides</td><td>JSON values, indexing, slicing, iteration, type, equality, ordering, containment</td></tr><tr><td>Consumes</td><td>generator evaluator</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This capability defines jq&#x27;s immutable JSON value model and structural operations using Python&#x27;s standard library. It covers null, booleans, numbers, strings, arrays, and objects, including Unicode-aware behavior and jq-compatible numeric edge cases.</p>
+<h2>Behavior</h2>
+<ul><li>JSON values retain jq&#x27;s distinctions between null, booleans, numbers, strings, arrays, and objects.</li><li>Object keys and array indices support jq indexing and optional indexing behavior.</li><li>Slices work for arrays and strings with omitted, negative, fractional, and out-of-range bounds.</li><li>Iteration preserves array order and object value traversal.</li><li><code>type</code>, <code>length</code>, Unicode byte length, equality, ordering, and containment follow jq semantics.</li><li>Numbers support literal-preserving output where required and floating-point arithmetic compatibility.</li><li>Compact serialization emits one valid JSON value per line, including jq-compatible handling of non-finite values.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-001-structure ===<br>Intent: The implementation passes the authoritative corpus cases for JSON values, indexing, slicing, iteration, typing, and Unicode lengths.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;Types and Values|Field access|Array/String Slice|Array/Object Value Iterator|Slicing|length|utf8bytelength|type&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC data-001-structure ===</p>
+<p>=== AC data-001-ordering ===<br>Intent: The implementation passes the authoritative corpus cases for equality, ordering, sorting order, and containment.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;equality|comparison|sort|contains|inside|keys|has\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC data-001-ordering ===</p>
+<p>=== AC data-001-numbers ===<br>Intent: The implementation passes the authoritative corpus cases for numeric literals, floating-point behavior, NaN, infinity, and compact JSON conversion.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess import sys</p>
+<p>pattern = r&quot;number|numbers|nan|infinite|decnum|literal number|tojson|fromjson&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, pattern], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC data-001-numbers ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not conflate booleans with numbers.</li><li>Preserve immutable value semantics across structural operations.</li><li>Do not shell out for JSON parsing, serialization, or numeric behavior.</li></ul></article>
+</main>
+</body>
+</html>
