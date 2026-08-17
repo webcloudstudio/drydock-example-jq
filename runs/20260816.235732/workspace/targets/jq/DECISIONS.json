@@ -1,0 +1,32 @@
+[
+  {
+    "id": "analyze-display_name",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Display Name",
+    "description": "The display name Drydock will use for this project. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "jq Interpreter",
+    "commander_direction": "jq Interpreter"
+  },
+  {
+    "id": "analyze-short_description",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Short Description",
+    "description": "One-sentence description of what this project does. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values.",
+    "commander_direction": "A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values."
+  }
+]
