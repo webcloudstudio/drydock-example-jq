@@ -13,10 +13,85 @@
           "date": "2026-08-16",
           "hash": "1257c99beb99ebfca4a32b8e4aba86d8b6304cbfbf74cc6ef311cada4c0de734",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "define-interpreter-architecture",
+              "text": "Any implementation shape that satisfies this contract is acceptable.",
+              "stories": [
+                "architecture"
+              ]
+            },
+            {
+              "name": "implement-cli-contract",
+              "text": "The program is a filter: an executable file named `jq` at the application root, invoked as",
+              "stories": [
+                "cli-foundation"
+              ]
+            },
+            {
+              "name": "document-cli-workflow",
+              "text": "Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit codes, and the `sh sources/full_test.sh` command.",
+              "stories": [
+                "cli-documentation"
+              ]
+            },
+            {
+              "name": "implement-lexer-and-parser",
+              "text": "1. **Lexer and parser.** Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there. Reject invalid programs with exit `3`.",
+              "stories": [
+                "frontend-lexer",
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "implement-generator-evaluation",
+              "text": "2. **The generator core.** Evaluate a filter as something that yields a stream of values:",
+              "stories": [
+                "eval-generator",
+                "eval-values"
+              ]
+            },
+            {
+              "name": "implement-control-flow",
+              "text": "4. **Control flow.** `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`. This is where backtracking is tested hardest.",
+              "stories": [
+                "eval-control"
+              ]
+            },
+            {
+              "name": "implement-bindings-and-functions",
+              "text": "5. **Functions, variables, and destructuring.** `def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.",
+              "stories": [
+                "lang-bindings"
+              ]
+            },
+            {
+              "name": "implement-paths-and-assignment",
+              "text": "3. **Paths and assignment.** `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends. Assignment is defined over path expressions, so this cannot precede step 2.",
+              "stories": [
+                "lang-paths"
+              ]
+            },
+            {
+              "name": "implement-builtins",
+              "text": "6. **Builtins.** Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.",
+              "stories": [
+                "builtin-structural",
+                "builtin-strings",
+                "builtin-runtime"
+              ]
+            },
+            {
+              "name": "verify-numeric-edge-cases",
+              "text": "7. **Numbers and edge cases.** `nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin \u2014 return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.",
+              "stories": [
+                "conformance"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -28,10 +103,43 @@
           "date": "2026-08-16",
           "hash": "b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "collection-structural-builtins",
+              "text": "def map(f): [.[] | f];\ndef select(f): if f then . else empty end;\ndef sort_by(f): _sort_by_impl(map([f]));\ndef group_by(f): _group_by_impl(map([f]));\ndef unique_by(f): _unique_by_impl(map([f]));\ndef max_by(f): _max_by_impl(map([f]));\ndef min_by(f): _min_by_impl(map([f]));\ndef add(f): reduce f as $x (null; . + $x);\ndef add: add(.[]);\ndef del(f): delpaths([path(f)]);\ndef abs: if . < 0 then - . else . end;\ndef map_values(f): .[] |= f;\n\n# recurse\ndef recurse(f): def r: ., (f | r); r;\ndef recurse(f; cond): def r: ., (f | select(cond) | r); r;\ndef recurse: recurse(.[]?);\n\ndef paths: path(recurse)|select(length > 0);\ndef paths(node_filter): path(recurse|select(node_filter))|select(length > 0);\n\ndef walk(f):\n  def w:\n    if type == \"object\"\n    then map_values(w)\n    elif type == \"array\" then map(w)\n    else .\n    end\n    | f;\n  w;\n\ndef pick(pathexps):\n  . as $in\n  | reduce path(pathexps) as $a (null;\n      setpath($a; $in|getpath($a)) );\n\ndef combinations:\n    if length == 0 then [] else\n        .[0][] as $x\n          | [.[1:] | combinations] as $y\n          | [$x] + $y\n    end;\ndef combinations(n):\n    . as $dot\n      | [range(n) | $dot]\n      | combinations;\n\ndef transpose: [range(0; map(length)|max // 0) as $i | [.[][$i]]];\n\ndef in(xs): . as $x | xs | has($x);\ndef inside(xs): . as $x | xs | contains($x);\ndef INDEX(stream; idx_expr):\n  reduce stream as $row ({}; .[$row|idx_expr|tostring] = $row);\ndef INDEX(idx_expr): INDEX(.[]; idx_expr);\ndef JOIN($idx; idx_expr):\n  [.[] | [., $idx[idx_expr]]];\ndef JOIN($idx; stream; idx_expr):\n  stream | [., $idx[idx_expr]];\ndef JOIN($idx; stream; idx_expr; join_expr):\n  stream | [., $idx[idx_expr]] | join_expr;\ndef IN(s): any(s == .; .);\ndef IN(src; s): any(src == s; .);",
+              "stories": [
+                "builtin-structural",
+                "eval-values",
+                "lang-paths"
+              ]
+            },
+            {
+              "name": "string-regex-and-date-builtins",
+              "text": "def ascii_downcase:\n  explode | map( if 65 <= . and . <= 90 then . + 32  else . end) | implode;\ndef ascii_upcase:\n  explode | map( if 97 <= . and . <= 122 then . - 32  else . end) | implode;\ndef ltrimstr($left): if startswith($left) then .[$left | length:] end;\ndef rtrimstr($right): if endswith($right) then .[:length - ($right | length)] end;\ndef trimstr($val): ltrimstr($val) | rtrimstr($val);\ndef match(re; mode): _match_impl(re; mode; false)|.[];\ndef match($val): ($val|type) as $vt | if $vt == \"string\" then match($val; null)\n   elif $vt == \"array\" and ($val | length) > 1 then match($val[0]; $val[1])\n   elif $vt == \"array\" and ($val | length) > 0 then match($val[0]; null)\n   else error( $vt + \" not a string or array\") end;\ndef test(re; mode): _match_impl(re; mode; true);\ndef test($val): ($val|type) as $vt | if $vt == \"string\" then test($val; null)\n   elif $vt == \"array\" and ($val | length) > 1 then test($val[0]; $val[1])\n   elif $vt == \"array\" and ($val | length) > 0 then test($val[0]; null)\n   else error( $vt + \" not a string or array\") end;\ndef capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);\ndef capture($val): ($val|type) as $vt | if $vt == \"string\" then capture($val; null)\n   elif $vt == \"array\" and ($val | length) > 1 then capture($val[0]; $val[1])\n   elif $vt == \"array\" and ($val | length) > 0 then capture($val[0]; null)\n   else error( $vt + \" not a string or array\") end;\ndef scan($re; $flags):\n  match($re; \"g\" + $flags)\n    | if (.captures|length > 0)\n      then [ .captures | .[] | .string ]\n      else .string\n      end;\ndef scan($re): scan($re; null);\ndef splits($re; $flags):\n  .[foreach (match($re; $flags+\"g\"), null) as {$offset, $length}\n      (null; {start: .next, end: $offset, next: ($offset+$length)})];\ndef splits($re): splits($re; null);\ndef split($re; $flags): [ splits($re; $flags) ];\ndef sub($re; s): sub($re; s; \"\");\ndef gsub($re; s): sub($re; s; \"g\");\ndef fromdateiso8601: strptime(\"%Y-%m-%dT%H:%M:%SZ\")|mktime;\ndef todateiso8601: strftime(\"%Y-%m-%dT%H:%M:%SZ\");\ndef fromdate: fromdateiso8601;\ndef todate: todateiso8601;",
+              "stories": [
+                "builtin-strings"
+              ]
+            },
+            {
+              "name": "generator-iteration-and-streaming",
+              "text": "def while(cond; update):\n     def _while:\n         if cond then ., (update | _while) else empty end;\n     _while;\ndef until(cond; next):\n     def _until:\n         if cond then . else (next|_until) end;\n     _until;\ndef limit($n; expr):\n  if $n > 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . <= 0 then break $out else empty end)\n  elif $n == 0 then empty\n  else error(\"limit doesn't support negative count\") end;\ndef skip($n; expr):\n  if $n > 0 then foreach expr as $item ($n; . - 1; if . < 0 then $item else empty end)\n  elif $n == 0 then expr\n  else error(\"skip doesn't support negative count\") end;\ndef first(g): label $out | g | ., break $out;\ndef isempty(g): first((g|false), true);\ndef all(generator; condition): isempty(generator|condition and empty);\ndef any(generator; condition): isempty(generator|condition or empty)|not;\ndef all(condition): all(.[]; condition);\ndef any(condition): any(.[]; .);\ndef inputs: try repeat(input) catch if .==\"break\" then empty else error end;\ndef truncate_stream(stream):\n  . as $n | null | stream | . as $input | if (.[0]|length) > $n then setpath([0];$input[0][$n:]) else empty end;\ndef fromstream(i): {x: null, e: false} as $init |\n  foreach i as $i ($init\n  ; if .e then $init else . end\n  | if $i|length == 2\n    then setpath([\"e\"]; $i[0]|length==0) | setpath([\"x\"]+$i[0]; $i[1])\n    else setpath([\"e\"]; $i[0]|length==1) end\n  ; if .e then .x else empty end);\ndef tostream:\n  path(def r: (.[]?|r), .; r) as $p |\n  getpath($p) |\n  reduce path(.[]?) as $q ([$p, .]; [$p+$q]);",
+              "stories": [
+                "eval-generator",
+                "eval-control",
+                "builtin-runtime"
+              ]
+            },
+            {
+              "name": "jq-runtime-value-operations",
+              "text": "def halt_error: halt_error(5);\ndef error(msg): msg|error;\ndef isfinite: type == \"number\" and (isinfinite | not);\ndef arrays: select(type|. == \"array\");\ndef objects: select(type|. == \"object\");\ndef iterables: select(type|. == \"array\" or . == \"object\");\ndef booleans: select(type|. == \"boolean\");\ndef numbers: select(type|. == \"number\");\ndef normals: select(isnormal);\ndef finites: select(isfinite);\ndef strings: select(type == \"string\");\ndef nulls: select(. == null);\ndef values: select(. != null);\ndef scalars: select(type|. != \"array\" and . != \"object\");\ndef join($x): reduce .[] as $i (null;\n            (if .==null then \"\" else .+$x end) +\n            ($i | if type==\"boolean\" or type==\"number\" then tostring else .//\"\" end)\n        ) // \"\";\ndef flatten($x): if $x < 0 then error(\"flatten depth must not be negative\") else _flatten($x) end;\ndef flatten: _flatten(-1);",
+              "stories": [
+                "builtin-runtime"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -43,10 +151,42 @@
           "date": "2026-08-16",
           "hash": "0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "validate-exclusion-entries",
+              "text": "One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug \u2014 a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.",
+              "stories": [
+                "conformance"
+              ]
+            },
+            {
+              "name": "exclude-module-loading-cases",
+              "text": "These cases resolve `import` and `include` against a module search path supplied by jq's -L flag, reading roughly twenty fixture files spread across nested directories upstream (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit's declared sources into the application flattened by basename, so that directory tree cannot be carried, and the interface this kit fixes exercises no flag but -c.",
+              "stories": [
+                "cli-foundation",
+                "conformance"
+              ]
+            },
+            {
+              "name": "retain-module-grammar-cases",
+              "text": "The module *grammar* cases \u2014 `module (.+1); 0`, `module []; 0`, `include \"a\" (.+1); 0`, `include \"a\" []; 0`, `include \"\\ \"; 0`, `include \"\\(a)\"; 0`, and `%::wat` \u2014 remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.",
+              "stories": [
+                "frontend-parser",
+                "conformance"
+              ]
+            },
+            {
+              "name": "exclude-modulemeta-cases",
+              "text": "`modulemeta` reports a module's declared dependencies and definitions. Its three cases take the module name \"c\" as input and read tests/modules/c/c.jq from the search path, so they fail for the same reason as the loader cases above.",
+              "stories": [
+                "builtin-runtime",
+                "conformance"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -58,10 +198,25 @@
           "date": "2026-08-16",
           "hash": "4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "executable-jq-interface",
+              "text": "The deliverable is an executable named jq that reads JSON on stdin.",
+              "stories": [
+                "cli-foundation"
+              ]
+            },
+            {
+              "name": "run-conformance-suite",
+              "text": "`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.",
+              "stories": [
+                "conformance"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -73,10 +228,69 @@
           "date": "2026-08-16",
           "hash": "92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "parse-and-compose-filters",
+              "text": "A jq program is a \"filter\": it takes an input, and produces an output.",
+              "stories": [
+                "frontend-lexer",
+                "frontend-parser",
+                "eval-generator"
+              ]
+            },
+            {
+              "name": "support-json-values-and-operators",
+              "text": "jq supports the same set of datatypes as JSON - numbers, strings, booleans, arrays, objects (which in JSON-speak are hashes with only string keys), and \"null\".",
+              "stories": [
+                "eval-values"
+              ]
+            },
+            {
+              "name": "support-control-flow-and-errors",
+              "text": "`if A then B else C end` will act the same as `B` if `A` produces a value other than false or null, but act the same as `C` otherwise.",
+              "stories": [
+                "eval-control"
+              ]
+            },
+            {
+              "name": "support-bindings-and-functions",
+              "text": "In jq, all filters have an input and an output, so manual plumbing is not necessary to pass a value from one part of a program to the next.",
+              "stories": [
+                "lang-bindings"
+              ]
+            },
+            {
+              "name": "support-paths-and-assignment",
+              "text": "All the assignment operators in jq have path expressions on the left-hand side (LHS).",
+              "stories": [
+                "lang-paths"
+              ]
+            },
+            {
+              "name": "provide-structural-builtins",
+              "text": "The builtin function `length` gets the length of various\ndifferent types of value:",
+              "stories": [
+                "builtin-structural"
+              ]
+            },
+            {
+              "name": "provide-string-builtins",
+              "text": "jq uses the\n[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),",
+              "stories": [
+                "builtin-strings"
+              ]
+            },
+            {
+              "name": "provide-runtime-builtins",
+              "text": "At this time jq has minimal support for I/O, mostly in the\nform of control over when inputs are read.",
+              "stories": [
+                "builtin-runtime"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -88,10 +302,88 @@
           "date": "2026-08-16",
           "hash": "329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "lexical-analysis",
+              "text": "# We test escapes by matching them against Unicode codepoints",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "parsing-and-ast",
+              "text": "# Dictionary construction syntax",
+              "stories": [
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "generator-evaluation",
+              "text": "# Multiple outputs, iteration",
+              "stories": [
+                "eval-generator"
+              ]
+            },
+            {
+              "name": "value-semantics",
+              "text": "# Builtin functions",
+              "stories": [
+                "eval-values"
+              ]
+            },
+            {
+              "name": "control-flow",
+              "text": "# Conditionals",
+              "stories": [
+                "eval-control"
+              ]
+            },
+            {
+              "name": "bindings-and-functions",
+              "text": "# Variables",
+              "stories": [
+                "lang-bindings"
+              ]
+            },
+            {
+              "name": "paths-and-assignment",
+              "text": "# Paths",
+              "stories": [
+                "lang-paths"
+              ]
+            },
+            {
+              "name": "structural-builtins",
+              "text": "# Recursive object merge",
+              "stories": [
+                "builtin-structural"
+              ]
+            },
+            {
+              "name": "string-and-date-builtins",
+              "text": "# string operations",
+              "stories": [
+                "builtin-strings"
+              ]
+            },
+            {
+              "name": "runtime-builtins",
+              "text": "# nan is parsed as a valid NaN value from JSON",
+              "stories": [
+                "builtin-runtime"
+              ]
+            },
+            {
+              "name": "conformance-suite",
+              "text": "# Tests are groups of three lines: program, input, expected output",
+              "stories": [
+                "conformance"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -103,10 +395,67 @@
           "date": "2026-08-16",
           "hash": "cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "track-source-locations",
+              "text": "#define YY_USER_ACTION                           \\\n  do {                                           \\\n    yylloc->start = yyget_extra(yyscanner);      \\\n    yylloc->end = yylloc->start + yyleng;        \\\n    yyset_extra(yylloc->end, yyscanner);        \\\n  } while (0);",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "recognize-language-tokens",
+              "text": "\"!=\" { return NEQ; }\n\"==\" { return EQ; }\n\"as\" { return AS; }\n\"import\" { return IMPORT; }\n\"include\" { return INCLUDE; }\n\"module\" { return MODULE; }\n\"def\" { return DEF; }\n\"if\" { return IF; }\n\"then\" { return THEN; }\n\"else\" { return ELSE; }\n\"elif\" { return ELSE_IF; }\n\"and\" { return AND; }\n\"or\" { return OR; }\n\"end\" { return END; }\n\"reduce\" { return REDUCE; }\n\"foreach\" { return FOREACH; }\n\"//\" { return DEFINEDOR; }\n\"try\" { return TRY; }\n\"catch\" { return CATCH; }\n\"label\" { return LABEL; }\n\"break\" { return BREAK; }\n\"$__loc__\" { return LOC; }\n\"|=\" { return SETPIPE; }\n\"+=\" { return SETPLUS; }\n\"-=\" { return SETMINUS; }\n\"*=\" { return SETMULT; }\n\"/=\" { return SETDIV; }\n\"%=\" { return SETMOD; }\n\"//=\" { return SETDEFINEDOR; }\n\"<=\" { return LESSEQ; }\n\">=\" { return GREATEREQ; }\n\"..\" { return REC; }\n\"?//\" { return ALTERNATION; }\n\".\"|\"?\"|\"=\"|\";\"|\",\"|\":\"|\"|\"|\"+\"|\"-\"|\"*\"|\"/\"|\"%\"|\"\\$\"|\"<\"|\">\" { return yytext[0];}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "handle-delimited-expressions",
+              "text": "\"[\"|\"{\"|\"(\" {\n  return enter(yytext[0], YY_START, yyscanner);\n}\n\n\"]\"|\"}\"|\")\" {\n  return try_exit(yytext[0], YY_START, yyscanner);\n}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "ignore-comments",
+              "text": "\"#\" { yy_push_state(IN_COMMENT, yyscanner); }\n<IN_COMMENT>{\n  \\\\(\\\\|\\r?\\n)|. { }\n  \\r?\\n { yy_pop_state(yyscanner); }\n}\n<IN_COMMENT><<EOF>> { yy_pop_state(yyscanner); }",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "parse-literals",
+              "text": "([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][+-]?[0-9]+)? {\n   yylval->literal = jv_parse_sized(yytext, yyleng); return LITERAL;\n}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "parse-interpolated-strings",
+              "text": "\"\\\"\" {\n  yy_push_state(IN_QQSTRING, yyscanner);\n  return QQSTRING_START;\n}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "recognize-names-and-bindings",
+              "text": "([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext); return IDENT;}\n\\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return FIELD;}\n\\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return BINDING;}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "ignore-whitespace-and-reject-invalid-characters",
+              "text": "[ \\r\\n\\t]+  {}\n\n. { return INVALID_CHARACTER; }",
+              "stories": [
+                "frontend-lexer"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -118,10 +467,63 @@
           "date": "2026-08-16",
           "hash": "803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "parse-jq-language",
+              "text": "%define parse.error verbose\n...\nTopLevel:\nModule Imports Query {\n  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);\n} |\nModule Imports FuncDefs {\n  *answer = BLOCK($1, $2, $3);\n}",
+              "stories": []
+            },
+            {
+              "name": "validate-literals",
+              "text": "if ((tok == LITERAL || tok == QQSTRING_TEXT) && !jv_is_valid(yylval->literal)) {\n    jv msg = jv_invalid_get_msg(jv_copy(yylval->literal));\n    if (jv_get_kind(msg) == JV_KIND_STRING) {\n      FAIL(*yylloc, jv_string_value(msg));\n    } else {\n      FAIL(*yylloc, \"Invalid literal\");\n    }\n    jv_free(msg);\n    jv_free(yylval->literal);\n    yylval->literal = jv_null();\n  }",
+              "stories": []
+            },
+            {
+              "name": "compile-values-and-paths",
+              "text": "static block gen_index(block obj, block key) {\n  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX));\n}\n...\nExpr '=' Expr {\n  $$ = gen_call(\"_assign\", BLOCK(gen_lambda($1), gen_lambda($3)));\n} |\nExpr \"|=\" Expr {\n  $$ = gen_call(\"_modify\", BLOCK(gen_lambda($1), gen_lambda($3)));\n}",
+              "stories": [
+                "eval-values",
+                "lang-paths"
+              ]
+            },
+            {
+              "name": "compile-control-flow",
+              "text": "\"reduce\" Expr \"as\" Patterns '(' Query ';' Query ')' {\n  $$ = gen_reduce($2, $4, $6, $8);\n} |\n\"foreach\" Expr \"as\" Patterns '(' Query ';' Query ';' Query ')' {\n  $$ = gen_foreach($2, $4, $6, $8, $10);\n} |\n\"if\" Query \"then\" Query ElseBody {\n  $$ = gen_cond($2, $4, $5);\n} |\n\"try\" Expr \"catch\" Expr {\n  $$ = gen_try($2, $4);\n}",
+              "stories": [
+                "eval-control"
+              ]
+            },
+            {
+              "name": "compile-bindings-and-functions",
+              "text": "\"def\" IDENT '(' Params ')' ':' Query ';' {\n  $$ = gen_function(jv_string_value($2), $4, $7);\n  jv_free($2);\n}\n...\nBINDING {\n  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));\n  jv_free($1);\n}",
+              "stories": [
+                "lang-bindings"
+              ]
+            },
+            {
+              "name": "compile-modules-and-imports",
+              "text": "\"module\" Query ';' {\n  if (!block_is_const($2)) {\n    FAIL(@2, \"Module metadata must be constant\");\n    $$ = gen_noop();\n    block_free($2);\n  } else if (block_const_kind($2) != JV_KIND_OBJECT) {\n    FAIL(@2, \"Module metadata must be an object\");\n    $$ = gen_noop();\n    block_free($2);\n  } else {\n    $$ = gen_module($2);\n  }\n}\n...\n\"include\" ImportFrom {\n  $$ = gen_import(block_const($2), jv_invalid(), 0);\n  block_free($2);\n}",
+              "stories": []
+            },
+            {
+              "name": "compile-strings",
+              "text": "QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {\n  $$ = gen_binop($1, gen_format($3, jv_copy($<literal>0)), '+');\n}",
+              "stories": []
+            },
+            {
+              "name": "report-parse-errors",
+              "text": "void yyerror(YYLTYPE* loc, block* answer, int* errors,\n             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){\n  (*errors)++;\n  locfile_locate(locations, *loc, \"jq: error: %s\", s);\n}",
+              "stories": []
+            },
+            {
+              "name": "parse-library",
+              "text": "int jq_parse_library(struct locfile* locations, block* answer) {\n  int errs = jq_parse(locations, answer);\n  if (errs) return errs;\n  if (block_has_main(*answer)) {\n    locfile_locate(locations, UNKNOWN_LOCATION, \"jq: error: library should only have function definitions, not a main expression\");\n    return 1;\n  }\n  assert(block_has_only_binders_and_imports(*answer, OP_IS_CALL_PSEUDO));\n  return 0;\n}",
+              "stories": []
+            }
+          ]
         }
       ]
     },
@@ -133,10 +535,42 @@
           "date": "2026-08-16",
           "hash": "c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492",
           "release": "",
-          "state": "pending",
-          "via": null,
+          "state": "consumed",
+          "via": "plan",
           "ticket": null,
-          "requirements": []
+          "requirements": [
+            {
+              "name": "run-conformance-corpus",
+              "text": "Run the upstream jq conformance corpus against a candidate implementation.",
+              "stories": [
+                "conformance"
+              ]
+            },
+            {
+              "name": "candidate-process-contract",
+              "text": "This runner re-implements the corpus protocol and drives the candidate as a subprocess, one process per case.",
+              "stories": [
+                "cli-foundation",
+                "conformance"
+              ]
+            },
+            {
+              "name": "conformance-cli",
+              "text": "JQ         command that runs the candidate. Required -- this harness is language-neutral",
+              "stories": [
+                "cli-foundation",
+                "conformance"
+              ]
+            },
+            {
+              "name": "acceptance-verdict",
+              "text": "Its exit status is the acceptance verdict.",
+              "stories": [
+                "cli-foundation",
+                "conformance"
+              ]
+            }
+          ]
         }
       ]
     }

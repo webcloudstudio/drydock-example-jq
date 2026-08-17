@@ -1,0 +1,3 @@
+CAUSE: The jq implementation still misparses or lacks core constructs and builtins, causing the conformance evaluator to hang on unsupported programs.
+DO: Edit `jq` to correctly implement the failing parser constructs, interpolation, `range`, `getpath`, `setpath`, and `delpaths`.
+DO: Run `drydock build jq --step block-5`.

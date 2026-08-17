@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EVAL-VALUES.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EVAL-VALUES.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EVAL-VALUES.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Value Semantics</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implements jq operators, indexing, slicing, ordering, numeric behavior, and JSON value semantics.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-GENERATOR.md</td></tr><tr><td>Provides</td><td>jq value operations, arithmetic, comparison, indexing, slicing</td></tr><tr><td>Consumes</td><td>generator evaluator</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement jq arithmetic and boolean operators, equality and ordering, null handling, string and array operations, object merging, field and index access, iteration access, slices, numeric conversion and edge behavior, and runtime failures with exit code 5.</p>
+<p>Operations must use jq&#x27;s type-sensitive semantics and preserve the distinction between booleans and numbers. Indexing and slicing must support optional forms and jq-compatible bounds behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC values-operators ===<br>Intent: The authoritative corpus passes arithmetic, comparison, boolean, string, array, and object value cases.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^\d+\+\d|^\.\+|^\.a\+\.b|^sort$|^contains\(|^\. &lt;|^if &quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC values-operators ===</p>
+<p>=== AC values-indexing ===<br>Intent: Field access, iteration, negative indexes, and slices conform to jq behavior.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^\.foo|^\.\[\]|^\.\[-|^\.\[.*:&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC values-indexing ===</p>
+<p>=== AC values-runtime-error ===<br>Intent: A compiled program that raises a jq runtime error exits with status 5.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 / 0&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC values-runtime-error ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve jq type distinctions and ordering.</li><li>Do not silently coerce incompatible operand types.</li><li>Runtime failures use exit code 5; compile failures remain exit code 3.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FRONTEND-PARSER.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FRONTEND-PARSER.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FRONTEND-PARSER.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Front End Parser</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Parses jq programs into executable abstract syntax trees with jq-compatible precedence and syntax.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FRONTEND-LEXER.md</td></tr><tr><td>Provides</td><td>jq parser, executable AST</td></tr><tr><td>Consumes</td><td>jq tokenizer</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>The parser converts the token stream into an executable AST. It must preserve jq&#x27;s grammar, operator precedence, associativity, generator composition, lexical definitions, and source-aware compile failures.</p>
+<h2>Scope</h2>
+<p>Support literals, strings and interpolation, field and array access, slices, arrays, objects, pipes, commas, arithmetic and comparison operators, conditionals, alternatives, try/catch, definitions, bindings, reductions, assignments, labels, modules, and formats. Reject malformed syntax with exit code 3.</p>
+<p>The parser must expose a stable AST contract to the evaluator. AST nodes represent filters rather than single values, and argument expressions remain generator-valued until evaluation.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parser-valid-programs ===<br>Intent: The parser accepts representative valid jq programs and the conformance runner reports success for the parser-owned corpus slice.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(\.foo|\.|\[\.|def |if |reduce |foreach |try |@)&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC parser-valid-programs ===</p>
+<p>=== AC parser-invalid-programs ===<br>Intent: Invalid jq syntax is rejected with the documented compile-error status.</p>
+<p>import json import subprocess</p>
+<p>program = &quot;{&quot; payload = &quot;null\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode == 3 === END AC parser-invalid-programs ===</p>
+<p>=== AC parser-precedence ===<br>Intent: Parsed arithmetic precedence and grouping are accepted by the authoritative corpus.</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;1\+1|1 \+ 2 \* 2|16 / 4&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC parser-precedence ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not shell out to a jq implementation.</li><li>Preserve compile exit code 3 and send diagnostics to stderr.</li><li>Do not modify supplied lexer, parser, corpus, or harness assets.</li></ul></article>
+</main>
+</body>
+</html>

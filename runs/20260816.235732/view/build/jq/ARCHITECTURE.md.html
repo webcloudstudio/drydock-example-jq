@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/ARCHITECTURE.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/ARCHITECTURE.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/ARCHITECTURE.md">Raw file</a></div></header>
+<article class="doc"><h1>ARCHITECTURE: jq Interpreter</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Architecture for a standalone Python standard-library jq interpreter.</td></tr><tr><td>Depends On</td><td>COMPASS.md, TECHNOLOGY_STACK.md</td></tr><tr><td>Provides</td><td>interpreter module boundaries, CLI process contract</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The application is a standalone executable named <code>jq</code> that evaluates jq filters over JSON input. It is implemented entirely in Python using the standard library and must not invoke another jq implementation.</p>
+<h2>System Boundaries</h2>
+<p>The root executable owns argument validation, stdin decoding, output serialization, diagnostics, and process exit codes. Interpreter modules own lexical analysis, parsing, AST construction, generator evaluation, bindings, paths, assignments, control flow, and builtins.</p>
+<p>Imported corpus and specification assets remain under <code>sources/</code> and are read-only build context. The application must not modify, filter, or reinterpret them.</p>
+<h2>Module Ownership</h2>
+<div class="scroll"><table><thead><tr><th>Module</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>jq</code></td><td>Executable process boundary and <code>-c</code> interface</td></tr><tr><td>Lexer</td><td>Tokens, literals, strings, interpolation, comments, operators, and source locations</td></tr><tr><td>Parser</td><td>jq grammar, precedence, syntax validation, and AST construction</td></tr><tr><td>Runtime</td><td>Generator evaluation, environments, errors, labels, and stream behavior</td></tr><tr><td>Values</td><td>jq-compatible JSON values, ordering, arithmetic, indexing, and serialization</td></tr><tr><td>Paths</td><td>Path discovery, access, mutation, deletion, and assignment</td></tr><tr><td>Builtins</td><td>Standard jq functions implemented with Python standard-library facilities</td></tr></tbody></table></div>
+<p>Generators are the primary runtime abstraction. Every filter receives one input and may yield zero, one, or many outputs. Pipes evaluate the right-hand filter once for every left-hand output; commas preserve left-to-right order and multiplicity.</p>
+<h2>Process Contract</h2>
+<p>The executable accepts <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>, reads JSON values from stdin, writes one compact JSON value per output line to stdout, and sends diagnostics to stderr.</p>
+<p>Exit status <code>0</code> means successful compilation and execution. Exit status <code>3</code> means compilation or static failure. Exit status <code>5</code> means a runtime failure after compilation. Outputs produced before a runtime failure remain valid.</p>
+<h2>Technology Stack</h2>
+<ul><li>Python 3.11 or newer, standard library only, for the interpreter and acceptance tooling.</li><li>POSIX <code>sh</code> for the supplied acceptance entry point.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not shell out to, wrap, import, or bind any third-party or system jq implementation.</li><li>Do not use network access or install packages.</li><li>Preserve generator backtracking, output order, and multiplicity.</li><li>Keep diagnostics on stderr and JSON results on stdout.</li><li>Keep supplied scoring assets unchanged.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<requirement name="executable-jq-interface" stories="cli-foundation">
+The deliverable is an executable named jq that reads JSON on stdin.
+</requirement>
+<requirement name="run-conformance-suite" stories="conformance">
+`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.
+</requirement>
+<unattached story="architecture"/>
+<unattached story="metadata"/>
+<unattached story="cli-documentation"/>
+<unattached story="frontend-lexer"/>
+<unattached story="frontend-parser"/>
+<unattached story="eval-generator"/>
+<unattached story="eval-values"/>
+<unattached story="eval-control"/>
+<unattached story="lang-bindings"/>
+<unattached story="lang-paths"/>
+<unattached story="builtin-structural"/>
+<unattached story="builtin-strings"/>
+<unattached story="builtin-runtime"/>

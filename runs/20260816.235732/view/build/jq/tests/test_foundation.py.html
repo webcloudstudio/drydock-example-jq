@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_foundation.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_foundation.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_foundation.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Deterministic contract tests for the foundational project documents.&quot;&quot;&quot;
+
+from pathlib import Path
+import unittest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class FoundationContractTests(unittest.TestCase):
+    def test_architecture_contract(self) -&gt; None:
+        text = (ROOT / &quot;ARCHITECTURE.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+        required = [
+            &quot;standalone executable named `jq`&quot;,
+            &quot;Exit status `0`&quot;,
+            &quot;Exit status `3`&quot;,
+            &quot;Exit status `5`&quot;,
+            &quot;Generators are the primary runtime abstraction&quot;,
+        ]
+        for token in required:
+            self.assertIn(token, text)
+
+    def test_architecture_stack_and_boundaries(self) -&gt; None:
+        text = (ROOT / &quot;ARCHITECTURE.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+        self.assertIn(&quot;Python 3.11 or newer, standard library only&quot;, text)
+        self.assertIn(&quot;POSIX `sh`&quot;, text)
+        self.assertIn(&quot;third-party or system jq implementation&quot;, text)
+        for module in (&quot;Lexer&quot;, &quot;Parser&quot;, &quot;Runtime&quot;, &quot;Values&quot;, &quot;Paths&quot;, &quot;Builtins&quot;):
+            self.assertIn(f&quot;| {module} |&quot;, text)
+
+    def test_metadata_declares_cli_delivery_contract(self) -&gt; None:
+        fields: dict[str, str] = {}
+        for line in (ROOT / &quot;METADATA.md&quot;).read_text(encoding=&quot;utf-8&quot;).splitlines():
+            if &quot;:&quot; in line and not line.startswith(&quot;#&quot;):
+                key, value = line.split(&quot;:&quot;, 1)
+                fields[key] = value.strip()
+
+        self.assertEqual(fields[&quot;display_name&quot;], &quot;jq Interpreter&quot;)
+        self.assertEqual(fields[&quot;project_shape&quot;], &quot;cli&quot;)
+        self.assertEqual(fields[&quot;executable&quot;], &quot;./jq&quot;)
+        self.assertEqual(fields[&quot;stack&quot;], &quot;Python 3.11+ standard library; POSIX sh&quot;)
+        self.assertEqual(fields[&quot;runtime_dependencies&quot;], &quot;none&quot;)
+        self.assertEqual(fields[&quot;compile_exit_code&quot;], &quot;3&quot;)
+        self.assertEqual(fields[&quot;runtime_exit_code&quot;], &quot;5&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

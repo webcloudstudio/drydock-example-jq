@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTIN-STRUCTURAL.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTIN-STRUCTURAL.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTIN-STRUCTURAL.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Structural Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Define jq collection, structural, ordering, containment, and recursive traversal builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-LANG-PATHS.md</td></tr><tr><td>Provides</td><td>map, map_values, add, flatten, sort, sort_by, group_by, unique, entries, contains, inside, combinations, transpose, walk</td></tr><tr><td>Consumes</td><td>jq paths and assignments, generator evaluator</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement structural builtins using the evaluator&#x27;s generator model. Builtins must preserve jq ordering and support arrays, objects, nested values, empty streams, and generator-valued arguments.</p>
+<h2>Behavior</h2>
+<ul><li>Collection builtins preserve stream multiplicity and collect outputs where specified.</li><li><code>map</code> and <code>map_values</code> distinguish array collection from first-result updates.</li><li><code>add</code>, <code>flatten</code>, sorting, grouping, uniqueness, and containment follow jq type ordering and recursive semantics.</li><li><code>to_entries</code>, <code>from_entries</code>, and <code>with_entries</code> preserve key/value meaning.</li><li><code>combinations</code>, <code>transpose</code>, <code>walk</code>, <code>paths</code>, and related traversal helpers handle empty and jagged structures.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC structural-collection ===<br>Intent: Collection builtins transform the supplied input and preserve its derived elements. import json import subprocess</p>
+<p>source_value = [1, 2, 3] program = &quot;[map(. + 1), add, flatten]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source_value) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 actual = json.loads(result.stdout) expected = [list(map(lambda item: item + 1, source_value)), sum(source_value), source_value] assert actual == expected === END AC structural-collection ===</p>
+<p>=== AC structural-ordering ===<br>Intent: Sorting and uniqueness return the supplied values in jq order. import json import subprocess</p>
+<p>source_value = [3, 1, 3, 2] program = &quot;[sort, unique]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source_value) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 actual = json.loads(result.stdout) expected = [sorted(source_value), sorted(set(source_value))] assert actual == expected === END AC structural-ordering ===</p>
+<p>=== AC structural-entries ===<br>Intent: Entry conversion round-trips the supplied object. import json import subprocess</p>
+<p>source_value = {&quot;a&quot;: 1, &quot;b&quot;: 2} program = &quot;to_entries | from_entries&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source_value) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == source_value === END AC structural-entries ===</p>
+<p>=== AC structural-containment ===<br>Intent: Containment and inversion agree for supplied nested values. import json import subprocess</p>
+<p>container = {&quot;a&quot;: [1, 2], &quot;b&quot;: {&quot;x&quot;: 3}} contained = {&quot;a&quot;: [1], &quot;b&quot;: {}} program = f&quot;[contains({json.dumps(contained)}), inside({json.dumps(container)})]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(container) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == [True, True] === END AC structural-containment ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not replace generator evaluation with single-value shortcuts.</li><li>Preserve stable output order where jq defines it.</li><li>Keep structural operations within the Python standard library.</li></ul></article>
+</main>
+</body>
+</html>

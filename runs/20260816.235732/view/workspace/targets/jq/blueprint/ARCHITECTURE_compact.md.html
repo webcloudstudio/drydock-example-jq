@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE_compact.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;!-- Compacted from ARCHITECTURE.md sha256=a21f86f8f48cdfff12804f01b38bccf42e3925539683235d250e8f998e435bd7 on 2026-08-16 by drydock build agent --&gt;</p>
+<p>Standalone Python 3.11+ standard-library jq CLI. Root <code>./jq</code> accepts <code>-c &#x27;&lt;program&gt;&#x27;</code>, reads JSON stdin, emits compact JSON lines stdout, diagnostics stderr, and uses exit codes 0 success, 3 compile/static failure, 5 runtime failure. Modules: executable boundary, Lexer, Parser/AST, generator-based Runtime, Values, Paths/assignments, and Builtins. Preserve generator order/multiplicity and never invoke external jq or modify <code>sources/</code>.</p></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.000606.981Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.000606.981Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.000606.981Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;parse-and-compose-filters&quot; stories=&quot;frontend-lexer,frontend-parser,eval-generator&quot;&gt;
+A jq program is a &quot;filter&quot;: it takes an input, and produces an output.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-json-values-and-operators&quot; stories=&quot;eval-values&quot;&gt;
+jq supports the same set of datatypes as JSON - numbers, strings, booleans, arrays, objects (which in JSON-speak are hashes with only string keys), and &quot;null&quot;.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-control-flow-and-errors&quot; stories=&quot;eval-control&quot;&gt;
+`if A then B else C end` will act the same as `B` if `A` produces a value other than false or null, but act the same as `C` otherwise.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-bindings-and-functions&quot; stories=&quot;lang-bindings&quot;&gt;
+In jq, all filters have an input and an output, so manual plumbing is not necessary to pass a value from one part of a program to the next.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;support-paths-and-assignment&quot; stories=&quot;lang-paths&quot;&gt;
+All the assignment operators in jq have path expressions on the left-hand side (LHS).
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-structural-builtins&quot; stories=&quot;builtin-structural&quot;&gt;
+The builtin function `length` gets the length of various
+different types of value:
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-string-builtins&quot; stories=&quot;builtin-strings&quot;&gt;
+jq uses the
+[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-runtime-builtins&quot; stories=&quot;builtin-runtime&quot;&gt;
+At this time jq has minimal support for I/O, mostly in the
+form of control over when inputs are read.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;metadata&quot;/&gt;
+&lt;unattached story=&quot;cli-foundation&quot;/&gt;
+&lt;unattached story=&quot;cli-documentation&quot;/&gt;
+&lt;unattached story=&quot;conformance&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

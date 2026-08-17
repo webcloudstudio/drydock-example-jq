@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.000648.324Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.000648.324Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.000648.324Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;track-source-locations&quot; stories=&quot;frontend-lexer&quot;&gt;
+#define YY_USER_ACTION                           \
+  do {                                           \
+    yylloc-&gt;start = yyget_extra(yyscanner);      \
+    yylloc-&gt;end = yylloc-&gt;start + yyleng;        \
+    yyset_extra(yylloc-&gt;end, yyscanner);        \
+  } while (0);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recognize-language-tokens&quot; stories=&quot;frontend-lexer&quot;&gt;
+&quot;!=&quot; { return NEQ; }
+&quot;==&quot; { return EQ; }
+&quot;as&quot; { return AS; }
+&quot;import&quot; { return IMPORT; }
+&quot;include&quot; { return INCLUDE; }
+&quot;module&quot; { return MODULE; }
+&quot;def&quot; { return DEF; }
+&quot;if&quot; { return IF; }
+&quot;then&quot; { return THEN; }
+&quot;else&quot; { return ELSE; }
+&quot;elif&quot; { return ELSE_IF; }
+&quot;and&quot; { return AND; }
+&quot;or&quot; { return OR; }
+&quot;end&quot; { return END; }
+&quot;reduce&quot; { return REDUCE; }
+&quot;foreach&quot; { return FOREACH; }
+&quot;//&quot; { return DEFINEDOR; }
+&quot;try&quot; { return TRY; }
+&quot;catch&quot; { return CATCH; }
+&quot;label&quot; { return LABEL; }
+&quot;break&quot; { return BREAK; }
+&quot;$__loc__&quot; { return LOC; }
+&quot;|=&quot; { return SETPIPE; }
+&quot;+=&quot; { return SETPLUS; }
+&quot;-=&quot; { return SETMINUS; }
+&quot;*=&quot; { return SETMULT; }
+&quot;/=&quot; { return SETDIV; }
+&quot;%=&quot; { return SETMOD; }
+&quot;//=&quot; { return SETDEFINEDOR; }
+&quot;&lt;=&quot; { return LESSEQ; }
+&quot;&gt;=&quot; { return GREATEREQ; }
+&quot;..&quot; { return REC; }
+&quot;?//&quot; { return ALTERNATION; }
+&quot;.&quot;|&quot;?&quot;|&quot;=&quot;|&quot;;&quot;|&quot;,&quot;|&quot;:&quot;|&quot;|&quot;|&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;|&quot;%&quot;|&quot;\$&quot;|&quot;&lt;&quot;|&quot;&gt;&quot; { return yytext[0];}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;handle-delimited-expressions&quot; stories=&quot;frontend-lexer&quot;&gt;
+&quot;[&quot;|&quot;{&quot;|&quot;(&quot; {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+&quot;]&quot;|&quot;}&quot;|&quot;)&quot; {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;ignore-comments&quot; stories=&quot;frontend-lexer&quot;&gt;
+&quot;#&quot; { yy_push_state(IN_COMMENT, yyscanner); }
+&lt;IN_COMMENT&gt;{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+&lt;IN_COMMENT&gt;&lt;&lt;EOF&gt;&gt; { yy_pop_state(yyscanner); }
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-literals&quot; stories=&quot;frontend-lexer&quot;&gt;
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval-&gt;literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parse-interpolated-strings&quot; stories=&quot;frontend-lexer&quot;&gt;
+&quot;\&quot;&quot; {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recognize-names-and-bindings&quot; stories=&quot;frontend-lexer&quot;&gt;
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return BINDING;}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;ignore-whitespace-and-reject-invalid-characters&quot; stories=&quot;frontend-lexer&quot;&gt;
+[ \r\n\t]+  {}
+
+. { return INVALID_CHARACTER; }
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;metadata&quot;/&gt;
+&lt;unattached story=&quot;cli-foundation&quot;/&gt;
+&lt;unattached story=&quot;cli-documentation&quot;/&gt;
+&lt;unattached story=&quot;frontend-parser&quot;/&gt;
+&lt;unattached story=&quot;eval-generator&quot;/&gt;
+&lt;unattached story=&quot;eval-values&quot;/&gt;
+&lt;unattached story=&quot;eval-control&quot;/&gt;
+&lt;unattached story=&quot;lang-bindings&quot;/&gt;
+&lt;unattached story=&quot;lang-paths&quot;/&gt;
+&lt;unattached story=&quot;builtin-structural&quot;/&gt;
+&lt;unattached story=&quot;builtin-strings&quot;/&gt;
+&lt;unattached story=&quot;builtin-runtime&quot;/&gt;
+&lt;unattached story=&quot;conformance&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

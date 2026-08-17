@@ -1,0 +1,3 @@
+error: release gate FAILED for jq
+  st-001 is NOT MET: The completed interpreter shall make sh sources/full_test.sh exit zero; that script's exit status is the sole acceptance verdict.
+  Governed acceptance gate failed: full: FAIL (exit 1) · sh sources/full_test.sh

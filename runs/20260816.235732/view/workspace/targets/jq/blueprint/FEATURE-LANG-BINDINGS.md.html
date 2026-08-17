@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-LANG-BINDINGS.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-LANG-BINDINGS.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-LANG-BINDINGS.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Language Bindings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implements jq variables, destructuring, user-defined functions, closures, and lexical scoping.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-CONTROL.md</td></tr><tr><td>Provides</td><td>jq bindings, patterns, user-defined functions, lexical closures</td></tr><tr><td>Consumes</td><td>generator evaluator, jq control flow</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement <code>as</code> bindings, scalar variables, array and object destructuring, <code>?//</code> alternatives, user-defined functions and parameters, recursive definitions, closures, lexical scope, and generator-valued function arguments.</p>
+<p>Bindings must be immutable and scoped over the remainder of their expression. Function arguments must remain filters when declared as regular parameters and values when declared as binding parameters.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC bindings-and-patterns ===<br>Intent: The authoritative corpus passes scalar bindings, array/object destructuring, and destructuring alternatives.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot; as \$|^\.\s+as |^\.\[\]\s+as |^\.\s+as \[|^\.\s+as \{&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC bindings-and-patterns ===</p>
+<p>=== AC functions-and-closures ===<br>Intent: The authoritative corpus passes user-defined functions, recursion, closures, and generator-valued arguments.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^def |^def .*;.*def |closures|recursion|backtracking&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC functions-and-closures ===</p>
+<p>=== AC binding-compile-errors ===<br>Intent: Undefined variables and malformed binding patterns are rejected at compile time.</p>
+<p>import subprocess</p>
+<p>undefined = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as $x | $missing&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) malformed = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as [] | null&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert undefined.returncode == 3 assert malformed.returncode == 3 === END AC binding-compile-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve lexical scope and immutable bindings.</li><li>Preserve generator-valued function argument semantics.</li><li>Reject undefined variables and invalid destructuring at compile time.</li></ul></article>
+</main>
+</body>
+</html>

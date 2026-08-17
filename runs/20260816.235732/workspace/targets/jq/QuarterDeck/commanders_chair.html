@@ -337,13 +337,15 @@ body {
   <div>
     <div class="target-line"><span class="label">Target:</span> jq</div>
     <ul class="header-meta">
-      <li>- Analyzed: 2026-08-16</li>
+      <li>- Building: 2026-08-16</li>
     </ul>
   </div>
   <img src="/logo.png" alt="Drydock" style="height:64px;display:block;">
 </div>
 
-<section class="running-panel" role="status"><strong><span class="running-pulse" aria-hidden="true"></span>RUNNING</strong><span>drydock plan jq</span><span>Started: 2026-08-16T23:58:57+00:00</span></section>
+<section class="big-error-panel"><strong>Error: target verification interrupted by build agent</strong><span>CAUSE: The jq implementation still misparses or lacks core constructs and builtins, causing the conformance evaluator to hang on unsupported programs.
+DO: Edit `jq` to correctly implement the failing parser constructs, interpolation, `range`, `getpath`, `setpath`, and `delpaths`.
+DO: Run `drydock build jq --step block-5`.</span><span>Command: build. Open <b>BIG ERRORS</b> for recovery.</span></section>
 <nav class="chair-tabs" aria-label="Commanders Chair views">
   <button class="chair-tab active" type="button" data-chair-tab="overview">Overview</button>
   <button class="chair-tab" type="button" data-chair-tab="build">Build Report</button>
@@ -353,56 +355,63 @@ body {
 
 <main id="chair-overview" class="chair-pane">
 <section class="question-lead">
-  <h2>Questionnaires</h2><div class="question-status">Open questionnaires remain</div>
-  <div class="next-step"><strong>Next Step:</strong> Review QuarterDeck action items, then run: drydock plan jq</div>
+  <div class="question-status question-status-inline"><strong>Questionnaires:</strong> No open questionnaires</div>
+  <div class="next-step"><strong>Next Step:</strong> drydock build jq  (9 steps remaining)</div>
 </section>
 
 <div class="stats">
-<div class="stat"><div class="stat-value">6</div><div class="stat-label">Features</div></div>
-<a class="stat" href="#stories"><div class="stat-value">13</div><div class="stat-label">Stories</div></a>
-<div class="stat"><div class="stat-value">1</div><div class="stat-label">Questionnaires</div></div>
-<div class="stat"><div class="stat-value">0</div><div class="stat-label">Blockers</div></div>
+<div class="stat"><div class="stat-value">0%</div><div class="stat-label">Complete</div></div>
+<div class="stat"><div class="stat-value">0</div><div class="stat-label">Verified</div></div>
+<div class="stat"><div class="stat-value">0</div><div class="stat-label">In Review</div></div>
+<div class="stat"><div class="stat-value">1</div><div class="stat-label">Failed</div></div>
 </div>
 
 <div class="details">
   <section id="stories" class="detail-section">
     <h2>Stories</h2>
-    <ul>
-  <li>CLI-001 - Implement the executable jq entry point</li>
-  <li>CLI-002 - Document the interpreter interface</li>
-  <li>FRONTEND-001 - Implement jq lexical analysis</li>
-  <li>FRONTEND-002 - Implement jq parsing and AST construction</li>
-  <li>EVAL-001 - Implement the generator execution model</li>
-  <li>EVAL-002 - Implement operators and value semantics</li>
-  <li>EVAL-003 - Implement control flow and errors</li>
-  <li>LANG-001 - Implement variables, patterns, and user functions</li>
-  <li>LANG-002 - Implement paths and assignment</li>
-  <li>BUILTIN-001 - Implement collection and structural builtins</li>
-  <li>BUILTIN-002 - Implement string, regex, format, and date builtins</li>
-  <li>BUILTIN-003 - Implement numeric, environment, and I/O builtins</li>
-  <li>CONF-001 - Run the complete supplied conformance suite</li>
-</ul>
+    <div class="story-list">
+<div class="story-feature">Build Block 1 · Foundational</div>
+<div class="story-row"><span class="story-name">Define the standalone jq interpreter architecture and module boundaries.</span> <span class="badge badge-pending">closed/implemented</span></div>
+<div class="story-row"><span class="story-name">Declare jq Interpreter project identity and delivery metadata.</span> <span class="badge badge-pending">closed/implemented</span></div>
+<div class="story-feature">Build Block 2 · Foundational</div>
+<div class="story-row"><span class="story-name">Implement the executable jq entry point and process contract.</span> <span class="badge badge-pending">closed/implemented</span></div>
+<div class="story-feature">Build Block 3 · Service</div>
+<div class="story-row"><span class="story-name">Document the jq command-line interface and verification workflow.</span> <span class="badge badge-pending">closed/implemented</span></div>
+<div class="story-feature">Build Block 4 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq lexical analysis for the supported language surface.</span> <span class="badge badge-pending">closed/implemented</span></div>
+<div class="story-feature">Build Block 5 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq parsing, precedence, and executable AST construction.</span> <span class="badge badge-failed">failed</span></div>
+<div class="story-feature">Build Block 6 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq generator evaluation and stream composition.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 7 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq operators, indexing, slicing, and value semantics.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 8 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq control flow, reductions, labels, and runtime error behavior.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 9 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq variables, destructuring, functions, closures, and lexical scope.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 10 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq paths, accessors, deletion, and assignment.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 11 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq collection, structural, and containment builtins.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 12 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq string, regex, format, conversion, and date builtins.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 13 · Service</div>
+<div class="story-row"><span class="story-name">Implement jq numeric, environment, input, debug, and streaming builtins.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 14 · Service</div>
+<div class="story-row"><span class="story-name">Run the complete supplied jq conformance suite as the terminal verification.</span> <span class="badge badge-pending">pending</span></div>
+</div>
   </section>
   <section id="questions" class="detail-section">
     <h2>Questionnaires</h2>
-    <ul>
-  <li>See questionnaire Discovery: Project Identity</li>
-</ul>
+    
   </section>
   <section id="blockers" class="detail-section">
     <h2>Blockers</h2>
-    <p class="empty">No blockers.</p>
+    
   </section>
   <section id="features" class="detail-section">
     <h2>Features</h2>
-    <ul>
-  <li>CLI Foundation</li>
-  <li>Front End</li>
-  <li>Generator Evaluation</li>
-  <li>Language Binding and Mutation</li>
-  <li>Standard Library</li>
-  <li>Conformance Delivery</li>
-</ul>
+    
   </section>
   <section id="scorecard" class="detail-section">
     <h2>Scorecard</h2>

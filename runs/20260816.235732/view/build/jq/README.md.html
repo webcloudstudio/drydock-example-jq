@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/README.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/README.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/README.md">Raw file</a></div></header>
+<article class="doc"><h1>jq Interpreter</h1>
+<p>A standalone Python interpreter for the jq language that reads JSON from stdin and emits filtered JSON values.</p>
+<h2>Command-line interface</h2>
+<p>Run a filter in compact-output mode:</p>
+<pre><code>./jq -c &#x27;&lt;program&gt;&#x27; &lt; input.json</code></pre>
+<p>The program reads JSON values from standard input and writes each generated result as one compact JSON value per line to standard output. Diagnostics are written to standard error.</p>
+<p>Exit codes:</p>
+<ul><li><code>0</code> — compilation and execution completed successfully.</li><li><code>3</code> — the jq program could not be compiled.</li><li><code>5</code> — the compiled program raised a runtime error.</li></ul>
+<p>The implementation uses only the Python standard library and does not depend on a system jq executable or a third-party package.</p>
+<h2>Verification</h2>
+<p>Run the supplied conformance workflow from the application root:</p>
+<pre><code>sh sources/full_test.sh</code></pre></article>
+</main>
+</body>
+</html>

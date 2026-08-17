@@ -1,0 +1,24 @@
+<reusable-compact filename="lexer.l">
+Recognize jq keywords, literals, identifiers, fields, bindings, formats, operators, delimiters, comments, quoted strings, and interpolation boundaries. Reject invalid escapes, characters, and mismatched delimiters as compile errors.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Lexer tokens must preserve literal values and source locations. Supported tokens include identifiers, fields, bindings, literals, formats, operators, delimiters, keywords, and interpolation markers; lexical errors propagate as compile errors.
+</reusable-compact>
+
+<reusable-compact filename="jq.test">
+The corpus validates strings, escapes, interpolation, comments, operators, formats, keywords, delimiters, and compile-error exit status 3. Runtime results use compact JSON streams and exit status 5 for runtime errors.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- lexer.py
+- tests/test_lexer.py
+
+SUMMARY:
+Implemented located standard-library jq lexing with comments, literals, names, bindings, formats, operators, strings, interpolation validation, and lexical errors. All 4 declared acceptance checks and 8 local tests pass. Full conformance was attempted but hung in an existing broader runtime case before producing a verdict.
+
+BLOCKERS:
+- Full supplied conformance suite did not complete; broader runtime work remains.

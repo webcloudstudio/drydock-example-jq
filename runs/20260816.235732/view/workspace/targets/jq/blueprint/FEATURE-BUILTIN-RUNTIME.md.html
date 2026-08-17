@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTIN-RUNTIME.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTIN-RUNTIME.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTIN-RUNTIME.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Runtime Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Define jq numeric, environment, input/output, debug, and streaming builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-CONTROL.md, FEATURE-BUILTIN-STRUCTURAL.md</td></tr><tr><td>Provides</td><td>numeric and math builtins, env, input, inputs, debug, stderr, tostream, fromstream, builtins</td></tr><tr><td>Consumes</td><td>generator evaluator, jq value operations</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement runtime-oriented jq builtins without external dependencies. Numeric behavior follows jq&#x27;s IEEE-compatible semantics as far as Python standard-library values permit. Environment and I/O behavior remains process-local and diagnostics remain separate from JSON output.</p>
+<h2>Behavior</h2>
+<ul><li>Numeric predicates and math functions handle finite, infinite, NaN, rounding, and documented domain errors.</li><li><code>env</code> and <code>$ENV</code> expose the process environment.</li><li><code>input</code> and <code>inputs</code> consume subsequent JSON values from the same input stream.</li><li><code>debug</code> and <code>stderr</code> write diagnostics to stderr while preserving the filter&#x27;s output contract.</li><li>Streaming helpers convert between path/value streams and reconstructed values.</li><li><code>builtins</code> returns function names with arities.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC runtime-numeric ===<br>Intent: Numeric predicates and arithmetic return state-derived numeric results. import json import subprocess</p>
+<p>source_value = [-2, 0, 3] program = &quot;[map(abs), map(isfinite)]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(source_value) + &quot;\n&quot;, capture_output=True, text=True) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == [[abs(item) for item in source_value], [True for _ in source_value]] === END AC runtime-numeric ===</p>
+<p>=== AC runtime-environment ===<br>Intent: The environment builtin returns an object containing a supplied inherited variable. import json import os import subprocess</p>
+<p>name = &quot;JQ_ACCEPTANCE_SENTINEL&quot; value = &quot;present&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, f&quot;env[{json.dumps(name)}]&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ, name: value}, ) assert result.returncode == 0 assert json.loads(result.stdout) == value === END AC runtime-environment ===</p>
+<p>=== AC runtime-inputs ===<br>Intent: Inputs are consumed in order from the supplied newline-delimited JSON stream. import json import subprocess</p>
+<p>values = [1, 2, 3] result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;], input=&quot;&quot;.join(json.dumps(value) + &quot;\n&quot; for value in values), capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual == values === END AC runtime-inputs ===</p>
+<p>=== AC runtime-streaming ===<br>Intent: Streaming conversion round-trips the supplied structure. import json import subprocess</p>
+<p>source_value = {&quot;a&quot;: [1, 2], &quot;b&quot;: True} result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as $x | fromstream($x | tostream)&quot;], input=json.dumps(source_value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == source_value === END AC runtime-streaming ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Diagnostics from <code>debug</code> and <code>stderr</code> must never corrupt stdout JSON.</li><li>Do not access the network or install packages.</li><li>Preserve input ordering and generator multiplicity.</li></ul></article>
+</main>
+</body>
+</html>

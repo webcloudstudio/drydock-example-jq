@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jq.py</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Project document</div><h1>jq.py</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../jq.py">Raw file</a></div></header>
+<article class="doc"><pre>#!/usr/bin/env python3
+import sys,json,re,math,base64,urllib.parse,html,functools,statistics
+
+class CompileError(Exception): pass
+class RuntimeErrorJQ(Exception): pass
+class Empty: pass
+EMPTY=Empty()
+
+def truth(x): return x is not False and x is not None
+def equal(a,b):
+    if isinstance(a,bool) or isinstance(b,bool): return type(a) is type(b) and a==b
+    return a==b
+def compact(x):
+    if isinstance(x,float):
+        if math.isnan(x): return &#x27;null&#x27;
+        if math.isinf(x): return &#x27;1.7976931348623157e+308&#x27; if x&gt;0 else &#x27;-1.7976931348623157e+308&#x27;
+    return json.dumps(x,separators=(&#x27;,&#x27;,&#x27;:&#x27;),ensure_ascii=False,allow_nan=False)
+
+TOKEN=re.compile(r&#x27;&#x27;&#x27;\s*(?:(\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)|(&quot;(?:\\.|[^&quot;\\])*&quot;)|(\$[A-Za-z_][A-Za-z_0-9]*)|([A-Za-z_][A-Za-z_0-9]*)|(==|!=|&lt;=|&gt;=|//|\?//|\+=|-=|\*=|/=|%=|\|=|\.\.|[{}\[\](),;:.|+*/%&lt;&gt;=?!-]))&#x27;&#x27;&#x27;)
+class Parser:
+ def __init__(self,s):
+  self.t=[]; p=0
+  while p&lt;len(s):
+   m=TOKEN.match(s,p)
+   if not m:
+    if s[p:].strip(): raise CompileError(&#x27;invalid token&#x27;)
+    break
+   p=m.end(); v=next(x for x in m.groups() if x is not None); self.t.append(v)
+  self.i=0
+ def peek(self): return self.t[self.i] if self.i&lt;len(self.t) else None
+ def pop(self,x=None):
+  v=self.peek()
+  if x is not None and v!=x: raise CompileError(&#x27;expected &#x27;+x)
+  self.i+=1; return v
+ def program(self):
+  n=self.expr()
+  if self.peek() is not None: raise CompileError(&#x27;unexpected token &#x27;+str(self.peek()))
+  return n
+ def expr(self,minp=0):
+  a=self.atom()
+  # postfix field/index/call and binding
+  while True:
+   t=self.peek()
+   if t==&#x27;.&#x27; and self.i+1&lt;len(self.t) and re.match(r&#x27;^[A-Za-z_]&#x27;,self.t[self.i+1]): self.pop(); a=(&#x27;get&#x27;,a,(&#x27;lit&#x27;,self.pop())); continue
+   if t==&#x27;[&#x27;:
+    self.pop()
+    if self.peek()==&#x27;]&#x27;: self.pop(); a=(&#x27;iter&#x27;,a); continue
+    b=self.expr();
+    if self.peek()==&#x27;:&#x27;: self.pop(); c=None if self.peek()==&#x27;]&#x27; else self.expr(); self.pop(&#x27;]&#x27;); a=(&#x27;slice&#x27;,a,b,c)
+    else: self.pop(&#x27;]&#x27;); a=(&#x27;index&#x27;,a,b)
+    continue
+   if t==&#x27;?&#x27;: self.pop(); a=(&#x27;try&#x27;,a,(&#x27;emptycatch&#x27;,)); continue
+   if t==&#x27;as&#x27;:
+    self.pop(); var=self.pop(); self.pop(&#x27;|&#x27;); a=(&#x27;as&#x27;,a,var,self.expr(0)); continue
+   prec={&#x27;|&#x27;:1,&#x27;,&#x27;:1,&#x27;//&#x27;:2,&#x27;or&#x27;:3,&#x27;and&#x27;:4,&#x27;==&#x27;:5,&#x27;!=&#x27;:5,&#x27;&lt;&#x27;:5,&#x27;&gt;&#x27;:5,&#x27;&lt;=&#x27;:5,&#x27;&gt;=&#x27;:5,&#x27;+&#x27;:6,&#x27;-&#x27;:6,&#x27;*&#x27;:7,&#x27;/&#x27;:7,&#x27;%&#x27;:7}.get(t,-1)
+   if prec&lt;minp: break
+   self.pop(); b=self.expr(prec+(0 if t==&#x27;,&#x27; else 1)); a=(t,a,b)
+  return a
+ def atom(self):
+  t=self.pop()
+  if t is None: raise CompileError(&#x27;incomplete program&#x27;)
+  if t==&#x27;(&#x27;:
+   a=self.expr(); self.pop(&#x27;)&#x27;); return a
+  if t==&#x27;.&#x27;: return (&#x27;dot&#x27;,)
+  if t.startswith(&#x27;$&#x27;): return (&#x27;var&#x27;,t)
+  if t[0]==&#x27;&quot;&#x27;:
+   try: return (&#x27;lit&#x27;,json.loads(t))
+   except: raise CompileError(&#x27;bad string&#x27;)
+  if re.match(r&#x27;^\d&#x27;,t): return (&#x27;lit&#x27;,float(t) if any(c in t for c in &#x27;.eE&#x27;) else int(t))
+  if t==&#x27;-&#x27;: return (&#x27;neg&#x27;,self.expr(8))
+  if t in (&#x27;true&#x27;,&#x27;false&#x27;,&#x27;null&#x27;): return (&#x27;lit&#x27;,{&#x27;true&#x27;:True,&#x27;false&#x27;:False,&#x27;null&#x27;:None}[t])
+  if t==&#x27;empty&#x27;: return (&#x27;empty&#x27;,)
+  if t==&#x27;[&#x27;:
+   if self.peek()==&#x27;]&#x27;: self.pop(); return (&#x27;array&#x27;,None)
+   a=self.expr(); self.pop(&#x27;]&#x27;); return (&#x27;array&#x27;,a)
+  if t==&#x27;{&#x27;:
+   pairs=[]
+   while self.peek()!=&#x27;}&#x27;:
+    k=self.pop();
+    if k==&#x27;,&#x27;: raise CompileError(&#x27;bad object&#x27;)
+    if self.peek()==&#x27;:&#x27;: self.pop(); v=self.expr(0)
+    else: v=(&#x27;get&#x27;,(&#x27;dot&#x27;,),(&#x27;lit&#x27;,k))
+    pairs.append((k[1:-1] if k.startswith(&#x27;&quot;&#x27;) else k,v))
+    if self.peek()==&#x27;,&#x27;: self.pop()
+    else: break
+   self.pop(&#x27;}&#x27;); return (&#x27;object&#x27;,pairs)
+  if t==&#x27;if&#x27;:
+   c=self.expr(); self.pop(&#x27;then&#x27;); a=self.expr(); b=(&#x27;lit&#x27;,None)
+   if self.peek()==&#x27;else&#x27;: self.pop(); b=self.expr()
+   self.pop(&#x27;end&#x27;); return (&#x27;if&#x27;,c,a,b)
+  if t==&#x27;try&#x27;:
+   a=self.expr(); b=(&#x27;emptycatch&#x27;,)
+   if self.peek()==&#x27;catch&#x27;: self.pop(); b=self.expr()
+   return (&#x27;try&#x27;,a,b)
+  if re.match(r&#x27;^[A-Za-z_]&#x27;,t):
+   if self.peek()==&#x27;(&#x27;:
+    self.pop(); args=[]
+    if self.peek()!=&#x27;)&#x27;:
+     args.append(self.expr())
+     while self.peek()==&#x27;;&#x27;: self.pop(); args.append(self.expr())
+    self.pop(&#x27;)&#x27;); return (&#x27;call&#x27;,t,args)
+   return (&#x27;call&#x27;,t,[])
+  raise CompileError(&#x27;unexpected &#x27;+t)
+
+def walk_get(v,k):
+ if isinstance(v,dict): return v.get(str(k),None)
+ if isinstance(v,list):
+  try: return v[int(k)] if -len(v)&lt;=int(k)&lt;len(v) else None
+  except: return None
+ if isinstance(v,str):
+  try:return v[int(k)]
+  except:return None
+ raise RuntimeErrorJQ(&#x27;cannot index&#x27;)
+def values(ast,inp,env):
+ typ=ast[0]
+ if typ==&#x27;lit&#x27;: yield ast[1]
+ elif typ==&#x27;dot&#x27;: yield inp
+ elif typ==&#x27;var&#x27;: yield env.get(ast[1],None)
+ elif typ==&#x27;empty&#x27;: return
+ elif typ==&#x27;neg&#x27;:
+  for x in values(ast[1],inp,env): yield -x
+ elif typ==&#x27;get&#x27;:
+  for x in values(ast[1],inp,env): yield walk_get(x,ast[2][1])
+ elif typ==&#x27;index&#x27;:
+  for x in values(ast[1],inp,env):
+   for k in values(ast[2],inp,env): yield walk_get(x,k)
+ elif typ==&#x27;iter&#x27;:
+  for x in values(ast[1],inp,env):
+   if isinstance(x,dict): yield from x.values()
+   elif isinstance(x,(list,str)): yield from x
+   else: raise RuntimeErrorJQ(&#x27;cannot iterate&#x27;)
+ elif typ==&#x27;slice&#x27;:
+  for x in values(ast[1],inp,env):
+   for a in values(ast[2],inp,env):
+    bs=list(values(ast[3],inp,env)) if ast[3] else [None]
+    for b in bs: yield x[int(a) if a is not None else None:int(b) if b is not None else None]
+ elif typ==&#x27;array&#x27;:
+  if ast[1] is None: yield []
+  else: yield list(values(ast[1],inp,env))
+ elif typ==&#x27;object&#x27;:
+  def rec(i,o):
+   if i==len(ast[1]): yield o; return
+   k,v=ast[1][i]
+   for z in values(v,inp,env): yield from rec(i+1,{**o,k:z})
+  yield from rec(0,{})
+ elif typ==&#x27;,&#x27;: yield from values(ast[1],inp,env); yield from values(ast[2],inp,env)
+ elif typ==&#x27;|&#x27;:
+  for x in values(ast[1],inp,env): yield from values(ast[2],x,env)
+ elif typ==&#x27;as&#x27;:
+  for x in values(ast[1],inp,env):
+   for _ in [x]:
+    e=dict(env); e[ast[2]]=x; yield from values(ast[3],inp,e)
+ elif typ==&#x27;if&#x27;:
+  for c in values(ast[1],inp,env): yield from values(ast[2] if truth(c) else ast[3],inp,env)
+ elif typ==&#x27;try&#x27;:
+  try: yield from values(ast[1],inp,env)
+  except RuntimeErrorJQ as e:
+   if ast[2][0]!=&#x27;emptycatch&#x27;: yield from values(ast[2],str(e),env)
+ elif typ in (&#x27;+&#x27;,&#x27;-&#x27;,&#x27;*&#x27;,&#x27;/&#x27;,&#x27;%&#x27;,&#x27;==&#x27;,&#x27;!=&#x27;,&#x27;&lt;&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;=&#x27;,&#x27;&gt;=&#x27;,&#x27;and&#x27;,&#x27;or&#x27;,&#x27;//&#x27;):
+  left=list(values(ast[1],inp,env))
+  if typ==&#x27;//&#x27;:
+   good=[x for x in left if truth(x)]
+   yield from (good or list(values(ast[2],inp,env))); return
+  for a in left:
+   for b in values(ast[2],inp,env): yield op(typ,a,b)
+ elif typ==&#x27;call&#x27;: yield from builtin(ast[1],ast[2],inp,env)
+ else: raise RuntimeErrorJQ(&#x27;unsupported&#x27;)
+
+def op(t,a,b):
+ if t==&#x27;==&#x27;: return equal(a,b)
+ if t==&#x27;!=&#x27;: return not equal(a,b)
+ if t in (&#x27;&lt;&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;=&#x27;,&#x27;&gt;=&#x27;): return {&#x27;&lt;&#x27;:a&lt;b,&#x27;&gt;&#x27;:a&gt;b,&#x27;&lt;=&#x27;:a&lt;=b,&#x27;&gt;=&#x27;:a&gt;=b}[t]
+ if t==&#x27;and&#x27;: return truth(a) and truth(b)
+ if t==&#x27;or&#x27;: return truth(a) or truth(b)
+ if t==&#x27;+&#x27;:
+  if a is None:return b
+  if b is None:return a
+  if isinstance(a,list) and isinstance(b,list):return a+b
+  if isinstance(a,dict) and isinstance(b,dict):return {**a,**b}
+  if isinstance(a,str) and isinstance(b,str):return a+b
+  return a+b
+ if t==&#x27;-&#x27;: return [x for x in a if x not in b] if isinstance(a,list) else a-b
+ if t==&#x27;*&#x27;: return a*b if not isinstance(a,dict) else {**a,**b}
+ if t==&#x27;/&#x27;:
+  if b==0: raise RuntimeErrorJQ(&#x27;division by zero&#x27;)
+  return a/b
+ if t==&#x27;%&#x27;: return a%b
+
+def builtin(n,args,inp,env):
+ def av(i=0): return list(values(args[i],inp,env)) if i&lt;len(args) else [inp]
+ if n==&#x27;length&#x27;: yield len(inp) if hasattr(inp,&#x27;__len__&#x27;) else 0
+ elif n==&#x27;add&#x27;: yield sum(inp) if isinstance(inp,list) else inp
+ elif n in (&#x27;type&#x27;,): yield &#x27;null&#x27; if inp is None else &#x27;boolean&#x27; if isinstance(inp,bool) else &#x27;number&#x27; if isinstance(inp,(int,float)) else &#x27;string&#x27; if isinstance(inp,str) else &#x27;array&#x27; if isinstance(inp,list) else &#x27;object&#x27;
+ elif n==&#x27;keys&#x27;: yield list(range(len(inp))) if isinstance(inp,list) else sorted(inp)
+ elif n==&#x27;range&#x27;:
+  aa=av(); start=aa[0]; end=aa[1] if len(aa)&gt;1 else start; step=aa[2] if len(aa)&gt;2 else 1
+  yield from range(int(start),int(end),int(step))
+ elif n in (&#x27;map&#x27;,&#x27;map_values&#x27;):
+  out=[]
+  for x in inp:
+   z=list(values(args[0],x,env)); out.extend(z if n==&#x27;map&#x27; else [z[-1] if z else None])
+  yield out
+ elif n==&#x27;select&#x27;:
+  if truth(next(values(args[0],inp,env),None)): yield inp
+ elif n==&#x27;not&#x27;: yield not truth(inp)
+ elif n==&#x27;error&#x27;: raise RuntimeErrorJQ(str(av()[0]) if args else &#x27;error&#x27;)
+ elif n==&#x27;tostring&#x27;: yield compact(inp) if not isinstance(inp,str) else inp
+ elif n==&#x27;tojson&#x27;: yield compact(inp)
+ elif n==&#x27;fromjson&#x27;: yield json.loads(inp)
+ elif n==&#x27;tonumber&#x27;: yield float(inp) if &#x27;.&#x27; in str(inp) else int(inp)
+ elif n==&#x27;abs&#x27;: yield abs(inp)
+ elif n==&#x27;floor&#x27;: yield math.floor(inp)
+ elif n==&#x27;sqrt&#x27;: yield math.sqrt(inp)
+ elif n==&#x27;sin&#x27;: yield math.sin(inp)
+ elif n==&#x27;cos&#x27;: yield math.cos(inp)
+ elif n==&#x27;empty&#x27;: return
+ elif n==&#x27;first&#x27;: yield next(iter(values(args[0],inp,env)))
+ elif n==&#x27;last&#x27;: yield list(values(args[0],inp,env))[-1]
+ elif n==&#x27;sort&#x27;: yield sorted(inp)
+ elif n==&#x27;unique&#x27;: yield sorted(set(inp))
+ elif n==&#x27;reverse&#x27;: yield inp[::-1]
+ elif n in (&#x27;arrays&#x27;,&#x27;objects&#x27;,&#x27;iterables&#x27;,&#x27;scalars&#x27;,&#x27;values&#x27;,&#x27;booleans&#x27;,&#x27;nulls&#x27;):
+  ok={&#x27;arrays&#x27;:isinstance(inp,list),&#x27;objects&#x27;:isinstance(inp,dict),&#x27;iterables&#x27;:isinstance(inp,(list,dict)),&#x27;scalars&#x27;:not isinstance(inp,(list,dict)),&#x27;values&#x27;:inp is not None,&#x27;booleans&#x27;:isinstance(inp,bool),&#x27;nulls&#x27;:inp is None}[n]
+  if ok: yield inp
+ elif n==&#x27;contains&#x27;:
+  b=av(0)[0]; yield b in inp
+ elif n==&#x27;startswith&#x27;: yield inp.startswith(av()[0])
+ elif n==&#x27;endswith&#x27;: yield inp.endswith(av()[0])
+ elif n==&#x27;split&#x27;: yield inp.split(av()[0])
+ elif n==&#x27;join&#x27;: yield av()[0].join(map(str,inp))
+ elif n==&#x27;trim&#x27;: yield inp.strip()
+ elif n==&#x27;ltrim&#x27;: yield inp.lstrip()
+ elif n==&#x27;rtrim&#x27;: yield inp.rstrip()
+ elif n==&#x27;utf8bytelength&#x27;: yield len(inp.encode())
+ elif n==&#x27;has&#x27;: yield (av()[0] in inp)
+ elif n==&#x27;implode&#x27;: yield &#x27;&#x27;.join(chr(x) for x in inp)
+ elif n==&#x27;explode&#x27;: yield [ord(x) for x in inp]
+ else: raise RuntimeErrorJQ(&#x27;unknown function &#x27;+n)
+
+def main(argv):
+ if len(argv)!=3 or argv[1]!=&#x27;-c&#x27;: print(&#x27;usage: jq -c PROGRAM&#x27;,file=sys.stderr); return 3
+ try: ast=Parser(argv[2]).program()
+ except Exception as e: print(&#x27;compile error: &#x27;+str(e),file=sys.stderr); return 3
+ try:
+  for line in sys.stdin:
+   if not line.strip(): continue
+   inp=json.loads(line)
+   for x in values(ast,inp,{}): print(compact(x))
+  return 0
+ except Exception as e:
+  print(&#x27;runtime error: &#x27;+str(e),file=sys.stderr); return 5
+if __name__==&#x27;__main__&#x27;: raise SystemExit(main(sys.argv))
+</pre></article>
+</main>
+</body>
+</html>

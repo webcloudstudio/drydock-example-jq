@@ -1,0 +1,37 @@
+<requirement name="lexical-analysis" stories="frontend-lexer">
+# We test escapes by matching them against Unicode codepoints
+</requirement>
+<requirement name="parsing-and-ast" stories="frontend-parser">
+# Dictionary construction syntax
+</requirement>
+<requirement name="generator-evaluation" stories="eval-generator">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="value-semantics" stories="eval-values">
+# Builtin functions
+</requirement>
+<requirement name="control-flow" stories="eval-control">
+# Conditionals
+</requirement>
+<requirement name="bindings-and-functions" stories="lang-bindings">
+# Variables
+</requirement>
+<requirement name="paths-and-assignment" stories="lang-paths">
+# Paths
+</requirement>
+<requirement name="structural-builtins" stories="builtin-structural">
+# Recursive object merge
+</requirement>
+<requirement name="string-and-date-builtins" stories="builtin-strings">
+# string operations
+</requirement>
+<requirement name="runtime-builtins" stories="builtin-runtime">
+# nan is parsed as a valid NaN value from JSON
+</requirement>
+<requirement name="conformance-suite" stories="conformance">
+# Tests are groups of three lines: program, input, expected output
+</requirement>
+<unattached story="architecture"/>
+<unattached story="metadata"/>
+<unattached story="cli-foundation"/>
+<unattached story="cli-documentation"/>

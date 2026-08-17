@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FRONTEND-LEXER.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FRONTEND-LEXER.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FRONTEND-LEXER.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Front End Lexer</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>jq lexical analyzer for literals, identifiers, strings, operators, comments, formats, and delimiters.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CLI-FOUNDATION.md</td></tr><tr><td>Provides</td><td>jq tokenizer</td></tr><tr><td>Consumes</td><td>interpreter module boundaries</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The lexer converts jq source text into parser tokens while preserving source locations. It recognizes JSON-compatible literals, identifiers, field selectors, variable bindings, quoted strings, interpolation boundaries, formats, comments, operators, delimiters, and module-related keywords.</p>
+<p>Invalid escapes, invalid characters, mismatched delimiters, and malformed lexical forms must be reported as compile errors through the CLI contract.</p>
+<h2>Token Categories</h2>
+<ul><li>Literals: integers, decimals, exponents, strings, booleans, and null.</li><li>Names: identifiers, field names, qualified names, and <code>$</code> bindings.</li><li>Operators: arithmetic, comparison, assignment, alternatives, pipes, commas, and suffix markers.</li><li>Structures: parentheses, brackets, braces, and interpolation delimiters.</li><li>Formats: <code>@text</code>, <code>@json</code>, <code>@csv</code>, <code>@tsv</code>, <code>@uri</code>, <code>@html</code>, <code>@sh</code>, <code>@base64</code>, and related format names.</li><li>Comments: <code>#</code> through the line ending, including documented continuation behavior.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-literals ===<br>Intent: Lexically valid literal and format tokens are accepted through the executable boundary and preserve their supplied values.</p>
+<p>import json import subprocess</p>
+<p>literal = &quot;alpha&quot; program = f&#x27;&quot;{literal}&quot;&#x27; expected = json.dumps(literal, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 assert result.stdout == expected === END AC lexer-literals ===</p>
+<p>=== AC lexer-interpolation ===<br>Intent: String interpolation lexical boundaries are accepted and produce a value derived from supplied input.</p>
+<p>import json import subprocess</p>
+<p>value = 7 program = &#x27;&quot;value=\\(.)&quot;&#x27; expected_value = f&quot;value={value}&quot; expected = json.dumps(expected_value, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(value) + &quot;\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 assert result.stdout == expected === END AC lexer-interpolation ===</p>
+<p>=== AC lexer-comments-and-operators ===<br>Intent: Comments and operator tokens are ignored or recognized without changing the evaluated result.</p>
+<p>import json import subprocess</p>
+<p>value = 2 program = &quot;1 + . # trailing comment&quot; expected_value = value + 1 expected = json.dumps(expected_value, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=json.dumps(value) + &quot;\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 assert result.stdout == expected === END AC lexer-comments-and-operators ===</p>
+<p>=== AC lexer-invalid-escape ===<br>Intent: An invalid string escape is rejected as a compile error.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 3 === END AC lexer-invalid-escape ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not reinterpret invalid lexical forms as runtime errors.</li><li>Preserve source locations sufficiently for compile diagnostics.</li><li>Do not modify the supplied lexer or parser reference assets.</li></ul></article>
+</main>
+</body>
+</html>

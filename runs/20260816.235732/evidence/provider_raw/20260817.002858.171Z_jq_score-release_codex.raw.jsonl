@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a00d1f-1f0a-7561-ac40-13c875497d5c"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"{\"criteria\":[{\"id\":\"st-001\",\"verdict\":\"NOT MET\",\"rationale\":\"The governed full test exited 1, with 145 tests passed and 392 failed.\",\"evidence\":[\"sh sources/full_test.sh returned code 1\",\"jq conformance: 145 passed, 392 failed, 0 errored, 13 skipped\"]}],\"improvements\":[\"Restore jq conformance across the failing parser, built-in, runtime, and formatting behaviors before release.\"]}"}}
+{"type":"turn.completed","usage":{"input_tokens":48997,"cached_input_tokens":8960,"cache_write_input_tokens":0,"output_tokens":141,"reasoning_output_tokens":37}}

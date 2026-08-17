@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EVAL-CONTROL.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EVAL-CONTROL.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EVAL-CONTROL.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Control Flow and Runtime Errors</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Implements jq control flow, reductions, recursive generators, labels, and error handling.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-EVAL-GENERATOR.md, FEATURE-EVAL-VALUES.md</td></tr><tr><td>Provides</td><td>jq control flow, try/catch, labels, reductions, recursive generators</td></tr><tr><td>Consumes</td><td>generator evaluator, jq value operations</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement conditionals and <code>elif</code>, <code>//</code>, <code>try</code> and <code>catch</code>, optional expressions, labels and breaks, <code>reduce</code>, <code>foreach</code>, <code>limit</code>, <code>skip</code>, <code>first</code>, <code>last</code>, <code>nth</code>, <code>while</code>, <code>until</code>, <code>repeat</code>, and <code>recurse</code>.</p>
+<p>Control constructs must operate over streams, preserve partial output before runtime failure, short-circuit where jq specifies it, and distinguish caught errors from uncaught runtime errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC control-flow ===<br>Intent: The authoritative corpus passes conditionals, alternatives, try/catch, and optional-expression cases.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^if |^try |^\.foo \?\?|^empty //|^\[\.\\[.*\]\?&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC control-flow ===</p>
+<p>=== AC reductions-and-loops ===<br>Intent: The authoritative corpus passes reductions, foreach, bounded generators, and recursive control constructs.<br>Suite: scoped</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^reduce |^foreach |^limit\(|^skip\(|^first\(|^nth\(|^while\(|^until\(|^recurse&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC reductions-and-loops ===</p>
+<p>=== AC control-runtime-status ===<br>Intent: An uncaught control-expression runtime failure uses the documented runtime exit status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;limit(-1; .)&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC control-runtime-status ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve short-circuiting and label/break scope.</li><li>Preserve values emitted before a runtime error.</li><li>Do not convert caught errors into process failures.</li></ul></article>
+</main>
+</body>
+</html>

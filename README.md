@@ -1,11 +1,8 @@
-# jq
+# jq Interpreter
 
-This build provides a self-contained Python standard-library jq interpreter. It
-accepts `./jq -c '<program>'`, reads newline-delimited JSON from standard input,
-and writes one compact JSON result per line. Exit code `3` denotes compilation
-or argument errors; exit code `5` denotes runtime errors after compilation.
+`./jq -c '<program>'` reads newline-delimited JSON from standard input and emits one compact JSON value per result on each output line.
 
-Run the supplied conformance harness with:
+Exit status `0` indicates success, `3` a compile or static error, and `5` a runtime error. The supplied conformance suite can be run with:
 
 ```sh
 sh sources/full_test.sh

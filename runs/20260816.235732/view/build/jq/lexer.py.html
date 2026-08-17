@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/lexer.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/lexer.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Lexer for the jq source language.
+
+The parser in this small interpreter consumes a compact token spelling, while
+the public lexer retains token kind and source location information for tests
+and diagnostics.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+import json
+import re
+
+
+class LexError(ValueError):
+    &quot;&quot;&quot;Raised when jq source cannot be lexed.&quot;&quot;&quot;
+
+
+@dataclass(frozen=True)
+class Token:
+    kind: str
+    value: str | int | float | None
+    start: int
+    end: int
+    line: int
+    column: int
+
+
+_NUMBER = re.compile(r&quot;(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?&quot;)
+_NAME = re.compile(r&quot;[A-Za-z_][A-Za-z_0-9]*&quot;)
+_BINDING = re.compile(r&quot;\$([A-Za-z_][A-Za-z_0-9]*(?:::[A-Za-z_][A-Za-z_0-9]*)*)&quot;)
+_FIELD = re.compile(r&quot;\.([A-Za-z_][A-Za-z_0-9]*)&quot;)
+
+_KEYWORDS = {
+    &quot;as&quot;, &quot;import&quot;, &quot;include&quot;, &quot;module&quot;, &quot;def&quot;, &quot;if&quot;, &quot;then&quot;, &quot;else&quot;,
+    &quot;elif&quot;, &quot;and&quot;, &quot;or&quot;, &quot;end&quot;, &quot;reduce&quot;, &quot;foreach&quot;, &quot;try&quot;, &quot;catch&quot;,
+    &quot;label&quot;, &quot;break&quot;,
+}
+_OPERATORS = (
+    &quot;//=&quot;, &quot;?//&quot;, &quot;!=&quot;, &quot;==&quot;, &quot;|=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;,
+    &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;..&quot;, &quot;//&quot;,
+)
+_SINGLE = set(&quot;.?=;, :|+-*/%&lt;&gt;[]{}()&quot;.replace(&quot; &quot;, &quot;&quot;))
+
+
+class Lexer:
+    &quot;&quot;&quot;Convert jq source into located tokens and validate lexical forms.&quot;&quot;&quot;
+
+    def __init__(self, source: str) -&gt; None:
+        self.source = source
+
+    def tokens(self) -&gt; list[Token]:
+        source = self.source
+        result: list[Token] = []
+        i = 0
+        line = 1
+        column = 1
+        n = len(source)
+
+        def advance(text: str) -&gt; None:
+            nonlocal line, column
+            pieces = text.splitlines(keepends=True)
+            if len(pieces) &gt; 1:
+                line += len(pieces) - 1
+                column = len(pieces[-1]) + 1
+            else:
+                column += len(text)
+
+        while i &lt; n:
+            ch = source[i]
+            if ch in &quot; \t\r\n&quot; or ch == &quot;\ufeff&quot;:
+                advance(ch)
+                i += 1
+                continue
+            if ch == &quot;#&quot;:
+                start = i
+                while i &lt; n and source[i] not in &quot;\r\n&quot;:
+                    i += 1
+                advance(source[start:i])
+                continue
+            start, start_line, start_col = i, line, column
+            if ch == &#x27;&quot;&#x27;:
+                i = self._scan_string(i)
+                raw = source[start:i]
+                if &quot;\\(&quot; in raw:
+                    value = raw
+                else:
+                    try:
+                        value = json.loads(raw)
+                    except json.JSONDecodeError as exc:
+                        raise LexError(f&quot;invalid string literal at line {start_line}, column {start_col}&quot;) from exc
+                result.append(Token(&quot;STRING&quot;, value, start, i, start_line, start_col))
+                advance(raw)
+                continue
+            match = _NUMBER.match(source, i)
+            if match:
+                raw = match.group(0)
+                value: int | float = float(raw) if any(c in raw for c in &quot;.eE&quot;) else int(raw)
+                i = match.end()
+                result.append(Token(&quot;NUMBER&quot;, value, start, i, start_line, start_col))
+                advance(raw)
+                continue
+            match = _BINDING.match(source, i)
+            if match:
+                raw = match.group(0)
+                i = match.end()
+                result.append(Token(&quot;BINDING&quot;, raw[1:], start, i, start_line, start_col))
+                advance(raw)
+                continue
+            match = _FIELD.match(source, i)
+            if match:
+                raw = match.group(0)
+                i = match.end()
+                result.append(Token(&quot;FIELD&quot;, match.group(1), start, i, start_line, start_col))
+                advance(raw)
+                continue
+            if ch == &quot;@&quot;:
+                match = _NAME.match(source, i + 1)
+                if not match:
+                    raise LexError(f&quot;invalid format at line {line}, column {column}&quot;)
+                raw = source[i:match.end()]
+                i = match.end()
+                result.append(Token(&quot;FORMAT&quot;, raw[1:], start, i, start_line, start_col))
+                advance(raw)
+                continue
+            match = _NAME.match(source, i)
+            if match:
+                raw = match.group(0)
+                i = match.end()
+                kind = raw.upper() if raw in _KEYWORDS else &quot;IDENT&quot;
+                result.append(Token(kind, raw, start, i, start_line, start_col))
+                advance(raw)
+                continue
+            operator = next((op for op in _OPERATORS if source.startswith(op, i)), None)
+            if operator is not None:
+                i += len(operator)
+                result.append(Token(operator, operator, start, i, start_line, start_col))
+                advance(operator)
+                continue
+            if ch in _SINGLE:
+                i += 1
+                result.append(Token(ch, ch, start, i, start_line, start_col))
+                advance(ch)
+                continue
+            raise LexError(f&quot;invalid character {ch!r} at line {line}, column {column}&quot;)
+        return result
+
+    def cleaned_source(self) -&gt; str:
+        &quot;&quot;&quot;Return source with comments blanked, preserving string contents.&quot;&quot;&quot;
+        chars = list(self.source)
+        for token in self.tokens():
+            del token
+        in_string = False
+        escaped = False
+        i = 0
+        while i &lt; len(chars):
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif chars[i] == &quot;\\&quot;:
+                    escaped = True
+                elif chars[i] == &#x27;&quot;&#x27;:
+                    in_string = False
+            elif chars[i] == &#x27;&quot;&#x27;:
+                in_string = True
+            elif chars[i] == &#x27;#&#x27;:
+                while i &lt; len(chars) and chars[i] not in &quot;\r\n&quot;:
+                    chars[i] = &#x27; &#x27;
+                    i += 1
+                continue
+            i += 1
+        return &quot;&quot;.join(chars)
+
+    def _scan_string(self, start: int) -&gt; int:
+        source = self.source
+        i = start + 1
+        while i &lt; len(source):
+            if source[i] == &#x27;&quot;&#x27;:
+                return i + 1
+            if source[i] == &quot;\\&quot;:
+                if i + 1 &gt;= len(source):
+                    raise LexError(&quot;unterminated escape in string&quot;)
+                esc = source[i + 1]
+                if esc == &quot;u&quot;:
+                    if i + 5 &gt;= len(source) or not re.fullmatch(r&quot;[0-9A-Fa-f]{4}&quot;, source[i + 2:i + 6]):
+                        raise LexError(&quot;invalid unicode escape&quot;)
+                    i += 6
+                    continue
+                if esc not in &#x27;&quot;\\/bfnrt(&#x27;:
+                    raise LexError(f&quot;invalid escape \\{esc}&quot;)
+                i += 2
+                continue
+            if ord(source[i]) &lt; 0x20:
+                raise LexError(&quot;unescaped control character in string&quot;)
+            i += 1
+        raise LexError(&quot;unterminated string&quot;)
+</pre></article>
+</main>
+</body>
+</html>

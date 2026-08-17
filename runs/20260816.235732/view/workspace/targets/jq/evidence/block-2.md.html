@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-2.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-2.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-2.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 2 · Foundational (block-2)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-16</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 12088</li><li>execution id: 20260817.000917.297Z-aecad35b</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement the executable jq entry point and process contract. (cli-foundation) [story]</li></ul>
+<h2>Reusable compacts</h2>
+<ul><li>full_test_compact.md</li><li>run_conformance_compact.md</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3821)</li><li>implements: FEATURE-CLI-FOUNDATION.md (SP 796)</li><li>context: full_test.sh (SP 189)</li><li>context: run_conformance.py (SP 4354)</li><li>context: ARCHITECTURE_compact.md (SP 147)</li><li>stack: common_compact.md (SP 1179)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>README.md</li><li>jq</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: cli-identity (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: The executable accepts compact mode, reads JSON stdin, and emits a compact JSON result. return code: 1 stderr: --- drydock: values at failure --- errno_num = 2 err_msg = &#x27;No such file or directory&#x27; err_filename = &#x27;./jq&#x27; --- drydock: end values --- Traceback (most recent call last): File &quot;cli-identity.py&quot;, line 7, in &lt;module&gt; result = subprocess.run( ^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 548, in run with Popen(*popenargs, **kwargs) as process: ^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1026, in <strong>init</strong> self._execute_child(args, executable, preexec_fn, close_fds, File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1955, in _execute_child raise child_exception_type(errno_num, err_msg, err_filename)<br>FileNotFoundError: [Errno 2] No such file or directory: &#x27;./jq&#x27;</p>
+<ul><li>RED: cli-generator-output (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: The executable emits one compact line for each generated array element in source order. return code: 1 stderr: --- drydock: values at failure --- errno_num = 2 err_msg = &#x27;No such file or directory&#x27; err_filename = &#x27;./jq&#x27; --- drydock: end values --- Traceback (most recent call last): File &quot;cli-generator-output.py&quot;, line 7, in &lt;module&gt; result = subprocess.run( ^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 548, in run with Popen(*popenargs, **kwargs) as process: ^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1026, in <strong>init</strong> self._execute_child(args, executable, preexec_fn, close_fds, File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1955, in _execute_child raise child_exception_type(errno_num, err_msg, err_filename)<br>FileNotFoundError: [Errno 2] No such file or directory: &#x27;./jq&#x27;</p>
+<ul><li>RED: cli-compile-error (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: A syntactically invalid jq program returns the documented compile-error status. return code: 1 stderr: --- drydock: values at failure --- errno_num = 2 err_msg = &#x27;No such file or directory&#x27; err_filename = &#x27;./jq&#x27; --- drydock: end values --- Traceback (most recent call last): File &quot;cli-compile-error.py&quot;, line 3, in &lt;module&gt; result = subprocess.run( ^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 548, in run with Popen(*popenargs, **kwargs) as process: ^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1026, in <strong>init</strong> self._execute_child(args, executable, preexec_fn, close_fds, File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1955, in _execute_child raise child_exception_type(errno_num, err_msg, err_filename)<br>FileNotFoundError: [Errno 2] No such file or directory: &#x27;./jq&#x27;</p>
+<ul><li>RED: cli-runtime-error (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: A compiled program that raises at runtime returns the documented runtime-error status. return code: 1 stderr: --- drydock: values at failure --- errno_num = 2 err_msg = &#x27;No such file or directory&#x27; err_filename = &#x27;./jq&#x27; --- drydock: end values --- Traceback (most recent call last): File &quot;cli-runtime-error.py&quot;, line 3, in &lt;module&gt; result = subprocess.run( ^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 548, in run with Popen(*popenargs, **kwargs) as process: ^^^^^^^^^^^^^^^^^^^^^^^^^^^ File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1026, in <strong>init</strong> self._execute_child(args, executable, preexec_fn, close_fds, File &quot;/home/barlo/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 1955, in _execute_child raise child_exception_type(errno_num, err_msg, err_filename)<br>FileNotFoundError: [Errno 2] No such file or directory: &#x27;./jq&#x27;</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: cli-identity (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: The executable accepts compact mode, reads JSON stdin, and emits a compact JSON result. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: {&quot;name&quot;:&quot;jq&quot;,&quot;items&quot;:[1,2,3]}</p>
+<ul><li>PASS: cli-generator-output (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: The executable emits one compact line for each generated array element in source order. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: 3 1 4</p>
+<ul><li>PASS: cli-compile-error (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: A syntactically invalid jq program returns the documented compile-error status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: compile error: &#x27;NoneType&#x27; object has no attribute &#x27;startswith&#x27;</p>
+<ul><li>PASS: cli-runtime-error (FEATURE-CLI-FOUNDATION.md)</li></ul>
+<p>intent: A compiled program that raises at runtime returns the documented runtime-error status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: runtime error: division by zero</p>
+<h2>Build summary</h2>
+<p>&lt;reusable-compact filename=&quot;full_test.sh&quot;&gt; Requires executable <code>./jq</code>; runs <code>JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py</code> with exit status as verdict. Do not modify scoring behavior. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;run_conformance.py&quot;&gt; Runs each <code>jq.test</code> case independently with a 10-second timeout. Requires exit code 3 for compile failures, 0 or 5 for normal/runtime cases, and compares newline-delimited JSON structurally. Harness exits 0 only when all non-skipped cases pass. &lt;/reusable-compact&gt;</p>
+<p>RESULT: FAILED</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>README.md</li></ul>
+<p>SUMMARY: Implemented the executable CLI and documented interface. All 4 declared CLI acceptance checks passed; existing tests passed (3/3). Full conformance did not complete: the interpreter hung on later corpus cases and was stopped.</p>
+<p>BLOCKERS:</p>
+<ul><li>Full jq conformance remains incomplete; broader parser/runtime implementation is required.</li></ul></article>
+</main>
+</body>
+</html>

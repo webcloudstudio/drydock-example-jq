@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CLI-FOUNDATION.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CLI-FOUNDATION.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CLI-FOUNDATION.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: CLI Foundation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260816 V1</td></tr><tr><td>Description</td><td>Executable jq entry point for compact JSON filtering and documented process outcomes.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>executable jq, compact JSON output, compile/runtime exit codes</td></tr><tr><td>Consumes</td><td>interpreter module boundaries</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Provide the application-root executable <code>jq</code> and the <code>./jq -c &#x27;&lt;program&gt;&#x27;</code> process contract.</p>
+<h2>Workflow</h2>
+<ol><li>Validate the exercised <code>-c</code> invocation and obtain the jq program.</li><li>Read JSON input values from stdin.</li><li>Compile the program once for the process.</li><li>Evaluate the filter for each input value as a generator.</li><li>Emit every result as compact JSON on its own stdout line.</li><li>Send diagnostics to stderr and return the documented status.</li></ol>
+<p>The implementation must support multiple newline-delimited JSON inputs and preserve output order and multiplicity.</p>
+<h2>Error Behavior</h2>
+<p>Compilation or static errors return status <code>3</code>. Runtime errors return status <code>5</code>, while retaining outputs produced before the error. Successful execution returns status <code>0</code>.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC cli-identity ===<br>Intent: The executable accepts compact mode, reads JSON stdin, and emits a compact JSON result.</p>
+<p>import json import subprocess</p>
+<p>value = {&quot;name&quot;: &quot;jq&quot;, &quot;items&quot;: [1, 2, 3]} payload = json.dumps(value) + &quot;\n&quot; expected = json.dumps(value, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=payload, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 assert result.stdout == expected === END AC cli-identity ===</p>
+<p>=== AC cli-generator-output ===<br>Intent: The executable emits one compact line for each generated array element in source order.</p>
+<p>values = [3, 1, 4] import json import subprocess</p>
+<p>payload = json.dumps(values) + &quot;\n&quot; expected = &quot;&quot;.join(json.dumps(item, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; for item in values) result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[]&quot;], input=payload, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 assert result.stdout == expected === END AC cli-generator-output ===</p>
+<p>=== AC cli-compile-error ===<br>Intent: A syntactically invalid jq program returns the documented compile-error status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 3 === END AC cli-compile-error ===</p>
+<p>=== AC cli-runtime-error ===<br>Intent: A compiled program that raises at runtime returns the documented runtime-error status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 / 0&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 5 === END AC cli-runtime-error ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not alter the supplied conformance harness or corpus.</li><li>Do not shell out to another jq implementation.</li><li>Emit results only as compact JSON lines on stdout.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<requirement name="parse-jq-language">
+%define parse.error verbose
+...
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+</requirement>
+<requirement name="validate-literals">
+if ((tok == LITERAL || tok == QQSTRING_TEXT) && !jv_is_valid(yylval->literal)) {
+    jv msg = jv_invalid_get_msg(jv_copy(yylval->literal));
+    if (jv_get_kind(msg) == JV_KIND_STRING) {
+      FAIL(*yylloc, jv_string_value(msg));
+    } else {
+      FAIL(*yylloc, "Invalid literal");
+    }
+    jv_free(msg);
+    jv_free(yylval->literal);
+    yylval->literal = jv_null();
+  }
+</requirement>
+<requirement name="compile-values-and-paths" stories="eval-values,lang-paths">
+static block gen_index(block obj, block key) {
+  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX));
+}
+...
+Expr '=' Expr {
+  $$ = gen_call("_assign", BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr "|=" Expr {
+  $$ = gen_call("_modify", BLOCK(gen_lambda($1), gen_lambda($3)));
+}
+</requirement>
+<requirement name="compile-control-flow" stories="eval-control">
+"reduce" Expr "as" Patterns '(' Query ';' Query ')' {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+"foreach" Expr "as" Patterns '(' Query ';' Query ';' Query ')' {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+} |
+"if" Query "then" Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+"try" Expr "catch" Expr {
+  $$ = gen_try($2, $4);
+}
+</requirement>
+<requirement name="compile-bindings-and-functions" stories="lang-bindings">
+"def" IDENT '(' Params ')' ':' Query ';' {
+  $$ = gen_function(jv_string_value($2), $4, $7);
+  jv_free($2);
+}
+...
+BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));
+  jv_free($1);
+}
+</requirement>
+<requirement name="compile-modules-and-imports">
+"module" Query ';' {
+  if (!block_is_const($2)) {
+    FAIL(@2, "Module metadata must be constant");
+    $$ = gen_noop();
+    block_free($2);
+  } else if (block_const_kind($2) != JV_KIND_OBJECT) {
+    FAIL(@2, "Module metadata must be an object");
+    $$ = gen_noop();
+    block_free($2);
+  } else {
+    $$ = gen_module($2);
+  }
+}
+...
+"include" ImportFrom {
+  $$ = gen_import(block_const($2), jv_invalid(), 0);
+  block_free($2);
+}
+</requirement>
+<requirement name="compile-strings">
+QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {
+  $$ = gen_binop($1, gen_format($3, jv_copy($<literal>0)), '+');
+}
+</requirement>
+<requirement name="report-parse-errors">
+void yyerror(YYLTYPE* loc, block* answer, int* errors,
+             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){
+  (*errors)++;
+  locfile_locate(locations, *loc, "jq: error: %s", s);
+}
+</requirement>
+<requirement name="parse-library">
+int jq_parse_library(struct locfile* locations, block* answer) {
+  int errs = jq_parse(locations, answer);
+  if (errs) return errs;
+  if (block_has_main(*answer)) {
+    locfile_locate(locations, UNKNOWN_LOCATION, "jq: error: library should only have function definitions, not a main expression");
+    return 1;
+  }
+  assert(block_has_only_binders_and_imports(*answer, OP_IS_CALL_PSEUDO));
+  return 0;
+}
+</requirement>
+<unattached story="architecture"/>
+<unattached story="metadata"/>
+<unattached story="cli-foundation"/>
+<unattached story="cli-documentation"/>
+<unattached story="frontend-lexer"/>
+<unattached story="eval-generator"/>
+<unattached story="builtin-structural"/>
+<unattached story="builtin-strings"/>
+<unattached story="builtin-runtime"/>
+<unattached story="conformance"/>

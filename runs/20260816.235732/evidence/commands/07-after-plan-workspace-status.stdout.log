@@ -1,0 +1,17 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status — workspace
+
+Target: jq
+   Phase:     Implement
+   State:     0/15 verified  ·  15 pending
+   Detail:    9 imported · 15 authored · metadata planned
+   Analysis:  Questions · 14 stories · 1 questions · 0 blockers
+   Plan:      approved · 0/15 verified · 15 pending
+   Review:    BLOCKERS.md none · 1 questionnaires
+   Next Step: drydock build jq  (frontier: Define the standalone jq interpreter architecture and module boundaries., Declare jq Interpreter project identity and delivery metadata.)
+   8-17:      ✅  drydock build status jq
+   8-17:      ✅  drydock plan jq --override
+   8-16:      ✅  drydock analyze jq
+   8-16:      ✅  drydock import jq /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260816.235732/sources --format markdown
+   8-16:      ✅  drydock init jq
+

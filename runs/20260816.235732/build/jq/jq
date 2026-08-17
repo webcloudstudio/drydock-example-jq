@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+import sys,json,re,math
+from lexer import Lexer, LexError
+class CE(Exception): pass
+class RE(Exception): pass
+T=re.compile(r'''\s*(?:(\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)|("(?:\\.|[^"\\])*")|(\$[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)|(@[A-Za-z_]\w*)|([A-Za-z_]\w*)|(//=?|\?//|!=|==|<=|>=|\|=|\+=|-=|\*=|/=|%=|\.\.|[{}\[\](),;:.|+*/%<>=?!-]))''')
+def truth(x): return x is not None and x is not False
+def enc(x):
+ if isinstance(x,float) and (math.isnan(x) or math.isinf(x)): return 'null'
+ return json.dumps(x,separators=(',',':'),ensure_ascii=False,allow_nan=False)
+class P:
+ def __init__(s,z):
+  try:z=Lexer(z).cleaned_source()
+  except LexError as e:raise CE(str(e))
+  s.interpolated = z if z.startswith('"') and z.endswith('"') and '\\(' in z else None
+  s.t=[];p=0
+  while p<len(z):
+   m=T.match(z,p)
+   if not m:
+    if z[p:].strip(): raise CE('invalid token')
+    break
+   p=m.end();s.t.append(next(x for x in m.groups() if x is not None))
+  s.i=0
+ def q(s): return s.t[s.i] if s.i<len(s.t) else None
+ def pop(s,x=None):
+  v=s.q()
+  if x and v!=x: raise CE('expected '+x)
+  s.i+=1;return v
+ def parse(s):
+  if s.interpolated is not None:return s.interp(s.interpolated)
+  defs={}
+  while s.q()=='def':
+   s.pop(); name=s.pop(); params=[]
+   if s.q()=='(':
+    s.pop()
+    while s.q()!=')':
+     params.append(s.pop())
+     if s.q()==';':s.pop()
+     else:break
+    s.pop(')')
+   s.pop(':'); body=s.e(0); s.pop(';')
+   defs[(name,len(params))]=(params,body)
+  x=s.e(0)
+  if s.q() is not None: raise CE('unexpected '+s.q())
+  return ('program',defs,x)
+ def interp(s,z):
+  body=z[1:-1]; parts=[]; text=''; i=0
+  while i<len(body):
+   if body.startswith('\\(',i):
+    if text:parts.append(('lit',bytes(text,'utf8').decode('unicode_escape')));text=''
+    depth=1;j=i+2;quote=False;esc=False
+    while j<len(body) and depth:
+     c=body[j]
+     if quote:
+      if esc:esc=False
+      elif c=='\\':esc=True
+      elif c=='"':quote=False
+     elif c=='"':quote=True
+     elif c=='(':depth+=1
+     elif c==')':depth-=1
+     j+=1
+    if depth:raise CE('unterminated interpolation')
+    parsed=P(body[i+2:j-1]).parse()
+    parts.append(parsed[2] if isinstance(parsed,tuple) and parsed[0]=='program' else parsed);i=j
+   else:
+    text+=body[i];i+=1
+  if text:parts.append(('lit',bytes(text,'utf8').decode('unicode_escape')))
+  return ('interp', parts)
+ def e(s,m,stop_as=False):
+  a=s.a()
+  while 1:
+   q=s.q()
+   if q=='.' and s.i+1<len(s.t) and re.match(r'^[A-Za-z_]',s.t[s.i+1]): s.pop();a=('get',a,s.pop());continue
+   if q=='[':
+    s.pop()
+    if s.q()==']':s.pop();a=('iter',a);continue
+    b=s.e(0)
+    if s.q()==':':s.pop();c=None if s.q()==']' else s.e(0);s.pop(']');a=('slice',a,b,c)
+    else:s.pop(']');a=('idx',a,b)
+    continue
+   if q=='?':s.pop();a=('try',a,('empty',));continue
+   if q=='as' and stop_as: break
+   if q=='as':
+    s.pop(); var=s.pop(); s.pop('|'); return ('as',a,var,s.e(m))
+   pr={'|':1,',':1,'//':2,'or':3,'and':4,'==':5,'!=':5,'<':5,'>':5,'<=':5,'>=':5,'=':0,'|=':0,'+=':0,'-=':0,'*=':0,'/=':0,'%=':0,'//=':0,'+':6,'-':6,'*':7,'/':7,'%':7}.get(q,-1)
+   if pr<m:break
+   s.pop();a=(q,a,s.e(pr+ (0 if q==',' else 1)))
+  return a
+ def a(s):
+  q=s.pop()
+  if q is None:raise CE('incomplete')
+  if q=='(':x=s.e(0);s.pop(')');return x
+  if q=='.':return ('dot',)
+  if q.startswith('$'):return ('var',q)
+  if q[0]=='"':
+   if '\\(' in q:return s.interp(q)
+   return ('lit',json.loads(q))
+  if q[0].isdigit():return ('lit',float(q) if any(c in q for c in '.eE') else int(q))
+  if q=='-':return ('neg',s.e(8))
+  if q in ('true','false','null'):return ('lit',{'true':True,'false':False,'null':None}[q])
+  if q=='empty':return ('empty',)
+  if q=='[':
+   if s.q()==']':s.pop();return ('array',None)
+   x=s.e(0);s.pop(']');return ('array',x)
+  if q=='{':
+   p=[]
+   while s.q()!='}':
+    k=s.pop()
+    if k.startswith('"') and '\\(' in k: k=('keyexpr',s.interp(k))
+    elif k.startswith('"'): k=k[1:-1]
+    if s.q()==':': s.pop(); v=s.e(0)
+    else: v=('get',('dot',),k)
+    p.append((k,v))
+    if s.q()==',':s.pop()
+    else:break
+   s.pop('}');return ('obj',p)
+  if q=='if':
+   c=s.e(0);s.pop('then');a=s.e(0);b=('lit',None)
+   if s.q()=='else':s.pop();b=s.e(0)
+   s.pop('end');return ('if',c,a,b)
+  if q=='try':
+   a=s.e(0);b=('empty',)
+   if s.q()=='catch':s.pop();b=s.e(0)
+   return ('try',a,b)
+  if q=='reduce' or q=='foreach':
+   kind=q; source=s.e(0,True); s.pop('as'); var=s.pop(); s.pop('(')
+   init=s.e(0); s.pop(';'); update=s.e(0); extract=('dot',)
+   if s.q()==';': s.pop(); extract=s.e(0)
+   s.pop(')'); return (kind,source,var,init,update,extract)
+  if q=='label':
+   var=s.pop(); s.pop('|'); return ('label',var,s.e(0))
+  if q.startswith('@'): return ('format',q[1:])
+  if re.match(r'^[A-Za-z_]',q):
+   if s.q()=='(':
+    s.pop();aa=[]
+    if s.q()!=')':
+     aa.append(s.e(0))
+     while s.q()==';':s.pop();aa.append(s.e(0))
+    s.pop(')');return ('call',q,aa)
+   return ('call',q,[])
+  raise CE('unexpected '+q)
+def get(x,k):
+ if isinstance(x,dict):return x.get(str(k))
+ if isinstance(x,(list,str)):
+  try:return x[int(k)]
+  except:return None
+ raise RE('cannot index')
+def ev(a,x,e):
+ t=a[0]
+ if t=='program':
+  local=dict(e); local['__defs__']=a[1]
+  yield from ev(a[2],x,local)
+ elif t=='lit':yield a[1]
+ elif t=='interp':
+  pieces=[]
+  for part in a[1]:
+   values=list(ev(part,x,e)); pieces.append(values[0] if values else '')
+  yield ''.join(v if isinstance(v,str) else enc(v) for v in pieces)
+ elif t=='dot':yield x
+ elif t=='var':yield e.get(a[1])
+ elif t=='empty':return
+ elif t=='as':
+  for value in ev(a[1],x,e):
+   local=dict(e); local[a[2]]=value
+   yield from ev(a[3],x,local)
+ elif t=='neg':
+  for v in ev(a[1],x,e):yield -v
+ elif t=='get':
+  key=a[2]
+  if isinstance(key,tuple) and key[0]=='keyexpr': key=next(ev(key[1],x,e),None)
+  for v in ev(a[1],x,e):yield get(v,key)
+ elif t=='idx':
+  for v in ev(a[1],x,e):
+   for k in ev(a[2],x,e):yield get(v,k)
+ elif t=='iter':
+  for v in ev(a[1],x,e):
+   if isinstance(v,dict):yield from v.values()
+   elif isinstance(v,(list,str)):yield from v
+   else:raise RE('cannot iterate')
+ elif t=='slice':
+  for v in ev(a[1],x,e):
+   for lo in ev(a[2],x,e):
+    hi=list(ev(a[3],x,e)) if a[3] else [None]
+    for h in hi:yield v[int(lo):int(h) if h is not None else None]
+ elif t=='array':yield [] if a[1] is None else list(ev(a[1],x,e))
+ elif t=='obj':
+  o={}
+  for k,v in a[1]:
+   key=k
+   if isinstance(k,tuple): key=next(ev(k[1],x,e),None)
+   z=list(ev(v,x,e));o[str(key)]=z[-1] if z else None
+  yield o
+ elif t==',':yield from ev(a[1],x,e);yield from ev(a[2],x,e)
+ elif t=='|':
+  for v in ev(a[1],x,e):yield from ev(a[2],v,e)
+ elif t in ('+','-','*','/','%','==','!=','<','>','<=','>=','and','or','//'):
+  l=list(ev(a[1],x,e))
+  if t=='//':
+   z=[v for v in l if truth(v)];yield from (z or ev(a[2],x,e));return
+  for u in l:
+   for v in ev(a[2],x,e):yield calc(t,u,v)
+ elif t=='if':
+  for c in ev(a[1],x,e):yield from ev(a[2] if truth(c) else a[3],x,e)
+ elif t=='try':
+  try:yield from ev(a[1],x,e)
+  except RE as z:
+   if a[2][0]!='empty':yield from ev(a[2],str(z),e)
+ elif t=='call':yield from call(a[1],a[2],x,e)
+ elif t in ('reduce','foreach'):
+  accs=list(ev(a[3],x,e))
+  for seed in accs:
+   acc=seed
+   for value in ev(a[1],x,e):
+    local=dict(e); local[a[2]]=value
+    updates=list(ev(a[4],acc,local))
+    for updated in updates:
+     acc=updated
+     if t=='foreach': yield from ev(a[5],acc,local)
+   if t=='reduce': yield acc
+def calc(t,a,b):
+ if t=='==':return type(a)==type(b) and a==b or isinstance(a,(int,float)) and isinstance(b,(int,float)) and a==b
+ if t=='!=':return not calc('==',a,b)
+ if t in ('<','>','<=','>='):return {'<':a<b,'>':a>b,'<=':a<=b,'>=':a>=b}[t]
+ if t=='and':return truth(a) and truth(b)
+ if t=='or':return truth(a) or truth(b)
+ if t=='+':
+  if a is None:return b
+  if b is None:return a
+  if isinstance(a,list) and isinstance(b,list):return a+b
+  if isinstance(a,dict) and isinstance(b,dict):return {**a,**b}
+  return a+b
+ if t=='-':return [z for z in a if z not in b] if isinstance(a,list) else a-b
+ if t=='*':return a*b
+ if t=='/':
+  if b==0:raise RE('division by zero')
+  return a/b
+ return a%b
+def call(n,aa,x,e):
+ av=lambda i=0:list(ev(aa[i],x,e)) if i<len(aa) else [x]
+ if n in e and isinstance(e[n],tuple):
+  yield from ev(e[n],x,e)
+ elif n=='length':yield len(x)
+ elif n=='type':yield 'null' if x is None else 'boolean' if isinstance(x,bool) else 'number' if isinstance(x,(int,float)) else 'string' if isinstance(x,str) else 'array' if isinstance(x,list) else 'object'
+ elif n=='keys':yield sorted(x) if isinstance(x,dict) else list(range(len(x)))
+ elif n=='range':
+  z=av();yield from range(int(z[0]),int(z[1]) if len(z)>1 else int(z[0]),int(z[2]) if len(z)>2 else 1)
+ elif n in ('map','map_values'):
+  out=[]
+  for v in x:
+   q=list(ev(aa[0],v,e));out.extend(q if n=='map' else [q[-1] if q else None])
+  yield out
+ elif n=='select':
+  if truth(next(ev(aa[0],x,e),None)):yield x
+ elif n=='not':yield not truth(x)
+ elif n=='error':raise RE(str(av()[0]) if aa else 'error')
+ elif n=='tostring':yield x if isinstance(x,str) else enc(x)
+ elif n=='tojson':yield enc(x)
+ elif n=='fromjson':yield json.loads(x)
+ elif n=='tonumber':yield float(x) if '.' in str(x) else int(x)
+ elif n=='abs':yield abs(x)
+ elif n=='floor':yield math.floor(x)
+ elif n=='sqrt':yield math.sqrt(x)
+ elif n=='reverse':yield x[::-1]
+ elif n=='sort':yield sorted(x)
+ elif n=='unique':yield sorted(set(x))
+ elif n=='contains':yield av()[0] in x
+ elif n=='startswith':yield x.startswith(av()[0])
+ elif n=='endswith':yield x.endswith(av()[0])
+ elif n=='split':yield x.split(av()[0])
+ elif n=='join':yield av()[0].join(map(str,x))
+ elif n in ('trim','ltrim','rtrim'):yield getattr(x,n if n!='trim' else 'strip')()
+ elif n=='utf8bytelength':yield len(x.encode())
+ elif n=='empty':return
+ elif (n,len(aa)) in e.get('__defs__',{}):
+  params,body=e['__defs__'][(n,len(aa))]
+  for value in ev(body,x,{**e,**{p:aa[i] for i,p in enumerate(params)}}):
+   yield value
+ else:raise RE('unknown function '+n)
+def main():
+ if len(sys.argv)!=3 or sys.argv[1]!='-c':return 3
+ try:a=P(sys.argv[2]).parse()
+ except Exception as z:print('compile error: '+str(z),file=sys.stderr);return 3
+ try:
+  for line in sys.stdin:
+   if line.strip():
+    for v in ev(a,json.loads(line),{}):print(enc(v))
+  return 0
+ except Exception as z:print('runtime error: '+str(z),file=sys.stderr);return 5
+raise SystemExit(main())
