@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-12.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-12.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-12.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 12 · Service (block-12)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-17</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 25210</li><li>execution id: 20260817.183329.223Z-583b3bc5</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement user-defined functions, arguments, recursion, and closures. (flow-functions) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 2068)</li><li>implements: FEATURE-Flow-Functions.md (SP 509)</li><li>context: parser.y (SP 5596)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq.test (SP 13058)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>tests/test_flow_functions.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): flow-functions-suite (FEATURE-Flow-Functions.md)</li></ul>
+<p>intent: The implementation passes the conformance cases for user-defined functions and function arguments. return code: 0 stdout: run  jq.test:784  def f: . + 1; def g: def g: . + 100; f | g | f; (f | g), g run  jq.test:789  def f: (1000,2000); f run  jq.test:794  def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0]) run  jq.test:798  def f: 1; def g: f, def f: 2; def g: 3; f, def f: g; f, g; def f: 4; [f, def f: g; def g: 5; f, g]+[f,g] run  jq.test:803  def a: 0; . | a run  jq.test:808  def f(a;b;c;d;e;f;g;h;i;j): [j,i,h,g,f,e,d,c,b,a]; f(.[0];.[1];.[2];.[3];.[4];.[5];.[6];.[7];.[8];.[9]) run  jq.test:860  def f(x): x | x; f([.], . + [42]) run  jq.test:868  def f: .+1; def g: f; def f: .+100; def f(a):a+.+11; [(g|f(20)), f] run  jq.test:873  def id(x):x; 2000 as $x | def f(x):1 as $x | id([$x, x, x]); def g(x): 100 as $x | f($x,$x+x); g($x) run  jq.test:878  def x(a;b): a as $a | b as $b | $a + $b; def y($a;$b): $a + $b; def check(a;b): [x(a;b)] == [y(a;b)]; check(.[];.[]*2) run  jq.test:884  [[20,10][1,0] as $x | def f: (100,200) as $y | def g: [$x + $y, .]; . + $x | g; f[0] | [f][0][1] | f] run  jq.test:889  def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac] run  jq.test:1253  def inc(x): x |= .+1; inc(.[].a) run  jq.test:1298  def x: .[1,2]; x=10 run  jq.test:1302  try (def x: reverse; x=10) catch . skip jq.test:1900  import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a] skip jq.test:1917  import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f run  jq.test:2042  {if:0,and:1,or:2,then:3,else:4,elif:5,end:6,as:7,def:8,reduce:9,foreach:10,try:11,catch:12,label:13,import:14,include:15,module:16} run  jq.test:2093  JOIN({&quot;0&quot;:[0,&quot;abc&quot;],&quot;1&quot;:[1,&quot;bcd&quot;],&quot;2&quot;:[2,&quot;def&quot;],&quot;3&quot;:[3,&quot;efg&quot;],&quot;4&quot;:[4,&quot;fgh&quot;]}; .[0]|tostring)</p>
+<p>19 cases, 2 excluded</p>
+<ul><li>GREEN (prepassed): flow-recursive-functions (FEATURE-Flow-Functions.md)</li></ul>
+<p>intent: The implementation passes conformance cases for recursive function calls and function redefinition. return code: 0 stdout: run  jq.test:784  def f: . + 1; def g: def g: . + 100; f | g | f; (f | g), g run  jq.test:789  def f: (1000,2000); f run  jq.test:794  def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0]) run  jq.test:798  def f: 1; def g: f, def f: 2; def g: 3; f, def f: g; f, g; def f: 4; [f, def f: g; def g: 5; f, g]+[f,g] run  jq.test:808  def f(a;b;c;d;e;f;g;h;i;j): [j,i,h,g,f,e,d,c,b,a]; f(.[0];.[1];.[2];.[3];.[4];.[5];.[6];.[7];.[8];.[9]) run  jq.test:860  def f(x): x | x; f([.], . + [42]) run  jq.test:868  def f: .+1; def g: f; def f: .+100; def f(a):a+.+11; [(g|f(20)), f] run  jq.test:873  def id(x):x; 2000 as $x | def f(x):1 as $x | id([$x, x, x]); def g(x): 100 as $x | f($x,$x+x); g($x) run  jq.test:884  [[20,10][1,0] as $x | def f: (100,200) as $y | def g: [$x + $y, .]; . + $x | g; f[0] | [f][0][1] | f] run  jq.test:889  def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac] skip jq.test:1900  import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a] skip jq.test:1917  import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f</p>
+<p>12 cases, 2 excluded</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: flow-functions-suite (FEATURE-Flow-Functions.md)</li></ul>
+<p>intent: The implementation passes the conformance cases for user-defined functions and function arguments. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: run  jq.test:784  def f: . + 1; def g: def g: . + 100; f | g | f; (f | g), g run  jq.test:789  def f: (1000,2000); f run  jq.test:794  def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0]) run  jq.test:798  def f: 1; def g: f, def f: 2; def g: 3; f, def f: g; f, g; def f: 4; [f, def f: g; def g: 5; f, g]+[f,g] run  jq.test:803  def a: 0; . | a run  jq.test:808  def f(a;b;c;d;e;f;g;h;i;j): [j,i,h,g,f,e,d,c,b,a]; f(.[0];.[1];.[2];.[3];.[4];.[5];.[6];.[7];.[8];.[9]) run  jq.test:860  def f(x): x | x; f([.], . + [42]) run  jq.test:868  def f: .+1; def g: f; def f: .+100; def f(a):a+.+11; [(g|f(20)), f] run  jq.test:873  def id(x):x; 2000 as $x | def f(x):1 as $x | id([$x, x, x]); def g(x): 100 as $x | f($x,$x+x); g($x) run  jq.test:878  def x(a;b): a as $a | b as $b | $a + $b; def y($a;$b): $a + $b; def check(a;b): [x(a;b)] == [y(a;b)]; check(.[];.[]*2) run  jq.test:884  [[20,10][1,0] as $x | def f: (100,200) as $y | def g: [$x + $y, .]; . + $x | g; f[0] | [f][0][1] | f] run  jq.test:889  def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac] run  jq.test:1253  def inc(x): x |= .+1; inc(.[].a) run  jq.test:1298  def x: .[1,2]; x=10 run  jq.test:1302  try (def x: reverse; x=10) catch . skip jq.test:1900  import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a] skip jq.test:1917  import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f run  jq.test:2042  {if:0,and:1,or:2,then:3,else:4,elif:5,end:6,as:7,def:8,reduce:9,foreach:10,try:11,catch:12,label:13,import:14,include:15,module:16} run  jq.test:2093  JOIN({&quot;0&quot;:[0,&quot;abc&quot;],&quot;1&quot;:[1,&quot;bcd&quot;],&quot;2&quot;:[2,&quot;def&quot;],&quot;3&quot;:[3,&quot;efg&quot;],&quot;4&quot;:[4,&quot;fgh&quot;]}; .[0]|tostring)</p>
+<p>19 cases, 2 excluded</p>
+<ul><li>PASS: flow-recursive-functions (FEATURE-Flow-Functions.md)</li></ul>
+<p>intent: The implementation passes conformance cases for recursive function calls and function redefinition. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: run  jq.test:784  def f: . + 1; def g: def g: . + 100; f | g | f; (f | g), g run  jq.test:789  def f: (1000,2000); f run  jq.test:794  def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0]) run  jq.test:798  def f: 1; def g: f, def f: 2; def g: 3; f, def f: g; f, g; def f: 4; [f, def f: g; def g: 5; f, g]+[f,g] run  jq.test:808  def f(a;b;c;d;e;f;g;h;i;j): [j,i,h,g,f,e,d,c,b,a]; f(.[0];.[1];.[2];.[3];.[4];.[5];.[6];.[7];.[8];.[9]) run  jq.test:860  def f(x): x | x; f([.], . + [42]) run  jq.test:868  def f: .+1; def g: f; def f: .+100; def f(a):a+.+11; [(g|f(20)), f] run  jq.test:873  def id(x):x; 2000 as $x | def f(x):1 as $x | id([$x, x, x]); def g(x): 100 as $x | f($x,$x+x); g($x) run  jq.test:884  [[20,10][1,0] as $x | def f: (100,200) as $y | def g: [$x + $y, .]; . + $x | g; f[0] | [f][0][1] | f] run  jq.test:889  def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac] skip jq.test:1900  import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a] skip jq.test:1917  import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f</p>
+<p>12 cases, 2 excluded</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>tests/test_flow_functions.py</li></ul>
+<p>SUMMARY: Implemented user-defined functions, recursion, filter/value arguments, closures, arity-specific lookup, and lexical redefinition. Added six focused tests.</p>
+<p>Validation:</p>
+<ul><li>pytest: 56 passed</li><li>Declared function acceptance: 19 listed, 2 skipped</li><li>Declared recursion acceptance: 12 listed, 2 skipped</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

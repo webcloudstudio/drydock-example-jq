@@ -1,0 +1,11 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- tests/test_generators.py
+
+SUMMARY:
+Implemented jq indexing, iteration, optional access, negative indices, and slicing. All 32 tests and 5 declared acceptance checks pass.
+
+BLOCKERS:
+- None

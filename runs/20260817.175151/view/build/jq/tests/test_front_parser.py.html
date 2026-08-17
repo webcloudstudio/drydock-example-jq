@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_front_parser.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_front_parser.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_front_parser.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def run_filter(program: str, payload: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(payload) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_parser_precedence_executes_grouped_arithmetic() -&gt; None:
+    assert run_filter(&quot;(1 + 2) * 3&quot;, None) == (0, [9])
+
+
+def test_parser_constructs_nested_array_and_object() -&gt; None:
+    payload = {&quot;x&quot;: 1}
+    assert run_filter(&quot;{value: ., items: [., 2]}&quot;, payload) == (0, [{&quot;value&quot;: payload, &quot;items&quot;: [payload, 2]}])
+
+
+def test_parser_rejects_unterminated_object() -&gt; None:
+    assert run_filter(&quot;{a: 1&quot;, None)[0] == 3
+
+
+def test_parser_supports_pipe_and_field_indexing() -&gt; None:
+    assert run_filter(&quot;.items[] | .name&quot;, {&quot;items&quot;: [{&quot;name&quot;: &quot;a&quot;}, {&quot;name&quot;: &quot;b&quot;}]}) == (0, [&quot;a&quot;, &quot;b&quot;])
+
+
+def test_parser_supports_conditional() -&gt; None:
+    assert run_filter(&#x27;if . &gt; 1 then &quot;large&quot; else &quot;small&quot; end&#x27;, 2) == (0, [&quot;large&quot;])
+</pre></article>
+</main>
+</body>
+</html>

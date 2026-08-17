@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Conformance-Staging.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Conformance-Staging.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Conformance-Staging.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Conformance Staging</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Preserve and validate the supplied jq conformance assets and harness.</td></tr><tr><td>Depends On</td><td>—</td></tr><tr><td>Provides</td><td>Staged conformance corpus and harness</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>The supplied conformance assets are staged unchanged under <code>sources/</code> in the application root. The staging boundary preserves the corpus, exclusions, runner, scoring script, and normative reference files for implementation and final verification.</p>
+<h2>Asset Contract</h2>
+<p>The following files remain byte-for-byte supplied assets:</p>
+<ul><li><code>sources/jq.test</code></li><li><code>sources/exclusions.txt</code></li><li><code>sources/run_conformance.py</code></li><li><code>sources/full_test.sh</code></li><li><code>sources/jq-manual.txt</code></li><li><code>sources/parser.y</code></li><li><code>sources/lexer.l</code></li><li><code>sources/builtin.jq</code></li></ul>
+<p>The harness is invoked with <code>JQ</code> set to the application executable. List mode must enumerate the corpus without executing candidate cases.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conformance-staging-list ===<br>Intent: The staged conformance harness parses and enumerates its corpus successfully without executing cases.</p>
+<p>import os import subprocess import sys from pathlib import Path</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--list&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: str(Path.cwd() / &quot;jq&quot;)}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0</p>
+<p>source = Path(&quot;sources/run_conformance.py&quot;).read_text(encoding=&quot;utf-8&quot;) assert &quot;def parse_corpus&quot; in source === END AC conformance-staging-list ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not modify, regenerate, trim, or substitute any file under <code>sources/</code>.</li><li>Do not invoke the candidate through a system jq executable or third-party implementation.</li></ul></article>
+</main>
+</body>
+</html>

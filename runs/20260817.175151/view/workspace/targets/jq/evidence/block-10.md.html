@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-10.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-10.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-10.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 10 · Service (block-10)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-17</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 23324</li><li>execution id: 20260817.182735.829Z-63874903</li></ul>
+<h2>Stories built</h2>
+<ul><li>Construct arrays and objects from generator expressions. (core-construction) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 2068)</li><li>implements: FEATURE-Core-Construction.md (SP 1031)</li><li>context: parser.y (SP 5596)</li><li>context: jq.test (SP 13058)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>tests/test_construction.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): construction-array-collection (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: Array construction collects all outputs from a generator in order. return code: 0</p>
+<ul><li>GREEN (prepassed): construction-empty-array (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: The empty array constructor returns an empty array. return code: 0</p>
+<ul><li>GREEN (prepassed): construction-object-values (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: Object construction evaluates fields against the current input. return code: 0</p>
+<ul><li>RED: construction-object-generator-expansion (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: A multi-output object value produces one object for each generated value. return code: 1 stderr: --- drydock: values at failure --- actual = [{&#x27;value&#x27;: 4}] input_value = [4, 5] --- drydock: end values --- Traceback (most recent call last): File &quot;construction-object-generator-expansion.py&quot;, line 17, in &lt;module&gt; assert actual == [{&quot;value&quot;: value} for value in input_value] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>RED: construction-dynamic-key (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: A parenthesized key expression creates a string-keyed object field. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;{(.key): .value}&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;jq: invalid object key\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;construction-dynamic-key.py&quot;, line 15, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: construction-array-collection (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: Array construction collects all outputs from a generator in order. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: construction-empty-array (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: The empty array constructor returns an empty array. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: construction-object-values (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: Object construction evaluates fields against the current input. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: construction-object-generator-expansion (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: A multi-output object value produces one object for each generated value. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: construction-dynamic-key (FEATURE-Core-Construction.md)</li></ul>
+<p>intent: A parenthesized key expression creates a string-keyed object field. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>tests/test_construction.py</li></ul>
+<p>SUMMARY: Implemented array collection, object generator expansion, dynamic keys, shorthand keys, Cartesian products, and compile-time key validation. All 5 acceptance checks and 45 pytest tests pass.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

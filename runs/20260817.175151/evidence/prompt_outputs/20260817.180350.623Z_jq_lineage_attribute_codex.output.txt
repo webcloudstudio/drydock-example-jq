@@ -1,0 +1,195 @@
+<requirement name="error-handling-builtins" stories="flow-control-errors">
+def halt_error: halt_error(5);
+def error(msg): msg|error;
+</requirement>
+<requirement name="collection-builtins" stories="builtin-collections">
+def map(f): [.[] | f];
+def select(f): if f then . else empty end;
+def sort_by(f): _sort_by_impl(map([f]));
+def group_by(f): _group_by_impl(map([f]));
+def unique_by(f): _unique_by_impl(map([f]));
+def max_by(f): _max_by_impl(map([f]));
+def min_by(f): _min_by_impl(map([f]));
+def add(f): reduce f as $x (null; . + $x);
+def add: add(.[]);
+def map_values(f): .[] |= f;
+</requirement>
+<requirement name="path-mutation" stories="path-mutation">
+def del(f): delpaths([path(f)]);
+def _modify(paths; update):
+    reduce path(paths) as $p ([., []];
+        . as $dot
+      | null
+      | label $out
+      | ($dot[0] | getpath($p)) as $v
+      | (
+          (   $$$$v
+            | update
+            | (., break $out) as $v
+            | $$$$dot
+            | setpath([0] + $p; $v)
+          ),
+          (
+              $$$$dot
+            | setpath([1, (.[1] | length)]; $p)
+          )
+        )
+    ) | . as $dot | $dot[0] | delpaths($dot[1]);
+</requirement>
+<requirement name="path-assignment" stories="path-assignment">
+def _assign(paths; $value): reduce path(paths) as $p (.; setpath($p; $value));
+</requirement>
+<requirement name="path-discovery" stories="path-discovery">
+def paths: path(recurse)|select(length > 0);
+def paths(node_filter): path(recurse|select(node_filter))|select(length > 0);
+def pick(pathexps):
+  . as $in
+  | reduce path(pathexps) as $a (null;
+      setpath($a; $in|getpath($a)) );
+</requirement>
+<requirement name="value-predicates-and-absolute-values" stories="core-values-operators">
+def abs: if . < 0 then - . else . end;
+def isfinite: type == "number" and (isinfinite | not);
+def arrays: select(type|. == "array");
+def objects: select(type == "object");
+def iterables: select(type|. == "array" or . == "object");
+def booleans: select(type == "boolean");
+def numbers: select(type == "number");
+def normals: select(isnormal);
+def finites: select(isfinite);
+def strings: select(type == "string");
+def nulls: select(. == null);
+def values: select(. != null);
+def scalars: select(type|. != "array" and . != "object");
+</requirement>
+<requirement name="generic-iteration-utilities" stories="core-generators,flow-recursion-utilities">
+def while(cond; update):
+     def _while:
+         if cond then ., (update | _while) else empty end;
+     _while;
+def until(cond; next):
+     def _until:
+         if cond then . else (next|_until) end;
+     _until;
+def limit($n; expr):
+  if $n > 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . <= 0 then break $out else empty end)
+  elif $n == 0 then empty
+  else error("limit doesn't support negative count") end;
+def skip($n; expr):
+  if $n > 0 then foreach expr as $item ($n; . - 1; if . < 0 then $item else empty end)
+  elif $n == 0 then expr
+  else error("skip doesn't support negative count") end;
+def first(g): label $out | g | ., break $out;
+def isempty(g): first((g|false), true);
+def all(generator; condition): isempty(generator|condition and empty);
+def any(generator; condition): isempty(generator|condition or empty)|not;
+def nth($n; g):
+  if $n < 0 then error("nth doesn't support negative count")
+  else first(skip($n; g)) end;
+def first: .[0];
+def last: .[-1];
+def nth($n): .[$n];
+</requirement>
+<requirement name="range-and-recursion" stories="flow-recursion-utilities">
+def range($x): range(0;$x);
+def range($init; $upto; $by):
+    if $by > 0 then $init|while(. < $upto; . + $by)
+  elif $by < 0 then $init|while(. > $upto; . + $by)
+  else empty end;
+def recurse(f): def r: ., (f | r); r;
+def recurse(f; cond): def r: ., (f | select(cond) | r); r;
+def recurse: recurse(.[]?);
+</requirement>
+<requirement name="jq-indexing-and-slicing" stories="core-indexing">
+def indices($i): if type == "array" and ($i|type) == "array" then .[$i]
+  elif type == "array" then .[[$i]]
+  elif type == "string" and ($i|type) == "string" then _strindices($i)
+  else .[$i] end;
+def index($i):   indices($i) | .[0];       # TODO: optimize
+def rindex($i):  indices($i) | .[-1:][0];  # TODO: optimize
+</requirement>
+<requirement name="reduce-and-foreach" stories="flow-reduce">
+def add(f): reduce f as $x (null; . + $x);
+def add: add(.[]);
+</requirement>
+<requirement name="string-operations" stories="builtin-strings">
+def join($x): reduce .[] as $i (null;
+    (if .==null then "" else .+$x end) +
+    ($i | if type=="boolean" or type=="number" then tostring else .//"" end)
+  ) // "";
+def ascii_downcase:
+  explode | map( if 65 <= . and . <= 90 then . + 32  else . end) | implode;
+def ascii_upcase:
+  explode | map( if 97 <= . and . <= 122 then . - 32  else . end) | implode;
+</requirement>
+<requirement name="regular-expression-builtins" stories="builtin-regex">
+def match(re; mode): _match_impl(re; mode; false)|.[];
+def test(re; mode): _match_impl(re; mode; true);
+def capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);
+def scan($re; $flags):
+  match($re; "g" + $flags)
+    | if (.captures|length > 0)
+      then [ .captures | .[] | .string ]
+      else .string
+      end;
+def splits($re; $flags):
+  .[foreach (match($re; $flags+"g"), null) as {$offset, $length}
+      (null; {start: .next, end: $offset, next: ($offset+$length)})];
+def split($re; $flags): [ splits($re; $flags) ];
+def sub($re; s; $flags):
+   . as $in
+   | (reduce match($re; $flags) as $edit
+        ({result: [], previous: 0};
+            $in[ .previous: ($edit | .offset) ] as $gap
+            # create the "capture" objects (one per item in s)
+            | [reduce ( $edit | .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair
+                 ({}; . + $pair) | s ] as $inserts
+            | reduce range(0; $inserts|length) as $ix (.; .result[$ix] += $gap + $inserts[$ix])
+            | .previous = ($edit | .offset + .length ) )
+          | .result[] + $in[.previous:] )
+      // $in;
+def sub($re; s): sub($re; s; "");
+def gsub($re; s; flags): sub($re; s; flags + "g");
+def gsub($re; s): sub($re; s; "g");
+</requirement>
+<requirement name="format-and-json-conversion" stories="builtin-format-conversion">
+def to_entries: [keys_unsorted[] as $k | {key: $k, value: .[$k]}];
+def from_entries: map({ (.key // .Key // .name // .Name):
+  if has("value") then .value else .Value end }) | add // {};
+def with_entries(f): to_entries | map(f) | from_entries;
+</requirement>
+<requirement name="numeric-and-date-builtins" stories="builtin-math-date">
+def fromdateiso8601: strptime("%Y-%m-%dT%H:%M:%SZ")|mktime;
+def todateiso8601: strftime("%Y-%m-%dT%H:%M:%SZ");
+def fromdate: fromdateiso8601;
+def todate: todateiso8601;
+</requirement>
+<requirement name="streaming-transformations" stories="io-streaming">
+def truncate_stream(stream):
+  . as $n | null | stream | . as $input | if (.[0]|length) > $n then setpath([0];$input[0][$n:]) else empty end;
+def fromstream(i): {x: null, e: false} as $init |
+  foreach i as $i ($init
+  ; if .e then $init else . end
+  | if $i|length == 2
+    then setpath(["e"]; $i[0]|length==0) | setpath(["x"]+$i[0]; $i[1])
+    else setpath(["e"]; $i[0]|length==1) end
+  ; if .e then .x else empty end);
+def tostream:
+  path(def r: (.[]?|r), .; r) as $p |
+  getpath($p) |
+  reduce path(.[]?) as $q ([$p, .]; [$p+$q]);
+</requirement>
+<requirement name="input-diagnostics-and-environment" stories="io-input-diagnostics">
+def inputs: try repeat(input) catch if .=="break" then empty else error end;
+</requirement>
+<unattached story="cli-entrypoint"/>
+<unattached story="cli-exit-semantics"/>
+<unattached story="cli-documentation"/>
+<unattached story="front-lexer"/>
+<unattached story="front-parser"/>
+<unattached story="front-validation"/>
+<unattached story="conformance-staging"/>
+<unattached story="core-construction"/>
+<unattached story="flow-bindings"/>
+<unattached story="flow-functions"/>
+<unattached story="conformance-full"/>

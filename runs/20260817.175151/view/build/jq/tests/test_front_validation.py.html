@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_front_validation.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_front_validation.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_front_validation.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+
+import jq
+
+
+def compile_status(program: str) -&gt; tuple[int, str]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(&quot;null\n&quot;), output)
+    return status, output.getvalue()
+
+
+def test_unterminated_program_is_rejected_before_evaluation() -&gt; None:
+    assert compile_status(&quot;{&quot;) == (3, &quot;&quot;)
+
+
+def test_undefined_binding_is_rejected_before_evaluation() -&gt; None:
+    assert compile_status(&quot;. as $known | $unknown&quot;) == (3, &quot;&quot;)
+
+
+def test_constant_non_string_object_key_is_rejected() -&gt; None:
+    assert compile_status(&quot;{(0):1}&quot;) == (3, &quot;&quot;)
+
+
+def test_unresolved_break_label_is_rejected() -&gt; None:
+    assert compile_status(&quot;. as $foo | break $foo&quot;) == (3, &quot;&quot;)
+
+
+def test_valid_program_reaches_evaluation() -&gt; None:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, &quot;.&quot;], io.StringIO(&#x27;{&quot;valid&quot;:[1,2]}\n&#x27;), output)
+    assert status == 0
+    assert output.getvalue() == &#x27;{&quot;valid&quot;:[1,2]}\n&#x27;
+</pre></article>
+</main>
+</body>
+</html>

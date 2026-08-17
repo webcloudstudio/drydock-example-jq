@@ -1,0 +1,109 @@
+<requirement name="parse-and-reject-jq-programs" stories="front-lexer,front-parser,front-validation">
+%%FAIL
+{(0):1}
+jq: error: Cannot use number (0) as object key at <top-level>, line 1, column 3:
+    {(0):1}
+      ^^
+</requirement>
+<requirement name="evaluate-core-generators" stories="core-generators">
+.[]
+[1,2,3]
+1
+2
+3
+</requirement>
+<requirement name="index-and-slice-values" stories="core-indexing">
+.foo.bar
+{"foo": {"bar": 42}, "bar": "badvalue"}
+42
+</requirement>
+<requirement name="operate-on-values" stories="core-values-operators">
+1 + 2 * 2 + 10 / 2
+null
+10
+</requirement>
+<requirement name="construct-arrays-and-objects" stories="core-construction">
+{a: 1}
+null
+{"a":1}
+</requirement>
+<requirement name="bind-and-destructure-values" stories="flow-bindings">
+1 as $x | 2 as $y | [$x,$y,$x]
+null
+[1,2,1]
+</requirement>
+<requirement name="define-and-call-functions" stories="flow-functions">
+def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac]
+[1,2,3,4]
+[1,2,6,24]
+</requirement>
+<requirement name="control-errors-and-exceptions" stories="flow-control-errors">
+try error(0) // 1
+null
+1
+</requirement>
+<requirement name="reduce-and-foreach-values" stories="flow-reduce">
+reduce .[] as $x (0; . + $x)
+[1,2,4]
+7
+</requirement>
+<requirement name="generate-ranges-and-iterations" stories="flow-recursion-utilities">
+[range(0;10)]
+null
+[0,1,2,3,4,5,6,7,8,9]
+</requirement>
+<requirement name="discover-materialize-and-access-paths" stories="path-discovery">
+path(.foo[0,1])
+null
+["foo", 0]
+["foo", 1]
+</requirement>
+<requirement name="mutate-and-delete-paths" stories="path-mutation">
+["foo",1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+{"bar": 42, "foo": ["a", "b", "c", "d"]}
+"b"
+{"bar": 42, "foo": ["a", 20, "c", "d"]}
+{"bar": 42, "foo": ["a", "c", "d"]}
+</requirement>
+<requirement name="assign-values-through-paths" stories="path-assignment">
+.foo |= .+1
+{"foo": 42}
+{"foo": 43}
+</requirement>
+<requirement name="provide-collection-builtins" stories="builtin-collections">
+map(keys)
+[{}, {"abcd":1,"abc":2,"abcde":3}, {"x":1, "z": 3, "y":2}]
+[[], ["abc","abcd","abcde"], ["x","y","z"]]
+</requirement>
+<requirement name="provide-string-and-unicode-builtins" stories="builtin-strings">
+[.[]|startswith("foo")]
+["fo", "foo", "barfoo", "foobar", "barfoob"]
+[false, true, false, true, false]
+</requirement>
+<requirement name="provide-format-and-json-builtins" stories="builtin-format-conversion">
+@base64
+"foóbar\n"
+"Zm/Ds2Jhcgo="
+</requirement>
+<requirement name="provide-math-and-date-builtins" stories="builtin-math-date">
+[.[]|sqrt]
+[4,9]
+[2,3]
+</requirement>
+<requirement name="provide-input-diagnostics-and-location-builtins" stories="io-input-diagnostics">
+try input catch .
+null
+"break"
+</requirement>
+<requirement name="stage-conformance-tests" stories="conformance-staging">
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+</requirement>
+<requirement name="prove-interpreter-conformance" stories="conformance-full">
+# Simple value tests to check parser. Input is irrelevant
+</requirement>
+<unattached story="cli-entrypoint"/>
+<unattached story="cli-exit-semantics"/>
+<unattached story="cli-documentation"/>
+<unattached story="builtin-regex"/>
+<unattached story="io-streaming"/>

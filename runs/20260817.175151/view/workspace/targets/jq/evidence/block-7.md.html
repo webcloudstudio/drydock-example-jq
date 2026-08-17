@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-7.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-7.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-7.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 7 · Service (block-7)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-17</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 50163</li><li>execution id: 20260817.182037.259Z-4889dd5a</li></ul>
+<h2>Stories built</h2>
+<ul><li>Evaluate identity, literals, pipes, and comma generators. (core-generators) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 2068)</li><li>implements: FEATURE-Core-Generators.md (SP 764)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>pytest.ini</li><li>tests/test_generators.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): generators-identity (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: Identity returns the input value without changing its structure. return code: 0</p>
+<ul><li>GREEN (prepassed): generators-comma-order (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: Comma expressions emit all values in source order, including duplicates. return code: 0</p>
+<ul><li>GREEN (prepassed): generators-pipe-expansion (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: A pipe evaluates its right side once for every value generated on the left. return code: 0</p>
+<ul><li>GREEN (prepassed): generators-empty (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: The empty generator produces no output and still completes successfully. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: generators-identity (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: Identity returns the input value without changing its structure. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: generators-comma-order (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: Comma expressions emit all values in source order, including duplicates. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: generators-pipe-expansion (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: A pipe evaluates its right side once for every value generated on the left. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: generators-empty (FEATURE-Core-Generators.md)</li></ul>
+<p>intent: The empty generator produces no output and still completes successfully. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>Implemented core generator evaluation for identity, literals, comma, pipe, and empty.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>tests/test_generators.py</li><li>pytest.ini</li></ul>
+<p>SUMMARY: 27 tests passed; all 4 declared acceptance checks passed.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

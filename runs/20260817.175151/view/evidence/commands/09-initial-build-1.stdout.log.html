@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/09-initial-build-1.stdout.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/09-initial-build-1.stdout.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/09-initial-build-1.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Build: jq
+scope: entire project
+frontier: cli-entrypoint
+
+LLM BUILD: Block 1 · Foundational [block-1]
+  stories: Provide the executable jq command-line entrypoint. [cli-entrypoint]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/2 AC passed
+built: cli-entrypoint — closed/verified · execution 20260817.180903.592Z-d244721a
+
+LLM BUILD: Block 2 · Service [block-2]
+  stories: Map compilation and runtime failures to the required exit codes. [cli-exit-semantics], Document the jq command-line contract. [cli-documentation]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 5/5 AC passed
+built: cli-exit-semantics — closed/verified · execution 20260817.181016.110Z-bfc4d565
+
+LLM BUILD: Block 3 · Foundational [block-3]
+  stories: Tokenize jq programs according to the supplied lexer specification. [front-lexer]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: front-lexer — closed/verified · execution 20260817.181132.285Z-3a8f6c81
+
+LLM BUILD: Block 4 · Foundational [block-4]
+  stories: Stage and validate the supplied conformance assets. [conformance-staging]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 1/1 AC passed
+built: conformance-staging — closed/verified · execution 20260817.181403.647Z-116220d6
+
+LLM BUILD: Block 5 · Service [block-5]
+  stories: Parse jq source into an executable representation. [front-parser]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: front-parser — closed/verified · execution 20260817.181512.872Z-4f65c40f
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Reject invalid jq programs during compilation. [front-validation]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 4/4 AC passed
+built: front-validation — closed/verified · execution 20260817.181827.485Z-16b9de24
+
+LLM BUILD: Block 7 · Service [block-7]
+  stories: Evaluate identity, literals, pipes, and comma generators. [core-generators]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 4/4 AC passed
+built: core-generators — closed/verified · execution 20260817.182037.259Z-4889dd5a
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq indexing, iteration, optional access, and slicing. [core-indexing]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 5/5 AC passed
+built: core-indexing — closed/verified · execution 20260817.182245.537Z-fa765ab9
+
+LLM BUILD: Block 9 · Service [block-9]
+  stories: Implement jq values and fundamental operators. [core-values-operators]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 5/5 AC passed
+built: core-values-operators — closed/verified · execution 20260817.182444.614Z-8ae14f5e
+
+LLM BUILD: Block 10 · Service [block-10]
+  stories: Construct arrays and objects from generator expressions. [core-construction]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 5/5 AC passed
+built: core-construction — closed/verified · execution 20260817.182735.829Z-63874903
+
+LLM BUILD: Block 11 · Service [block-11]
+  stories: Implement lexical variables and destructuring patterns. [flow-bindings]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/2 AC passed
+built: flow-bindings — closed/verified · execution 20260817.183011.253Z-6e71035f
+
+LLM BUILD: Block 12 · Service [block-12]
+  stories: Implement user-defined functions, arguments, recursion, and closures. [flow-functions]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/2 AC passed
+built: flow-functions — closed/verified · execution 20260817.183329.223Z-583b3bc5
+
+LLM BUILD: Block 13 · Service [block-13]
+  stories: Implement conditionals, errors, try/catch, labels, and breaks. [flow-control-errors]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 2/2 AC passed
+built: flow-control-errors — closed/verified · execution 20260817.183714.121Z-40eb2ca7
+
+LLM BUILD: Block 14 · Service [block-14]
+  stories: Implement reduce and foreach accumulation. [flow-reduce], Implement range, iteration utilities, and recursive generators. [flow-recursion-utilities]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 4/4 AC passed
+built: flow-reduce — closed/verified · execution 20260817.184038.829Z-62ba0052
+
+LLM BUILD: Block 15 · Service [block-15]
+  stories: Discover, access, and materialize jq paths. [path-discovery]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 1/3 AC passed · skipped: path-filter · failed: path-exact-and-read
+
+LLM BUILD: Block 15 · Service [block-15]
+  stories: Discover, access, and materialize jq paths. [path-discovery]
+  call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
+  failing: path-exact-and-read, path-filter
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 2 · 1/3 AC passed · skipped: path-filter · failed: path-exact-and-read
+
+LLM BUILD: Block 15 · Service [block-15]
+  stories: Discover, access, and materialize jq paths. [path-discovery]
+  call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
+  failing: path-exact-and-read, path-filter
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 3 · 1/3 AC passed · skipped: path-filter · failed: path-exact-and-read
+repair: stopped — deterministic acceptance score did not improve on 2 consecutive calls
+failed: path-discovery — closed/failed · execution 20260817.184955.880Z-e006efbf
+
+result: 16 built, 1 failed, 0 unchanged
+elapsed: 41 minutes 46 seconds
+
+========================================================================
+BUILD FAILED: jq  (1 step)
+========================================================================
+
+  Failure
+    Provenance
+      Target: jq
+      Block: Block 15 · Service [block-15]
+      Story: Discover, access, and materialize jq paths. [path-discovery]
+    Cause: programmatic acceptance failed: path-exact-and-read
+    agent summary:
+      Existing path implementation passes all 76 project tests.
+      The exact-path AC contradicts jq semantics: output is
+      `[[&quot;a&quot;,0,&quot;b&quot;],7]`, so `actual[0][-1]` is `&quot;b&quot;`. The path-
+      filter AC fails before execution because it omits `import
+      os`; corrected behavior passes.
+    stopped early: 3 of 7 calls · deterministic acceptance score did not improve on 2 consecutive calls
+    acceptance: 1/3 passing · baseline 0/3 · improved
+    Assertion
+      Acceptance checks:
+      Acceptance: path-exact-and-read
+      Intent: Exact paths can be materialized and read through the executable.
+      Source: FEATURE-Path-Discovery.md
+      Code: assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;]
+    Result
+      Process exit code: 1
+      Error: AssertionError
+      Stderr:
+          File &quot;path-exact-and-read.py&quot;, line 16, in &lt;module&gt;
+            assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        AssertionError
+      Acceptance: path-filter
+      Intent: Filtered paths select only locations whose values satisfy the filter.
+      Source: FEATURE-Path-Discovery.md
+      Code: (assertion not captured)
+    Result
+      Process exit code: 1
+      Error: NameError: name &#x27;os&#x27; is not defined. Did you forget to import &#x27;os&#x27;
+      Stderr:
+          File &quot;path-filter.py&quot;, line 6, in &lt;module&gt;
+            [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program],
+             ^^
+        NameError: name &#x27;os&#x27; is not defined. Did you forget to import &#x27;os&#x27;
+    Recovery
+      Run: drydock build jq
+        to continue the build. This story resumes where it left off and is
+        retried against the checks it failed.
+    agent blockers:
+      - Acceptance criteria require Blueprint repair; no code
+      change is appropriate.
+    execution: 20260817.184955.880Z-e006efbf
+    evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.175151/workspace/targets/jq/evidence/block-15.md
+
+  Next
+    Run: drydock build jq
+      to continue the build. This story resumes where it left off and is
+      retried against the checks it failed.
+========================================================================
+
+========================================================================
+POST-LLM FAILURE  ·  build  ·  programmatic acceptance failed: path-exact-and-read
+========================================================================
+
+  Block &quot;Block 15 · Service&quot; [block-15] failed its acceptance
+  criteria.
+    Story &quot;Discover, access, and materialize jq paths.&quot; [path-discovery] does not meet its own acceptance criteria:
+      - AC path-exact-and-read — Exact paths can be materialized and read through the executable.
+          assertion: assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;] → AssertionError
+          raised at: path-exact-and-read.py:16
+          process exit code: 1
+          values at failure:
+            actual = [[&#x27;a&#x27;, 0, &#x27;b&#x27;], 7]
+            payload = {&#x27;a&#x27;: [{&#x27;b&#x27;: 7}]}
+          check stderr:
+            Traceback (most recent call last):
+              File &quot;path-exact-and-read.py&quot;, line 16, in &lt;module&gt;
+                assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  … (1 more line truncated)
+
+  Recovery
+    Run: drydock build jq
+      to continue the build. This story resumes where it left off and is retried against the checks it failed.
+
+========================================================================
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

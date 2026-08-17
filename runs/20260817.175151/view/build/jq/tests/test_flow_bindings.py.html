@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_bindings.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_bindings.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_bindings.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def evaluate(program: str, value: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(value) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_binding_is_lexical_and_reusable() -&gt; None:
+    assert evaluate(&quot;.bar as $x | .foo | . + $x&quot;, {&quot;foo&quot;: 10, &quot;bar&quot;: 200}) == (0, [210])
+
+
+def test_nested_array_and_object_patterns_bind_missing_array_values() -&gt; None:
+    assert evaluate(&quot;. as [$a, {c:$c}] | [$a,$c]&quot;, [2, {&quot;c&quot;: 4}]) == (0, [[2, 4]])
+    assert evaluate(&quot;.[] as [$a,$b] | [$a,$b]&quot;, [[0], [0, 1]]) == (0, [[0, None], [0, 1]])
+
+
+def test_object_pattern_shorthand_uses_binding_name_as_key() -&gt; None:
+    assert evaluate(&quot;. as {$a, $b} | [$a,$b]&quot;, {&quot;a&quot;: 1, &quot;b&quot;: 2}) == (0, [[1, 2]])
+
+
+def test_destructuring_alternatives_backtrack_on_shape() -&gt; None:
+    program = &quot;. as {a:$a} ?// [$b] | [$a,$b]&quot;
+    assert evaluate(program, [3]) == (0, [[None, 3]])
+    assert evaluate(program, {&quot;a&quot;: 2}) == (0, [[2, None]])
+
+
+def test_binding_does_not_escape_parenthesized_scope() -&gt; None:
+    status, _ = evaluate(&quot;(. as $x | $x) | $x&quot;, 1)
+    assert status == 3
+</pre></article>
+</main>
+</body>
+</html>

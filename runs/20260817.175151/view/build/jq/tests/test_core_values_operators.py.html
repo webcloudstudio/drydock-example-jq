@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_core_values_operators.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_core_values_operators.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_core_values_operators.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def evaluate(program: str, value: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(value) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_addition_accepts_numbers_strings_arrays_objects_and_null_identity() -&gt; None:
+    assert evaluate(&quot;. + 2&quot;, 3) == (0, [5])
+    assert evaluate(&quot;\&quot;a\&quot; + \&quot;b\&quot;&quot;, None) == (0, [&quot;ab&quot;])
+    assert evaluate(&quot;[1] + [2]&quot;, None) == (0, [[1, 2]])
+    assert evaluate(&#x27;{&quot;a&quot;:1} + {&quot;b&quot;:2}&#x27;, None) == (0, [{&quot;a&quot;: 1, &quot;b&quot;: 2}])
+    assert evaluate(&quot;null + .&quot;, {&quot;a&quot;: 1}) == (0, [{&quot;a&quot;: 1}])
+
+
+def test_equality_is_type_aware_but_numbers_are_numeric() -&gt; None:
+    assert evaluate(&quot;true == 1&quot;, None) == (0, [False])
+    assert evaluate(&quot;1 == 1.0&quot;, None) == (0, [True])
+    assert evaluate(&#x27;{&quot;a&quot;:1,&quot;b&quot;:[true]} == {&quot;b&quot;:[true],&quot;a&quot;:1}&#x27;, None) == (0, [True])
+
+
+def test_truthiness_only_false_and_null_are_falsey() -&gt; None:
+    program = &#x27;[null, false, 0, &quot;&quot;, []] | map(if . then true else false end)&#x27;
+    assert evaluate(program, None) == (0, [[False, False, True, True, True]])
+
+
+def test_defined_or_uses_fallback_for_missing_false_and_null_values() -&gt; None:
+    assert evaluate(&quot;.missing // 7&quot;, {}) == (0, [7])
+    assert evaluate(&quot;false // 7, null // 8, 0 // 9&quot;, None) == (0, [7, 8, 0])
+
+
+def test_arithmetic_operator_boundaries_and_zero_errors() -&gt; None:
+    assert evaluate(&quot;[10 / 2, -6 % 7, \&quot;x\&quot; * 3, \&quot;a,b\&quot; / \&quot;,\&quot;]&quot;, None) == (
+        0, [[5.0, -6.0, &quot;xxx&quot;, [&quot;a&quot;, &quot;b&quot;]]]
+    )
+    assert evaluate(&quot;1 / 0&quot;, None)[0] == 5
+    assert evaluate(&quot;1 % 0&quot;, None)[0] == 5
+    assert evaluate(&quot;\&quot;x\&quot; - 1&quot;, None)[0] == 5
+
+
+def test_logical_operators_return_booleans() -&gt; None:
+    assert evaluate(&quot;0 and []&quot;, None) == (0, [True])
+    assert evaluate(&quot;null or false&quot;, None) == (0, [False])
+    assert evaluate(&quot;not&quot;, 0) == (0, [False])
+</pre></article>
+</main>
+</body>
+</html>

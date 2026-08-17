@@ -1,0 +1,14 @@
+Implemented the executable jq entrypoint and tests.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- jq.py
+- tests/test_cli.py
+
+SUMMARY:
+Identity filter works for streamed JSON input. Acceptance checks passed; compile/runtime exit codes are `3`/`5`.
+
+BLOCKERS:
+- None

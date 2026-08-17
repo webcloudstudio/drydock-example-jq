@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Flow-Reduce.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Flow-Reduce.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Flow-Reduce.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Flow Reduce</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Provides jq reduce and foreach accumulation over generator streams.</td></tr><tr><td>Depends On</td><td>FEATURE-Flow-Bindings.md, FEATURE-Flow-Control-Errors.md</td></tr><tr><td>Provides</td><td>reduce and foreach</td></tr><tr><td>Consumes</td><td>lexical bindings, control flow</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement <code>reduce</code> and <code>foreach</code> with generator sources, destructuring patterns, accumulator updates, intermediate extraction, nested output streams, and label-based early termination.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-reduce-suite ===<br>Intent: The implementation passes conformance cases for reduce expressions and accumulator updates.</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--list&quot;, &quot;--select&quot;, r&quot;\breduce\b&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC flow-reduce-suite ===</p>
+<p>=== AC flow-foreach-suite ===<br>Intent: The implementation passes conformance cases for foreach extraction and stream order.</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--list&quot;, &quot;--select&quot;, r&quot;\bforeach\b&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC flow-foreach-suite ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Accumulator updates must process generator outputs in order.</li><li>Destructuring must bind each reduction item according to jq pattern semantics.</li><li>Foreach extraction must expose each intermediate accumulator state exactly once per source output.</li></ul></article>
+</main>
+</body>
+</html>

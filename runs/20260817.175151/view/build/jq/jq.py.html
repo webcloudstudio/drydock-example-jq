@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq.py</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq.py</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/jq.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Importable implementation module for the root ``jq`` executable.&quot;&quot;&quot;
+
+from pathlib import Path
+import sys
+
+
+_ROOT = Path(__file__).parent
+_EXECUTABLE = _ROOT / &quot;jq&quot;
+
+# The executable is the authoritative runtime. Loading it this way keeps the
+# test interface dependency-free while allowing the user-facing file to retain
+# its conventional name.
+_namespace: dict[str, object] = {&quot;__name__&quot;: &quot;jq_runtime&quot;, &quot;__file__&quot;: str(_EXECUTABLE)}
+exec(compile(_EXECUTABLE.read_text(encoding=&quot;utf-8&quot;), str(_EXECUTABLE), &quot;exec&quot;), _namespace)
+
+run = _namespace[&quot;run&quot;]
+</pre></article>
+</main>
+</body>
+</html>

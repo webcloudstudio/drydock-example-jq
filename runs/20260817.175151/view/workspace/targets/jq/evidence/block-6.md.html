@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-6.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-6.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-6.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 6 · Service (block-6)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-17</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 23071</li><li>execution id: 20260817.181827.485Z-16b9de24</li></ul>
+<h2>Stories built</h2>
+<ul><li>Reject invalid jq programs during compilation. (front-validation) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 2068)</li><li>implements: FEATURE-Front-Validation.md (SP 771)</li><li>context: parser.y (SP 5596)</li><li>context: jq.test (SP 13058)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>tests/test_conformance_staging.py</li><li>tests/test_front_validation.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): validation-rejects-invalid-programs (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: Invalid jq programs are rejected with the declared compile exit status. return code: 0</p>
+<ul><li>RED: validation-rejects-undefined-bindings (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: Undefined variable references fail during compilation rather than runtime evaluation. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;. as $known | $unknown&#x27;], returncode=0, stdout=&#x27;null\n&#x27;, stderr=&#x27;&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;validation-rejects-undefined-bindings.py&quot;, line 13, in &lt;module&gt; assert result.returncode == 3 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>GREEN (prepassed): validation-rejects-invalid-object-keys (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: A constant non-string object key is rejected during compilation. return code: 0</p>
+<ul><li>GREEN (prepassed): validation-accepts-valid-program (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: A valid program reaches evaluation and returns its supplied input. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: validation-rejects-invalid-programs (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: Invalid jq programs are rejected with the declared compile exit status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: validation-rejects-undefined-bindings (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: Undefined variable references fail during compilation rather than runtime evaluation. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: validation-rejects-invalid-object-keys (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: A constant non-string object key is rejected during compilation. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: validation-accepts-valid-program (FEATURE-Front-Validation.md)</li></ul>
+<p>intent: A valid program reaches evaluation and returns its supplied input. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>tests/test_front_validation.py</li><li>tests/test_conformance_staging.py</li></ul>
+<p>SUMMARY: Implemented compile-time validation for undefined bindings and labels. Added front-validation tests and fixed test discovery compatibility. All 20 tests and acceptance checks pass.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

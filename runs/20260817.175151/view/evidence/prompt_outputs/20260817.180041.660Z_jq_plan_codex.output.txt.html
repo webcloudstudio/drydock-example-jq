@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.180041.660Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.180041.660Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.180041.660Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Builtin-Regex.md ===
+# FEATURE: Builtin Regex
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq regular-expression matching, capture, scanning, splitting, and replacement builtins. |
+| Depends On  | FEATURE-Builtin-Strings.md |
+| Provides    | test, match, capture, scan, split, splits, sub, gsub |
+| Consumes    | jq string builtins |
+
+## Questions
+
+- None.
+
+## Behavior
+
+The interpreter implements jq regex builtins using Python standard-library facilities. It supports jq flags, named and unnamed captures, Unicode offsets, stream-producing matches and splits, and substitution interpolation. Invalid input types and invalid patterns raise jq runtime errors.
+
+## Programmatic Acceptance
+
+=== AC regex-test ===
+Intent: The test builtin returns the supplied match predicate.
+import json
+import subprocess
+import os
+
+source = &quot;abracadabra&quot;
+pattern = &quot;bra&quot;
+expected = True
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;test(&quot;bra&quot;)&#x27;],
+    input=json.dumps(source) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC regex-test ===
+
+=== AC regex-match-stream ===
+Intent: The match builtin emits all requested global matches.
+import json
+import subprocess
+
+source = &quot;abcabc&quot;
+expected = [&quot;abc&quot;, &quot;abc&quot;]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;[match(&quot;abc&quot;; &quot;g&quot;) | .string]&#x27;],
+    input=json.dumps(source) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC regex-match-stream ===
+
+=== AC regex-capture ===
+Intent: Named captures are exposed by capture.
+import json
+import subprocess
+
+source = &quot;item-42&quot;
+expected = {&quot;name&quot;: &quot;item&quot;, &quot;number&quot;: &quot;42&quot;}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;capture(&quot;(?&lt;name&gt;[a-z]+)-(?&lt;number&gt;[0-9]+)&quot;)&#x27;],
+    input=json.dumps(source) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC regex-capture ===
+
+=== AC regex-substitution ===
+Intent: Global substitution replaces every matching occurrence.
+import json
+import subprocess
+
+source = &quot;a-b-c&quot;
+expected = &quot;a_b_c&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;gsub(&quot;-&quot;; &quot;_&quot;)&#x27;],
+    input=json.dumps(source) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC regex-substitution ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Regex support uses only Python standard-library facilities and does not add a runtime dependency.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtin-Format-Conversion.md ===
+# FEATURE: Builtin Format Conversion
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq value conversion, JSON serialization, and text-format builtins. |
+| Depends On  | FEATURE-Core-Values-Operators.md, FEATURE-Builtin-Strings.md |
+| Provides    | tostring, tonumber, toboolean, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d |
+| Consumes    | jq values and string builtins |
+
+## Questions
+
+- None.
+
+## Behavior
+
+The interpreter converts numbers, booleans, and JSON strings according to jq semantics. It supports JSON round trips and the documented text, JSON, HTML, URI, CSV, TSV, shell, and Base64 formats, including interpolation and escaping.
+
+## Programmatic Acceptance
+
+=== AC conversion-roundtrip ===
+Intent: JSON conversion preserves a supplied composite value.
+import json
+import subprocess
+
+value = {&quot;items&quot;: [1, &quot;two&quot;, True], &quot;empty&quot;: None}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;tojson | fromjson&#x27;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+=== END AC conversion-roundtrip ===
+
+=== AC conversion-types ===
+Intent: Numeric and boolean string conversions produce the values represented by supplied inputs.
+import json
+import subprocess
+
+values = [&quot;12&quot;, &quot;true&quot;, &quot;false&quot;]
+expected = [12, True, False]
+program = &#x27;[.[0] | tonumber, .[1] | toboolean, .[2] | toboolean]&#x27;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=json.dumps(values) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC conversion-types ===
+
+=== AC conversion-base64 ===
+Intent: Base64 encoding and decoding round-trip supplied text.
+import json
+import subprocess
+
+value = &quot;standard library&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;@base64 | @base64d&#x27;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+=== END AC conversion-base64 ===
+
+=== AC conversion-formats ===
+Intent: The documented format filters return strings for supplied format inputs.
+import json
+import subprocess
+
+value = [&quot;alpha&quot;, &quot;beta&quot;]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;[@csv, @tsv, @json]&#x27;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+formats = json.loads(result.stdout)
+assert len(formats) == 3
+assert all(isinstance(item, str) for item in formats)
+=== END AC conversion-formats ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Formatting and conversion use only standard-library functionality and preserve compact JSON output.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtin-Math-Date.md ===
+# FEATURE: Builtin Math Date
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq mathematical, numeric-special-value, and UTC date builtins. |
+| Depends On  | FEATURE-Core-Values-Operators.md |
+| Provides    | math functions, special numbers, date parsing and formatting, epoch conversion |
+| Consumes    | jq number semantics |
+
+## Questions
+
+- None.
+
+## Behavior
+
+The interpreter implements standard mathematical functions, floating-point edge cases, NaN and infinity predicates, and jq date functions including `strptime`, `strftime`, `mktime`, `gmtime`, `fromdate`, and `todate` in UTC. Numeric handling follows the recorded native-float decision while preserving required literal behavior.
+
+## Programmatic Acceptance
+
+=== AC math-functions ===
+Intent: A supplied numeric input is transformed by jq math functions with the expected Python-computable result.
+import json
+import math
+import subprocess
+
+value = 9.0
+expected = math.sqrt(value)
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;sqrt&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC math-functions ===
+
+=== AC math-special-values ===
+Intent: Special numeric values are recognized by jq predicates.
+import json
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;[infinite | isinfinite, nan | isnan]&#x27;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == [True, True]
+=== END AC math-special-values ===
+
+=== AC date-roundtrip ===
+Intent: A supplied ISO UTC date round-trips through jq epoch conversion.
+import json
+import subprocess
+
+value = &quot;2015-03-05T23:51:47Z&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601 | todateiso8601&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+=== END AC date-roundtrip ===
+
+=== AC date-epoch ===
+Intent: UTC epoch conversion is consistent with the supplied parsed date.
+import json
+import subprocess
+import datetime
+
+value = &quot;1970-01-01T00:00:00Z&quot;
+expected = int(datetime.datetime.fromisoformat(value.replace(&quot;Z&quot;, &quot;+00:00&quot;)).timestamp())
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == expected
+=== END AC date-epoch ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Date calculations use UTC where jq specifies UTC and introduce no external dependency.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-IO-Input-Diagnostics.md ===
+# FEATURE: IO Input Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq additional-input, diagnostic, environment, and source-location builtins. |
+| Depends On  | FEATURE-Flow-Control-Errors.md, FEATURE-Builtin-Format-Conversion.md |
+| Provides    | input, inputs, debug, stderr, env, $ENV, $__loc__ |
+| Consumes    | executable jq, generator evaluator |
+
+## Questions
+
+- None.
+
+## Behavior
+
+The interpreter supports consuming additional newline-delimited JSON inputs, exposing the process environment, emitting diagnostics to stderr, and producing source-location objects. Diagnostic side effects must not corrupt JSON values emitted on stdout.
+
+## Programmatic Acceptance
+
+=== AC io-inputs ===
+Intent: inputs consumes all JSON values after the first input.
+import json
+import subprocess
+
+values = [1, 2, 3]
+expected = values[1:]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;],
+    input=&quot;\n&quot;.join(json.dumps(value) for value in values) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert [json.loads(line) for line in result.stdout.splitlines()] == expected
+=== END AC io-inputs ===
+
+=== AC io-environment ===
+Intent: env exposes an environment mapping containing a supplied variable.
+import json
+import os
+import subprocess
+
+name = &quot;JQ_ACCEPTANCE_MARKER&quot;
+value = &quot;present&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;env&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ, name: value},
+)
+assert result.returncode == 0
+assert json.loads(result.stdout)[name] == value
+=== END AC io-environment ===
+
+=== AC io-debug-stderr ===
+Intent: debug preserves the input value on stdout while writing diagnostics separately.
+import json
+import subprocess
+
+value = {&quot;message&quot;: &quot;debug&quot;}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;debug&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+assert result.stderr
+=== END AC io-debug-stderr ===
+
+=== AC io-location ===
+Intent: The location builtin returns a structured file and line value.
+import json
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;$__loc__&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+location = json.loads(result.stdout)
+assert set(location) == {&quot;file&quot;, &quot;line&quot;}
+assert isinstance(location[&quot;file&quot;], str)
+assert isinstance(location[&quot;line&quot;], int)
+=== END AC io-location ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics are written to stderr and never replace or contaminate stdout JSON values.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-IO-Streaming.md ===
+# FEATURE: IO Streaming
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq streaming serialization, reconstruction, and stream truncation builtins. |
+| Depends On  | FEATURE-Path-Discovery.md, FEATURE-Flow-Recursion-Utilities.md |
+| Provides    | tostream, fromstream, truncate_stream |
+| Consumes    | path discovery and recursive generators |
+
+## Questions
+
+- None.
+
+## Behavior
+
+The interpreter implements jq&#x27;s compact path/value streaming representation. `tostream` emits a representation that `fromstream` can reconstruct, and `truncate_stream` removes the requested number of leading path elements while preserving stream ordering and values.
+
+## Programmatic Acceptance
+
+=== AC streaming-roundtrip ===
+Intent: A supplied JSON value round-trips through tostream and fromstream.
+import json
+import subprocess
+
+value = {&quot;items&quot;: [1, {&quot;name&quot;: &quot;jq&quot;}], &quot;active&quot;: True}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromstream(tostream)&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == value
+=== END AC streaming-roundtrip ===
+
+=== AC streaming-shape ===
+Intent: tostream emits a stream of two-element path/value records for supplied scalar leaves.
+import json
+import subprocess
+
+value = {&quot;a&quot;: 1, &quot;b&quot;: 2}
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &#x27;[tostream | select(length == 2)]&#x27;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+records = json.loads(result.stdout)
+assert records
+assert all(isinstance(record, list) and len(record) == 2 for record in records)
+assert all(isinstance(record[0], list) for record in records)
+=== END AC streaming-shape ===
+
+=== AC streaming-truncate ===
+Intent: truncate_stream removes the requested leading path component from stream records.
+import json
+import subprocess
+
+stream = [[[&quot;root&quot;, 0], &quot;a&quot;], [[&quot;root&quot;, 1], &quot;b&quot;]]
+expected = [[[0], &quot;a&quot;], [[1], &quot;b&quot;]]
+program = &quot;1 | truncate_stream(&quot; + &quot;,&quot;.join(json.dumps(item) for item in stream) + &quot;)&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == expected
+=== END AC streaming-truncate ===
+
+=== AC streaming-nested-roundtrip ===
+Intent: Nested arrays and objects survive stream reconstruction.
+import json
+import subprocess
+
+value = [[0, [1]], {&quot;x&quot;: [2, 3]}]
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as $value | fromstream($value | tostream) == $value&quot;],
+    input=json.dumps(value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) is True
+=== END AC streaming-nested-roundtrip ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Streaming transformations preserve path order, value multiplicity, and JSON-compatible representations.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_construction.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_construction.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_construction.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def evaluate(program: str, value: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(value) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_array_constructor_collects_generator_outputs() -&gt; None:
+    assert evaluate(&quot;[.[]]&quot;, [1, 2, 3]) == (0, [[1, 2, 3]])
+
+
+def test_empty_array_constructor() -&gt; None:
+    assert evaluate(&quot;[]&quot;, None) == (0, [[]])
+
+
+def test_object_constructor_evaluates_values_against_input() -&gt; None:
+    assert evaluate(&quot;{name: .name, count: .items | length}&quot;, {&quot;name&quot;: &quot;example&quot;, &quot;items&quot;: [1, 2]}) == (
+        0,
+        [{&quot;name&quot;: &quot;example&quot;, &quot;count&quot;: 2}],
+    )
+
+
+def test_object_value_generator_expands_in_order() -&gt; None:
+    assert evaluate(&quot;{value: .[]}&quot;, [4, 5]) == (0, [{&quot;value&quot;: 4}, {&quot;value&quot;: 5}])
+
+
+def test_object_dynamic_key_is_evaluated_at_runtime() -&gt; None:
+    assert evaluate(&quot;{(.key): .value}&quot;, {&quot;key&quot;: &quot;chosen&quot;, &quot;value&quot;: 9}) == (0, [{&quot;chosen&quot;: 9}])
+
+
+def test_object_value_generators_form_cartesian_product() -&gt; None:
+    assert evaluate(&quot;{a: (1,2), b: (3,4)}&quot;, None) == (
+        0,
+        [{&quot;a&quot;: 1, &quot;b&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4}, {&quot;a&quot;: 2, &quot;b&quot;: 3}, {&quot;a&quot;: 2, &quot;b&quot;: 4}],
+    )
+
+
+def test_constant_non_string_object_key_is_compile_error() -&gt; None:
+    assert evaluate(&quot;{(0): 1}&quot;, None)[0] == 3
+</pre></article>
+</main>
+</body>
+</html>

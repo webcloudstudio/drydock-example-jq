@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/ERRORS.md</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
+<article class="doc"><h1>BIG ERRORS — action required</h1>
+<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-17T18:50:44+00:00</li><li>Execution ID: 20260817.184955.880Z-e006efbf</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: path-exact-and-read</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.175151/workspace/targets/jq/evidence/block-15.md</li></ul>
+<h2>Diagnostic</h2>
+<p>Block &quot;Block 15 · Service&quot; [block-15] failed its acceptance criteria. Story &quot;Discover, access, and materialize jq paths.&quot; [path-discovery] does not meet its own acceptance criteria:</p>
+<ul><li>AC path-exact-and-read — Exact paths can be materialized and read through the executable.</li></ul>
+<p>assertion: assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;] → AssertionError raised at: path-exact-and-read.py:16 process exit code: 1 values at failure: actual = [[&#x27;a&#x27;, 0, &#x27;b&#x27;], 7] payload = {&#x27;a&#x27;: [{&#x27;b&#x27;: 7}]} check stderr: Traceback (most recent call last): File &quot;path-exact-and-read.py&quot;, line 16, in &lt;module&gt; assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ … (1 more line truncated)</p>
+<h2>Recovery</h2>
+<p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
+</main>
+</body>
+</html>

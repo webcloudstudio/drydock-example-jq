@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Path-Discovery.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Path-Discovery.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Path-Discovery.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Path Discovery</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Discover and read values addressed by jq paths.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Indexing.md, FEATURE-Flow-Recursion-Utilities.md</td></tr><tr><td>Provides</td><td>path, paths, getpath</td></tr><tr><td>Consumes</td><td>array/object indexing, iteration, recursive generators</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement exact and generated path discovery over arrays, objects, and recursively nested values. Paths use arrays containing string object keys and numeric array indices.</p>
+<p><code>path</code> must preserve paths for existing and non-existing exact locations. <code>paths</code> excludes the root path and supports node filters. <code>getpath</code> reads one or more paths, returning null for missing values where jq specifies it.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-exact-and-read ===<br>Intent: Exact paths can be materialized and read through the executable.</p>
+<p>import json import os import subprocess import sys</p>
+<p>payload = {&quot;a&quot;: [{&quot;b&quot;: 7}]} program = &#x27;[path(.a[0].b), getpath([&quot;a&quot;, 0, &quot;b&quot;])]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0][-1] == payload[&quot;a&quot;][0][&quot;b&quot;] assert actual[1] == payload[&quot;a&quot;][0][&quot;b&quot;] === END AC path-exact-and-read ===</p>
+<p>=== AC paths-recursive ===<br>Intent: Recursive path discovery reports non-root paths in traversal order.</p>
+<p>import json import os import subprocess</p>
+<p>payload = {&quot;a&quot;: [1, {&quot;b&quot;: 2}]} result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;[paths]&quot;], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert [] not in actual assert [&quot;a&quot;, 0] in actual assert [&quot;a&quot;, 1, &quot;b&quot;] in actual === END AC paths-recursive ===</p>
+<p>=== AC path-filter ===<br>Intent: Filtered paths select only locations whose values satisfy the filter.</p>
+<p>import subprocess</p>
+<p>payload = {&quot;a&quot;: [1, &quot;x&quot;, 3]} program = &#x27;[paths(type == &quot;number&quot;)]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == [[&quot;a&quot;, 0], [&quot;a&quot;, 2]] === END AC path-filter ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Path operations must preserve generator ordering and multiplicity.</li><li>Invalid path expressions must raise jq runtime errors rather than silently mutating unrelated values.</li><li>No filesystem module loading is introduced.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtin-Collections.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtin-Collections.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtin-Collections.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Collection Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Implement jq collection, object, containment, ordering, and flattening builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Assignment.md, FEATURE-Flow-Recursion-Utilities.md</td></tr><tr><td>Provides</td><td>collection, object, containment, sorting, grouping, uniqueness, joining, flattening builtins</td></tr><tr><td>Consumes</td><td>generator evaluation, path assignment</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement collection and object-oriented builtins including type selectors, length, keys, entries conversion, containment, sorting, grouping, uniqueness, joining, flattening, combinations, transpose, walk, and related operations. Builtins must preserve jq ordering, structural comparison, and generator behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC collection-and-object-builtins ===<br>Intent: Core collection and object builtins return structurally consistent values.</p>
+<p>import json import os import subprocess</p>
+<p>payload = {&quot;b&quot;: 2, &quot;a&quot;: 1} program = &#x27;[type, length, keys, to_entries | length]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] == &quot;object&quot; assert actual[1] == len(payload) assert set(actual[2]) == set(payload) assert actual[3] == len(payload) === END AC collection-and-object-builtins ===</p>
+<p>=== AC sorting-grouping-uniqueness ===<br>Intent: Sorting, grouping, and uniqueness use jq structural ordering and keys.</p>
+<p>import json import os import subprocess</p>
+<p>payload = [{&quot;k&quot;: 2, &quot;v&quot;: &quot;b&quot;}, {&quot;k&quot;: 1, &quot;v&quot;: &quot;a&quot;}, {&quot;k&quot;: 2, &quot;v&quot;: &quot;c&quot;}] program = &#x27;[sort_by(.k), group_by(.k), unique_by(.k)]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert [item[&quot;k&quot;] for item in actual[0]] == sorted(item[&quot;k&quot;] for item in payload) assert [len(group) for group in actual[1]] == [1, 2] assert len(actual[2]) == 2 === END AC sorting-grouping-uniqueness ===</p>
+<p>=== AC containment-and-join ===<br>Intent: Containment and joining implement their respective collection semantics.</p>
+<p>import json import os import subprocess</p>
+<p>payload = [&quot;a&quot;, 2, True, None] program = &#x27;[contains([&quot;a&quot;, 2]), join(&quot;|&quot;)]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] is True assert actual[1] == &quot;|&quot;.join([&quot;a&quot;, &quot;2&quot;, &quot;true&quot;, &quot;&quot;]) === END AC containment-and-join ===</p>
+<p>=== AC flatten-transpose ===<br>Intent: Flattening and transposition preserve element order and null padding.</p>
+<p>import json import os import subprocess</p>
+<p>payload = [[1], [2, 3]] program = &#x27;[flatten, transpose]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] == [1, 2, 3] assert actual[1][0] == [payload[0][0], payload[1][0]] assert actual[1][1][0] is None assert actual[1][1][1] == payload[1][1] === END AC flatten-transpose ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Structural ordering must distinguish jq types and must not rely on Python&#x27;s boolean-as-number ordering.</li><li>Collection builtins must preserve generator multiplicity and ordering.</li><li>Builtins must use only Python standard-library facilities.</li></ul></article>
+</main>
+</body>
+</html>

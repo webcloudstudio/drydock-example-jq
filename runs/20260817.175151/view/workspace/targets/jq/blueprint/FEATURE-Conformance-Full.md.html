@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Conformance-Full.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Conformance-Full.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Conformance-Full.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Full Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Verify the completed jq interpreter against the complete supplied conformance corpus.</td></tr><tr><td>Depends On</td><td>FEATURE-CLI-Entrypoint.md, FEATURE-CLI-Exit-Semantics.md, FEATURE-CLI-Documentation.md, FEATURE-Front-Lexer.md, FEATURE-Front-Parser.md, FEATURE-Front-Validation.md, FEATURE-Core-Generators.md, FEATURE-Core-Indexing.md, FEATURE-Core-Values-Operators.md, FEATURE-Core-Construction.md, FEATURE-Flow-Bindings.md, FEATURE-Flow-Functions.md, FEATURE-Flow-Control-Errors.md, FEATURE-Flow-Reduce.md, FEATURE-Flow-Recursion-Utilities.md, FEATURE-Path-Discovery.md, FEATURE-Path-Mutation.md, FEATURE-Path-Assignment.md, FEATURE-Builtin-Collections.md, FEATURE-Builtin-Strings.md, FEATURE-Builtin-Regex.md, FEATURE-Builtin-Format-Conversion.md, FEATURE-Builtin-Math-Date.md, FEATURE-IO-Input-Diagnostics.md, FEATURE-IO-Streaming.md, FEATURE-Conformance-Staging.md</td></tr><tr><td>Provides</td><td>Completed jq release verdict</td></tr><tr><td>Consumes</td><td>executable jq, staged conformance harness</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>This terminal feature assembles the completed interpreter and executes the supplied scoring entry point. The full corpus, declared exclusions, executable contract, compile/runtime status behavior, output ordering, and runtime partial-output behavior are judged by the authoritative harness.</p>
+<h2>Assembly Contract</h2>
+<p>The application root contains an executable <code>jq</code>, and the staged <code>sources/full_test.sh</code> remains the release entry point. The command runs from the completed application root and is not filtered, redirected, or reinterpreted.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conformance-full ===<br>Intent: The completed interpreter passes the supplied full conformance gate.</p>
+<p>Suite: full<br>Requires: executable=python3; scope=test<br>Requires: executable=sh; scope=test</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: os.path.join(os.getcwd(), &quot;jq&quot;)}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC conformance-full ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>This is the sole whole-corpus acceptance check.</li><li>The scoring assets must remain unchanged.</li><li>Acceptance is determined only by the scoring command&#x27;s exit status; diagnostic output is printed only to support investigation.</li></ul></article>
+</main>
+</body>
+</html>

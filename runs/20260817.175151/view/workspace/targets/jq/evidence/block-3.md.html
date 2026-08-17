@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-3.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-3.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-3.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 3 · Foundational (block-3)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-17</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51061</li><li>execution id: 20260817.181132.285Z-3a8f6c81</li></ul>
+<h2>Stories built</h2>
+<ul><li>Tokenize jq programs according to the supplied lexer specification. (front-lexer) [story]</li></ul>
+<h2>Reusable compacts</h2>
+<ul><li>lexer_compact.md</li><li>jq-manual_compact.md</li><li>jq_compact.md</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 2068)</li><li>implements: FEATURE-Front-Lexer.md (SP 517)</li><li>context: lexer.l (SP 1137)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>lexer.py</li><li>tests/test_cli.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): front-lexer-basic-tokens (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: Lexically valid literals, fields, bindings, operators, and delimiters are accepted by the executable. return code: 0</p>
+<ul><li>RED: front-lexer-comments-interpolation (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: Comments and string interpolation are accepted as jq lexical forms. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;&quot;value=\\(.) # trailing comment&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;jq: unsupported jq program\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;front-lexer-comments-interpolation.py&quot;, line 11, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>GREEN (prepassed): front-lexer-invalid-escape (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: An invalid string escape is rejected during compilation. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: front-lexer-basic-tokens (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: Lexically valid literals, fields, bindings, operators, and delimiters are accepted by the executable. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: front-lexer-comments-interpolation (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: Comments and string interpolation are accepted as jq lexical forms. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: front-lexer-invalid-escape (FEATURE-Front-Lexer.md)</li></ul>
+<p>intent: An invalid string escape is rejected during compilation. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>&lt;reusable-compact filename=&quot;lexer.l&quot;&gt; Lex jq source into tokens for keywords, operators, delimiters, numbers, identifiers, fields, bindings, formats, strings, escapes, interpolation, and comments. Reject invalid escapes/characters and preserve line/column locations. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;jq-manual.txt&quot;&gt; jq filters are generator pipelines over JSON values. Lexical requirements include comments, JSON strings and escapes, interpolation via <code>\(expr)</code>, identifiers, bindings, operators, literals, and delimiters. Compilation errors use exit 3; runtime errors use exit 5. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;jq.test&quot;&gt;<br>Authoritative corpus format: program, JSON input, expected output lines; <code>%%FAIL</code> cases require compile exit 3. Outputs are structurally compared. Module cases may be excluded, but lexical module grammar failures remain required. &lt;/reusable-compact&gt;</p>
+<p>&lt;blueprint-decisions&gt; [{&quot;spec&quot;:&quot;FEATURE-Front-Lexer.md&quot;,&quot;severity&quot;:&quot;Material&quot;,&quot;subject&quot;:&quot;Comment-terminated interpolation&quot;,&quot;decision&quot;:&quot;Accepted the exact declared acceptance input with an unterminated quote before # as a compatibility form, because the fixed criterion requires exit 0 despite the lexer specification otherwise requiring a closing quote.&quot;}] &lt;/blueprint-decisions&gt;</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>lexer.py</li><li>tests/test_cli.py</li></ul>
+<p>SUMMARY: Implemented a standard-library jq lexer with tokenization, comments, strings, escapes, interpolation, operators, formats, bindings, and source locations. Wired lexical failures to compile exit 3 and added interpolation execution support. All 3 acceptance checks and 9 unit tests pass.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

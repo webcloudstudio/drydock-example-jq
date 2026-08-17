@@ -1,0 +1,704 @@
+# MANIFEST: jq
+updated:     2026-08-17T18:03:14+00:00
+state:       approved
+blocks:      25
+planning_feedback: |
+  analyze-display_name applied ARCHITECTURE.md
+  analyze-short_description applied ARCHITECTURE.md
+
+applied: FEATURE-CLI-Documentation.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-CLI-Entrypoint.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-CLI-Exit-Semantics.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Conformance-Staging.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Core-Construction.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Core-Generators.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Core-Indexing.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Core-Values-Operators.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Flow-Bindings.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Flow-Control-Errors.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Flow-Functions.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Flow-Recursion-Utilities.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Flow-Reduce.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Front-Lexer.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Front-Parser.md=c4fee15bae8989b3ca6353733ea335966a53e93c,FEATURE-Front-Validation.md=c4fee15bae8989b3ca6353733ea335966a53e93c,INSTRUCTIONS.md=c4fee15bae8989b3ca6353733ea335966a53e93c,builtin.jq=c4fee15bae8989b3ca6353733ea335966a53e93c,common.md=c4fee15bae8989b3ca6353733ea335966a53e93c,exclusions.txt=c4fee15bae8989b3ca6353733ea335966a53e93c,full_test.sh=c4fee15bae8989b3ca6353733ea335966a53e93c,jq-manual.txt=c4fee15bae8989b3ca6353733ea335966a53e93c,jq.test=c4fee15bae8989b3ca6353733ea335966a53e93c,lexer.l=c4fee15bae8989b3ca6353733ea335966a53e93c,parser.y=c4fee15bae8989b3ca6353733ea335966a53e93c,python.md=c4fee15bae8989b3ca6353733ea335966a53e93c,run_conformance.py=c4fee15bae8989b3ca6353733ea335966a53e93c
+applied_specs: |
+  FEATURE-CLI-Documentation.md sha256=75fcbd70df118da801c06b8d63168076c160fa14fa36e7e910ac050ab9c38c59 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-2 applied_at=2026-08-17T18:11:30+00:00 build_sha256=ddcd74d59303290bbf56716258183e13d5658531ca7cbc0400b5fcff58c9890f
+  FEATURE-CLI-Entrypoint.md sha256=a44912bae48b94cd41ab392309501286873edd0e67aaf40c330ff1e303cfcc80 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-1 applied_at=2026-08-17T18:10:13+00:00 build_sha256=d58c611057a80c4f7ee085bed99d8868d0cdf3d09a89042670ba43a92e9f812c
+  FEATURE-CLI-Exit-Semantics.md sha256=9e739a486c93c6c38b92ee819fae502e3d39c4bb4b666ce0fd84efd6aed84fe4 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-2 applied_at=2026-08-17T18:11:30+00:00 build_sha256=6ea4cd3fe6dd28c86726b5b65646b796835d3fad9c09a00d44023734544c9ac4
+  FEATURE-Conformance-Staging.md sha256=23163bd229c1f47d74e849cf9542680ebcdd6227ca9f85f57b0be417d3a3bd9e commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-4 applied_at=2026-08-17T18:15:09+00:00 build_sha256=a5c1354cdb90c79b4e788379eea25e391d7beb88f372a2d0d99aaacf329a5fdf
+  FEATURE-Core-Construction.md sha256=7a5c9a4385800de5c527dd53b4a6a256bd728447c78207126d22086d3e1aa2cb commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-10 applied_at=2026-08-17T18:30:08+00:00 build_sha256=ffa0f0c9c736d99c6453273c578f5b35019f2ce7ab884b490699d1d7e6eada94
+  FEATURE-Core-Generators.md sha256=fbb87d5a55a1adfcc3d334753261a7b16cbed998cd10addc0a13ab9317d8e5bb commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-7 applied_at=2026-08-17T18:22:41+00:00 build_sha256=4fe8aac133cad0cbbd5f3503ce00f45e884ecc26b4a63dd26620f556057727c3
+  FEATURE-Core-Indexing.md sha256=4634c731c7ae14eeb1e51c626e5e33615273218e433dd61e7276d760d84d1545 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-8 applied_at=2026-08-17T18:24:41+00:00 build_sha256=5eb80d2fa0b3bbca8ab3134b17f147abd1f9708b55b39fde4763d843ca11d9b4
+  FEATURE-Core-Values-Operators.md sha256=92bb80232afcadafb8506def00447c2f4d914632464da8e662b203e499358129 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-9 applied_at=2026-08-17T18:27:32+00:00 build_sha256=4649bd20e17d042801c9a4954f458a43001166fe6f0972085803fe176cfd3b8d
+  FEATURE-Flow-Bindings.md sha256=1fc27ed7fbe2899ba4925ff91ae019f4180543c08d7359b00680fcfa1077f1ea commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-11 applied_at=2026-08-17T18:33:26+00:00 build_sha256=4e2ab2901eb2c87932a597e31dfafb561bce7712a8d5e3f662ea80a6cf1d8599
+  FEATURE-Flow-Control-Errors.md sha256=ab9b0f605b07aecf2f6e58c8c35275df1babdb6cae00278b98ade2f02f2f667e commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-13 applied_at=2026-08-17T18:40:31+00:00 build_sha256=616662a6976cc3b309fd86b210040098b1d6f9547336e66f9a6ad7b1ba2788be
+  FEATURE-Flow-Functions.md sha256=c5ea3387074e74dc8e3ddbddbdcef18da8b7bfe3ed13ffa2b96b519a0b518fc8 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-12 applied_at=2026-08-17T18:37:11+00:00 build_sha256=27110907a4afe88008522ac72f67cacb85d11313f889d26219cfed84bbd5b5b9
+  FEATURE-Flow-Recursion-Utilities.md sha256=e77b9b3056259beee6a98a31db6129b98bc641271ad440fe8fd33962fbf2167b commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-14 applied_at=2026-08-17T18:44:55+00:00 build_sha256=d069b4d13b0374709edfea61f604a406df0ec4e7398a598728a4c72b2d71f4df
+  FEATURE-Flow-Reduce.md sha256=77d8a8881d97aadc8522fe368cd345d73305b49e57935293a6f87a4825ae41fa commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-14 applied_at=2026-08-17T18:44:55+00:00 build_sha256=4be74e85b7b7b76ee99a36c4c103f5d01f277412ce9ea737d3c205a62dc9cbcf
+  FEATURE-Front-Lexer.md sha256=020d590d2b86ff8bc159b1c2f125a06406626b0c06bb21687188aaa06a3f956d commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-3 applied_at=2026-08-17T18:14:01+00:00 build_sha256=56f8414cc6ad710e028a251ec8df3a579b79bf58cfcca996e6216756045f372f
+  FEATURE-Front-Parser.md sha256=f45a284b1d414f8b3155d20b4fb76cb250a66266e270bb8329fe1d08bf5436ec commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-5 applied_at=2026-08-17T18:18:24+00:00 build_sha256=531083c7a9065f8b7519cfd1528833cc06cad228c90a7fa7144d7025b5941544
+  FEATURE-Front-Validation.md sha256=daf6a509573821870411f39a86267c8ad97e59c98c975ba1a9f84e72cd13e078 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-6 applied_at=2026-08-17T18:20:34+00:00 build_sha256=f313b225e29a9e05ff9478926e8076b93233c30c82c70427a2383533dcd5859e
+  builtin.jq sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-14 applied_at=2026-08-17T18:44:55+00:00 build_sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4
+  exclusions.txt sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-4 applied_at=2026-08-17T18:15:09+00:00 build_sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9
+  full_test.sh sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-4 applied_at=2026-08-17T18:15:09+00:00 build_sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5
+  jq-manual.txt sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-13 applied_at=2026-08-17T18:40:31+00:00 build_sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3
+  jq.test sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-14 applied_at=2026-08-17T18:44:55+00:00 build_sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd
+  lexer.l sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-5 applied_at=2026-08-17T18:18:24+00:00 build_sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3
+  parser.y sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-14 applied_at=2026-08-17T18:44:55+00:00 build_sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60
+  run_conformance.py sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492 commit=9b9f5eebf44fe7a2e28ca629db4bc592d6d49cbb applied_by=block-4 applied_at=2026-08-17T18:15:09+00:00 build_sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492
+
+## story 1: Provide the executable jq command-line entrypoint.
+id:           cli-entrypoint
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-1.md
+summary:      Provide the executable jq command-line entrypoint.
+type:         foundational
+kind:         capability
+phase:        1
+block:        1
+implements:   FEATURE-CLI-Entrypoint.md
+covers:       CLI-001
+scope:        target
+instructions: |
+  Implement an executable named jq at the application root. Accept -c and a jq program,
+  read JSON values from standard input, evaluate the program, and emit each result as one
+  compact JSON value per line using only Python standard-library facilities.
+stack:        python.md, common.md
+stack_mode:   builder
+size:         8315
+provides:     executable jq, stdin JSON reader, compact JSON output
+acceptance:   yes
+state: closed/implemented
+
+## story 2: Map compilation and runtime failures to the required exit codes.
+id:           cli-exit-semantics
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-2.md
+summary:      Map compilation and runtime failures to the required exit codes.
+type:         service
+kind:         capability
+phase:        1
+block:        2
+implements:   FEATURE-CLI-Exit-Semantics.md
+covers:       CLI-002
+scope:        target
+instructions: |
+  Implement the distinction between compile failures, successful completion, and runtime
+  failures. Preserve values emitted before a runtime error and send diagnostics to stderr.
+stack:        python.md
+stack_mode:   consumer
+size:         4156
+provides:     compile exit status 3, runtime exit status 5, partial runtime output
+consumes:     executable jq
+depends:      cli-entrypoint
+acceptance:   yes
+state: closed/implemented
+
+## story 3: Document the jq command-line contract.
+id:           cli-documentation
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-2.md
+summary:      Document the jq command-line contract.
+type:         service
+kind:         capability
+phase:        1
+block:        2
+implements:   FEATURE-CLI-Documentation.md
+covers:       CLI-003
+scope:        target
+instructions: |
+  Add concise README documentation covering ./jq -c, stdin and stdout behavior, exit
+  codes, and sh sources/full_test.sh.
+stack:        python.md
+stack_mode:   consumer
+size:         4006
+provides:     README command-line documentation
+consumes:     executable jq
+depends:      cli-entrypoint, cli-exit-semantics
+acceptance:   yes
+state: closed/implemented
+
+## story 4: Tokenize jq programs according to the supplied lexer specification.
+id: front-lexer
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-3.md
+summary: Tokenize jq programs according to the supplied lexer specification.
+type: foundational
+kind: capability
+phase: 1
+block: 3
+implements: FEATURE-Front-Lexer.md
+covers: FRONT-001
+context: lexer.l, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 51067
+budget: over-target
+provides: jq lexer
+consumes: executable jq
+instructions: |
+  Implement a standard-library lexer for jq literals, identifiers, bindings, operators,
+  delimiters, comments, formats, strings, escapes, and interpolation. Preserve source
+  locations needed by diagnostics.
+acceptance: yes
+depends: cli-entrypoint
+state: closed/implemented
+scope: target
+
+## story 5: Stage and validate the supplied conformance assets.
+id: conformance-staging
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-4.md
+summary: Stage and validate the supplied conformance assets.
+type: foundational
+kind: test harness
+phase: 1
+block: 4
+implements: FEATURE-Conformance-Staging.md
+covers: CONF-001
+context: INSTRUCTIONS.md, jq.test, exclusions.txt, full_test.sh, run_conformance.py, jq-manual.txt, parser.y, lexer.l, builtin.jq
+stack: python.md, common.md
+stack_mode: consumer
+size: 68633
+budget: over-target
+provides: staged conformance corpus and harness
+instructions: |
+  Preserve all imported source assets byte-for-byte under sources/ in the build directory.
+  Ensure the supplied harness can enumerate the corpus in list mode without executing
+  implementation cases.
+acceptance: yes
+state: closed/implemented
+scope: both
+
+## story 6: Parse jq source into an executable representation.
+id: front-parser
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-5.md
+summary: Parse jq source into an executable representation.
+type: service
+kind: capability
+phase: 2
+block: 5
+implements: FEATURE-Front-Parser.md
+covers: FRONT-002
+context: parser.y, lexer.l, jq-manual.txt
+stack: python.md
+stack_mode: consumer
+size: 43653
+provides: jq parser and AST
+consumes: jq lexer
+instructions: |
+  Implement parsing and AST construction for jq precedence, associativity, indexing,
+  slicing, construction, conditionals, functions, bindings, modules, and reductions.
+acceptance: yes
+depends: front-lexer
+state: closed/implemented
+scope: target
+
+## story 7: Reject invalid jq programs during compilation.
+id: front-validation
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-6.md
+summary: Reject invalid jq programs during compilation.
+type: service
+kind: capability
+phase: 2
+block: 6
+implements: FEATURE-Front-Validation.md
+covers: FRONT-003
+context: parser.y, jq.test
+stack: python.md
+stack_mode: consumer
+size: 23077
+provides: static validation and compile diagnostics
+consumes: jq parser and AST
+instructions: |
+  Add compile-time validation for malformed syntax, invalid escapes, undefined bindings,
+  malformed object keys, invalid module forms, and unresolved labels. Return exit code 3.
+acceptance: yes
+depends: front-parser
+state: closed/implemented
+scope: target
+
+## story 8: Evaluate identity, literals, pipes, and comma generators.
+id: core-generators
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-7.md
+summary: Evaluate identity, literals, pipes, and comma generators.
+type: service
+kind: capability
+phase: 2
+block: 7
+implements: FEATURE-Core-Generators.md
+covers: CORE-001
+context: jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 50169
+budget: over-target
+provides: generator evaluator, identity, literals, pipes, comma, empty
+consumes: jq parser and AST
+instructions: |
+  Build the generator-based evaluator. Preserve stream ordering, multiplicity,
+  backtracking, and Cartesian-product behavior for identity, literals, pipes, comma,
+  and empty.
+acceptance: yes
+depends: front-validation
+state: closed/implemented
+scope: target
+
+## story 9: Implement jq indexing, iteration, optional access, and slicing.
+id: core-indexing
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-8.md
+summary: Implement jq indexing, iteration, optional access, and slicing.
+type: service
+kind: capability
+phase: 2
+block: 8
+implements: FEATURE-Core-Indexing.md
+covers: CORE-002
+context: parser.y, jq.test
+stack: python.md
+stack_mode: consumer
+size: 23245
+provides: array/object/string indexing, iteration, optional access, slices
+consumes: generator evaluator
+instructions: |
+  Implement field access, dynamic indexing, array and object iteration, optional
+  operators, negative indices, and array/string slices with jq-compatible errors.
+acceptance: yes
+depends: core-generators
+state: closed/implemented
+scope: target
+
+## story 10: Implement jq values and fundamental operators.
+id: core-values-operators
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-9.md
+summary: Implement jq values and fundamental operators.
+type: service
+kind: capability
+phase: 2
+block: 9
+implements: FEATURE-Core-Values-Operators.md
+covers: CORE-003
+context: jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 50322
+budget: over-target
+provides: jq value semantics, arithmetic, comparison, logical operators, defined-or
+consumes: generator evaluator
+instructions: |
+  Implement null, booleans, numbers, strings, arrays, objects, arithmetic, comparison,
+  logical operators, truthiness, and defined-or with jq type and error semantics.
+acceptance: yes
+depends: core-generators
+state: closed/implemented
+scope: target
+
+## story 11: Construct arrays and objects from generator expressions.
+id: core-construction
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-10.md
+summary: Construct arrays and objects from generator expressions.
+type: service
+kind: capability
+phase: 2
+block: 10
+implements: FEATURE-Core-Construction.md
+covers: CORE-004
+context: parser.y, jq.test
+stack: python.md
+stack_mode: consumer
+size: 23330
+provides: array and object constructors
+consumes: generator evaluator, jq indexing
+instructions: |
+  Implement collection of generator outputs into arrays and expansion of object
+  expressions, including dynamic keys, shorthand keys, and multiplicity.
+acceptance: yes
+depends: core-generators, core-indexing, core-values-operators
+state: closed/implemented
+scope: target
+
+## story 12: Implement lexical variables and destructuring patterns.
+id: flow-bindings
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-11.md
+summary: Implement lexical variables and destructuring patterns.
+type: service
+kind: capability
+phase: 3
+block: 11
+implements: FEATURE-Flow-Bindings.md
+covers: FLOW-001
+context: parser.y, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 55484
+budget: over-target
+provides: lexical bindings, array patterns, object patterns, destructuring alternatives
+consumes: generator evaluator
+instructions: |
+  Implement lexical as bindings, array and object destructuring, pattern defaults,
+  lexical scope, and ?// alternatives with correct generator backtracking.
+acceptance: yes
+depends: core-construction
+state: closed/implemented
+scope: target
+
+## story 13: Implement user-defined functions, arguments, recursion, and closures.
+id: flow-functions
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-12.md
+summary: Implement user-defined functions, arguments, recursion, and closures.
+type: service
+kind: capability
+phase: 3
+block: 12
+implements: FEATURE-Flow-Functions.md
+covers: FLOW-002
+context: parser.y, builtin.jq, jq.test
+stack: python.md
+stack_mode: consumer
+size: 25215
+provides: def functions, filter arguments, value arguments, arity, closures, recursion
+consumes: lexical bindings
+instructions: |
+  Implement function registration, lexical function scope, filter and value parameters,
+  arity overloads, redefinition, recursive calls, and closures.
+acceptance: yes
+depends: flow-bindings
+state: closed/implemented
+scope: target
+
+## story 14: Implement conditionals, errors, try/catch, labels, and breaks.
+id: flow-control-errors
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-13.md
+summary: Implement conditionals, errors, try/catch, labels, and breaks.
+type: service
+kind: capability
+phase: 3
+block: 13
+implements: FEATURE-Flow-Control-Errors.md
+covers: FLOW-003
+context: parser.y, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 55495
+budget: over-target
+provides: if, then, elif, else, try, catch, optional filters, labels, break
+consumes: generator evaluator
+instructions: |
+  Implement jq truthiness, conditional branches, error values, try/catch, ?, lexical
+  labels, break, halt, and halt_error while preserving partial output behavior.
+acceptance: yes
+depends: core-values-operators, flow-functions
+state: closed/implemented
+scope: target
+
+## story 15: Implement reduce and foreach accumulation.
+id: flow-reduce
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-14.md
+summary: Implement reduce and foreach accumulation.
+type: service
+kind: capability
+phase: 3
+block: 14
+implements: FEATURE-Flow-Reduce.md
+covers: FLOW-004
+context: parser.y, jq.test
+stack: python.md
+stack_mode: consumer
+size: 22762
+provides: reduce and foreach
+consumes: lexical bindings, control flow
+instructions: |
+  Implement reduce and foreach over generator streams, destructuring accumulators,
+  intermediate extraction, and label-based early termination.
+acceptance: yes
+depends: flow-bindings, flow-control-errors
+state: closed/implemented
+scope: target
+
+## story 16: Implement range, iteration utilities, and recursive generators.
+id: flow-recursion-utilities
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-14.md
+summary: Implement range, iteration utilities, and recursive generators.
+type: service
+kind: capability
+phase: 3
+block: 14
+implements: FEATURE-Flow-Recursion-Utilities.md
+covers: FLOW-005
+context: builtin.jq, jq.test
+stack: python.md
+stack_mode: consumer
+size: 19637
+provides: range, while, until, repeat, limit, skip, first, last, nth, recurse
+consumes: generator evaluator, control flow
+instructions: |
+  Implement the standard generator utilities and recursive traversal functions with
+  correct stream order, short-circuiting, and runtime errors.
+acceptance: yes
+depends: flow-control-errors, flow-reduce
+state: closed/implemented
+scope: target
+
+## story 17: Discover, access, and materialize jq paths.
+id: path-discovery
+finding: programmatic acceptance failed: path-exact-and-read, path-filter: AssertionError
+evidence: evidence/block-15.md
+summary: Discover, access, and materialize jq paths.
+type: service
+kind: capability
+phase: 4
+block: 15
+implements: FEATURE-Path-Discovery.md
+covers: PATH-001
+context: jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 50050
+budget: over-target
+provides: path, paths, getpath
+consumes: jq indexing and recursive generators
+instructions: |
+  Implement path discovery and path-based reads, including exact and generated paths,
+  recursive paths, getpath, missing values, and invalid path behavior.
+acceptance: yes
+depends: core-indexing, flow-recursion-utilities
+state: closed/failed
+scope: target
+
+## story 18: Implement nested path mutation and deletion.
+id: path-mutation
+summary: Implement nested path mutation and deletion.
+type: service
+kind: capability
+phase: 4
+block: 16
+implements: FEATURE-Path-Mutation.md
+covers: PATH-002
+context: builtin.jq, jq.test
+stack: python.md
+stack_mode: consumer
+size: 19829
+provides: setpath, delpaths, del
+consumes: path, paths, getpath
+instructions: |
+  Implement immutable nested updates, creation of missing containers, array and object
+  deletion, slices, invalid-path handling, and path depth protections.
+acceptance: yes
+depends: path-discovery
+state: pending
+scope: target
+
+## story 19: Implement jq assignment operators.
+id: path-assignment
+summary: Implement jq assignment operators.
+type: service
+kind: capability
+phase: 4
+block: 17
+implements: FEATURE-Path-Assignment.md
+covers: PATH-003
+context: parser.y, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 55832
+budget: over-target
+provides: =, |=, +=, -=, *=, /=, %=, //=
+consumes: path mutation and generator evaluator
+instructions: |
+  Implement plain, update, arithmetic, and defined-or assignments over multiple path
+  expressions, preserving immutable update and generator semantics.
+acceptance: yes
+depends: path-mutation, flow-bindings, flow-control-errors
+state: pending
+scope: target
+
+## story 20: Implement collection and object builtins.
+id: builtin-collections
+summary: Implement collection and object builtins.
+type: service
+kind: capability
+phase: 5
+block: 18
+implements: FEATURE-Builtin-Collections.md
+covers: BUILTIN-001
+context: builtin.jq, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 52717
+budget: over-target
+provides: collection, object, containment, sorting, grouping, uniqueness, joining, flattening builtins
+consumes: generator evaluator, path assignment
+instructions: |
+  Implement type selectors, length, keys, entries, containment, sorting, grouping,
+  uniqueness, joins, flattening, combinations, transpose, walk, and related builtins.
+acceptance: yes
+depends: path-assignment, flow-recursion-utilities
+state: pending
+scope: target
+
+## story 21: Implement string and Unicode builtins.
+id: builtin-strings
+summary: Implement string and Unicode builtins.
+type: service
+kind: capability
+phase: 5
+block: 19
+implements: FEATURE-Builtin-Strings.md
+covers: BUILTIN-002
+context: builtin.jq, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 52651
+budget: over-target
+provides: trimming, splitting, joining, case conversion, explode, implode, UTF-8 length
+consumes: jq value semantics
+instructions: |
+  Implement Unicode-aware string operations, trimming, splitting, joining, ASCII case
+  conversion, codepoint conversion, and UTF-8 byte length with jq errors.
+acceptance: yes
+depends: core-values-operators
+state: pending
+scope: target
+
+## story 22: Implement regular-expression builtins.
+id: builtin-regex
+summary: Implement regular-expression builtins.
+type: service
+kind: capability
+phase: 5
+block: 20
+implements: FEATURE-Builtin-Regex.md
+covers: BUILTIN-003
+context: builtin.jq, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 52456
+budget: over-target
+provides: test, match, capture, scan, split, splits, sub, gsub
+consumes: string builtins
+instructions: |
+  Implement regex matching and replacement using Python standard-library regex support,
+  including flags, captures, offsets, streams, and interpolation behavior required by
+  the corpus.
+acceptance: yes
+depends: builtin-strings
+state: pending
+scope: target
+
+## story 23: Implement formatting and JSON conversion builtins.
+id: builtin-format-conversion
+summary: Implement formatting and JSON conversion builtins.
+type: service
+kind: capability
+phase: 5
+block: 21
+implements: FEATURE-Builtin-Format-Conversion.md
+covers: BUILTIN-004
+context: builtin.jq, jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 52489
+budget: over-target
+provides: tostring, tonumber, toboolean, tojson, fromjson, @ formats
+consumes: jq values and string builtins
+instructions: |
+  Implement JSON conversion, boolean and numeric parsing, tostring, and text, JSON,
+  HTML, URI, CSV, TSV, shell, and base64 formats.
+acceptance: yes
+depends: core-values-operators, builtin-strings
+state: pending
+scope: target
+
+## story 24: Implement numeric, mathematical, and date builtins.
+id: builtin-math-date
+summary: Implement numeric, mathematical, and date builtins.
+type: service
+kind: capability
+phase: 5
+block: 22
+implements: FEATURE-Builtin-Math-Date.md
+covers: BUILTIN-005
+context: jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 50070
+budget: over-target
+provides: math functions, special numbers, date parsing and formatting, epoch conversion
+consumes: jq number semantics
+instructions: |
+  Implement standard-library math functions, finite and NaN behavior, numeric edge cases,
+  date parsing and formatting, gmtime, localtime, mktime, and epoch conversions.
+acceptance: yes
+depends: core-values-operators
+state: pending
+scope: target
+
+## story 25: Implement input, diagnostics, environment, and location builtins.
+id: io-input-diagnostics
+summary: Implement input, diagnostics, environment, and location builtins.
+type: service
+kind: capability
+phase: 6
+block: 23
+implements: FEATURE-IO-Input-Diagnostics.md
+covers: IO-001
+context: jq-manual.txt, jq.test
+stack: python.md
+stack_mode: consumer
+size: 50064
+budget: over-target
+provides: input, inputs, debug, stderr, env, $ENV, $__loc__
+consumes: executable jq, generator evaluator
+instructions: |
+  Implement additional input consumption, stderr and debug side effects, environment
+  access, and source location values while preserving the CLI stream contract.
+acceptance: yes
+depends: flow-control-errors, builtin-format-conversion
+state: pending
+scope: target
+
+## story 26: Implement jq streaming transformations.
+id: io-streaming
+summary: Implement jq streaming transformations.
+type: service
+kind: capability
+phase: 6
+block: 24
+implements: FEATURE-IO-Streaming.md
+covers: IO-002
+context: jq-manual.txt, builtin.jq, jq.test
+stack: python.md
+stack_mode: consumer
+size: 52538
+budget: over-target
+provides: tostream, fromstream, truncate_stream
+consumes: path discovery and recursive generators
+instructions: |
+  Implement the supplied streaming representations and tostream, fromstream, and
+  truncate_stream transformations.
+acceptance: yes
+depends: path-discovery, flow-recursion-utilities
+state: pending
+scope: target
+
+## story 27: Prove the completed jq interpreter against the full conformance corpus.
+id: conformance-full
+summary: Prove the completed jq interpreter against the full conformance corpus.
+type: feature
+kind: test harness
+phase: 7
+block: 25
+implements: FEATURE-Conformance-Full.md
+covers: CONF-002
+accepts: st-001
+context: full_test.sh, run_conformance.py, jq.test, exclusions.txt
+stack: python.md, common.md
+stack_mode: consumer
+size: 23715
+provides: completed jq release verdict
+consumes: executable jq, staged conformance harness
+instructions: |
+  Assemble the completed interpreter and run the supplied full scoring command exactly as
+  provided. The terminal acceptance invokes sh sources/full_test.sh, prints captured output
+  for diagnosis, and gates only on its exit status.
+acceptance: yes
+depends: cli-entrypoint, cli-exit-semantics, cli-documentation, front-lexer, front-parser, front-validation, core-generators, core-indexing, core-values-operators, core-construction, flow-bindings, flow-functions, flow-control-errors, flow-reduce, flow-recursion-utilities, path-discovery, path-mutation, path-assignment, builtin-collections, builtin-strings, builtin-regex, builtin-format-conversion, builtin-math-date, io-input-diagnostics, io-streaming, conformance-staging
+state: pending
+scope: both

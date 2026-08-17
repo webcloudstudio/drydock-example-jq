@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_reduce_recursion.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_reduce_recursion.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_reduce_recursion.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def evaluate(program: str, value: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(value) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_reduce_accumulates_generator_outputs_in_order() -&gt; None:
+    assert evaluate(&quot;reduce .[] as $x (0; . + $x)&quot;, [1, 2, 4]) == (0, [7])
+
+
+def test_reduce_destructures_each_item() -&gt; None:
+    program = &quot;reduce .[] as [$i, $j] (0; . + $i - $j)&quot;
+    assert evaluate(program, [[2, 1], [5, 3], [6, 4]]) == (0, [5])
+
+
+def test_foreach_emits_intermediate_accumulators() -&gt; None:
+    assert evaluate(&quot;foreach .[] as $x (0; . + $x; .)&quot;, [1, 2, 3]) == (0, [1, 3, 6])
+
+
+def test_range_supports_direction_and_step() -&gt; None:
+    assert evaluate(&quot;[range(5;0;-2)]&quot;, None) == (0, [[5, 3, 1]])
+    assert evaluate(&quot;[range(0;5;-1)]&quot;, None) == (0, [[]])
+
+
+def test_limit_and_skip_bound_stream_consumption() -&gt; None:
+    assert evaluate(&quot;[limit(3; .[])]&quot;, [1, 2, 3, 4]) == (0, [[1, 2, 3]])
+    assert evaluate(&quot;[skip(2; .[])]&quot;, [1, 2, 3, 4]) == (0, [[3, 4]])
+
+
+def test_iteration_and_recursive_generators_preserve_order() -&gt; None:
+    assert evaluate(&quot;[while(. &lt; 10; . * 2)]&quot;, 1) == (0, [[1, 2, 4, 8]])
+    assert evaluate(&quot;[until(. &gt;= 10; . * 2)]&quot;, 1) == (0, [[16]])
+    assert evaluate(&quot;[..]&quot;, [1, [2]]) == (0, [[[1, [2]], 1, [2], 2]])
+
+
+def test_negative_stream_counts_are_runtime_errors() -&gt; None:
+    assert evaluate(&quot;limit(-1; .)&quot;, None)[0] == 5
+    assert evaluate(&quot;skip(-1; .)&quot;, None)[0] == 5
+    assert evaluate(&quot;nth(-1; .)&quot;, None)[0] == 5
+</pre></article>
+</main>
+</body>
+</html>

@@ -11,7 +11,9 @@
 <header class="fileheader"><div class="kind">Project document</div><h1>uat.json</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../uat.json">Raw file</a></div></header>
 <article class="doc"><pre>{
   &quot;target&quot;: &quot;jq&quot;,
-  &quot;expect&quot;: { &quot;verdict&quot;: &quot;PASSED&quot; },
+  &quot;expect&quot;: {
+    &quot;verdict&quot;: &quot;PASSED&quot;
+  },
   &quot;sources&quot;: [
     &quot;sources/INSTRUCTIONS.md&quot;,
     &quot;sources/jq-manual.txt&quot;,
@@ -26,9 +28,16 @@
   &quot;updates&quot;: [],
   &quot;sea_trials&quot;: &quot;inputs/SEA_TRIALS.md&quot;,
   &quot;technology_stack&quot;: &quot;inputs/TECHNOLOGY_STACK.md&quot;,
-  &quot;test_command&quot;: [&quot;sh&quot;, &quot;sources/full_test.sh&quot;],
+  &quot;compass&quot;: &quot;inputs/COMPASS.md&quot;,
+  &quot;test_command&quot;: [
+    &quot;sh&quot;,
+    &quot;sources/full_test.sh&quot;
+  ],
   &quot;acceptance&quot;: {
-    &quot;full&quot;: [&quot;sh&quot;, &quot;sources/full_test.sh&quot;]
+    &quot;full&quot;: [
+      &quot;sh&quot;,
+      &quot;sources/full_test.sh&quot;
+    ]
   }
 }
 </pre></article>

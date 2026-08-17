@@ -1,0 +1,334 @@
+=== BEGIN ARTIFACT FEATURE-Flow-Bindings.md ===
+# FEATURE: Flow Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides lexical variable bindings, destructuring patterns, and destructuring alternatives. |
+| Depends On  | FEATURE-Core-Construction.md |
+| Provides    | lexical bindings, array patterns, object patterns, destructuring alternatives |
+| Consumes    | generator evaluator |
+
+## Questions
+
+- None.
+
+## Scope
+
+Bindings use jq’s lexical generator semantics. `as` evaluates its left filter against the current input, restores the original input for the downstream filter, and binds each produced value independently. Array and object patterns bind missing values as `null`; `?//` tries alternatives with correct variable visibility and backtracking.
+
+## Programmatic Acceptance
+
+=== AC flow-bindings-array-object ===
+Intent: The implementation passes the authoritative corpus cases for lexical bindings and array/object destructuring.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\bas\b"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-bindings-array-object ===
+
+=== AC flow-bindings-alternatives ===
+Intent: The implementation passes the authoritative corpus cases for destructuring alternatives.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\?//"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-bindings-alternatives ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve lexical scope and generator backtracking; do not implement bindings as mutable global variables.
+
+=== BEGIN ARTIFACT FEATURE-Flow-Functions.md ===
+# FEATURE: Flow Functions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides user-defined jq functions with filter arguments, value arguments, recursion, arity, and closures. |
+| Depends On  | FEATURE-Flow-Bindings.md |
+| Provides    | def functions, filter arguments, value arguments, arity, closures, recursion |
+| Consumes    | lexical bindings |
+
+## Questions
+
+- None.
+
+## Scope
+
+Function definitions are lexically scoped and available only to subsequent expressions, except that a function may refer to itself recursively. Filter parameters receive filters, while `$` parameters receive values. Definitions support multiple parameters, arity overloads, redefinition, closures, and recursive calls.
+
+## Programmatic Acceptance
+
+=== AC flow-functions-definitions ===
+Intent: The implementation passes the authoritative corpus cases for function definitions, parameters, arity, and redefinition.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\bdef\b"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-functions-definitions ===
+
+=== AC flow-functions-recursion-closures ===
+Intent: The implementation passes the authoritative corpus cases for recursive functions, filter arguments, and closures.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"recursion|closure|recursive|fac|foo\(f\)"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-functions-recursion-closures ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function arguments must retain jq filter semantics; they must not be eagerly evaluated as ordinary values.
+
+=== BEGIN ARTIFACT FEATURE-Flow-Control-Errors.md ===
+# FEATURE: Flow Control Errors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq conditionals, runtime errors, exception handling, optional filters, labels, breaks, and halting. |
+| Depends On  | FEATURE-Core-Values-Operators.md, FEATURE-Flow-Functions.md |
+| Provides    | if, then, elif, else, try, catch, optional filters, labels, break |
+| Consumes    | generator evaluator |
+
+## Questions
+
+- None.
+
+## Scope
+
+Conditionals use jq truthiness: only `false` and `null` are false. `try` and `catch` transport runtime error values through generator evaluation, while `?` suppresses errors. Labels and `break` provide lexical early termination. `halt` stops successfully; `halt_error` stops with its requested exit code.
+
+## Programmatic Acceptance
+
+=== AC flow-control-conditionals ===
+Intent: The implementation passes the authoritative corpus cases for conditionals, truthiness, logical behavior, and optional filters.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\bif\b|then|elif|else|and|or|not|\?"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-control-conditionals ===
+
+=== AC flow-control-errors-and-breaks ===
+Intent: The implementation passes the authoritative corpus cases for errors, try/catch, labels, breaks, and halting.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"try|catch|label|break|halt|error"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-control-errors-and-breaks ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve values emitted before a runtime error and distinguish suppressed errors from successful empty streams.
+
+=== BEGIN ARTIFACT FEATURE-Flow-Reduce.md ===
+# FEATURE: Flow Reduce
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq reduce and foreach accumulation over ordered generator streams. |
+| Depends On  | FEATURE-Flow-Bindings.md, FEATURE-Flow-Control-Errors.md |
+| Provides    | reduce and foreach |
+| Consumes    | lexical bindings, control flow |
+
+## Questions
+
+- None.
+
+## Scope
+
+`reduce` evaluates its generator once per produced value, applies the update filter to the accumulator, and emits the resulting accumulator stream. `foreach` additionally evaluates an extraction filter after each update. Both preserve generator ordering, support destructuring patterns, multiple initial accumulators, and lexical early termination.
+
+## Programmatic Acceptance
+
+=== AC flow-reduce-accumulation ===
+Intent: The implementation passes the authoritative corpus cases for reduce accumulation and destructuring reducers.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\breduce\b"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-reduce-accumulation ===
+
+=== AC flow-reduce-foreach ===
+Intent: The implementation passes the authoritative corpus cases for foreach extraction, streams, and early termination.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"\bforeach\b"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-reduce-foreach ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not collapse generator outputs into one value before applying reducer updates.
+
+=== BEGIN ARTIFACT FEATURE-Flow-Recursion-Utilities.md ===
+# FEATURE: Flow Recursion Utilities
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260817 V1 |
+| Description | Provides jq range, iteration, stream-limiting, selection, and recursive traversal utilities. |
+| Depends On  | FEATURE-Flow-Control-Errors.md, FEATURE-Flow-Reduce.md |
+| Provides    | range, while, until, repeat, limit, skip, first, last, nth, recurse |
+| Consumes    | generator evaluator, control flow |
+
+## Questions
+
+- None.
+
+## Scope
+
+The utilities operate on generators rather than single returned values. `range`, `while`, `until`, and `recurse` preserve ordered recursive output. `limit`, `skip`, `first`, `last`, and `nth` consume only the required portion of a stream and preserve jq’s documented negative-count and empty-stream behavior.
+
+## Programmatic Acceptance
+
+=== AC flow-recursion-range-loops ===
+Intent: The implementation passes the authoritative corpus cases for range, while, until, and repeat.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"range|while|until|repeat"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-recursion-range-loops ===
+
+=== AC flow-recursion-stream-selection ===
+Intent: The implementation passes the authoritative corpus cases for limit, skip, first, last, nth, and recurse.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", r"limit|skip|first|last|nth|recurse|\.\."],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC flow-recursion-stream-selection ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve lazy stream consumption and short-circuit behavior; recursive utilities must not eagerly materialize unbounded generators.

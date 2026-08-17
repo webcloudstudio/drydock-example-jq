@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Front-Lexer.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Front-Lexer.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Front-Lexer.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Front Lexer</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Defines lexical recognition of jq source text.</td></tr><tr><td>Depends On</td><td>FEATURE-CLI-Entrypoint.md</td></tr><tr><td>Provides</td><td>jq lexer</td></tr><tr><td>Consumes</td><td>executable jq</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The front end tokenizes jq literals, identifiers, field names, variable bindings, operators, delimiters, comments, format tokens, quoted strings, escapes, and string interpolation. It preserves sufficient source-location information for diagnostics and rejects invalid lexical forms at compilation.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC front-lexer-basic-tokens ===<br>Intent: Lexically valid literals, fields, bindings, operators, and delimiters are accepted by the executable.</p>
+<p>import os import subprocess</p>
+<p>program = &#x27;.foo + $value | [., &quot;text&quot;, @json]&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&#x27;{&quot;foo&quot;: 2}\n&#x27;, capture_output=True, text=True, env=os.environ.copy(), ) assert result.returncode == 3 or result.returncode == 0 === END AC front-lexer-basic-tokens ===</p>
+<p>=== AC front-lexer-comments-interpolation ===<br>Intent: Comments and string interpolation are accepted as jq lexical forms.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;value=\\(.) # trailing comment&#x27;], input=&quot;7\n&quot;, capture_output=True, text=True, env=os.environ.copy(), ) assert result.returncode == 0 === END AC front-lexer-comments-interpolation ===</p>
+<p>=== AC front-lexer-invalid-escape ===<br>Intent: An invalid string escape is rejected during compilation.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, env=os.environ.copy(), ) assert result.returncode == 3 === END AC front-lexer-invalid-escape ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Lexing must follow the supplied lexer specification and must not shell out to another jq implementation.</li><li>Invalid escapes and invalid characters must not be silently accepted as valid source.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Core-Indexing.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Core-Indexing.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Core-Indexing.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Core Indexing</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Implement jq field access, dynamic indexing, iteration, optional access, and slicing.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Generators.md</td></tr><tr><td>Provides</td><td>array/object/string indexing, iteration, optional access, slices</td></tr><tr><td>Consumes</td><td>generator evaluator</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement access to object fields, array elements, string characters, dynamic keys, iterators, optional access, negative indices, and array or string slices. Missing ordinary object fields yield null; invalid operations raise runtime errors unless optional access suppresses them.</p>
+<h2>Behavioral Contract</h2>
+<ul><li><code>.field</code> and <code>.[key]</code> access object values.</li><li><code>.[]</code> emits array elements or object values in iteration order.</li><li>Negative array indices count from the end.</li><li>Slices use inclusive start and exclusive end bounds and support omitted or negative bounds.</li><li><code>?</code> suppresses indexing and iteration errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC indexing-object-field ===<br>Intent: Object field access returns the value associated with the requested key.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.name&quot; input_value = {&quot;name&quot;: &quot;jq&quot;, &quot;version&quot;: 1} payload = json.dumps(input_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert json.loads(result.stdout) == input_value[&quot;name&quot;] === END AC indexing-object-field ===</p>
+<p>=== AC indexing-iteration ===<br>Intent: Array iteration emits each element in order.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.[]&quot; input_value = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;] payload = json.dumps(input_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == input_value === END AC indexing-iteration ===</p>
+<p>=== AC indexing-negative-index ===<br>Intent: Negative indexing selects from the end of an array.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.[-1]&quot; input_value = [10, 20, 30] payload = json.dumps(input_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert json.loads(result.stdout) == input_value[-1] === END AC indexing-negative-index ===</p>
+<p>=== AC indexing-slice ===<br>Intent: Array slicing returns the requested half-open range.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.[1:3]&quot; input_value = [0, 1, 2, 3] payload = json.dumps(input_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert json.loads(result.stdout) == input_value[1:3] === END AC indexing-slice ===</p>
+<p>=== AC indexing-optional-access ===<br>Intent: Optional access suppresses an invalid indexing operation.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.[]?&quot; input_value = [1, [], {&quot;x&quot;: 2}] payload = json.dumps(input_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert [json.loads(line) for line in result.stdout.splitlines()] == input_value === END AC indexing-optional-access ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve null results for missing fields and the documented distinction between missing access and invalid access.</li><li>Do not mutate input values while indexing or slicing.</li><li>Preserve stream order and multiplicity.</li></ul></article>
+</main>
+</body>
+</html>

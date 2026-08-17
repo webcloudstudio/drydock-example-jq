@@ -1,0 +1,12 @@
+AC_BROKEN: path-exact-and-read, path-filter
+
+RESULT: FAILED
+
+FILES CHANGED:
+- None
+
+SUMMARY:
+Existing path implementation passes all 76 project tests. The exact-path AC contradicts jq semantics: output is `[["a",0,"b"],7]`, so `actual[0][-1]` is `"b"`. The path-filter AC fails before execution because it omits `import os`; corrected behavior passes.
+
+BLOCKERS:
+- Acceptance criteria require Blueprint repair; no code change is appropriate.

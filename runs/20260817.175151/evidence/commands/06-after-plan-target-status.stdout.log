@@ -1,0 +1,19 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status — jq / jq
+
+  Target          /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.175151/workspace/targets/jq
+  Phase           Implement
+  State           0/27 verified  ·  27 pending
+  Metadata        planned · approved
+  Sources         9 imported · 27 authored blueprint files
+  Analysis        Questions · 29 stories · 1 question · 0 blockers
+  Review          No blockers · 1 questionnaire
+  Blueprint       ✗  3 errors · 0 warnings
+    ✗  Required files: ARCHITECTURE.md is missing
+    ✗  Acceptance snippets: FEATURE-Conformance-Full.md [conformance-full]: reads undefined global name(s): `sys`;
+       import or assign each name inside this acceptance criterion
+    ✗  Acceptance snippets: FEATURE-Path-Discovery.md [path-filter]: reads undefined global name(s): `json`, `os`;
+       import or assign each name inside this acceptance criterion
+  Plan            approved · 0/27 verified  pending 27 · implemented 0 · failed 0
+  Frontier        cli-entrypoint: Provide the executable jq command-line entrypoint.
+  Next step       drydock build jq  (frontier: Provide the executable jq command-line entrypoint.)

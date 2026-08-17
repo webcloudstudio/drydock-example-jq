@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtin-Strings.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtin-Strings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtin-Strings.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: String Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Implement jq string, Unicode, trimming, splitting, and codepoint builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Values-Operators.md</td></tr><tr><td>Provides</td><td>trimming, splitting, joining, case conversion, explode, implode, UTF-8 length</td></tr><tr><td>Consumes</td><td>jq value semantics</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement Unicode-aware string operations, including trim variants, prefix and suffix removal, splitting, joining, ASCII case conversion, codepoint conversion, and UTF-8 byte length. Non-string inputs must produce jq-compatible runtime errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC string-trimming-and-splitting ===<br>Intent: Trimming and splitting preserve string content and delimiters.</p>
+<p>import json import os import subprocess</p>
+<p>payload = &quot;  alpha,beta  &quot; program = &#x27;[trim, split(&quot;,&quot;)]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] == payload.strip() assert actual[1] == payload.strip().split(&quot;,&quot;) === END AC string-trimming-and-splitting ===</p>
+<p>=== AC prefix-suffix-case ===<br>Intent: Prefix, suffix, and ASCII case operations transform only the requested characters.</p>
+<p>import json import os import subprocess</p>
+<p>payload = &quot;fooBarfoo&quot; program = &#x27;[ltrimstr(&quot;foo&quot;), rtrimstr(&quot;foo&quot;), ascii_upcase, ascii_downcase]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[0] == payload.removeprefix(&quot;foo&quot;) assert actual[1] == payload.removesuffix(&quot;foo&quot;) assert actual[2] == &quot;FOOBARFOO&quot; assert actual[3] == &quot;foobarfoo&quot; === END AC prefix-suffix-case ===</p>
+<p>=== AC codepoints-and-byte-length ===<br>Intent: Codepoint conversion and UTF-8 byte length are inverse-compatible for valid text.</p>
+<p>import json import os import subprocess</p>
+<p>payload = &quot;µ&quot; program = &#x27;[explode, explode | implode, utf8bytelength]&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual[1] == payload assert actual[2] == len(payload.encode(&quot;utf-8&quot;)) assert actual[0] == [ord(character) for character in payload] === END AC codepoints-and-byte-length ===</p>
+<p>=== AC string-join ===<br>Intent: join converts supported scalar values and treats null as an empty field.</p>
+<p>import json import os import subprocess</p>
+<p>payload = [&quot;a&quot;, 2, True, None] separator = &quot;,&quot; program = f&#x27;join({json.dumps(separator)})&#x27; result = subprocess.run( [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, program], input=json.dumps(payload), capture_output=True, text=True, ) assert result.returncode == 0 actual = json.loads(result.stdout) assert actual == separator.join([&quot;a&quot;, &quot;2&quot;, &quot;true&quot;, &quot;&quot;]) === END AC string-join ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>String length and offsets use Unicode codepoints where jq specifies them.</li><li>UTF-8 byte length counts encoded bytes, not Python characters.</li><li>Non-string arguments must raise runtime errors with exit status 5 rather than being silently coerced.</li></ul></article>
+</main>
+</body>
+</html>

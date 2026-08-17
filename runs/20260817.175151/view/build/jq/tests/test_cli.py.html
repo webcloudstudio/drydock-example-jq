@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_cli.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_cli.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_cli.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+import unittest
+
+import jq
+from lexer import Lexer, LexerError
+
+
+class CliEntrypointTests(unittest.TestCase):
+    def test_lexer_recognizes_front_tokens(self) -&gt; None:
+        kinds = [token.kind for token in Lexer(&#x27;.foo + $value | [., &quot;text&quot;, @json]&#x27;).tokenize()]
+        self.assertEqual(kinds, [&quot;FIELD&quot;, &quot;+&quot;, &quot;BINDING&quot;, &quot;|&quot;, &quot;[&quot;, &quot;.&quot;, &quot;,&quot;, &quot;QQSTRING_START&quot;, &quot;QQSTRING_TEXT&quot;, &quot;QQSTRING_END&quot;, &quot;,&quot;, &quot;FORMAT&quot;, &quot;]&quot;])
+
+    def test_comments_and_interpolation_execute(self) -&gt; None:
+        output = io.StringIO()
+        status = jq.run([&quot;-c&quot;, &#x27;&quot;value=\\(.) # trailing comment&#x27;], io.StringIO(&quot;7\n&quot;), output)
+        self.assertEqual(status, 0)
+        self.assertEqual(json.loads(output.getvalue()), &quot;value=7&quot;)
+
+    def test_invalid_escape_is_compile_failure(self) -&gt; None:
+        with self.assertRaises(LexerError):
+            Lexer(&#x27;&quot;u\\vw&quot;&#x27;).tokenize()
+        self.assertEqual(jq.run([&quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], io.StringIO(&quot;null\n&quot;), io.StringIO()), 3)
+
+    def test_identity_round_trip(self) -&gt; None:
+        payload = {&quot;name&quot;: &quot;jq&quot;, &quot;items&quot;: [1, 2, 3]}
+        output = io.StringIO()
+
+        status = jq.run([&quot;-c&quot;, &quot;.&quot;], io.StringIO(json.dumps(payload) + &quot;\n&quot;), output)
+
+        self.assertEqual(status, 0)
+        self.assertEqual(json.loads(output.getvalue()), payload)
+
+    def test_identity_emits_one_result_per_input(self) -&gt; None:
+        values = [1, {&quot;a&quot;: 2}, [3, 4]]
+        output = io.StringIO()
+
+        status = jq.run(
+            [&quot;-c&quot;, &quot;.&quot;],
+            io.StringIO(&quot;\n&quot;.join(json.dumps(value) for value in values) + &quot;\n&quot;),
+            output,
+        )
+
+        self.assertEqual(status, 0)
+        self.assertEqual([json.loads(line) for line in output.getvalue().splitlines()], values)
+
+    def test_invalid_program_is_compile_failure(self) -&gt; None:
+        self.assertEqual(jq.run([&quot;-c&quot;, &quot;not-jq&quot;], io.StringIO(), io.StringIO()), 3)
+
+    def test_invalid_json_is_runtime_failure(self) -&gt; None:
+        self.assertEqual(jq.run([&quot;-c&quot;, &quot;.&quot;], io.StringIO(&quot;{&quot;), io.StringIO()), 5)
+
+    def test_error_filter_is_runtime_failure(self) -&gt; None:
+        output = io.StringIO()
+
+        status = jq.run([&quot;-c&quot;, &quot;error&quot;], io.StringIO(&quot;null\n&quot;), output)
+
+        self.assertEqual(status, 5)
+        self.assertEqual(output.getvalue(), &quot;&quot;)
+
+    def test_runtime_failure_preserves_prior_output(self) -&gt; None:
+        output = io.StringIO()
+
+        status = jq.run([&quot;-c&quot;, &quot;1, error&quot;], io.StringIO(&quot;null\n&quot;), output)
+
+        self.assertEqual(status, 5)
+        self.assertEqual([json.loads(line) for line in output.getvalue().splitlines()], [1])
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

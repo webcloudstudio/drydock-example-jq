@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtin-Math-Date.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtin-Math-Date.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtin-Math-Date.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Builtin Math Date</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Provides jq mathematical, numeric-special-value, and UTC date builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Values-Operators.md</td></tr><tr><td>Provides</td><td>math functions, special numbers, date parsing and formatting, epoch conversion</td></tr><tr><td>Consumes</td><td>jq number semantics</td></tr></tbody></table></div>
+<h2>Behavior</h2>
+<p>The interpreter implements standard mathematical functions, floating-point edge cases, NaN and infinity predicates, and jq date functions including <code>strptime</code>, <code>strftime</code>, <code>mktime</code>, <code>gmtime</code>, <code>fromdate</code>, and <code>todate</code> in UTC. Numeric handling follows the recorded native-float decision while preserving required literal behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC math-functions ===<br>Intent: A supplied numeric input is transformed by jq math functions with the expected Python-computable result. import json import math import subprocess</p>
+<p>value = 9.0 expected = math.sqrt(value) result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;sqrt&quot;], input=json.dumps(value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == expected === END AC math-functions ===</p>
+<p>=== AC math-special-values ===<br>Intent: Special numeric values are recognized by jq predicates. import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;[infinite | isinfinite, nan | isnan]&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == [True, True] === END AC math-special-values ===</p>
+<p>=== AC date-roundtrip ===<br>Intent: A supplied ISO UTC date round-trips through jq epoch conversion. import json import subprocess</p>
+<p>value = &quot;2015-03-05T23:51:47Z&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601 | todateiso8601&quot;], input=json.dumps(value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == value === END AC date-roundtrip ===</p>
+<p>=== AC date-epoch ===<br>Intent: UTC epoch conversion is consistent with the supplied parsed date. import json import subprocess import datetime</p>
+<p>value = &quot;1970-01-01T00:00:00Z&quot; expected = int(datetime.datetime.fromisoformat(value.replace(&quot;Z&quot;, &quot;+00:00&quot;)).timestamp()) result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromdateiso8601&quot;], input=json.dumps(value) + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == expected === END AC date-epoch ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Date calculations use UTC where jq specifies UTC and introduce no external dependency.</li></ul></article>
+</main>
+</body>
+</html>

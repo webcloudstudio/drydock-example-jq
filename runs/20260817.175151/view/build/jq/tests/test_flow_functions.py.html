@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_functions.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_functions.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_functions.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import json
+
+import jq
+
+
+def evaluate(program: str, value: object) -&gt; tuple[int, list[object]]:
+    output = io.StringIO()
+    status = jq.run([&quot;-c&quot;, program], io.StringIO(json.dumps(value) + &quot;\n&quot;), output)
+    return status, [json.loads(line) for line in output.getvalue().splitlines()]
+
+
+def test_zero_argument_function_and_recursion() -&gt; None:
+    program = &quot;def fac: if . == 1 then 1 else . * (. - 1 | fac) end; fac&quot;
+    assert evaluate(program, 4) == (0, [24])
+
+
+def test_filter_argument_runs_against_function_input() -&gt; None:
+    assert evaluate(&quot;def f(a): a | . + 1; f(.)&quot;, 2) == (0, [3])
+
+
+def test_value_argument_is_evaluated_and_bound() -&gt; None:
+    assert evaluate(&quot;def f($x): $x + .; f(3)&quot;, 2) == (0, [5])
+
+
+def test_multiple_filter_arguments_preserve_generator_products() -&gt; None:
+    program = &quot;def f(a;b): [a,b]; f(.[0]; .[1])&quot;
+    assert evaluate(program, [1, 2]) == (0, [[1, 2]])
+
+
+def test_arity_specific_redefinition_does_not_replace_other_arity() -&gt; None:
+    program = &quot;def f: . + 1; def f(a): a + . + 11; [f, f(20)]&quot;
+    assert evaluate(program, 1) == (0, [[2, 32]])
+
+
+def test_recursive_function_can_capture_lexical_value() -&gt; None:
+    program = (
+        &quot;def addn($n): if . == 0 then $n &quot;
+        &quot;else . - 1 | addn($n + 1) end; addn(0)&quot;
+    )
+    assert evaluate(program, 3) == (0, [3])
+</pre></article>
+</main>
+</body>
+</html>

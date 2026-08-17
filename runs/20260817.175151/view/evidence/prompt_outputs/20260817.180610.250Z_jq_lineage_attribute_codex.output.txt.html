@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260817.180610.250Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260817.180610.250Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260817.180610.250Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;parse-and-reject-jq-programs&quot; stories=&quot;front-lexer,front-parser,front-validation&quot;&gt;
+%%FAIL
+{(0):1}
+jq: error: Cannot use number (0) as object key at &lt;top-level&gt;, line 1, column 3:
+    {(0):1}
+      ^^
+&lt;/requirement&gt;
+&lt;requirement name=&quot;evaluate-core-generators&quot; stories=&quot;core-generators&quot;&gt;
+.[]
+[1,2,3]
+1
+2
+3
+&lt;/requirement&gt;
+&lt;requirement name=&quot;index-and-slice-values&quot; stories=&quot;core-indexing&quot;&gt;
+.foo.bar
+{&quot;foo&quot;: {&quot;bar&quot;: 42}, &quot;bar&quot;: &quot;badvalue&quot;}
+42
+&lt;/requirement&gt;
+&lt;requirement name=&quot;operate-on-values&quot; stories=&quot;core-values-operators&quot;&gt;
+1 + 2 * 2 + 10 / 2
+null
+10
+&lt;/requirement&gt;
+&lt;requirement name=&quot;construct-arrays-and-objects&quot; stories=&quot;core-construction&quot;&gt;
+{a: 1}
+null
+{&quot;a&quot;:1}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;bind-and-destructure-values&quot; stories=&quot;flow-bindings&quot;&gt;
+1 as $x | 2 as $y | [$x,$y,$x]
+null
+[1,2,1]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;define-and-call-functions&quot; stories=&quot;flow-functions&quot;&gt;
+def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac]
+[1,2,3,4]
+[1,2,6,24]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;control-errors-and-exceptions&quot; stories=&quot;flow-control-errors&quot;&gt;
+try error(0) // 1
+null
+1
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reduce-and-foreach-values&quot; stories=&quot;flow-reduce&quot;&gt;
+reduce .[] as $x (0; . + $x)
+[1,2,4]
+7
+&lt;/requirement&gt;
+&lt;requirement name=&quot;generate-ranges-and-iterations&quot; stories=&quot;flow-recursion-utilities&quot;&gt;
+[range(0;10)]
+null
+[0,1,2,3,4,5,6,7,8,9]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;discover-materialize-and-access-paths&quot; stories=&quot;path-discovery&quot;&gt;
+path(.foo[0,1])
+null
+[&quot;foo&quot;, 0]
+[&quot;foo&quot;, 1]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;mutate-and-delete-paths&quot; stories=&quot;path-mutation&quot;&gt;
+[&quot;foo&quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]}
+&quot;b&quot;
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, 20, &quot;c&quot;, &quot;d&quot;]}
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, &quot;c&quot;, &quot;d&quot;]}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;assign-values-through-paths&quot; stories=&quot;path-assignment&quot;&gt;
+.foo |= .+1
+{&quot;foo&quot;: 42}
+{&quot;foo&quot;: 43}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-collection-builtins&quot; stories=&quot;builtin-collections&quot;&gt;
+map(keys)
+[{}, {&quot;abcd&quot;:1,&quot;abc&quot;:2,&quot;abcde&quot;:3}, {&quot;x&quot;:1, &quot;z&quot;: 3, &quot;y&quot;:2}]
+[[], [&quot;abc&quot;,&quot;abcd&quot;,&quot;abcde&quot;], [&quot;x&quot;,&quot;y&quot;,&quot;z&quot;]]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-string-and-unicode-builtins&quot; stories=&quot;builtin-strings&quot;&gt;
+[.[]|startswith(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobar&quot;, &quot;barfoob&quot;]
+[false, true, false, true, false]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-format-and-json-builtins&quot; stories=&quot;builtin-format-conversion&quot;&gt;
+@base64
+&quot;foóbar\n&quot;
+&quot;Zm/Ds2Jhcgo=&quot;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-math-and-date-builtins&quot; stories=&quot;builtin-math-date&quot;&gt;
+[.[]|sqrt]
+[4,9]
+[2,3]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-input-diagnostics-and-location-builtins&quot; stories=&quot;io-input-diagnostics&quot;&gt;
+try input catch .
+null
+&quot;break&quot;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stage-conformance-tests&quot; stories=&quot;conformance-staging&quot;&gt;
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+&lt;/requirement&gt;
+&lt;requirement name=&quot;prove-interpreter-conformance&quot; stories=&quot;conformance-full&quot;&gt;
+# Simple value tests to check parser. Input is irrelevant
+&lt;/requirement&gt;
+&lt;unattached story=&quot;cli-entrypoint&quot;/&gt;
+&lt;unattached story=&quot;cli-exit-semantics&quot;/&gt;
+&lt;unattached story=&quot;cli-documentation&quot;/&gt;
+&lt;unattached story=&quot;builtin-regex&quot;/&gt;
+&lt;unattached story=&quot;io-streaming&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

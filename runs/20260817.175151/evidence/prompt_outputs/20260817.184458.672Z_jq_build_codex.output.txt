@@ -1,0 +1,11 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- tests/test_path_discovery.py
+
+SUMMARY:
+Implemented `path`, `paths`, filtered path discovery, and `getpath`. Added focused tests. All 75 project tests pass; declared acceptance checks pass.
+
+BLOCKERS:
+- None

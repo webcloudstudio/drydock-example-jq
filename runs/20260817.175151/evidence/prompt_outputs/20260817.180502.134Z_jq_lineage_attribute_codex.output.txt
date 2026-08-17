@@ -1,0 +1,35 @@
+<requirement name="preserve-upstream-corpus" stories="conformance-staging">
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+</requirement>
+<requirement name="audit-exclusion-matches" stories="conformance-staging">
+One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+</requirement>
+<requirement name="exclude-module-loader-cases" stories="conformance-staging">
+Only the loader cases are excluded.
+</requirement>
+<requirement name="reject-module-grammar" stories="front-parser,front-validation,conformance-full">
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`, `include "\(a)"; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+</requirement>
+<unattached story="cli-entrypoint"/>
+<unattached story="cli-exit-semantics"/>
+<unattached story="cli-documentation"/>
+<unattached story="front-lexer"/>
+<unattached story="core-generators"/>
+<unattached story="core-indexing"/>
+<unattached story="core-values-operators"/>
+<unattached story="core-construction"/>
+<unattached story="flow-bindings"/>
+<unattached story="flow-functions"/>
+<unattached story="flow-control-errors"/>
+<unattached story="flow-reduce"/>
+<unattached story="flow-recursion-utilities"/>
+<unattached story="path-discovery"/>
+<unattached story="path-mutation"/>
+<unattached story="path-assignment"/>
+<unattached story="builtin-collections"/>
+<unattached story="builtin-strings"/>
+<unattached story="builtin-regex"/>
+<unattached story="builtin-format-conversion"/>
+<unattached story="builtin-math-date"/>
+<unattached story="io-input-diagnostics"/>
+<unattached story="io-streaming"/>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/README.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/README.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/README.md">Raw file</a></div></header>
+<article class="doc"><h1>jq</h1>
+<p>This project provides a standalone Python implementation of the jq command-line interface.</p>
+<p>Invoke it with a filter program:</p>
+<pre><code>./jq -c &#x27;&lt;program&gt;&#x27;</code></pre>
+<p>The executable reads newline-delimited JSON values from standard input and writes each value produced by the filter as compact JSON on standard output, one value per line.</p>
+<p>The exit statuses are:</p>
+<ul><li><code>0</code> — the program compiled and ran to completion.</li><li><code>3</code> — the program could not be compiled.</li><li><code>5</code> — the program compiled but raised during runtime.</li></ul>
+<p>Run the supplied verification command with:</p>
+<pre><code>sh sources/full_test.sh</code></pre></article>
+</main>
+</body>
+</html>

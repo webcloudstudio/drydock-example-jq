@@ -1,0 +1,7 @@
+2026-08-17T18:25:46.207866Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260817.175151/build/jq/jq:
+            elif op == "-": node = binary(node, right, operator.sub)
+            elif op == "*": node = binary(node, right, operator.mul)
+            elif op == "/": node = binary(node, right, operator.truediv)
+            elif op == "%": node = binary(node, right, operator.mod)
+            elif op == "==": node = binary(node, right, operator.eq)
+            elif op == "!=": node = binary(node, right, operator.ne)

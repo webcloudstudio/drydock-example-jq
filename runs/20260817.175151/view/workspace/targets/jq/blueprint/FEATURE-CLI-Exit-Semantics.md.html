@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CLI-Exit-Semantics.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CLI-Exit-Semantics.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CLI-Exit-Semantics.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: CLI Exit Semantics</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Defines jq compilation and runtime failure status behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-CLI-Entrypoint.md</td></tr><tr><td>Provides</td><td>compile exit status 3, runtime exit status 5, partial runtime output</td></tr><tr><td>Consumes</td><td>executable jq</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Compilation failures exit with status <code>3</code>. Programs that compile and complete exit <code>0</code>. Programs that compile but raise during evaluation exit <code>5</code>. Values emitted before a runtime error remain on standard output, and diagnostics are written to standard error.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC cli-exit-compile ===<br>Intent: A syntactically invalid jq program returns the documented compile-failure status.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;[&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=os.environ.copy(), ) assert result.returncode == 3 === END AC cli-exit-compile ===</p>
+<p>=== AC cli-exit-runtime ===<br>Intent: A compiled program that raises at runtime returns the documented runtime-failure status.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=os.environ.copy(), ) assert result.returncode == 5 === END AC cli-exit-runtime ===</p>
+<p>=== AC cli-exit-partial-output ===<br>Intent: Values produced before a runtime error remain available to the caller.</p>
+<p>import json import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=os.environ.copy(), ) actual = [json.loads(line) for line in result.stdout.splitlines()] assert result.returncode == 5 assert actual == [1] === END AC cli-exit-partial-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Compile failures must remain distinguishable from runtime failures.</li><li>Diagnostics go only to standard error and are not part of the output contract.</li></ul></article>
+</main>
+</body>
+</html>

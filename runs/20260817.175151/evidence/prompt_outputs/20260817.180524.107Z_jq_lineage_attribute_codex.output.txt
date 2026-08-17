@@ -1,0 +1,33 @@
+<requirement name="executable-jq-entrypoint" stories="cli-entrypoint">
+The deliverable is an executable named jq that reads JSON on stdin.
+</requirement>
+<requirement name="run-conformance-harness" stories="conformance-full">
+JQ="$PWD/jq" exec python3 sources/run_conformance.py
+</requirement>
+<requirement name="distinguish-interface-conformance-failures" stories="cli-exit-semantics">
+The interface check is separate from the conformance run so that a missing or non-executable program and a genuine conformance failure are distinguishable in the evidence.
+</requirement>
+<unattached story="cli-documentation"/>
+<unattached story="front-lexer"/>
+<unattached story="conformance-staging"/>
+<unattached story="front-parser"/>
+<unattached story="front-validation"/>
+<unattached story="core-generators"/>
+<unattached story="core-indexing"/>
+<unattached story="core-values-operators"/>
+<unattached story="core-construction"/>
+<unattached story="flow-bindings"/>
+<unattached story="flow-functions"/>
+<unattached story="flow-control-errors"/>
+<unattached story="flow-reduce"/>
+<unattached story="flow-recursion-utilities"/>
+<unattached story="path-discovery"/>
+<unattached story="path-mutation"/>
+<unattached story="path-assignment"/>
+<unattached story="builtin-collections"/>
+<unattached story="builtin-strings"/>
+<unattached story="builtin-regex"/>
+<unattached story="builtin-format-conversion"/>
+<unattached story="builtin-math-date"/>
+<unattached story="io-input-diagnostics"/>
+<unattached story="io-streaming"/>

@@ -1,0 +1,13 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- tests/test_flow_control_errors.py
+
+SUMMARY:
+Implemented conditionals, `elif`, `try/catch`, errors, optional filters, labels, breaks, `halt`, and `halt_error`. Added regression tests.
+
+Verification: 63 pytest tests passed; both declared acceptance checks passed.
+
+BLOCKERS:
+- None

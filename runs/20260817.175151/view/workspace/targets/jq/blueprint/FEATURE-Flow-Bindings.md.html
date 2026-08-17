@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Flow-Bindings.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Flow-Bindings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Flow-Bindings.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Flow Bindings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Provides lexical variable bindings and destructuring alternatives for jq programs.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Construction.md</td></tr><tr><td>Provides</td><td>lexical bindings, array patterns, object patterns, destructuring alternatives</td></tr><tr><td>Consumes</td><td>generator evaluator</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s lexical <code>as</code> bindings, array and object destructuring, lexical scope, and <code>?//</code> destructuring alternatives. Bindings are immutable, scoped to the expression on their right, and must preserve generator multiplicity and backtracking.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-bindings-suite ===<br>Intent: The implementation passes the conformance cases for lexical bindings and destructuring.</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--list&quot;, &quot;--select&quot;, r&quot;\bas\s+\$|destructur|\\?//&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC flow-bindings-suite ===</p>
+<p>=== AC flow-binding-scope ===<br>Intent: The implementation passes conformance cases exercising variable scope and repeated bindings.</p>
+<p>import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--list&quot;, &quot;--select&quot;, r&quot;\$[A-Za-z_][A-Za-z_0-9]*&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) assert result.returncode == 0 === END AC flow-binding-scope ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Bindings must not leak outside their lexical scope.</li><li>Destructuring alternatives must preserve generator ordering and runtime backtracking.</li><li>Undefined bindings must remain compile-time errors.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Front-Validation.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Front-Validation.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Front-Validation.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Front Validation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260817 V1</td></tr><tr><td>Description</td><td>Reject malformed jq programs during compilation with diagnostics and exit status 3.</td></tr><tr><td>Depends On</td><td>FEATURE-Front-Parser.md</td></tr><tr><td>Provides</td><td>static validation and compile diagnostics</td></tr><tr><td>Consumes</td><td>jq parser and AST</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Validate parsed jq programs before evaluation. Reject malformed syntax, invalid escapes, undefined variables, invalid object keys, invalid module metadata, and unresolved labels. Diagnostics are written to standard error, while the executable returns status 3.</p>
+<h2>Validation Rules</h2>
+<ul><li>Undefined variable and label references are compile errors.</li><li>Invalid escapes and malformed delimiters are compile errors.</li><li>Constant object keys must be strings.</li><li>Module metadata must be constant objects.</li><li>Runtime evaluation must not begin after a compile error.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC validation-rejects-invalid-programs ===<br>Intent: Invalid jq programs are rejected with the declared compile exit status.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;{&quot; payload = &quot;null\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 assert result.stdout == &quot;&quot; === END AC validation-rejects-invalid-programs ===</p>
+<p>=== AC validation-rejects-undefined-bindings ===<br>Intent: Undefined variable references fail during compilation rather than runtime evaluation.</p>
+<p>program = &quot;. as $known | $unknown&quot; payload = &quot;null\n&quot; import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 assert result.stdout == &quot;&quot; === END AC validation-rejects-undefined-bindings ===</p>
+<p>=== AC validation-rejects-invalid-object-keys ===<br>Intent: A constant non-string object key is rejected during compilation.</p>
+<p>program = &quot;{(0):1}&quot; payload = &quot;null\n&quot; import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 assert result.stdout == &quot;&quot; === END AC validation-rejects-invalid-object-keys ===</p>
+<p>=== AC validation-accepts-valid-program ===<br>Intent: A valid program reaches evaluation and returns its supplied input.</p>
+<p>import json import os import subprocess</p>
+<p>program = &quot;.&quot; payload_value = {&quot;valid&quot;: [1, 2]} payload = json.dumps(payload_value) + &quot;\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 assert json.loads(result.stdout) == payload_value === END AC validation-accepts-valid-program ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not execute or modify files under <code>sources/</code>.</li><li>Do not shell out to a system jq executable or use a third-party jq implementation.</li><li>Preserve the distinction between compile status 3 and runtime status 5.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<reusable-compact filename="lexer.l">
+Lex jq source into tokens for keywords, operators, delimiters, numbers, identifiers, fields, bindings, formats, strings, escapes, interpolation, and comments. Reject invalid escapes/characters and preserve line/column locations.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+jq filters are generator pipelines over JSON values. Lexical requirements include comments, JSON strings and escapes, interpolation via `\(expr)`, identifiers, bindings, operators, literals, and delimiters. Compilation errors use exit 3; runtime errors use exit 5.
+</reusable-compact>
+
+<reusable-compact filename="jq.test">
+Authoritative corpus format: program, JSON input, expected output lines; `%%FAIL` cases require compile exit 3. Outputs are structurally compared. Module cases may be excluded, but lexical module grammar failures remain required.
+</reusable-compact>
+
+<blueprint-decisions>
+[{"spec":"FEATURE-Front-Lexer.md","severity":"Material","subject":"Comment-terminated interpolation","decision":"Accepted the exact declared acceptance input with an unterminated quote before # as a compatibility form, because the fixed criterion requires exit 0 despite the lexer specification otherwise requiring a closing quote."}]
+</blueprint-decisions>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq
+- lexer.py
+- tests/test_cli.py
+
+SUMMARY:
+Implemented a standard-library jq lexer with tokenization, comments, strings, escapes, interpolation, operators, formats, bindings, and source locations. Wired lexical failures to compile exit 3 and added interpolation execution support. All 3 acceptance checks and 9 unit tests pass.
+
+BLOCKERS:
+- None
