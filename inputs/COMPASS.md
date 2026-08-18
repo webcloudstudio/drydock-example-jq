@@ -89,16 +89,19 @@ criterion in this build passes any other flag to the harness.
 The staging story does not appear in this table. It does not run the harness at all; see *The
 staging story* below.
 
-#### The `--list` flag is forbidden in acceptance criteria
+#### `--list` is never run
 
 `sources/run_conformance.py` accepts a flag, spelled `--list`, that prints the names of the
 matching cases and then exits without executing any of them. `sources/INSTRUCTIONS.md`, the file
-header, and `--help` all document it, because it is a useful thing for a human to type at a
-terminal.
+header, and `--help` all document it.
 
-**No acceptance criterion in this build may contain `--list`. There is no exception, and no story
-that needs one. If the string `--list` appears anywhere in a criterion you have written, that
-criterion is wrong — delete it and write one of the two commands above.**
+**This build never runs it. Not in an acceptance criterion, not in a story, not in a script, not
+in a command typed by a build agent, not while developing and not while verifying. The string
+`--list` does not appear anywhere in this project's output. If you have written it, that line is
+wrong — delete it and use one of the two commands above.**
+
+A Drydock build is headless. There is no one watching the output, so a mode whose entire purpose
+is to print something for a person to read has no reader and no reason to run.
 
 The flag returns `0` at the top of the run — before the harness reads `JQ`, before it resolves the
 candidate command, before it executes a single case. A criterion built on it passes when `jq` is
