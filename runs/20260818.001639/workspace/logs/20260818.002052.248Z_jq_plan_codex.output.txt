@@ -1,0 +1,416 @@
+=== BEGIN ARTIFACT FEATURE-Parser.md ===
+# FEATURE: Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Parse jq programs into executable abstract syntax trees with jq-compatible precedence and grammar. |
+| Depends On  | FEATURE-Lexer.md |
+| Provides    | jq parser and AST |
+| Consumes    | jq lexer |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The parser converts the token stream produced by the jq lexer into executable AST structures. It must preserve jq's precedence, associativity, generator composition, and lexical scoping rules.
+
+## Supported grammar
+
+The parser covers:
+
+- Queries, pipelines, comma generators, parenthesized expressions, and comments.
+- Literals, strings, interpolation, formats, identity, field access, indexing, iteration, and slices.
+- Arrays, objects, computed keys, shorthand keys, optional expressions, and recursive descent.
+- Arithmetic, comparison, boolean, defined-or, and assignment operators.
+- `if`/`elif`/`else`, `try`/`catch`, `label`/`break`, `reduce`, and `foreach`.
+- Function definitions, function arguments, variable bindings, destructuring patterns, and `?//`.
+- Module, import, and include syntax sufficiently for later validation.
+
+The AST must retain enough source and operator information for compile-time validation and generator-based evaluation.
+
+## Programmatic Acceptance
+
+=== AC parser-corpus-slice ===
+Intent: The parser and AST execute the parser-oriented corpus slice covering literals, constructors, field access, indexing, arrays, objects, and function syntax.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(true|false|null|-?[0-9]|\.|\[|\{|def )"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC parser-corpus-slice ===
+
+=== AC parser-rejects-malformed ===
+Intent: A syntactically malformed jq program is rejected with the declared compile exit status.
+import subprocess
+
+program = "{"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC parser-rejects-malformed ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not evaluate filters during parsing.
+- Preserve generator ordering and operator associativity in the AST.
+- Do not shell out to a system jq implementation.
+- Use only the Python standard library.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Compile-Diagnostics.md ===
+# FEATURE: Compile Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Reject invalid jq programs with compile status 3 and diagnostics on standard error. |
+| Depends On  | FEATURE-Parser.md |
+| Provides    | compile validation, exit status 3 |
+| Consumes    | jq parser and AST |
+
+## Questions
+
+- None.
+
+## Behavior
+
+Compilation fails when jq source contains malformed syntax, undefined static bindings, invalid object keys, invalid module metadata, invalid import paths, or invalid labels. A compile failure must terminate before input evaluation, return status `3`, and write diagnostics only to standard error.
+
+Diagnostic wording need not match upstream jq exactly; the status and compile-versus-runtime distinction are contractual.
+
+## Static validation
+
+The compiler validates:
+
+- Balanced delimiters and complete expressions.
+- Defined variables and labels at each lexical use site.
+- Object keys that must be strings.
+- Constant module and import metadata.
+- Constant import and include paths.
+- Module namespace syntax and unsupported malformed forms.
+
+Valid programs must not be rejected merely because their execution can later raise a runtime error.
+
+## Programmatic Acceptance
+
+=== AC compile-failure-corpus-slice ===
+Intent: The compiler rejects the corpus slice containing invalid bindings, object keys, module forms, malformed delimiters, and invalid labels.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(module |include |%::|\. as \$foo \| break|\. as \[\]|\{|\})"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC compile-failure-corpus-slice ===
+
+=== AC compile-status-distinct ===
+Intent: Invalid source returns compile status 3 while keeping diagnostics off standard output.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "."],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+
+invalid = subprocess.run(
+    ["./jq", "-c", "{"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert invalid.returncode == 3
+assert invalid.stdout == ""
+=== END AC compile-status-distinct ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must return `3`, never `5`.
+- Diagnostics must never be emitted as JSON results on standard output.
+- Runtime evaluation must not begin after a compile failure.
+- Do not compare diagnostic wording against upstream text.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: Generator Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Evaluate jq filters as ordered generators with pipeline backtracking and partial runtime output. |
+| Depends On  | FEATURE-Parser.md, FEATURE-Compile-Diagnostics.md |
+| Provides    | ordered filter generators, pipeline backtracking, stream errors |
+| Consumes    | jq parser and AST |
+
+## Questions
+
+- None.
+
+## Evaluation model
+
+Every filter receives one input and produces an ordered stream of zero or more outputs. Pipeline evaluation feeds each output from the left filter into the right filter in order. Comma evaluation emits all left outputs before all right outputs.
+
+The evaluator must preserve:
+
+- Zero-output filters such as `empty`.
+- Multiplicity and cartesian products.
+- Generator ordering and downstream backtracking.
+- Laziness where required by short-circuiting constructs.
+- Values emitted before a later runtime error.
+
+Runtime failures propagate with status `5` unless caught by jq control flow.
+
+## Programmatic Acceptance
+
+=== AC generator-corpus-slice ===
+Intent: The evaluator passes the corpus slice covering comma, pipe, iteration, ranges, empty, generator multiplicity, and partial output.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(,|\||empty|\.\[\]|range\(|while\(|limit\(|skip\(|first\(|last\(|nth\(|error\()"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC generator-corpus-slice ===
+
+=== AC generator-preserves-prefix ===
+Intent: A runtime failure after a generated value preserves the emitted prefix and returns runtime status 5.
+import json
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "1, error(\"stop\")"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+lines = result.stdout.splitlines()
+assert lines
+assert json.loads(lines[0]) == 1
+=== END AC generator-preserves-prefix ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never collapse a generator to a single return value.
+- Preserve output order and multiplicity.
+- Do not discard output emitted before a runtime error.
+- Keep compile status `3` distinct from runtime status `5`.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Primitive-Filters.md ===
+# FEATURE: Primitive Filters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implement jq primitive filters, constructors, indexing, iteration, and empty-stream behavior. |
+| Depends On  | FEATURE-Generator-Core.md |
+| Provides    | identity, literals, arrays, objects, fields, indexes, iteration, slices, comma, pipe, empty |
+| Consumes    | ordered filter generators |
+
+## Questions
+
+- None.
+
+## Primitive semantics
+
+Implement identity and literal filters, arrays and objects, shorthand and computed object keys, field access, numeric and string indexing, object and array iteration, slices, optional access, recursive descent, comma, pipe, and `empty`.
+
+Indexing must follow jq's type rules, including null results for missing fields and out-of-range reads, errors for invalid non-optional accesses, negative indices, and slice normalization. Array and object constructors collect all values produced by their child filters in order.
+
+## Programmatic Acceptance
+
+=== AC primitive-corpus-slice ===
+Intent: The primitive evaluator passes the corpus slice covering fields, indexing, iteration, slices, constructors, recursive descent, optional access, and empty.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(\.[A-Za-z_][A-Za-z_0-9]*|\.\[|\.{2}|\[\.\[\]|\[1|\{[A-Za-z_]|empty|recursive)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC primitive-corpus-slice ===
+
+=== AC primitive-compact-output ===
+Intent: Primitive filters emit one valid compact JSON value per output line.
+import json
+import subprocess
+
+source = "[1, 2, null]"
+result = subprocess.run(
+    ["./jq", "-c", "."],
+    input=source + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+values = [json.loads(line) for line in result.stdout.splitlines()]
+assert values == [source]
+=== END AC primitive-compact-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve constructor output ordering.
+- Optional access suppresses only the relevant runtime error.
+- Do not pretty-print or combine separate output values.
+- Object keys must remain JSON strings.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Arithmetic-Comparison.md ===
+# FEATURE: Arithmetic Comparison
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implement jq type-directed arithmetic, equality, ordering, and numeric runtime behavior. |
+| Depends On  | FEATURE-Primitive-Filters.md |
+| Provides    | arithmetic operators, comparison operators, numeric predicates |
+| Consumes    | ordered filter generators |
+
+## Questions
+
+- None.
+
+## Operators
+
+Implement `+`, `-`, `*`, `/`, `%`, unary negation, `==`, `!=`, `<`, `>`, `<=`, and `>=` with jq's generator argument semantics.
+
+Arithmetic is type-directed:
+
+- Numbers use jq-compatible numeric conversion and edge behavior.
+- Strings concatenate, split, or repeat where specified.
+- Arrays concatenate or subtract elements where specified.
+- Objects merge shallowly with `+` and recursively with `*`.
+- `null` acts as the additive identity where jq specifies it.
+- Invalid combinations and division or remainder by zero raise runtime errors.
+
+Comparison must distinguish JSON types and use jq ordering, while equality treats numerically equal integer and floating representations as equal but never equates booleans with numbers.
+
+## Numeric representation
+
+Use the architecture decision's decimal-backed literal representation with explicit conversion for arithmetic. Preserve literal values when no arithmetic mutation occurs and expose the corpus-compatible `have_decnum` behavior.
+
+## Programmatic Acceptance
+
+=== AC arithmetic-corpus-slice ===
+Intent: The arithmetic evaluator passes the corpus slice covering arithmetic, comparisons, equality, ordering, numeric predicates, string operations, array operations, object merge, and numeric errors.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(==|!=|<=|>=|[0-9][^ ]*[+*/% -][^ ]*|infinite|nan|isnan|isfinite|sort|cannot be divided)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC arithmetic-corpus-slice ===
+
+=== AC arithmetic-runtime-error ===
+Intent: Division by zero is reported as a runtime failure and does not become a compile failure.
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "1 / 0"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC arithmetic-runtime-error ===
+
+=== AC arithmetic-json-values ===
+Intent: A valid arithmetic expression emits a valid JSON result on standard output.
+import json
+import subprocess
+
+left = 2
+right = 3
+result = subprocess.run(
+    ["./jq", "-c", "(. + right)"],
+    input=json.dumps(left) + "\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC arithmetic-json-values ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not equate booleans with numbers.
+- Preserve generator cartesian products for operator operands.
+- Division and remainder by zero must be runtime errors.
+- Do not use third-party numeric or jq libraries.
+- Do not shell out to a system jq executable.
+=== END ARTIFACT ===

@@ -1,0 +1,80 @@
+<requirement name="interpreter-architecture" stories="architecture">
+A `#!/usr/bin/env python3` script named `jq` that imports the real work from a package alongside it is the obvious one; `main` should parse arguments and delegate.
+</requirement>
+<requirement name="conformance-target" stories="conformance-verification">
+Correctness is measured by the upstream jq conformance corpus, `sources/jq.test`, taken verbatim from jq 1.8.2.
+</requirement>
+<requirement name="stage-conformance-assets" stories="conformance-staging">
+The imported source files are placed in a `sources/` subdirectory of the application directory.
+</requirement>
+<requirement name="executable-interface" stories="executable-contract">
+The interface contract
+</requirement>
+<requirement name="document-usage" stories="usage-documentation">
+Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit codes, and the `sh sources/full_test.sh` command.
+</requirement>
+<requirement name="lex-jq" stories="lexer">
+Lexer and parser. Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.
+</requirement>
+<requirement name="parse-jq" stories="parser">
+Lexer and parser. Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.
+</requirement>
+<requirement name="compile-diagnostics" stories="compile-diagnostics">
+Reject invalid programs with exit `3`.
+</requirement>
+<requirement name="generator-evaluation" stories="generator-core">
+Evaluate a filter as something that yields a stream of values:
+</requirement>
+<requirement name="primitive-filters" stories="primitive-filters">
+`.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.
+</requirement>
+<requirement name="arithmetic-comparison" stories="arithmetic-comparison">
+Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin
+</requirement>
+<requirement name="conditionals" stories="conditionals">
+`if`/`then`/`elif`/`else`/`end`, and boolean control operators.
+</requirement>
+<requirement name="runtime-control" stories="runtime-errors">
+`try`/`catch` and `?`, `//`, `label`/`break`,
+</requirement>
+<requirement name="reducers-and-iterators" stories="reducers">
+`reduce`, `foreach`, `limit`, `first`, `last`, `until`, `while`, `recurse`.
+</requirement>
+<requirement name="user-functions" stories="functions">
+`def` with arity and closures
+</requirement>
+<requirement name="bindings-and-destructuring" stories="bindings">
+`as` bindings, object and array patterns, and the `?//` alternative operator.
+</requirement>
+<requirement name="path-discovery" stories="path-discovery">
+`path(f)`, `getpath`
+</requirement>
+<requirement name="path-mutation" stories="path-mutation">
+`setpath`, `delpaths`, `del`
+</requirement>
+<requirement name="assignments" stories="assignments">
+and then `=`, `|=`, `+=`, and friends.
+</requirement>
+<requirement name="structural-builtins" stories="structural-builtins">
+Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`,
+</requirement>
+<requirement name="string-builtins" stories="string-builtins">
+strings
+</requirement>
+<requirement name="regex-builtins" stories="regex-builtins">
+regular-expression filters and replacements.
+</requirement>
+<requirement name="format-builtins" stories="format-builtins">
+`@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats
+</requirement>
+<requirement name="date-math-builtins" stories="date-math-builtins">
+the date functions, math, and numeric helper builtins.
+</requirement>
+<requirement name="io-builtins" stories="io-builtins">
+`tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="module-grammar" stories="module-grammar">
+The module *grammar* cases are **not** excluded and must pass.
+</requirement>
+<unattached story="sql-metadata-builtins"/>
+</numerusform>

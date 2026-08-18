@@ -1,0 +1,89 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Next: (no actionable steps — all done or blocked)
+
+Blueprint: jq
+Target: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260818.001639/workspace/targets/jq
+Rows: <state> <type>  <Name>  [<id>]   — pass [<id>] to --step
+
+Block: Build Block 1 · Foundational  [block-1]   — 0/1 stories done
+  [QUESTIONS] story  Define the interpreter architecture and module boundaries.  [architecture]
+
+Block: Build Block 2 · Foundational  [block-2]   — 0/1 stories done
+  [pending] story  Stage the supplied conformance assets and prove the harness is runnable.  [conformance-staging]
+
+Block: Build Block 3 · Service  [block-3]   — 0/2 stories done
+  [pending] story  Implement the executable jq command process contract.  [executable-contract]
+  [pending] story  Document jq invocation, streams, exit codes, and scoring.  [usage-documentation]
+
+Block: Build Block 4 · Service  [block-4]   — 0/1 stories done
+  [pending] story  Implement jq lexical analysis and interpolation tokens.  [lexer]
+
+Block: Build Block 5 · Service  [block-5]   — 0/1 stories done
+  [pending] story  Parse jq programs into executable AST structures.  [parser]
+
+Block: Build Block 6 · Service  [block-6]   — 0/1 stories done
+  [pending] story  Distinguish and report jq compile-time failures.  [compile-diagnostics]
+
+Block: Build Block 7 · Service  [block-7]   — 0/1 stories done
+  [pending] story  Implement ordered stream evaluation and pipeline composition.  [generator-core]
+
+Block: Build Block 8 · Service  [block-8]   — 0/1 stories done
+  [pending] story  Implement jq primitives, constructors, indexing, and generators.  [primitive-filters]
+
+Block: Build Block 9 · Service  [block-9]   — 0/1 stories done
+  [pending] story  Implement jq arithmetic, equality, ordering, and numeric behavior.  [arithmetic-comparison]
+
+Block: Build Block 10 · Service  [block-10]   — 0/1 stories done
+  [pending] story  Implement jq conditional and boolean control operators.  [conditionals]
+
+Block: Build Block 11 · Service  [block-11]   — 0/1 stories done
+  [pending] story  Implement runtime errors, catches, halts, labels, and breaks.  [runtime-errors]
+
+Block: Build Block 12 · Service  [block-12]   — 0/1 stories done
+  [pending] story  Implement user-defined jq functions, parameters, recursion, and closures.  [functions]
+
+Block: Build Block 13 · Service  [block-13]   — 0/1 stories done
+  [pending] story  Implement jq variable bindings and destructuring alternatives.  [bindings]
+
+Block: Build Block 14 · Service  [block-14]   — 0/1 stories done
+  [pending] story  Implement reducers, iterators, ranges, and generator control flow.  [reducers]
+
+Block: Build Block 15 · Service  [block-15]   — 0/1 stories done
+  [pending] story  Implement jq path discovery and path reads.  [path-discovery]
+
+Block: Build Block 16 · Service  [block-16]   — 0/1 stories done
+  [pending] story  Implement nested path mutation and deletion.  [path-mutation]
+
+Block: Build Block 17 · Service  [block-17]   — 0/1 stories done
+  [pending] story  Implement jq assignment and update-assignment operators.  [assignments]
+
+Block: Build Block 18 · Service  [block-18]   — 0/1 stories done
+  [pending] story  Implement type, collection, and structural jq builtins.  [structural-builtins]
+
+Block: Build Block 19 · Service  [block-19]   — 0/1 stories done
+  [pending] story  Implement jq string and Unicode builtins.  [string-builtins]
+
+Block: Build Block 20 · Service  [block-20]   — 0/1 stories done
+  [pending] story  Implement jq regular-expression filters and replacements.  [regex-builtins]
+
+Block: Build Block 21 · Service  [block-21]   — 0/1 stories done
+  [pending] story  Implement jq output formats and encodings.  [format-builtins]
+
+Block: Build Block 22 · Service  [block-22]   — 0/1 stories done
+  [pending] story  Implement jq date, time, math, and numeric helper builtins.  [date-math-builtins]
+
+Block: Build Block 23 · Service  [block-23]   — 0/1 stories done
+  [pending] story  Implement jq streaming, environment, input, and diagnostic builtins.  [io-builtins]
+
+Block: Build Block 24 · Service  [block-24]   — 0/1 stories done
+  [pending] story  Implement jq SQL-style and metadata builtins.  [sql-metadata-builtins]
+
+Block: Build Block 25 · Service  [block-25]   — 0/1 stories done
+  [pending] story  Validate jq module, import, and include grammar boundaries.  [module-grammar]
+
+Block: Build Block 26 · Service  [block-26]   — 0/1 stories done
+  [pending] story  Prove the completed interpreter against the full supplied corpus.  [conformance-verification]
+
+Steps: 27 total — 0 done, 0 in review, 26 pending, 1 blocked by questions, 0 failed (0% complete)
+Buildable now: (none)
+Build score evidence: none

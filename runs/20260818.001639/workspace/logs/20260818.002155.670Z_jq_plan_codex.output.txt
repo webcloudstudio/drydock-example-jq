@@ -1,0 +1,354 @@
+=== BEGIN ARTIFACT FEATURE-Conditionals.md ===
+# FEATURE: Conditionals
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implements jq conditional, boolean, defined-or, and optional execution semantics. |
+| Depends On  | FEATURE-Arithmetic-Comparison.md |
+| Provides    | if/then/elif/else/end, and, or, not, //, optional execution |
+| Consumes    | ordered filter generators |
+
+## Questions
+
+- None.
+
+## Intent
+
+Conditional filters evaluate each condition result independently. jq treats only `false` and `null` as false, while empty results produce no branch output. Boolean operators emit boolean values, and `//` selects non-null, non-false generator results.
+
+## Programmatic Acceptance
+
+=== AC conditionals-corpus ===
+Intent: The implementation passes the conformance cases covering conditionals, boolean operators, defined-or, and optional execution.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"if | and | or | //|not|\?"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC conditionals-corpus ===
+
+=== AC conditional-generators ===
+Intent: The selected conditional corpus slice executes generator-valued conditions and branches successfully.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"if .*then|//| and | or "
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC conditional-generators ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve jq truthiness: only `false` and `null` are false.
+- Preserve generator ordering and multiplicity across all branches.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Runtime-Errors.md ===
+# FEATURE: Runtime Errors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implements jq runtime errors, exception handling, halting, labels, and breaks. |
+| Depends On  | FEATURE-Conditionals.md |
+| Provides    | error, try/catch, halt, halt_error, label, break, runtime exit status 5 |
+| Consumes    | ordered filter generators |
+
+## Questions
+
+- None.
+
+## Intent
+
+Runtime failures propagate through generators with exit status 5 while preserving output already emitted. `try` and `catch` intercept errors, `halt` stops successfully, and labels provide lexical escape targets for `break`.
+
+## Programmatic Acceptance
+
+=== AC runtime-errors-corpus ===
+Intent: The implementation passes conformance cases covering errors, try/catch, optional suppression, halting, labels, and breaks.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"error|try |catch|halt|break|label"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC runtime-errors-corpus ===
+
+=== AC runtime-partial-output ===
+Intent: The selected runtime-error cases verify that valid output emitted before a runtime failure remains observable.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"first\(1,error|1, try error|try limit"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC runtime-partial-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures remain distinct from runtime failures.
+- Runtime errors must not discard already-emitted output.
+- Diagnostics go only to standard error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Functions.md ===
+# FEATURE: Functions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implements jq user-defined functions, parameters, recursion, closures, and lexical scope. |
+| Depends On  | FEATURE-Runtime-Errors.md |
+| Provides    | def functions, filter parameters, value parameters, recursion, lexical closures |
+| Consumes    | jq parser and generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Function definitions support zero or more filter or value parameters, lexical visibility, recursive calls, redefinition by arity, closures, and generator backtracking. Filter parameters are evaluated against the current input whenever invoked.
+
+## Programmatic Acceptance
+
+=== AC functions-corpus ===
+Intent: The implementation passes conformance cases covering function definitions, parameters, recursion, closures, redefinition, and function backtracking.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"def |function|closure|recursion|backtracking|arity"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC functions-corpus ===
+
+=== AC functions-definitions ===
+Intent: The selected corpus slice executes user-defined zero-argument and parameterized definitions.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^def "
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC functions-definitions ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve lexical scoping and definition order.
+- Preserve generator multiplicity when invoking filter parameters.
+- Recursive calls must retain captured lexical bindings.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Bindings.md ===
+# FEATURE: Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implements jq variable bindings, destructuring patterns, and destructuring alternatives. |
+| Depends On  | FEATURE-Functions.md |
+| Provides    | as bindings, array/object patterns, ?// alternatives |
+| Consumes    | jq parser and generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Bindings are immutable lexical values scoped over the expression to their right. Array and object patterns bind nested values, using `null` for missing array elements or unmatched fields. `?//` tries alternative patterns and exposes the bindings from the successful alternative.
+
+## Programmatic Acceptance
+
+=== AC bindings-corpus ===
+Intent: The implementation passes conformance cases covering scalar bindings, array and object destructuring, lexical scope, and ?// alternatives.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r" as \$| as \[| as \{|\\?//"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC bindings-corpus ===
+
+=== AC bindings-alternatives ===
+Intent: The selected corpus slice executes nested destructuring alternatives and exposes null for unavailable bindings.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"\?//"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC bindings-alternatives ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Bindings are lexically scoped and immutable.
+- Alternative matching must preserve the successful branch's bindings.
+- Missing pattern values resolve according to jq's null-binding semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Reducers.md ===
+# FEATURE: Reducers
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Implements jq reducers, ranges, iterator helpers, recursion, and aggregate generators. |
+| Depends On  | FEATURE-Bindings.md |
+| Provides    | reduce, foreach, range, limit, skip, first, last, nth, while, until, repeat, recurse, any, all |
+| Consumes    | user-defined functions and bindings |
+
+## Questions
+
+- None.
+
+## Intent
+
+Reducer expressions update accumulator state for every generator result. Iteration helpers preserve ordering, limits, skips, short-circuit behavior, and empty-stream semantics. Recursive generators emit the current value before descendants where jq specifies preorder traversal.
+
+## Programmatic Acceptance
+
+=== AC reducers-corpus ===
+Intent: The implementation passes conformance cases covering reduce, foreach, range, limits, skips, nth, and aggregate generators.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"reduce|foreach|range|limit|skip|nth|first|last|any|all"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC reducers-corpus ===
+
+=== AC reducers-recursion ===
+Intent: The implementation passes conformance cases covering while, until, repeat, recurse, and recursive traversal.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"while|until|repeat|recurse|\.\."
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC reducers-recursion ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Reducers preserve accumulator order and generator multiplicity.
+- Short-circuiting helpers must not evaluate unnecessary generator outputs.
+- Recursive generators must preserve jq's specified traversal order.
+=== END ARTIFACT ===

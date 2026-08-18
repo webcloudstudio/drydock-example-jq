@@ -1,0 +1,154 @@
+<requirement name="lexical-tokens" stories="lexer">
+%token QQSTRING_START
+%token <literal> QQSTRING_TEXT
+%token QQSTRING_INTERP_START
+%token QQSTRING_INTERP_END
+%token QQSTRING_END
+</requirement>
+<requirement name="parse-programs" stories="parser">
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+</requirement>
+<requirement name="compile-diagnostics" stories="compile-diagnostics">
+#define FAIL(loc, msg)                                             \
+  do {                                                             \
+    location l = loc;                                              \
+    yyerror(&l, answer, errors, locations, lexer_param_ptr, msg);  \
+    /*YYERROR*/;                                                   \
+  } while (0)
+</requirement>
+<requirement name="pipeline-composition" stories="generator-core">
+Query '|' Query {
+  $$ = block_join($1, $3);
+} |
+Query ',' Query {
+  $$ = gen_both($1, $3);
+}
+</requirement>
+<requirement name="construct-arrays-objects" stories="structural-builtins">
+'[' Query ']' {
+  $$ = gen_collect($2);
+} |
+'[' ']' {
+  $$ = gen_const(jv_array());
+} |
+'{' DictPairs '}' {
+  block o = gen_const_object($2);
+  if (o.first != NULL)
+    $$ = o;
+  else
+    $$ = BLOCK(gen_subexp(gen_const(jv_object())), $2, gen_op_simple(POP));
+}
+</requirement>
+<requirement name="primitive-filters" stories="primitive-filters">
+Term '[' ']' %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+LITERAL {
+  $$ = gen_const($1);
+} |
+'-' Term {
+  $$ = BLOCK($2, gen_call("_negate", gen_noop()));
+}
+</requirement>
+<requirement name="arithmetic-comparison" stories="arithmetic-comparison">
+Expr '+' Expr {
+  $$ = gen_binop($1, $3, '+');
+} |
+Expr "==" Expr {
+  $$ = gen_binop($1, $3, EQ);
+} |
+Expr ">=" Expr {
+  $$ = gen_binop($1, $3, GREATEREQ);
+}
+</requirement>
+<requirement name="conditionals-and-boolean-operators" stories="conditionals">
+Expr "or" Expr {
+  $$ = gen_or($1, $3);
+} |
+Expr "and" Expr {
+  $$ = gen_and($1, $3);
+} |
+"if" Query "then" Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+}
+</requirement>
+<requirement name="runtime-control-errors" stories="runtime-errors">
+"try" Expr "catch" Expr {
+  $$ = gen_try($2, $4);
+} |
+"label" BINDING '|' Query {
+  jv v = jv_string_fmt("*label-%s", jv_string_value($2));
+  $$ = gen_location(@$, locations, gen_label(jv_string_value(v), $4));
+  jv_free($2);
+  jv_free(v);
+}
+</requirement>
+<requirement name="define-call-functions" stories="functions">
+"def" IDENT '(' Params ')' ':' Query ';' {
+  $$ = gen_function(jv_string_value($2), $4, $7);
+  jv_free($2);
+}
+</requirement>
+<requirement name="bind-and-destructure" stories="bindings">
+Expr "as" Patterns '|' Query {
+  $$ = gen_destructure($1, $3, $5);
+} |
+RepPatterns "?//" Pattern {
+  $$ = BLOCK($1, gen_destructure_alt($3));
+}
+</requirement>
+<requirement name="reduce-and-foreach" stories="reducers">
+"reduce" Expr "as" Patterns '(' Query ';' Query ')' {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+"foreach" Expr "as" Patterns '(' Query ';' Query ';' Query ')' {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+}
+</requirement>
+<requirement name="discover-paths" stories="path-discovery">
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+Term '[' Query ']' %prec NONOPT {
+  $$ = gen_index($1, $3);
+}
+</requirement>
+<requirement name="mutate-paths" stories="assignments,path-mutation">
+Expr "|=" Expr {
+  $$ = gen_call("_modify", BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr "+=" Expr {
+  $$ = gen_update($1, $3, '+');
+}
+</requirement>
+<requirement name="format-strings" stories="format-builtins">
+QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {
+  $$ = gen_binop($1, gen_format($3, jv_copy($<literal>0)), '+');
+}
+</requirement>
+<requirement name="module-imports" stories="module-grammar">
+"import" ImportFrom "as" BINDING {
+  $$ = gen_import(block_const($2), $4, 1);
+  block_free($2);
+} |
+"include" ImportFrom {
+  $$ = gen_import(block_const($2), jv_invalid(), 0);
+  block_free($2);
+}
+</requirement>
+<unattached story="architecture"/>
+<unattached story="conformance-staging"/>
+<unattached story="executable-contract"/>
+<unattached story="usage-documentation"/>
+<unattached story="string-builtins"/>
+<unattached story="regex-builtins"/>
+<unattached story="date-math-builtins"/>
+<unattached story="io-builtins"/>
+<unattached story="sql-metadata-builtins"/>
+<unattached story="conformance-verification"/>

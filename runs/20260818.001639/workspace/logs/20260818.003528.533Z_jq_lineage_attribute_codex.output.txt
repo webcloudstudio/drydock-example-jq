@@ -1,0 +1,71 @@
+<requirement name="parser-basics" stories="parser">
+# Simple value tests to check parser. 
+</requirement>
+<requirement name="lexical-analysis" stories="lexer">
+# We test escapes by matching them against Unicode codepoints
+</requirement>
+<requirement name="compile-failures" stories="compile-diagnostics">
+%%FAIL
+</requirement>
+<requirement name="stream-evaluation" stories="generator-core">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="primitive-filters" stories="primitive-filters">
+# Field access, piping
+</requirement>
+<requirement name="arithmetic-comparison" stories="arithmetic-comparison">
+# Check numeric comparison binops
+</requirement>
+<requirement name="conditionals" stories="conditionals">
+# Conditionals
+</requirement>
+<requirement name="runtime-error-handling" stories="runtime-errors">
+# Try/catch and general `?` operator
+</requirement>
+<requirement name="user-defined-functions" stories="functions">
+# User-defined functions
+</requirement>
+<requirement name="variable-bindings" stories="bindings">
+# Variables
+</requirement>
+<requirement name="reducers-and-generators" stories="reducers">
+reduce .[] as $x (0; . + $x)
+</requirement>
+<requirement name="path-discovery" stories="path-discovery">
+# Paths
+</requirement>
+<requirement name="path-mutation" stories="path-mutation">
+["foo",1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+</requirement>
+<requirement name="assignments" stories="assignments">
+# Assignment
+</requirement>
+<requirement name="structural-builtins" stories="structural-builtins">
+to_entries
+</requirement>
+<requirement name="string-builtins" stories="string-builtins">
+# string operations
+</requirement>
+<requirement name="output-formats" stories="format-builtins">
+@text,@json,([1,.]|@csv,@tsv),@html,(@uri|.,@urid),@sh,(@base64|.,@base64d)
+</requirement>
+<requirement name="date-and-math-builtins" stories="date-math-builtins">
+strftime("%Y-%m-%dT%H:%M:%SZ")
+</requirement>
+<requirement name="io-and-diagnostics" stories="io-builtins">
+# calling input/0, or debug/0 in a test doesn't crash jq
+</requirement>
+<requirement name="sql-metadata-builtins" stories="sql-metadata-builtins">
+INDEX(range(5)|[., "foo\(.)"]; .[0])
+</requirement>
+<requirement name="module-grammar" stories="module-grammar">
+# module system
+</requirement>
+<requirement name="conformance-corpus" stories="conformance-verification">
+# Tests are groups of three lines: program, input, expected output
+</requirement>
+<unattached story="architecture"/>
+<unattached story="conformance-staging"/>
+<unattached story="executable-contract"/>
+<unattached story="usage-documentation"/>
+<unattached story="regex-builtins"/>

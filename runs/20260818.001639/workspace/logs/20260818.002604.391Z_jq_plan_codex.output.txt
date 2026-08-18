@@ -1,0 +1,135 @@
+=== BEGIN ARTIFACT FEATURE-Module-Grammar.md ===
+# FEATURE: Module Grammar
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Validates jq module, import, and include syntax boundaries without loading modules. |
+| Depends On  | FEATURE-Parser.md, FEATURE-Lexer.md |
+| Provides    | module/import/include syntax validation |
+| Consumes    | jq lexer, jq parser and AST |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The interpreter parses module directives sufficiently to validate constant metadata, constant import paths, and namespace syntax. This capability does not load module files because the fixed executable contract does not expose a module search-path option.
+
+## Behavior
+
+- Accept valid module grammar supported by the parser.
+- Reject non-constant module metadata.
+- Reject non-object module metadata.
+- Reject non-constant include metadata and paths.
+- Reject invalid escape sequences in module paths.
+- Reject invalid namespace syntax.
+- Return compile status `3` for these failures and write diagnostics to standard error.
+
+## Programmatic Acceptance
+
+=== AC module-grammar-conformance ===
+Intent: The interpreter executes the conformance cases owned by module grammar validation.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(module|include|%::)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC module-grammar-conformance ===
+
+=== AC module-compile-status ===
+Intent: Invalid module forms use the interpreter's compile-failure exit status.
+import subprocess
+
+programs = [
+    "module (.+1); 0",
+    "module []; 0",
+    'include "a" (.+1); 0',
+    'include "a" []; 0',
+    'include "\\ "; 0',
+    'include "\\(a)"; 0',
+    "%::wat",
+]
+for program in programs:
+    result = subprocess.run(
+        ["./jq", "-c", program],
+        input="null\n",
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+=== END AC module-compile-status ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Module grammar validation must not require filesystem module loading.
+- The supplied source assets remain unmodified.
+- Diagnostics are written to standard error and are not compared by acceptance.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conformance-Verification.md ===
+# FEATURE: Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Proves the completed jq interpreter against the supplied jq 1.8.2 conformance corpus. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Conformance-Staging.md, FEATURE-Executable-Contract.md, FEATURE-Lexer.md, FEATURE-Parser.md, FEATURE-Compile-Diagnostics.md, FEATURE-Generator-Core.md, FEATURE-Primitive-Filters.md, FEATURE-Arithmetic-Comparison.md, FEATURE-Conditionals.md, FEATURE-Runtime-Errors.md, FEATURE-Functions.md, FEATURE-Bindings.md, FEATURE-Reducers.md, FEATURE-Path-Discovery.md, FEATURE-Path-Mutation.md, FEATURE-Assignments.md, FEATURE-Structural-Builtins.md, FEATURE-String-Builtins.md, FEATURE-Regex-Builtins.md, FEATURE-Format-Builtins.md, FEATURE-Date-Math-Builtins.md, FEATURE-IO-Builtins.md, FEATURE-SQL-Metadata-Builtins.md, FEATURE-Module-Grammar.md |
+| Provides    | complete jq conformance proof |
+| Consumes    | executable jq, staged conformance corpus, all implemented language and builtin capabilities |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The completed application must pass every runnable case in the supplied jq 1.8.2 corpus, while preserving the declared exclusions and the interpreter's compile-time and runtime exit-code contract.
+
+## Verification
+
+The terminal verification runs `sh sources/full_test.sh` from the application root. The supplied script checks that `./jq` is executable, supplies `JQ`, invokes the unchanged conformance runner, and returns its verdict.
+
+## Programmatic Acceptance
+
+=== AC complete-conformance ===
+Intent: The completed interpreter passes the supplied full jq conformance suite.
+Suite: full
+
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=subprocess.sys.stderr)
+assert result.returncode == 0
+=== END AC complete-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- This is the only story that runs the unfiltered conformance suite.
+- The supplied corpus, exclusions, runner, and scoring script remain unmodified.
+- The full suite's exit status is the acceptance verdict; diagnostics are printed only for troubleshooting.
+=== END ARTIFACT ===

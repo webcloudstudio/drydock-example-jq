@@ -1,0 +1,404 @@
+=== BEGIN ARTIFACT FEATURE-Regex-Builtins.md ===
+# FEATURE: Regular-Expression Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provides jq regular-expression matching, capture, scanning, splitting, and substitution builtins. |
+| Depends On  | FEATURE-String-Builtins.md |
+| Provides    | test, match, capture, scan, split, splits, sub, gsub |
+| Consumes    | string builtins, generator evaluator |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's regular-expression builtins using Python standard-library facilities. Support jq-compatible flags, named and unnamed captures, Unicode codepoint offsets, generator-valued matches, splitting, and replacement interpolation.
+
+## Behavior
+
+- `test`, `match`, and `capture` accept jq string or interpolated regular-expression arguments and optional flags.
+- `scan` emits each non-overlapping match, or captured strings when capture groups exist.
+- `split` returns an array while `splits` emits a stream.
+- `sub` replaces the first matching region; `gsub` replaces all non-overlapping regions.
+- Replacement filters may produce multiple strings and may reference named captures.
+- Invalid input and invalid expressions raise jq runtime errors with exit status 5 unless caught.
+
+## Programmatic Acceptance
+
+=== AC regex-match-suite ===
+Intent: The implementation passes the authoritative conformance cases for regex matching, flags, captures, and scanning.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(test\(|match\(|capture\(|scan\(|.*regex|.*capture|.*match)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC regex-match-suite ===
+
+=== AC regex-replacement-suite ===
+Intent: The implementation passes the authoritative conformance cases for regex splitting and substitution generators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(split\(|splits\(|sub\(|gsub\(|.*split|.*substitution|.*replacement)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC regex-replacement-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not use third-party regular-expression packages.
+- Preserve generator ordering and Unicode codepoint offsets.
+- Do not modify files under `sources/`.
+
+=== BEGIN ARTIFACT FEATURE-Format-Builtins.md ===
+# FEATURE: Format and Encoding Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provides jq text, JSON, URI, HTML, CSV, TSV, shell, and Base64 formatting builtins. |
+| Depends On  | FEATURE-String-Builtins.md |
+| Provides    | @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d |
+| Consumes    | string builtins, JSON serialization |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's format filters and their interpolation behavior with Python standard-library encoders.
+
+## Behavior
+
+- `@text` uses jq string conversion and `@json` emits compact JSON text.
+- `@html` escapes the documented HTML/XML characters.
+- `@uri` and `@urid` perform URI percent-encoding and decoding.
+- `@csv` and `@tsv` serialize arrays using jq's quoting and escaping rules.
+- `@sh` emits POSIX-shell-safe arguments.
+- `@base64` and `@base64d` implement RFC 4648 conversion.
+- Format prefixes followed by string literals preserve literal text while escaping interpolated values.
+
+## Programmatic Acceptance
+
+=== AC format-encoding-suite ===
+Intent: The implementation passes authoritative conformance cases for JSON, text, HTML, URI, and Base64 formats.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(@text|@json|@html|@uri|@urid|@base64|@base64d|.*base64|.*URI|.*uri|.*html)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC format-encoding-suite ===
+
+=== AC tabular-shell-format-suite ===
+Intent: The implementation passes authoritative conformance cases for CSV, TSV, shell quoting, and format interpolation.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(@csv|@tsv|@sh|.*csv|.*tsv|.*shell|.*escaping|.*interpolation)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC tabular-shell-format-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library encoding and serialization facilities.
+- Preserve compact JSON text and jq escaping semantics.
+- Do not modify files under `sources/`.
+
+=== BEGIN ARTIFACT FEATURE-Date-Math-Builtins.md ===
+# FEATURE: Date and Math Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provides jq date conversion, time-structure, mathematical, floating-point, and numeric helper builtins. |
+| Depends On  | FEATURE-Arithmetic-Comparison.md, FEATURE-String-Builtins.md |
+| Provides    | date conversion, time structures, math functions, numeric predicates |
+| Consumes    | arithmetic and string evaluation |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's UTC date/time functions, local-time interfaces, standard mathematical functions, and floating-point predicates using Python's standard library.
+
+## Behavior
+
+- Implement `fromdate`, `fromdateiso8601`, `todate`, and `todateiso8601`.
+- Implement `strptime`, `strftime`, `strflocaltime`, `mktime`, `gmtime`, and `localtime` with jq-compatible time arrays.
+- Implement `now` and the documented mathematical functions and arities.
+- Support `infinite`, `nan`, `isinfinite`, `isnan`, `isfinite`, and `isnormal`.
+- Preserve jq runtime errors for invalid date structures, formats, and numeric operations.
+- Expose the selected non-decnum compatibility behavior through `have_decnum`.
+
+## Programmatic Acceptance
+
+=== AC date-time-suite ===
+Intent: The implementation passes authoritative conformance cases for date parsing, formatting, UTC conversion, and time structures.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(fromdate|todate|strptime|strftime|strflocaltime|mktime|gmtime|localtime|now|.*date|.*time|.*datetime)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC date-time-suite ===
+
+=== AC math-numeric-suite ===
+Intent: The implementation passes authoritative conformance cases for standard math functions, infinities, NaN, and numeric edge cases.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(.*nan.*|.*infinite.*|.*isfinite.*|.*isnormal.*|.*pow.*|.*sqrt.*|.*floor.*|.*ceil.*|.*sin.*|.*cos.*|.*log.*|.*round.*|.*numeric.*|.*number.*)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC math-numeric-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use UTC for jq date conversions.
+- Use only Python standard-library facilities.
+- Preserve runtime error status and NaN/infinity handling.
+- Do not modify files under `sources/`.
+
+=== BEGIN ARTIFACT FEATURE-IO-Builtins.md ===
+# FEATURE: Streaming and I/O Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provides jq streaming transformations, additional input, environment, diagnostics, and stream-control builtins. |
+| Depends On  | FEATURE-Generator-Core.md, FEATURE-Executable-Contract.md |
+| Provides    | tostream, fromstream, truncate_stream, input, inputs, debug, stderr, env, $ENV |
+| Consumes    | generator evaluator, executable stdin and stderr |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's standard-library I/O and streaming behavior while preserving the executable's JSON input stream and diagnostic channels.
+
+## Behavior
+
+- `tostream` emits jq path/value stream records and `fromstream` reconstructs values.
+- `truncate_stream` removes the requested path prefix from stream records.
+- `input` consumes one subsequent JSON input and `inputs` consumes all remaining inputs.
+- `env` and `$ENV` expose the process environment as jq objects.
+- `debug` writes diagnostic records to stderr and preserves its input; `stderr` writes raw input to stderr without adding output values.
+- I/O builtins preserve ordering and interact correctly with the executable's input cursor.
+
+## Programmatic Acceptance
+
+=== AC streaming-suite ===
+Intent: The implementation passes authoritative conformance cases for tostream, fromstream, and truncate_stream.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(tostream|fromstream|truncate_stream|.*stream|.*streaming)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC streaming-suite ===
+
+=== AC-input-environment-diagnostics-suite ===
+Intent: The implementation passes authoritative conformance cases for input consumption, environment access, debug, and stderr behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(input|inputs|env|\$ENV|debug|stderr|.*environment|.*diagnostic|.*input)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC-input-environment-diagnostics-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve stdout JSON values independently from stderr diagnostics.
+- Preserve input ordering and consumption semantics.
+- Do not use network access or third-party packages.
+- Do not modify files under `sources/`.
+
+=== BEGIN ARTIFACT FEATURE-SQL-Metadata-Builtins.md ===
+# FEATURE: SQL-Style and Metadata Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provides jq indexing, joining, membership, builtin enumeration, and build-metadata helpers. |
+| Depends On  | FEATURE-Functions.md, FEATURE-Path-Discovery.md |
+| Provides    | INDEX, JOIN, IN, builtins, have_decnum, have_literal_numbers, $JQ_BUILD_CONFIGURATION |
+| Consumes    | functions, paths, generator evaluator |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's SQL-style operators and metadata builtins without external dependencies.
+
+## Behavior
+
+- `INDEX(stream; index_expression)` and `INDEX(index_expression)` construct keyed objects from generator streams.
+- `JOIN` supports indexed joins with optional stream, index, and join expressions.
+- `IN` supports membership checks over source streams.
+- `builtins` emits the available builtin names and arities.
+- `have_decnum` and `have_literal_numbers` report the selected numeric compatibility configuration.
+- `$JQ_BUILD_CONFIGURATION` exposes a stable implementation configuration object or string compatible with jq's metadata contract.
+
+## Programmatic Acceptance
+
+=== AC sql-builtins-suite ===
+Intent: The implementation passes authoritative conformance cases for INDEX, JOIN, and IN generator semantics.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(INDEX|JOIN|IN\(|.*INDEX|.*JOIN|.*membership|.*SQL)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC sql-builtins-suite ===
+
+=== AC metadata-builtins-suite ===
+Intent: The implementation passes authoritative conformance cases for builtin enumeration and numeric metadata behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+selector = r"^(builtins|have_decnum|have_literal_numbers|\$JQ_BUILD_CONFIGURATION|.*metadata|.*builtins)"
+result = subprocess.run(
+    ["python3", "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC metadata-builtins-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not introduce external databases or dependencies; these are in-process jq builtins.
+- Keep builtin enumeration consistent with implemented callable arities.
+- Preserve the selected numeric compatibility behavior.
+- Do not modify files under `sources/`. 
+=== END ARTIFACT ===

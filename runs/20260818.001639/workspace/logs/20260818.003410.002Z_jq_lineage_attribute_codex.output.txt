@@ -1,0 +1,38 @@
+<requirement name="preserve-upstream-corpus" stories="conformance-staging">
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+</requirement>
+<requirement name="record-unrunnable-cases" stories="conformance-staging">
+Where a case cannot run under this kit's harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file.
+</requirement>
+<requirement name="validate-exclusion-matches" stories="executable-contract,conformance-staging">
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+</requirement>
+<requirement name="exclude-module-loader-cases" stories="module-grammar">
+These cases resolve `import` and `include` against a module search path supplied by jq's -L flag, reading roughly twenty fixture files spread across nested directories upstream (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit's declared sources into the application flattened by basename, so that directory tree cannot be carried, and the interface this kit fixes exercises no flag but -c.
+</requirement>
+<requirement name="retain-module-grammar-cases" stories="lexer,parser,compile-diagnostics,module-grammar">
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`, `include "\(a)"; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+</requirement>
+<requirement name="report-module-metadata" stories="sql-metadata-builtins">
+`modulemeta` reports a module's declared dependencies and definitions.
+</requirement>
+<unattached story="architecture"/>
+<unattached story="usage-documentation"/>
+<unattached story="generator-core"/>
+<unattached story="primitive-filters"/>
+<unattached story="arithmetic-comparison"/>
+<unattached story="conditionals"/>
+<unattached story="runtime-errors"/>
+<unattached story="functions"/>
+<unattached story="bindings"/>
+<unattached story="reducers"/>
+<unattached story="path-discovery"/>
+<unattached story="path-mutation"/>
+<unattached story="assignments"/>
+<unattached story="structural-builtins"/>
+<unattached story="string-builtins"/>
+<unattached story="regex-builtins"/>
+<unattached story="format-builtins"/>
+<unattached story="date-math-builtins"/>
+<unattached story="io-builtins"/>
+<unattached story="conformance-verification"/>

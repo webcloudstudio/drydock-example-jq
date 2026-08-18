@@ -1,0 +1,397 @@
+=== BEGIN ARTIFACT FEATURE-Path-Discovery.md ===
+# FEATURE: Path Discovery
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provide jq path discovery, path reads, and projection filters. |
+| Depends On  | FEATURE-Reducers.md |
+| Provides    | path, paths, getpath, pick |
+| Consumes    | generator evaluator, indexing, reducers |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq path expressions and path-oriented read operations over immutable JSON values.
+
+## Behavior
+
+- `path` emits array paths for exact and generated path expressions.
+- `paths` emits non-root paths, optionally filtered by a predicate.
+- `getpath` reads values at supplied paths and returns null for missing paths where jq specifies it.
+- `pick` constructs a projection containing the requested paths.
+- Paths preserve object keys and array indices in traversal order.
+- Invalid path expressions and invalid path operations raise jq runtime errors.
+
+## Programmatic Acceptance
+
+=== AC path-discovery-suite ===
+Intent: The implementation passes the authoritative conformance cases for path discovery.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(path\(|paths(\(|$)|getpath\(|pick\()"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC path-discovery-suite ===
+
+=== AC path-discovery-contract ===
+Intent: Path discovery cases execute successfully through the supplied runner.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(path|paths|getpath|pick)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC path-discovery-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not mutate the input while discovering or reading paths.
+- Preserve generator ordering and distinguish missing paths from invalid path expressions.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Path-Mutation.md ===
+# FEATURE: Path Mutation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provide jq nested path mutation and deletion operations. |
+| Depends On  | FEATURE-Path-Discovery.md |
+| Provides    | setpath, delpaths, del |
+| Consumes    | path, paths, getpath, immutable JSON values |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement immutable updates and deletion for nested objects, arrays, slices, and generated paths.
+
+## Behavior
+
+- `setpath` creates or replaces nested containers as required by the target path.
+- Array paths support valid indices, growth with null padding, and jq-compatible negative-index behavior.
+- `delpaths` removes multiple paths while preserving unrelated values.
+- `del` converts a path expression into deletion operations.
+- Missing deletion targets are harmless where jq specifies no-op behavior.
+- Invalid path types, excessive paths, and invalid container/index combinations raise runtime errors.
+- Every operation returns a new JSON value and leaves the original evaluation value unchanged.
+
+## Programmatic Acceptance
+
+=== AC path-mutation-suite ===
+Intent: The implementation passes the authoritative conformance cases for setpath, delpaths, and del.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"^(setpath\(|delpaths\(|del\()|(^|[^A-Za-z])(setpath|delpaths|del)\b"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC path-mutation-suite ===
+
+=== AC path-mutation-errors ===
+Intent: The implementation passes authoritative invalid-path mutation cases with the required runtime outcomes.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(Cannot update|Cannot set|Out of bounds|Path too deep|delpaths|setpath)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC path-mutation-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Apply mutations immutably.
+- Do not broaden deletion or replacement beyond the paths selected by the expression.
+- Preserve jq runtime error status and partial output behavior.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Assignments.md ===
+# FEATURE: Assignments
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provide jq plain, update, arithmetic, and defined-or assignments. |
+| Depends On  | FEATURE-Path-Mutation.md |
+| Provides    | =, |=, +=, -=, *=, /=, %=, //=
+| Consumes    | setpath, delpaths, del, path discovery |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq assignment operators over exact, generated, and multi-result paths.
+
+## Behavior
+
+- Plain `=` evaluates the right-hand side against the original input and uses every produced value.
+- Update assignment evaluates the right-hand side against each selected path value and uses the first result.
+- Empty update results delete the selected path.
+- Arithmetic assignments behave as update assignment with the corresponding arithmetic operator.
+- Defined-or assignment updates only false or null values according to jq semantics.
+- Multiple selected paths, overlapping paths, array growth, and immutable results follow jq ordering and backtracking rules.
+- Invalid path expressions and invalid updates retain jq runtime error behavior.
+
+## Programmatic Acceptance
+
+=== AC assignments-suite ===
+Intent: The implementation passes the authoritative conformance cases for all assignment operators.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(=|\\|=|\\+=|-=|\\*=|/=|%=|//=)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC assignments-suite ===
+
+=== AC assignments-paths ===
+Intent: Assignment cases involving generated and multi-result paths execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(\\.\\[\\]|\\.\\[[^]]*,[^]]*\\]|select\\([^)]*\\).*\\|=|setpath)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC assignments-paths ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Assignment must preserve immutable jq value semantics.
+- Plain and update assignment must not be conflated.
+- Empty-result and multi-path behavior must preserve selection order and jq deletion rules.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Structural-Builtins.md ===
+# FEATURE: Structural Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provide jq type, collection, containment, ordering, and structural builtins. |
+| Depends On  | FEATURE-Assignments.md |
+| Provides    | type and structural collection builtins, containment, sorting, grouping, uniqueness, flattening, combinations, transpose, walk |
+| Consumes    | assignments, paths, reducers, functions |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's standard structural and collection-oriented filters.
+
+## Behavior
+
+Support type selectors, `type`, `length`, `keys`, `keys_unsorted`, `has`, `in`, `inside`, `contains`, `to_entries`, `from_entries`, `with_entries`, `map`, `map_values`, `add`, `sort`, `sort_by`, `group_by`, `unique`, `unique_by`, `min`, `max`, `min_by`, `max_by`, `flatten`, `combinations`, `transpose`, `reverse`, `bsearch`, `walk`, and related structural helpers.
+
+These builtins must preserve jq's type ordering, Unicode key ordering, containment recursion, generator multiplicity, stable grouping semantics, null handling, and specified runtime errors.
+
+## Programmatic Acceptance
+
+=== AC structural-builtins-suite ===
+Intent: The implementation passes the authoritative conformance cases for structural and collection builtins.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(type|length|keys|has\\(|contains\\(|inside\\(|to_entries|from_entries|with_entries|map\\(|map_values|sort|group_by|unique|flatten|combinations|transpose|walk|bsearch|add)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC structural-builtins-suite ===
+
+=== AC structural-ordering ===
+Intent: The implementation passes authoritative cases for jq structural ordering, grouping, uniqueness, and containment.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(sort|group_by|unique|contains|inside|bsearch)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC structural-ordering ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Match jq's total ordering across null, booleans, numbers, strings, arrays, and objects.
+- Preserve object key semantics and recursive containment.
+- Do not silently coerce unsupported input types.
+- Preserve generator ordering and multiplicity for all collection filters.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-String-Builtins.md ===
+# FEATURE: String Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260818 V1 |
+| Description | Provide jq string, Unicode, conversion, interpolation, and indexing builtins. |
+| Depends On  | FEATURE-Structural-Builtins.md |
+| Provides    | string trimming, splitting, joining, case conversion, indexing, codepoint conversion, interpolation, JSON conversion |
+| Consumes    | functions, generator evaluator, JSON serialization |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq string and Unicode operations with codepoint-correct behavior.
+
+## Behavior
+
+Support `tostring`, `tonumber`, `toboolean`, `tojson`, `fromjson`, `explode`, `implode`, `split`, `join`, `indices`, `index`, `rindex`, `startswith`, `endswith`, `ltrimstr`, `rtrimstr`, `trimstr`, `trim`, `ltrim`, `rtrim`, `ascii_upcase`, `ascii_downcase`, `length`, `utf8bytelength`, and string indexing and interpolation.
+
+Operations must preserve Unicode codepoints, embedded nulls, jq numeric conversion rules, JSON escaping, empty separators, regex-independent string splitting, and specified errors for non-string or invalid inputs.
+
+## Programmatic Acceptance
+
+=== AC string-builtins-suite ===
+Intent: The implementation passes the authoritative conformance cases for string and Unicode builtins.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(tostring|tonumber|toboolean|tojson|fromjson|explode|implode|split\\(|join\\(|indices\\(|index\\(|rindex\\(|startswith\\(|endswith\\(|ltrimstr|rtrimstr|trimstr|trim\\b|ascii_upcase|ascii_downcase|utf8bytelength)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC string-builtins-suite ===
+
+=== AC string-unicode ===
+Intent: The implementation passes authoritative cases for Unicode codepoints, embedded nulls, trimming, and conversion errors.
+Suite: scoped
+
+import os
+import subprocess
+import sys
+
+selector = r"(explode|implode|trim|ltrim|rtrim|utf8bytelength|\\u0000|fromjson|tonumber|toboolean)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC string-unicode ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use Unicode codepoint semantics rather than byte or UTF-16 indexing.
+- Preserve embedded nulls and valid JSON escape behavior.
+- Do not coerce unsupported values where jq specifies a runtime error.
+- Preserve numeric literal and arithmetic conversion behavior established by the architecture.
+=== END ARTIFACT ===

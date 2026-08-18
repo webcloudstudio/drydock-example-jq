@@ -1,0 +1,92 @@
+[
+  {
+    "id": "analyze-display_name",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Display Name",
+    "description": "The display name Drydock will use for this project. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "jq",
+    "commander_direction": "jq"
+  },
+  {
+    "id": "analyze-short_description",
+    "type": "text",
+    "severity": "material",
+    "origin": "analyze-questionnaire",
+    "blueprint": "ARCHITECTURE.md",
+    "story": null,
+    "status": "answered",
+    "archived": false,
+    "title": "Short Description",
+    "description": "One-sentence description of what this project does. Edit to override the proposal.",
+    "options": [],
+    "system_choice": "A standalone Python jq-language interpreter that reads JSON streams, evaluates jq filters, and emits compact JSON results.",
+    "commander_direction": "A standalone Python jq-language interpreter that reads JSON streams, evaluates jq filters, and emits compact JSON results."
+  },
+  {
+    "id": "Q-001",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Numeric representation",
+    "description": "Choose the standard-library numeric strategy for jq values while preserving the corpus-compatible distinction between literal preservation and arithmetic conversion.",
+    "options": [
+      {
+        "value": "float",
+        "label": "IEEE-754 float"
+      },
+      {
+        "value": "decimal",
+        "label": "Decimal-backed values"
+      }
+    ],
+    "system_choice": "Use decimal-backed literal values with explicit float conversion for arithmetic and compatibility branches; expose have_decnum as false where the corpus requires jq's non-decnum behavior."
+  },
+  {
+    "id": "Q-002",
+    "type": "choice",
+    "severity": "low",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Evaluation representation",
+    "description": "Choose the implementation representation for jq's ordered multi-output filters.",
+    "options": [
+      {
+        "value": "iterators",
+        "label": "Python generators"
+      },
+      {
+        "value": "lists",
+        "label": "Materialized lists"
+      }
+    ],
+    "system_choice": "Use Python generators internally and materialize only at collection boundaries, preserving ordering, backtracking, and partial runtime output."
+  },
+  {
+    "id": "acceptance-ARCHITECTURE.md-architecture-contract-staged-env",
+    "type": "text",
+    "severity": "blocking",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "open",
+    "archived": false,
+    "title": "Acceptance criterion architecture-contract cannot pass",
+    "description": "ARCHITECTURE.md [architecture-contract]: invokes staged asset sources/run_conformance.py without JQ, which that asset declares required; supply it as env={**os.environ, 'JQ': ...}\n\nThe staged asset exits on its own usage code when the variable is absent, so this criterion is false under every implementation. Supply the variable in the Blueprint specification, or answer that the story is acceptable without the criterion. Never repair it by editing the staged asset: it is restored before grading and the edit is reported as tampering.",
+    "options": [],
+    "system_choice": "not answered"
+  }
+]
