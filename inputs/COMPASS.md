@@ -44,8 +44,18 @@ criterion and every developer command, supplies it:
 ```bash
 JQ="$PWD/jq" python3 sources/run_conformance.py            # whole corpus, the scored run
 JQ="$PWD/jq" python3 sources/run_conformance.py --list     # print case names, run nothing
-JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce'   # one construct, development only
+JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce'   # run one construct for real
 ```
+
+`--list` and `--select` answer different questions and never appear together. `--list` prints the
+matching case lines and returns `0` before the harness reads `JQ` or invokes the interpreter, so
+it proves the corpus and the harness, never the implementation. `--select` narrows what actually
+runs. Combining them produces a criterion that passes with no `jq` binary present at all.
+
+`sources/` is read only. No story edits, patches, or regenerates `sources/run_conformance.py`,
+`sources/jq.test`, or `sources/exclusions.txt`; a harness defect is reported, not repaired in
+place. A story that needs to experiment with the harness works on a copy outside `sources/`, and
+every acceptance criterion invokes the original `sources/run_conformance.py`.
 
 An acceptance criterion written in Python supplies it by **extending** the inherited environment,
 never by replacing it:
@@ -103,7 +113,7 @@ red to the block that broke it, so a criterion proven at story 2 and broken at s
 
 The story that stages the conformance assets is gated on the assets being present, complete, and
 runnable — not on a bare file-existence assertion, and not on the corpus running. Its criterion
-invokes the harness in list mode:
+invokes the harness in list mode, unfiltered:
 
 ```bash
 JQ="$PWD/jq" python3 sources/run_conformance.py --list
@@ -112,7 +122,13 @@ JQ="$PWD/jq" python3 sources/run_conformance.py --list
 and asserts the harness exits `0` and reports the expected number of cases. List mode enumerates
 the corpus without executing a single case, so it proves the corpus parses, the exclusion list
 applies, and the harness runs — while requiring nothing of the interpreter. This is the one
-permitted non-terminal use of `run_conformance.py`, and it still supplies `JQ`.
+permitted use of `--list` in the whole build, and it belongs to the staging story alone.
+
+Because list mode executes nothing, a successful `--list` is the whole of what that story may
+claim, and its criterion asserts the case count rather than the exit status alone. Every other
+story runs its slice for real: `--select` without `--list`, asserting the harness exit status,
+which is `0` only when no selected case failed and none errored. A behavioral criterion that
+reaches green through `--list` has proven the corpus parses and nothing else.
 
 ## The corpus
 
