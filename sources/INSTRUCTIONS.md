@@ -115,6 +115,12 @@ run together, and is the same command the score is taken from.
 `--select` takes a regular expression matched against the case's program text. It is how
 an intermediate story runs its own slice of the corpus, and it is required, not optional.
 
+The harness's own `--help` text for `--select` calls it a development aid and states that
+the acceptance gate always runs the whole corpus. That text predates this rule and does not
+govern. It is part of a read-only scoring asset and cannot be corrected in place, so it is
+corrected here: where the harness's help text and this document disagree, this document is
+authoritative.
+
 **Exactly one acceptance check runs the whole corpus.** One terminal story — the last one —
 runs `sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured
 stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea
