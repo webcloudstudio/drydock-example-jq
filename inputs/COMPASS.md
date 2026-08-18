@@ -47,10 +47,8 @@ JQ="$PWD/jq" python3 sources/run_conformance.py --list     # print case names, r
 JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce'   # run one construct for real
 ```
 
-`--list` and `--select` answer different questions and never appear together. `--list` prints the
-matching case lines and returns `0` before the harness reads `JQ` or invokes the interpreter, so
-it proves the corpus and the harness, never the implementation. `--select` narrows what actually
-runs. Combining them produces a criterion that passes with no `jq` binary present at all.
+These are not interchangeable. **Exactly three invocations are legal in an acceptance criterion**,
+one per story kind, and they are specified verbatim below under *The three legal invocations*.
 
 `sources/` is read only. No story edits, patches, or regenerates `sources/run_conformance.py`,
 `sources/jq.test`, or `sources/exclusions.txt`; a harness defect is reported, not repaired in
@@ -78,6 +76,92 @@ The summary line is:
 ```
 jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)
 ```
+
+### The three legal invocations
+
+An acceptance criterion invokes the harness in exactly one of these three ways. There is no fourth
+way, and no criterion invents flag combinations not listed here.
+
+| Story kind | Invocation | Executes cases? | Asserts |
+|---|---|---|---|
+| Staging story (once, early) | `--list`, no `--select` | **No** | exit `0` **and** the case count |
+| Every behavioral story | `--select <regex> --json`, **no `--list`** | Yes, the selected slice | exit `0`, zero `fail`, zero `error`, non-zero case count |
+| Terminal story (once, last) | `sh sources/full_test.sh` | Yes, all of them | exit `0` |
+
+**`--list` and `--select` must never appear in the same command.** `--list` prints the matching
+case lines and returns `0` at the top of the run, before the harness reads `JQ`, before it splits
+the candidate command, and before it executes a single case. A criterion combining the two passes
+when `jq` is an empty file, when `jq` does not exist, and when the story it gates was never
+implemented. It is not a weak check; it is not a check. This has cost this project two days of
+build budget already.
+
+#### Staging criterion — copy this
+
+```python
+import os
+import re
+import subprocess
+import sys
+
+EXPECTED_CASES = 550
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--list"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0, result.returncode
+listed = [line for line in result.stdout.splitlines() if re.match(r"^(run |skip )", line)]
+assert len(listed) == EXPECTED_CASES, len(listed)
+```
+
+This proves the corpus parses, the exclusion list applies cleanly, and the harness runs. It proves
+nothing about the interpreter, and the staging story claims nothing about the interpreter. No
+other story runs `--list`.
+
+#### Behavioral criterion — copy this, changing only `SELECT`
+
+```python
+import json
+import os
+import subprocess
+import sys
+
+SELECT = r"reduce"
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", SELECT, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0, f"selector matched no case: {SELECT}"
+assert tally["fail"] == 0 and tally["error"] == 0, tally
+assert result.returncode == 0, result.returncode
+```
+
+Three assertions, and all three are required.
+
+1. **The selector matched something.** `--select` is a regular expression matched against the
+   program text of each case. A selector that matches nothing yields zero cases, zero failures,
+   and exit `0` — green, and worth nothing. Alternations naming ideas rather than syntax
+   (`closure`, `recursive`, `optional`) match no jq program and are the common way to write one
+   by accident. Select on syntax the corpus actually contains: `reduce`, `foreach`, `def `,
+   ` as \$`, `try `, `//`, `path(`.
+2. **No case failed or errored.** Read off the parsed JSON tally, not off any printed line.
+3. **The exit status is `0`.** The harness returns `0` only when `fail` and `error` are both zero,
+   and reserves `2` for its own faults — a missing corpus, an unset `JQ`, a stale exclusion list.
+   Exit `2` is never a verdict about the interpreter.
+
+`--json` writes the report and nothing else to stdout, so `json.loads(result.stdout)` is total. Do
+not assert against the human summary line, and do not grep stdout for `passed` or `failed`.
 
 ### The terminal story
 
@@ -119,16 +203,16 @@ invokes the harness in list mode, unfiltered:
 JQ="$PWD/jq" python3 sources/run_conformance.py --list
 ```
 
-and asserts the harness exits `0` and reports the expected number of cases. List mode enumerates
+and asserts the harness exits `0` **and** that it listed the expected number of cases, using the
+staging template given above under *The three legal invocations*. List mode enumerates
 the corpus without executing a single case, so it proves the corpus parses, the exclusion list
 applies, and the harness runs — while requiring nothing of the interpreter. This is the one
 permitted use of `--list` in the whole build, and it belongs to the staging story alone.
 
-Because list mode executes nothing, a successful `--list` is the whole of what that story may
-claim, and its criterion asserts the case count rather than the exit status alone. Every other
-story runs its slice for real: `--select` without `--list`, asserting the harness exit status,
-which is `0` only when no selected case failed and none errored. A behavioral criterion that
-reaches green through `--list` has proven the corpus parses and nothing else.
+Exit status alone is not enough here: `--list` returns `0` whether it enumerated 550 cases or
+none, so the count is what makes the criterion binding. And because list mode executes nothing, a
+successful `--list` is the whole of what this story may claim. Any story that claims a construct
+works runs that construct — `--select ... --json`, never `--list`.
 
 ## The corpus
 
