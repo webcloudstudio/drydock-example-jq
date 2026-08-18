@@ -106,21 +106,44 @@ JQ="$PWD/jq" python3 sources/run_conformance.py -v                  # list passi
 JQ="$PWD/jq" python3 sources/run_conformance.py --json              # machine-readable
 JQ="$PWD/jq" python3 sources/run_conformance.py --list              # print cases, run nothing
 JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce'   # one construct at a time
+JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce' --list   # size that slice
 ```
 
 During development, `sh sources/full_test.sh` does the interface check and the conformance
 run together, and is the same command the score is taken from.
 
-`--select` takes a regular expression matched against the case's program text and exists
-for development only. The acceptance gate always runs the whole corpus; there is no scoped
-gate and none may be created.
+`--select` takes a regular expression matched against the case's program text. It is how
+an intermediate story runs its own slice of the corpus, and it is required, not optional.
 
-**Exactly one acceptance check runs the suite.** One terminal story — the last one — runs
-`sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured
+**Exactly one acceptance check runs the whole corpus.** One terminal story — the last one —
+runs `sh sources/full_test.sh`, asserts only `result.returncode == 0`, prints the captured
 stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea
-Trial. No other acceptance check may invoke `full_test.sh` or `run_conformance.py`, and no
-acceptance check may assert that an imported or staged file merely exists — a file-presence
-check is not acceptance.
+Trial. No other acceptance check may run the corpus unscoped, and none may invoke
+`full_test.sh` at all. A partial implementation fails most of the corpus by construction,
+so an unscoped mid-build run reports the schedule rather than a defect, and it is slow in
+exact proportion to how incomplete the code is.
+
+**Every other story runs its own slice, and the slice executes cases.** Each story's
+acceptance invokes `sources/run_conformance.py` with a `--select` expression scoped to the
+construct that story implements, supplies `JQ`, and asserts `result.returncode == 0`. Those
+are exactly the cases the story's code is supposed to pass, so the run is neither slow nor
+red by construction, and the corpus goes green in the order the plan builds it.
+
+`--list` prints the matching cases and runs nothing. Use it while planning, to size and
+inspect a selector before committing to it. An acceptance check that invokes it executes
+nothing, passes before the story's code exists, and steers no repair; such a check is a
+defect. The one exception is the story whose only obligation is that the corpus parses, the
+exclusion list applies, and the harness starts — it implements none of the behaviour under
+test, so listing is the correct thing for it to assert.
+
+A selector matching no case is a defect too: it buys the story no coverage and reports
+success. Check the count with `--list` while planning and widen the expression until it
+covers the story's construct. Together the slices cover the corpus; a case no slice reaches
+is first executed by the terminal gate, where a failure arrives with the whole build
+already spent and no story to attribute it to.
+
+No acceptance check may assert that an imported or staged file merely exists — a
+file-presence check is not acceptance.
 
 The summary line is:
 

@@ -363,8 +363,8 @@ def main(argv: list[str] | None = None) -> int:
         "--select",
         default=None,
         metavar="REGEX",
-        help="run only cases whose program matches REGEX (development aid; the acceptance "
-        "gate always runs the whole corpus)",
+        help="run only cases whose program matches REGEX; how an intermediate story runs "
+        "its own slice (only the terminal gate runs the whole corpus)",
     )
     args = parser.parse_args(argv)
 
