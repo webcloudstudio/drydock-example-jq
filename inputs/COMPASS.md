@@ -43,12 +43,11 @@ criterion and every developer command, supplies it:
 
 ```bash
 JQ="$PWD/jq" python3 sources/run_conformance.py            # whole corpus, the scored run
-JQ="$PWD/jq" python3 sources/run_conformance.py --list     # print case names, run nothing
 JQ="$PWD/jq" python3 sources/run_conformance.py --select 'reduce'   # run one construct for real
 ```
 
-These are not interchangeable. **Exactly three invocations are legal in an acceptance criterion**,
-one per story kind, and they are specified verbatim below under *The three legal invocations*.
+Those two commands are the only ways this build runs the harness. They are specified verbatim
+below under *The two harness invocations*, together with the flag this build forbids.
 
 `sources/` is read only. No story edits, patches, or regenerates `sources/run_conformance.py`,
 `sources/jq.test`, or `sources/exclusions.txt`; a harness defect is reported, not repaired in
@@ -77,50 +76,45 @@ The summary line is:
 jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)
 ```
 
-### The three legal invocations
+### The two harness invocations
 
-An acceptance criterion invokes the harness in exactly one of these three ways. There is no fourth
-way, and no criterion invents flag combinations not listed here.
+An acceptance criterion that runs `sources/run_conformance.py` uses one of these two commands. No
+criterion in this build passes any other flag to the harness.
 
-| Story kind | Invocation | Executes cases? | Asserts |
+| Story kind | Command | Executes cases? | Asserts |
 |---|---|---|---|
-| Staging story (once, early) | `--list`, no `--select` | **No** | exit `0` **and** the case count |
-| Every behavioral story | `--select <regex> --json`, **no `--list`** | Yes, the selected slice | exit `0`, zero `fail`, zero `error`, non-zero case count |
+| Every behavioral story | `--select <regex> --json` | Yes, the selected slice | exit `0`, zero `fail`, zero `error`, non-zero case count |
 | Terminal story (once, last) | `sh sources/full_test.sh` | Yes, all of them | exit `0` |
 
-**`--list` and `--select` must never appear in the same command.** `--list` prints the matching
-case lines and returns `0` at the top of the run, before the harness reads `JQ`, before it splits
-the candidate command, and before it executes a single case. A criterion combining the two passes
-when `jq` is an empty file, when `jq` does not exist, and when the story it gates was never
-implemented. It is not a weak check; it is not a check. This has cost this project two days of
-build budget already.
+The staging story does not appear in this table. It does not run the harness at all; see *The
+staging story* below.
 
-#### Staging criterion — copy this
+#### The `--list` flag is forbidden in acceptance criteria
 
-```python
-import os
-import re
-import subprocess
-import sys
+`sources/run_conformance.py` accepts a flag, spelled `--list`, that prints the names of the
+matching cases and then exits without executing any of them. `sources/INSTRUCTIONS.md`, the file
+header, and `--help` all document it, because it is a useful thing for a human to type at a
+terminal.
 
-EXPECTED_CASES = 550
+**No acceptance criterion in this build may contain `--list`. There is no exception, and no story
+that needs one. If the string `--list` appears anywhere in a criterion you have written, that
+criterion is wrong — delete it and write one of the two commands above.**
 
-result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--list"],
-    capture_output=True,
-    text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
-)
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-assert result.returncode == 0, result.returncode
-listed = [line for line in result.stdout.splitlines() if re.match(r"^(run |skip )", line)]
-assert len(listed) == EXPECTED_CASES, len(listed)
-```
+The flag returns `0` at the top of the run — before the harness reads `JQ`, before it resolves the
+candidate command, before it executes a single case. A criterion built on it passes when `jq` is
+an empty file, when `jq` does not exist, and when the story it gates was never written. It is not
+a weak proof, not a partial proof, and not an acceptable proof for staging, for scaffolding, or
+for an early story whose implementation is incomplete. It is not a proof. Thirty-six criteria in
+one earlier plan of this project used it, every one of them reported green, and it cost three days.
 
-This proves the corpus parses, the exclusion list applies cleanly, and the harness runs. It proves
-nothing about the interpreter, and the staging story claims nothing about the interpreter. No
-other story runs `--list`.
+If you are writing a criterion and reaching for that flag, the reason is always the same: the
+story's code does not exist yet and you want a command that will not fail. That is the definition
+of a criterion that proves nothing. Write the `--select ... --json` form instead and let it be red
+until the story makes it green. **A criterion is supposed to fail before its story is built.**
+
+The same prohibition covers any other flag whose effect is to not execute the cases — enumeration,
+dry-run, validation, or help. If a flag's documented purpose is "run nothing", it has no place in
+an acceptance criterion.
 
 #### Behavioral criterion — copy this, changing only `SELECT`
 
@@ -196,23 +190,33 @@ red to the block that broke it, so a criterion proven at story 2 and broken at s
 ### The staging story
 
 The story that stages the conformance assets is gated on the assets being present, complete, and
-runnable — not on a bare file-existence assertion, and not on the corpus running. Its criterion
-invokes the harness in list mode, unfiltered:
+mutually consistent — not on a bare file-existence assertion, and not on the corpus running. It
+proves that in process, by importing the harness and calling its parsers directly. It never
+launches the harness, so the question of which flags to pass does not arise:
 
-```bash
-JQ="$PWD/jq" python3 sources/run_conformance.py --list
+```python
+import sys
+
+sys.path.insert(0, "sources")
+import run_conformance as harness
+
+EXPECTED_CASES = 550
+EXPECTED_EXCLUSIONS = 13
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding="utf-8"))
+excluded = harness.apply_exclusions(cases, harness.parse_exclusions(harness.EXCLUSIONS))
+assert len(cases) == EXPECTED_CASES, len(cases)
+assert len(excluded) == EXPECTED_EXCLUSIONS, len(excluded)
 ```
 
-and asserts the harness exits `0` **and** that it listed the expected number of cases, using the
-staging template given above under *The three legal invocations*. List mode enumerates
-the corpus without executing a single case, so it proves the corpus parses, the exclusion list
-applies, and the harness runs — while requiring nothing of the interpreter. This is the one
-permitted use of `--list` in the whole build, and it belongs to the staging story alone.
+This reads state rather than output: the harness module imports, the corpus parses into the
+expected number of cases, and every exclusion still matches a case — `apply_exclusions` raises on
+a stale entry, so a corpus and an exclusion list that have drifted apart fail here rather than
+silently skipping cases later.
 
-Exit status alone is not enough here: `--list` returns `0` whether it enumerated 550 cases or
-none, so the count is what makes the criterion binding. And because list mode executes nothing, a
-successful `--list` is the whole of what this story may claim. Any story that claims a construct
-works runs that construct — `--select ... --json`, never `--list`.
+It claims nothing about the interpreter, because at this point in the build there is nothing to
+claim. Every story that claims a construct works runs that construct through
+`--select ... --json`.
 
 ## The corpus
 
