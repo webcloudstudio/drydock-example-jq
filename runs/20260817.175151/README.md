@@ -11,7 +11,7 @@
 | Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
 | Acceptance score passed | UNPROVEN | No acceptance score was recorded for this run. | — |
 | Release score passed | UNPROVEN | No release score was recorded for this run. | — |
-| Integrity verification passed | PASS | 452 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 311 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 

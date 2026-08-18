@@ -11,7 +11,7 @@
 | Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
 | Acceptance score passed | FAIL | drydock score acceptance exited 1. | [evidence/commands/13-score-acceptance.stdout.log](evidence/commands/13-score-acceptance.stdout.log) |
 | Release score passed | FAIL | drydock score release exited 1. | [evidence/commands/15-score-release.stdout.log](evidence/commands/15-score-release.stdout.log) |
-| Integrity verification passed | PASS | 326 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 223 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
