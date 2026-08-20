@@ -1,0 +1,253 @@
+{
+  "stories": [
+    {
+      "id": "FRONTEND-001",
+      "provenance": "plan",
+      "note": "Suggested implementation order: lexer and parser; sources/lexer.l."
+    },
+    {
+      "id": "FRONTEND-002",
+      "provenance": "plan",
+      "note": "Suggested implementation order: lexer and parser; sources/parser.y."
+    },
+    {
+      "id": "FRONTEND-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "%%FAIL|module|import|include|break|syntax"
+      ],
+      "note": "Corpus compile-failure cases and module grammar cases."
+    },
+    {
+      "id": "CORE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.|empty|,|\\[\\.\\]|\\.\\[\\]"
+      ],
+      "note": "Generator core and stream semantics."
+    },
+    {
+      "id": "CORE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\||,|range|cartesian"
+      ],
+      "note": "Generator composition and backtracking cases."
+    },
+    {
+      "id": "CORE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^\\[|\\{|\\[\\.\\[]"
+      ],
+      "note": "Array and object collection cases."
+    },
+    {
+      "id": "PATHS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "path|getpath|setpath|delpaths|del\\(|\\[[^]]*:"
+      ],
+      "note": "Paths and assignment primitives."
+    },
+    {
+      "id": "PATHS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\|=|\\+=|-=|\\*=|/=|%=|//="
+      ],
+      "note": "Assignment operator cases."
+    },
+    {
+      "id": "CONTROL-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "if |and|or|//|not"
+      ],
+      "note": "Conditionals and comparisons."
+    },
+    {
+      "id": "CONTROL-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "try|catch|error|\\?"
+      ],
+      "note": "Error and optional-filter cases."
+    },
+    {
+      "id": "CONTROL-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "reduce|foreach|range|limit|skip|first|last|nth|while|until|repeat"
+      ],
+      "note": "Control-flow generator cases."
+    },
+    {
+      "id": "CONTROL-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "label|break|recurse"
+      ],
+      "note": "Labels, breaks, and recursion."
+    },
+    {
+      "id": "FUNCTIONS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        " as \\$|destructur"
+      ],
+      "note": "Variables and destructuring."
+    },
+    {
+      "id": "FUNCTIONS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^def |def "
+      ],
+      "note": "User-defined functions and closures."
+    },
+    {
+      "id": "FUNCTIONS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\?//"
+      ],
+      "note": "Destructuring alternatives."
+    },
+    {
+      "id": "BUILTINS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "type|tonumber|tostring|tojson|fromjson|contains|inside|has|keys"
+      ],
+      "note": "Core type and conversion builtins."
+    },
+    {
+      "id": "BUILTINS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "sort|group_by|unique|map|flatten|transpose|combinations|entries"
+      ],
+      "note": "Collection and object builtins."
+    },
+    {
+      "id": "BUILTINS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "@|split|join|match|test|capture|scan|sub|gsub|trim"
+      ],
+      "note": "String, format, and regex builtins."
+    },
+    {
+      "id": "BUILTINS-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "date|strftime|strptime|mktime|gmtime|localtime"
+      ],
+      "note": "Date and time builtins."
+    },
+    {
+      "id": "BUILTINS-005",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "input|inputs|debug|tostream|fromstream|walk|INDEX|JOIN|IN"
+      ],
+      "note": "I/O, streaming, debugging, and SQL-style builtins."
+    },
+    {
+      "id": "NUMBERS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "pow|log|sin|cos|sqrt|floor|%|infinite|nan|isnan"
+      ],
+      "note": "Math and special-number cases."
+    },
+    {
+      "id": "NUMBERS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "decnum|literal|deep|depth|NaN|Unicode|65536"
+      ],
+      "note": "Numeric, Unicode, depth, and boundary cases."
+    },
+    {
+      "id": "DELIVERY-001",
+      "provenance": "plan",
+      "note": "Interface contract in sources/INSTRUCTIONS.md."
+    },
+    {
+      "id": "DELIVERY-002",
+      "provenance": "plan",
+      "note": "Read-only scoring assets and README requirements in sources/INSTRUCTIONS.md."
+    },
+    {
+      "id": "DELIVERY-003",
+      "provenance": "plan",
+      "gate": [
+        "sh",
+        "sources/full_test.sh"
+      ],
+      "note": "Terminal complete-suite acceptance gate."
+    }
+  ]
+}
