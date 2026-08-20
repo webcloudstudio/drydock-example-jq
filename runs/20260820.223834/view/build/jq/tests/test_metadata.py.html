@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_metadata.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_metadata.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_metadata.py">Raw file</a></div></header>
+<article class="doc"><pre>import unittest
+from pathlib import Path
+
+
+METADATA = Path(__file__).parents[1] / &quot;METADATA.md&quot;
+
+
+class MetadataContractTests(unittest.TestCase):
+    def test_declares_executable_and_approved_runtime(self) -&gt; None:
+        text = METADATA.read_text(encoding=&quot;utf-8&quot;)
+        self.assertIn(&quot;./jq&quot;, text)
+        self.assertIn(&quot;Python&quot;, text)
+        self.assertIn(&quot;standard library&quot;, text)
+
+    def test_declares_compact_filter_interface(self) -&gt; None:
+        text = METADATA.read_text(encoding=&quot;utf-8&quot;)
+        self.assertIn(&quot;-c&quot;, text)
+        self.assertIn(&quot;standard input&quot;, text)
+        self.assertIn(&quot;standard output&quot;, text)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

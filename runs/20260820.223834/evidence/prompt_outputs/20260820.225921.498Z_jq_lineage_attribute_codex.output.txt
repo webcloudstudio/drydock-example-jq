@@ -1,0 +1,149 @@
+<requirement name="tokenize-jq-programs" stories="frontend-lexer">
+"#" { yy_push_state(IN_COMMENT, yyscanner); }
+<IN_COMMENT>{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+<IN_COMMENT><<EOF>> { yy_pop_state(yyscanner); }
+
+"!=" { return NEQ; }
+"==" { return EQ; }
+"as" { return AS; }
+"import" { return IMPORT; }
+"include" { return INCLUDE; }
+"module" { return MODULE; }
+"def" { return DEF; }
+"if" { return IF; }
+"then" { return THEN; }
+"else" { return ELSE; }
+"elif" { return ELSE_IF; }
+"and" { return AND; }
+"or" { return OR; }
+"end" { return END; }
+"reduce" { return REDUCE; }
+"foreach" { return FOREACH; }
+"//" { return DEFINEDOR; }
+"try" { return TRY; }
+"catch" { return CATCH; }
+"label" { return LABEL; }
+"break" { return BREAK; }
+"$__loc__" { return LOC; }
+"|=" { return SETPIPE; }
+"+=" { return SETPLUS; }
+"-=" { return SETMINUS; }
+"*=" { return SETMULT; }
+"/=" { return SETDIV; }
+"%=" { return SETMOD; }
+"//=" { return SETDEFINEDOR; }
+"<=" { return LESSEQ; }
+">=" { return GREATEREQ; }
+".." { return REC; }
+"?//" { return ALTERNATION; }
+"."|"?"|"="|";"|","|":"|"|"|"+"|"-"|"*"|"/"|"%"|"\$"|"<"|">" { return yytext[0];}
+
+"["|"{"|"(" {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+"]"|"}"|")" {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+
+"@"[a-zA-Z0-9_]+ {
+  yylval->literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval->literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+
+"\"" {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+
+<IN_QQSTRING>{
+  "\\(" {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+  "\"" {
+    yy_pop_state(yyscanner);
+    return QQSTRING_END;
+  }
+  (\\[^u(]|\\u[a-zA-Z0-9]{0,4})+ {
+    /* pass escapes to the json parser */
+    jv escapes = jv_string_fmt("\"%.*s\"", (int)yyleng, yytext);
+    yylval->literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));
+    jv_free(escapes);
+    return QQSTRING_TEXT;
+  }
+  [^\\\"]+ {
+    yylval->literal = jv_string_sized(yytext, yyleng);
+    return QQSTRING_TEXT;
+  }
+  . {
+    return INVALID_CHARACTER;
+  }
+}
+
+
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return BINDING;}
+
+[ \r\n\t]+  {}
+</requirement>
+<requirement name="reject-invalid-characters" stories="frontend-diagnostics">
+. { return INVALID_CHARACTER; }
+
+static int try_exit(int c, int state, yyscan_t yyscanner) {
+  char match = 0;
+  int ret;
+  switch (state) {
+  case IN_PAREN: match = ret = ')'; break;
+  case IN_BRACKET: match = ret = ']'; break;
+  case IN_BRACE: match = ret = '}'; break;
+
+  case IN_QQINTERP:
+    match = ')';
+    ret = QQSTRING_INTERP_END;
+    break;
+
+  default:
+    // may not be the best error to give
+    return INVALID_CHARACTER;
+  }
+  assert(match);
+  if (match == c) {
+    yy_pop_state(yyscanner);
+    return ret;
+  } else {
+    // FIXME: should we pop? Give a better error at least
+    return INVALID_CHARACTER;
+  }
+}
+</requirement>
+<unattached story="project-identity"/>
+<unattached story="architecture"/>
+<unattached story="delivery-assets"/>
+<unattached story="frontend-parser"/>
+<unattached story="core-generators"/>
+<unattached story="core-expressions"/>
+<unattached story="core-errors"/>
+<unattached story="core-utilities"/>
+<unattached story="paths-discovery"/>
+<unattached story="paths-mutation"/>
+<unattached story="paths-assignment"/>
+<unattached story="control-conditionals"/>
+<unattached story="control-reductions"/>
+<unattached story="control-bindings"/>
+<unattached story="control-functions"/>
+<unattached story="builtins-structural"/>
+<unattached story="builtins-strings"/>
+<unattached story="builtins-regex"/>
+<unattached story="builtins-numeric"/>
+<unattached story="builtins-streaming"/>
+<unattached story="builtins-io"/>
+<unattached story="executable"/>
+<unattached story="documentation"/>
+<unattached story="conformance"/>

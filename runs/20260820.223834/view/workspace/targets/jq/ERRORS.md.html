@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/ERRORS.md</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
+<article class="doc"><h1>BIG ERRORS — action required</h1>
+<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-20T23:44:07+00:00</li><li>Execution ID: 20260820.233735.815Z-80d32779</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: lexer-corpus</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/workspace/targets/jq/evidence/block-4.md</li></ul>
+<h2>Diagnostic</h2>
+<p>Block &quot;Block 4 · Service&quot; [block-4] failed its acceptance criteria. Story &quot;Tokenize jq programs including literals, strings, comments, and operators.&quot; [frontend-lexer] does not meet its own acceptance criteria:</p>
+<ul><li>AC lexer-corpus — The lexer and its dependent frontend pass the executable corpus slice covering literal, field, format, definition, module, and invalid-character syntax.</li></ul>
+<p>assertion: assert summary[&quot;fail&quot;] == 0 → AssertionError cases: pass=121 fail=19 error=0 skip=6 total=146 from=summary raised at: lexer-corpus.py:18 process exit code: 1 values at failure: summary = {&#x27;pass&#x27;: 121, &#x27;fail&#x27;: 19, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 6} observed output: &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, … (16 more lines truncated)</p>
+<h2>Recovery</h2>
+<p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
+</main>
+</body>
+</html>

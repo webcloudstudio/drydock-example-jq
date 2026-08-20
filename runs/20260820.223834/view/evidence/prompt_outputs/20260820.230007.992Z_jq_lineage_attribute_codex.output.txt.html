@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.230007.992Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.230007.992Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.230007.992Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;parse-jq-programs&quot; stories=&quot;frontend-parser&quot;&gt;
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;report-parse-errors&quot; stories=&quot;frontend-diagnostics&quot;&gt;
+%define parse.error verbose
+&lt;/requirement&gt;
+&lt;requirement name=&quot;evaluate-value-streams&quot; stories=&quot;core-generators&quot;&gt;
+Query &#x27;|&#x27; Query {
+  $$ = block_join($1, $3);
+} |
+Query &#x27;,&#x27; Query {
+  $$ = gen_both($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-expressions&quot; stories=&quot;core-expressions&quot;&gt;
+Expr &#x27;+&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;+&#x27;);
+} |
+Expr &#x27;-&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;-&#x27;);
+} |
+Expr &#x27;*&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;*&#x27;);
+} |
+Expr &#x27;/&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;/&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;handle-errors-and-alternatives&quot; stories=&quot;core-errors&quot;&gt;
+Expr &quot;//&quot; Expr {
+  $$ = gen_definedor($1, $3);
+} |
+Term &#x27;?&#x27; {
+  $$ = gen_try($1, gen_op_simple(BACKTRACK));
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;discover-path-values&quot; stories=&quot;paths-discovery&quot;&gt;
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+Term &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;mutate-path-values&quot; stories=&quot;paths-mutation&quot;&gt;
+static block gen_update(block object, block val, int optype) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;assign-path-values&quot; stories=&quot;paths-assignment&quot;&gt;
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;|=&quot; Expr {
+  $$ = gen_call(&quot;_modify&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;control-conditionals&quot; stories=&quot;control-conditionals&quot;&gt;
+&quot;if&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reduce-and-foreach&quot; stories=&quot;control-reductions&quot;&gt;
+&quot;reduce&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;bind-and-destructure-values&quot; stories=&quot;control-bindings&quot;&gt;
+Expr &quot;as&quot; Patterns &#x27;|&#x27; Query {
+  $$ = gen_destructure($1, $3, $5);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;define-functions-and-recursion&quot; stories=&quot;control-functions&quot;&gt;
+&quot;def&quot; IDENT &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), gen_noop(), $4);
+  jv_free($2);
+} |
+REC {
+  $$ = gen_call(&quot;recurse&quot;, gen_noop());
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;construct-collections&quot; stories=&quot;builtins-structural&quot;&gt;
+&#x27;[&#x27; Query &#x27;]&#x27; {
+  $$ = gen_collect($2);
+} |
+&#x27;{&#x27; DictPairs &#x27;}&#x27; {
+  block o = gen_const_object($2);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;format-strings&quot; stories=&quot;builtins-strings&quot;&gt;
+QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {
+  $$ = gen_binop($1, gen_format($3, jv_copy($&lt;literal&gt;0)), &#x27;+&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;constant-fold-numeric-operations&quot; stories=&quot;builtins-numeric&quot;&gt;
+case &#x27;+&#x27;: res = binop_plus(jv_a, jv_b); break;
+case &#x27;-&#x27;: res = binop_minus(jv_a, jv_b); break;
+case &#x27;*&#x27;: res = binop_multiply(jv_a, jv_b); break;
+case &#x27;/&#x27;: res = binop_divide(jv_a, jv_b); break;
+case &#x27;%&#x27;: res = binop_mod(jv_a, jv_b); break;
+&lt;/requirement&gt;
+&lt;unattached story=&quot;project-identity&quot;/&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;delivery-assets&quot;/&gt;
+&lt;unattached story=&quot;frontend-lexer&quot;/&gt;
+&lt;unattached story=&quot;core-utilities&quot;/&gt;
+&lt;unattached story=&quot;builtins-regex&quot;/&gt;
+&lt;unattached story=&quot;builtins-streaming&quot;/&gt;
+&lt;unattached story=&quot;builtins-io&quot;/&gt;
+&lt;unattached story=&quot;executable&quot;/&gt;
+&lt;unattached story=&quot;documentation&quot;/&gt;
+&lt;unattached story=&quot;conformance&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

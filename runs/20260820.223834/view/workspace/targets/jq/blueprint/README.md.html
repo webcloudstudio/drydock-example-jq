@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/README.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/README.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/README.md">Raw file</a></div></header>
+<article class="doc"><h1>jq</h1>
+<h2>Intent</h2>
+<p>jq is a standalone Python standard-library interpreter for the jq language. It reads JSON values from standard input, evaluates a jq filter, and writes compact JSON results one per line.</p>
+<p>Invoke it from the application root:</p>
+<pre><code>./jq -c &#x27;&lt;program&gt;&#x27;</code></pre>
+<p>The executable uses these exit statuses:</p>
+<ul><li><code>0</code> when compilation and evaluation complete successfully.</li><li><code>3</code> when the jq program cannot be compiled.</li><li><code>5</code> when evaluation raises a runtime error.</li></ul>
+<p>Runtime output produced before an error is preserved. Diagnostics are written to standard error.</p>
+<p>The supplied conformance suite can be run with:</p>
+<pre><code>sh sources/full_test.sh</code></pre>
+<p>The project requires no network access, package installation, or third-party runtime dependency.</p>
+<h2>Programmatic Acceptance</h2>
+<ul><li>None. This specification documents operation; executable behavior is verified by the delivery and terminal conformance stories.</li></ul>
+<h2>User Acceptance</h2>
+<ul><li>The documented invocation, input/output behavior, exit statuses, and verification command are clear and accurate.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep this document concise and consistent with the executable contract.</li></ul></article>
+</main>
+</body>
+</html>

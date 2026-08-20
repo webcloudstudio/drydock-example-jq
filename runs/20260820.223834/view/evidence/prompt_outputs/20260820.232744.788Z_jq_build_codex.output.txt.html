@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.232744.788Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.232744.788Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.232744.788Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq
+
+SUMMARY:
+Improved lexer/frontend conformance from 51 to 36 failures. Fixed binding validation, shorthand object variables, indexing, iteration, string search, reductions, root assignments, error values, and comments/literals. Acceptance remains red.
+
+BLOCKERS:
+- Function scoping, destructuring alternatives, and complex assignment semantics remain incomplete.
+- Declared lexer-corpus check: 104 passed, 36 failed, 0 errored, 6 skipped.
+
+FAILURE_SUMMARY: Declared lexer-corpus acceptance still fails.
+
+FAILURE_DETAIL: The implementation is syntactically valid and the harness runs, but 36 scoped corpus cases still fail due to dependent evaluator behavior. Further repair is required in function definitions, destructuring, and assignments.</pre></article>
+</main>
+</body>
+</html>

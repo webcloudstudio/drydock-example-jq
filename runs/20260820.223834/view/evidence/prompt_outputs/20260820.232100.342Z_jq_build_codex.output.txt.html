@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.232100.342Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.232100.342Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.232100.342Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq
+
+SUMMARY:
+Implemented lexer/frontend repairs for Unicode BOM handling, comments, quoted fields, slices, binding patterns, variable validation, assignments, and `any`/`all`. Unicode/comments acceptance passes, but lexer-corpus remains failing: 51 cases.
+
+BLOCKERS:
+- Remaining parser/evaluator gaps in nested definitions, destructuring alternatives, advanced assignments, numeric preservation, and several builtins.
+
+FAILURE_SUMMARY: lexer-corpus acceptance still has 51 failures
+FAILURE_DETAIL: The implementation improved the slice from 70 to 51 failures, but the declared lexer-corpus assertion remains red and requires further frontend/evaluator work.</pre></article>
+</main>
+</body>
+</html>

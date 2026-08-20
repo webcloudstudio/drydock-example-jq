@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.225855.732Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.225855.732Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.225855.732Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;jq-conformance-corpus&quot; stories=&quot;delivery-assets,conformance&quot;&gt;
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+&lt;/requirement&gt;
+&lt;requirement name=&quot;lexical-analysis&quot; stories=&quot;frontend-lexer&quot;&gt;
+# Simple value tests to check parser
+&lt;/requirement&gt;
+&lt;requirement name=&quot;syntax-parsing&quot; stories=&quot;frontend-parser&quot;&gt;
+# Dictionary construction syntax
+&lt;/requirement&gt;
+&lt;requirement name=&quot;syntax-diagnostics&quot; stories=&quot;frontend-diagnostics&quot;&gt;
+%%FAIL
+&lt;/requirement&gt;
+&lt;requirement name=&quot;value-stream-evaluation&quot; stories=&quot;core-generators&quot;&gt;
+# Multiple outputs, iteration
+&lt;/requirement&gt;
+&lt;requirement name=&quot;core-expression-semantics&quot; stories=&quot;core-expressions&quot;&gt;
+# Field access, piping
+&lt;/requirement&gt;
+&lt;requirement name=&quot;runtime-error-handling&quot; stories=&quot;core-errors&quot;&gt;
+# Try/catch and general `?` operator
+&lt;/requirement&gt;
+&lt;requirement name=&quot;generator-utilities&quot; stories=&quot;core-utilities&quot;&gt;
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-discovery&quot; stories=&quot;paths-discovery&quot;&gt;
+# Paths
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-mutation&quot; stories=&quot;paths-mutation&quot;&gt;
+# setpath/2 does not leak the input after an invalid get #2970
+&lt;/requirement&gt;
+&lt;requirement name=&quot;assignment-operators&quot; stories=&quot;paths-assignment&quot;&gt;
+# Assignment
+&lt;/requirement&gt;
+&lt;requirement name=&quot;conditionals-and-breaks&quot; stories=&quot;control-conditionals&quot;&gt;
+# Conditionals
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reductions-and-foreach&quot; stories=&quot;control-reductions&quot;&gt;
+# test recursion
+&lt;/requirement&gt;
+&lt;requirement name=&quot;bindings-and-destructuring&quot; stories=&quot;control-bindings&quot;&gt;
+# Variables
+&lt;/requirement&gt;
+&lt;requirement name=&quot;user-functions-and-recursion&quot; stories=&quot;control-functions&quot;&gt;
+# User-defined functions
+&lt;/requirement&gt;
+&lt;requirement name=&quot;structural-builtins&quot; stories=&quot;builtins-structural&quot;&gt;
+# Object construction
+&lt;/requirement&gt;
+&lt;requirement name=&quot;string-builtins&quot; stories=&quot;builtins-strings&quot;&gt;
+# string operations
+&lt;/requirement&gt;
+&lt;requirement name=&quot;regular-expression-builtins&quot; stories=&quot;builtins-regex&quot;&gt;
+&lt;unattached story=&quot;builtins-regex&quot;/&gt;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;numeric-and-date-builtins&quot; stories=&quot;builtins-numeric&quot;&gt;
+# Basic numbers tests: integers, powers of two
+&lt;/requirement&gt;
+&lt;requirement name=&quot;streaming-and-sql-builtins&quot; stories=&quot;builtins-streaming&quot;&gt;
+INDEX(range(5)|[., &quot;foo\(.)&quot;]; .[0])
+&lt;/requirement&gt;
+&lt;requirement name=&quot;io-builtins&quot; stories=&quot;builtins-io&quot;&gt;
+# calling input/0, or debug/0 in a test doesn&#x27;t crash jq
+&lt;/requirement&gt;
+&lt;unattached story=&quot;project-identity&quot;/&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;executable&quot;/&gt;
+&lt;unattached story=&quot;documentation&quot;/&gt;
+</pre></article>
+</main>
+</body>
+</html>

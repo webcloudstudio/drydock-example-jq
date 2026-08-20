@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtins-Regex.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Builtins Regex</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Defines jq regular-expression matching, captures, scanning, splitting, and substitution.</td></tr><tr><td>Depends On</td><td>FEATURE-Builtins-Strings.md</td></tr><tr><td>Provides</td><td><code>test</code>, <code>match</code>, <code>capture</code>, <code>scan</code>, <code>split</code>, <code>splits</code>, <code>sub</code>, <code>gsub</code></td></tr><tr><td>Consumes</td><td>string transforms, generator evaluation, interpolation</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq regular-expression builtins with Python&#x27;s standard-library regular-expression support, including matching, captures, scanning, splitting, substitution, Unicode offsets, and generator-valued replacement filters.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-regex-conformance ===<br>Intent: The scoped authoritative corpus cases covering regex matching, captures, scanning, splitting, and substitution execute and pass.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(test|match|capture|scan|sub|gsub|splits)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-regex-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Regex behavior must remain within Python standard-library capabilities.</li><li>Match offsets must be measured in Unicode codepoints as required by jq.</li><li>Global matches must preserve order and non-overlap.</li><li>Replacement expressions must preserve jq generator semantics.</li><li>No third-party regex engine or jq binding may be introduced.</li></ul></article>
+</main>
+</body>
+</html>

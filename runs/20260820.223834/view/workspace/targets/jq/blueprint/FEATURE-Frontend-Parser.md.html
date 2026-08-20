@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Frontend Parser</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Parses jq programs into executable abstract syntax trees.</td></tr><tr><td>Depends On</td><td>FEATURE-Frontend-Lexer.md</td></tr><tr><td>Provides</td><td>jq AST and filter grammar</td></tr><tr><td>Consumes</td><td>sources/parser.y, sources/lexer.l, sources/jq.test, sources/jq-manual.txt</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement parser and AST construction for jq precedence and associativity, pipelines, generators, literals, indexing, objects, interpolation, bindings, definitions, modules, conditionals, errors, reductions, labels, and assignments.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parser-grammar ===<br>Intent: The parser and dependent frontend execute the corpus slice covering expressions, indexing, construction, grouping, conditionals, bindings, modules, and control syntax.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(\.|\[|\{|\(|if|try|reduce|foreach|def| as |module|include)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parser-grammar ===</p>
+<p>=== AC parser-precedence ===<br>Intent: The parser preserves jq precedence and associativity for pipelines, commas, arithmetic, comparisons, and assignments.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(\||,|\+|-|\<em>|/|%|==|!=|&lt;=|&gt;=|=|\|=|\+=|-=|\</em>=|/=|%=|//)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parser-precedence ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep parser behavior aligned with <code>sources/parser.y</code>.</li><li>Module grammar failures must be rejected without filesystem access.</li><li>Do not implement module loading as part of the flat source-import interface.</li></ul></article>
+</main>
+</body>
+</html>

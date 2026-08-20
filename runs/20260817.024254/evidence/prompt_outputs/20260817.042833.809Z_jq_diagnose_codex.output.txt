@@ -1,4 +1,0 @@
-CAUSE: The implementation still fails multiple authoritative conditional/parser cases, and the broader conformance run stalled before completion.
-DO: Fix `jq_interpreter/evaluator.py` so `any`/`all` handle scalar predicates and empty inputs correctly.
-DO: Fix `jq_interpreter/parser.py` for the reported `try/catch`, assignment, and `IN/1` cases.
-DO: Run `drydock build jq --step block-9`.

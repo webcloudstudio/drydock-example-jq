@@ -1,0 +1,918 @@
+{
+  "version": 1,
+  "import": {
+    "root": "/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/sources",
+    "format": "markdown"
+  },
+  "sources": {
+    "INSTRUCTIONS.md": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "51b43aaf9eec2855347c8e6f57ca4eb52e36b8cc9202d0177cffe429aaa8aeea",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "stage-authoritative-assets",
+              "text": "Record this table in the Analysis so every asset is staged onto disk in the build directory.",
+              "stories": [
+                "delivery-assets"
+              ]
+            },
+            {
+              "name": "define-python-execution-boundaries",
+              "text": "A `#!/usr/bin/env python3` script named `jq` that imports the real work from a package alongside it is the obvious one; `main` should parse arguments and delegate.",
+              "stories": [
+                "architecture"
+              ]
+            },
+            {
+              "name": "tokenize-and-parse-jq",
+              "text": "Lexer and parser. Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.",
+              "stories": [
+                "frontend-lexer",
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "reject-invalid-programs",
+              "text": "Reject invalid programs with exit `3`.",
+              "stories": [
+                "frontend-diagnostics"
+              ]
+            },
+            {
+              "name": "evaluate-generator-streams",
+              "text": "Almost every filter is a **generator**: it takes one input and produces a stream of zero, one, or many outputs, and downstream filters run once per upstream output.",
+              "stories": [
+                "core-generators"
+              ]
+            },
+            {
+              "name": "implement-core-expressions",
+              "text": "Evaluate a filter as something that yields a stream of values: `.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.",
+              "stories": [
+                "core-expressions"
+              ]
+            },
+            {
+              "name": "implement-runtime-errors-and-alternatives",
+              "text": "A case may legitimately emit several values and then raise; the harness compares the values produced before the raise, so exit `5` is not by itself a failure.",
+              "stories": [
+                "core-errors"
+              ]
+            },
+            {
+              "name": "implement-control-flow-and-utilities",
+              "text": "Control flow. `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.",
+              "stories": [
+                "core-utilities",
+                "control-conditionals",
+                "control-reductions"
+              ]
+            },
+            {
+              "name": "implement-path-operations",
+              "text": "Paths and assignment. `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends.",
+              "stories": [
+                "paths-discovery",
+                "paths-mutation",
+                "paths-assignment"
+              ]
+            },
+            {
+              "name": "implement-bindings-and-destructuring",
+              "text": "`def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.",
+              "stories": [
+                "control-bindings"
+              ]
+            },
+            {
+              "name": "implement-functions-and-recursion",
+              "text": "Functions, variables, and destructuring.",
+              "stories": [
+                "control-functions"
+              ]
+            },
+            {
+              "name": "implement-structural-builtins",
+              "text": "Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.",
+              "stories": [
+                "builtins-structural"
+              ]
+            },
+            {
+              "name": "implement-string-builtins",
+              "text": "Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.",
+              "stories": [
+                "builtins-strings"
+              ]
+            },
+            {
+              "name": "implement-regex-builtins",
+              "text": "The manual is normative and the corpus is precise.",
+              "stories": [
+                "builtins-regex"
+              ]
+            },
+            {
+              "name": "implement-numeric-builtins-and-edge-cases",
+              "text": "Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin \u2014 return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.",
+              "stories": [
+                "builtins-numeric"
+              ]
+            },
+            {
+              "name": "implement-streaming-builtins",
+              "text": "Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.",
+              "stories": [
+                "builtins-streaming"
+              ]
+            },
+            {
+              "name": "implement-io-builtins",
+              "text": "Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.",
+              "stories": [
+                "builtins-io"
+              ]
+            },
+            {
+              "name": "provide-jq-executable-interface",
+              "text": "The program is a filter: an executable file named `jq` at the application root, invoked as",
+              "stories": [
+                "executable"
+              ]
+            },
+            {
+              "name": "document-operation-and-verification",
+              "text": "Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit codes, and the `sh sources/full_test.sh` command.",
+              "stories": [
+                "documentation"
+              ]
+            },
+            {
+              "name": "pass-authoritative-conformance",
+              "text": "- `sh sources/full_test.sh` runs cleanly with zero errors and exits zero.",
+              "stories": [
+                "conformance"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "builtin.jq": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "runtime-errors",
+              "text": "def halt_error: halt_error(5);\ndef error(msg): msg|error;",
+              "stories": [
+                "core-errors"
+              ]
+            },
+            {
+              "name": "collection-filters",
+              "text": "def map(f): [.[] | f];\ndef select(f): if f then . else empty end;\ndef sort_by(f): _sort_by_impl(map([f]));\ndef group_by(f): _group_by_impl(map([f]));\ndef unique_by(f): _unique_by_impl(map([f]));\ndef max_by(f): _max_by_impl(map([f]));\ndef min_by(f): _min_by_impl(map([f]));\ndef reverse: [.[length - 1 - range(0;length)];\ndef transpose: [range(0; map(length)|max // 0) as $i | [.[][$i]]];\ndef combinations:\n    if length == 0 then [] else\n        .[0][] as $x\n          | (.[1:] | combinations) as $y\n          | [$x] + $y\n    end;\ndef combinations(n):\n    . as $dot\n      | [range(n) | $dot]\n      | combinations;\ndef flatten: _flatten(-1);",
+              "stories": [
+                "builtins-structural"
+              ]
+            },
+            {
+              "name": "value-aggregation",
+              "text": "def add(f): reduce f as $x (null; . + $x);\ndef add: add(.[]);",
+              "stories": [
+                "core-expressions",
+                "control-reductions"
+              ]
+            },
+            {
+              "name": "path-mutation",
+              "text": "def del(f): delpaths([path(f)]);",
+              "stories": [
+                "paths-mutation"
+              ]
+            },
+            {
+              "name": "generator-control",
+              "text": "def while(cond; update):\n     def _while:\n         if cond then ., (update | _while) else empty end;\n     _while;\ndef until(cond; next):\n     def _until:\n         if cond then . else (next|_until) end;\n     _until;\ndef limit($n; expr):\n  if $n > 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . <= 0 then break $out else empty end)\n  elif $n == 0 then empty\n  else error(\"limit doesn't support negative count\") end;",
+              "stories": [
+                "core-generators",
+                "core-utilities"
+              ]
+            },
+            {
+              "name": "stream-selection",
+              "text": "def skip($n; expr):\n  if $n > 0 then foreach expr as $item ($n; . - 1; if . < 0 then $item else empty end)\n  elif $n == 0 then expr\n  else error(\"skip doesn't support negative count\") end;\ndef first(g): label $out | g | ., break $out;\ndef isempty(g): first((g|false), true);\ndef all(generator; condition): isempty(generator|condition and empty);\ndef any(generator; condition): isempty(generator|condition or empty)|not;\ndef all(condition): all(.[]; condition);\ndef any(condition): any(.[]; .);\ndef nth($n; g):\n  if $n < 0 then error(\"nth doesn't support negative indices\")\n  else first(skip($n; g)) end;\ndef first: .[0];\ndef last: .[-1];\ndef nth($n): .[$n];",
+              "stories": [
+                "core-utilities"
+              ]
+            },
+            {
+              "name": "path-discovery",
+              "text": "def paths: path(recurse)|select(length > 0);\ndef paths(node_filter): path(recurse|select(node_filter))|select(length > 0);\ndef pick(pathexps):\n  . as $in\n  | reduce path(pathexps) as $a (null;\n      setpath($a; $in|getpath($a)) );",
+              "stories": [
+                "paths-discovery"
+              ]
+            },
+            {
+              "name": "lexical-control",
+              "text": "def recurse(f): def r: ., (f | r); r;\ndef recurse(f; cond): def r: ., (f | select(cond) | r); r;\ndef recurse: recurse(.[]?);",
+              "stories": [
+                "control-conditionals",
+                "control-bindings"
+              ]
+            },
+            {
+              "name": "string-processing",
+              "text": "def ascii_downcase:\n  explode | map( if 65 <= . and . <= 90 then . + 32  else . end) | implode;\ndef ascii_upcase:\n  explode | map( if 97 <= . and . <= 122 then . - 32  else . end) | implode;\ndef join($x): reduce .[] as $i (null;\n            (if .==null then \"\" else .+$x end) +\n            ($i | if type==\"boolean\" or type==\"number\" then tostring else .//\"\" end)\n        ) // \"\";",
+              "stories": [
+                "builtins-strings"
+              ]
+            },
+            {
+              "name": "regular-expressions",
+              "text": "def match(re; mode): _match_impl(re; mode; false)|.[];\ndef test(re; mode): _match_impl(re; mode; true);\ndef capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);\ndef scan($re; $flags):\n  match($re; \"g\" + $flags)\n    | if (.captures|length > 0)\n      then [ .captures | .[] | .string ]\n      else .string\n      end;\ndef sub($re; s; $flags):\n   . as $in\n   | (reduce match($re; $flags) as $edit\n        ({result: [], previous: 0};\n            $in[ .previous: ($edit | .offset) ] as $gap\n            # create the \"capture\" objects (one per item in s)\n            | [reduce ( $edit | .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair\n                 ({}; . + $pair) | s ] as $inserts\n            | reduce range(0; $inserts|length) as $ix (.; .result[$ix] += $gap + $inserts[$ix])\n            | .previous = ($edit | .offset + .length ) )\n          | .result[] + $in[.previous:] )\n      // $in;\ndef gsub($re; s): sub($re; s; \"g\");",
+              "stories": [
+                "builtins-regex"
+              ]
+            },
+            {
+              "name": "numeric-builtins",
+              "text": "def abs: if . < 0 then - . else . end;\ndef isfinite: type == \"number\" and (isinfinite | not);\ndef fromdateiso8601: strptime(\"%Y-%m-%dT%H:%M:%SZ\")|mktime;\ndef todateiso8601: strftime(\"%Y-%m-%dT%H:%M:%SZ\");",
+              "stories": [
+                "builtins-numeric"
+              ]
+            },
+            {
+              "name": "streaming-builtins",
+              "text": "def truncate_stream(stream):\n  . as $n | null | stream | . as $input | if (.[0]|length) > $n then setpath([0];$input[0][$n:]) else empty end;\ndef fromstream(i): {x: null, e: false} as $init |\n  # .x = object being built; .e = emit and reset state\n  foreach i as $i ($init\n  ; if .e then $init else . end\n  | if $i|length == 2\n    then setpath([\"e\"]; $i[0]|length==0) | setpath([\"x\"]+$i[0]; $i[1])\n    else setpath([\"e\"]; $i[0]|length==1) end\n  ; if .e then .x else empty end);\ndef tostream:\n  path(def r: (.[]?|r), .; r) as $p |\n  getpath($p) |\n  reduce path(.[]?) as $q ([$p, .]; [$p+$q]);",
+              "stories": [
+                "builtins-streaming"
+              ]
+            },
+            {
+              "name": "sql-operations",
+              "text": "def INDEX(stream; idx_expr):\n  reduce stream as $row ({}; .[$row|idx_expr|tostring] = $row);\ndef INDEX(idx_expr): INDEX(.[]; idx_expr);\ndef JOIN($idx; idx_expr):\n  [.[] | [., $idx[idx_expr]]];\ndef JOIN($idx; stream; idx_expr):\n  stream | [., $idx[idx_expr]];\ndef JOIN($idx; stream; idx_expr; join_expr):\n  stream | [., $idx[idx_expr]] | join_expr;\ndef IN(s): any(s == .; .);\ndef IN(src; s): any(src == s; .);",
+              "stories": [
+                "builtins-streaming"
+              ]
+            },
+            {
+              "name": "io-builtins",
+              "text": "def inputs: try repeat(input) catch if .==\"break\" then empty else error end;",
+              "stories": [
+                "builtins-io"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "exclusions.txt": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "preserve-authoritative-corpus",
+              "text": "The corpus in sources/jq.test is byte-for-byte upstream and is never edited.",
+              "stories": [
+                "delivery-assets",
+                "conformance"
+              ]
+            },
+            {
+              "name": "validate-exclusion-entries",
+              "text": "One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug \u2014 a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.",
+              "stories": [
+                "delivery-assets",
+                "conformance",
+                "executable"
+              ]
+            },
+            {
+              "name": "exclude-module-loading-cases",
+              "text": "These cases resolve `import` and `include` against a module search path supplied by jq's -L flag, reading roughly twenty fixture files spread across nested directories upstream (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit's declared sources into the application flattened by basename, so that directory tree cannot be carried, and the interface this kit fixes exercises no flag but -c.",
+              "stories": [
+                "architecture",
+                "delivery-assets",
+                "conformance"
+              ]
+            },
+            {
+              "name": "retain-module-grammar-cases",
+              "text": "The module *grammar* cases \u2014 `module (.+1); 0`, `module []; 0`, `include \"a\" (.+1); 0`, `include \"a\" []; 0`, `include \"\\ \"; 0`, `include \"\\(a)\"; 0`, and `%::wat` \u2014 remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.",
+              "stories": [
+                "frontend-parser",
+                "frontend-diagnostics",
+                "conformance"
+              ]
+            },
+            {
+              "name": "exclude-modulemeta-cases",
+              "text": "`modulemeta` reports a module's declared dependencies and definitions. Its three cases take the module name \"c\" as input and read tests/modules/c/c.jq from the search path, so they fail for the same reason as the loader cases above.",
+              "stories": [
+                "architecture",
+                "delivery-assets",
+                "conformance"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "full_test.sh": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "deliver-jq-executable",
+              "text": "The deliverable is an executable named jq that reads JSON on stdin.",
+              "stories": [
+                "executable"
+              ]
+            },
+            {
+              "name": "run-score-conformance",
+              "text": "`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score. The interface check is separate from the conformance run so that a missing or non-executable program and a genuine conformance failure are distinguishable in the evidence.",
+              "stories": [
+                "conformance"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "jq-manual.txt": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "filter-streams",
+              "text": "A jq program is a \"filter\": it takes an input, and produces an\noutput.",
+              "stories": [
+                "core-generators"
+              ]
+            },
+            {
+              "name": "lex-jq-programs",
+              "text": "You can write comments in your jq filters using `#`.",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "parse-jq-syntax",
+              "text": "Parenthesis work as a grouping operator just as in any typical\nprogramming language.",
+              "stories": [
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "diagnose-invalid-programs",
+              "text": "The `break $label_name` expression will cause the program to act as though the nearest (to the left) `label $label_name` produced `empty`.",
+              "stories": [
+                "frontend-diagnostics"
+              ]
+            },
+            {
+              "name": "core-values-and-operators",
+              "text": "jq supports the same set of datatypes as JSON - numbers,\nstrings, booleans, arrays, objects (which in JSON-speak are\nhashes with only string keys), and \"null\".",
+              "stories": [
+                "core-expressions"
+              ]
+            },
+            {
+              "name": "runtime-errors",
+              "text": "If you try to add a string to an object you'll get an error message and\nno result.",
+              "stories": [
+                "core-errors"
+              ]
+            },
+            {
+              "name": "generator-utilities",
+              "text": "`empty` returns no results. None at all. Not even `null`.",
+              "stories": [
+                "core-utilities"
+              ]
+            },
+            {
+              "name": "discover-paths",
+              "text": "`path(path_expression)` Outputs array representations of the given path expression\nin `.`.",
+              "stories": [
+                "paths-discovery"
+              ]
+            },
+            {
+              "name": "mutate-values-by-path",
+              "text": "The builtin function `setpath` sets the `PATHS` in `.` to `VALUE`.",
+              "stories": [
+                "paths-mutation"
+              ]
+            },
+            {
+              "name": "assign-values",
+              "text": "Assignment works a little differently in jq than in most\nprogramming languages.",
+              "stories": [
+                "paths-assignment"
+              ]
+            },
+            {
+              "name": "conditionals-and-comparisons",
+              "text": "jq supports the normal Boolean operators `and`, `or`, `not`.",
+              "stories": [
+                "control-conditionals"
+              ]
+            },
+            {
+              "name": "reduce-and-foreach",
+              "text": "The `reduce` syntax allows you to combine all of the results of\nan expression by accumulating them into a single answer.",
+              "stories": [
+                "control-reductions"
+              ]
+            },
+            {
+              "name": "variables-and-scope",
+              "text": "In jq, all filters have an input and an output, so manual\nplumbing is not necessary to pass a value from one part of a program\nto the next.",
+              "stories": [
+                "control-bindings"
+              ]
+            },
+            {
+              "name": "user-functions-and-recursion",
+              "text": "You can give a filter a name using \"def\" syntax:",
+              "stories": [
+                "control-functions"
+              ]
+            },
+            {
+              "name": "structural-builtins",
+              "text": "For any filter `f`, `map(f)` and `map_values(f)` apply `f`\nto each of the values in the input array or object, that is,\nto the values of `.[]`.",
+              "stories": [
+                "builtins-structural"
+              ]
+            },
+            {
+              "name": "string-and-format-builtins",
+              "text": "The `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.",
+              "stories": [
+                "builtins-strings"
+              ]
+            },
+            {
+              "name": "regular-expression-filters",
+              "text": "jq uses the\n[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),\nas do PHP, TextMate, Sublime Text, etc, so the description here will focus on jq specifics.",
+              "stories": [
+                "builtins-regex"
+              ]
+            },
+            {
+              "name": "numeric-and-date-builtins",
+              "text": "jq currently only has IEEE754 double-precision (64-bit) floating\npoint number support.",
+              "stories": [
+                "builtins-numeric"
+              ]
+            },
+            {
+              "name": "streaming-and-sql-builtins",
+              "text": "With the `--stream` option jq can parse input texts in a streaming\nfashion, allowing jq programs to start processing large JSON texts\nimmediately rather than after the parse completes.",
+              "stories": [
+                "builtins-streaming"
+              ]
+            },
+            {
+              "name": "environment-and-io",
+              "text": "At this time jq has minimal support for I/O, mostly in the\nform of control over when inputs are read.",
+              "stories": [
+                "builtins-io"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "jq.test": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "jq-conformance-corpus",
+              "text": "# Tests are groups of three lines: program, input, expected output\n# Blank lines and lines starting with # are ignored",
+              "stories": [
+                "delivery-assets",
+                "conformance"
+              ]
+            },
+            {
+              "name": "lexical-analysis",
+              "text": "# Simple value tests to check parser",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "syntax-parsing",
+              "text": "# Dictionary construction syntax",
+              "stories": [
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "syntax-diagnostics",
+              "text": "%%FAIL",
+              "stories": [
+                "frontend-diagnostics"
+              ]
+            },
+            {
+              "name": "value-stream-evaluation",
+              "text": "# Multiple outputs, iteration",
+              "stories": [
+                "core-generators"
+              ]
+            },
+            {
+              "name": "core-expression-semantics",
+              "text": "# Field access, piping",
+              "stories": [
+                "core-expressions"
+              ]
+            },
+            {
+              "name": "runtime-error-handling",
+              "text": "# Try/catch and general `?` operator",
+              "stories": [
+                "core-errors"
+              ]
+            },
+            {
+              "name": "generator-utilities",
+              "text": "# Check that various builtins evaluate all arguments where appropriate,\n# doing cartesian products where appropriate.",
+              "stories": [
+                "core-utilities"
+              ]
+            },
+            {
+              "name": "path-discovery",
+              "text": "# Paths",
+              "stories": [
+                "paths-discovery"
+              ]
+            },
+            {
+              "name": "path-mutation",
+              "text": "# setpath/2 does not leak the input after an invalid get #2970",
+              "stories": [
+                "paths-mutation"
+              ]
+            },
+            {
+              "name": "assignment-operators",
+              "text": "# Assignment",
+              "stories": [
+                "paths-assignment"
+              ]
+            },
+            {
+              "name": "conditionals-and-breaks",
+              "text": "# Conditionals",
+              "stories": [
+                "control-conditionals"
+              ]
+            },
+            {
+              "name": "reductions-and-foreach",
+              "text": "# test recursion",
+              "stories": [
+                "control-reductions"
+              ]
+            },
+            {
+              "name": "bindings-and-destructuring",
+              "text": "# Variables",
+              "stories": [
+                "control-bindings"
+              ]
+            },
+            {
+              "name": "user-functions-and-recursion",
+              "text": "# User-defined functions",
+              "stories": [
+                "control-functions"
+              ]
+            },
+            {
+              "name": "structural-builtins",
+              "text": "# Object construction",
+              "stories": [
+                "builtins-structural"
+              ]
+            },
+            {
+              "name": "string-builtins",
+              "text": "# string operations",
+              "stories": [
+                "builtins-strings"
+              ]
+            },
+            {
+              "name": "regular-expression-builtins",
+              "text": "<unattached story=\"builtins-regex\"/>",
+              "stories": [
+                "builtins-regex"
+              ]
+            },
+            {
+              "name": "numeric-and-date-builtins",
+              "text": "# Basic numbers tests: integers, powers of two",
+              "stories": [
+                "builtins-numeric"
+              ]
+            },
+            {
+              "name": "streaming-and-sql-builtins",
+              "text": "INDEX(range(5)|[., \"foo\\(.)\"]; .[0])",
+              "stories": [
+                "builtins-streaming"
+              ]
+            },
+            {
+              "name": "io-builtins",
+              "text": "# calling input/0, or debug/0 in a test doesn't crash jq",
+              "stories": [
+                "builtins-io"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "lexer.l": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "tokenize-jq-programs",
+              "text": "\"#\" { yy_push_state(IN_COMMENT, yyscanner); }\n<IN_COMMENT>{\n  \\\\(\\\\|\\r?\\n)|. { }\n  \\r?\\n { yy_pop_state(yyscanner); }\n}\n<IN_COMMENT><<EOF>> { yy_pop_state(yyscanner); }\n\n\"!=\" { return NEQ; }\n\"==\" { return EQ; }\n\"as\" { return AS; }\n\"import\" { return IMPORT; }\n\"include\" { return INCLUDE; }\n\"module\" { return MODULE; }\n\"def\" { return DEF; }\n\"if\" { return IF; }\n\"then\" { return THEN; }\n\"else\" { return ELSE; }\n\"elif\" { return ELSE_IF; }\n\"and\" { return AND; }\n\"or\" { return OR; }\n\"end\" { return END; }\n\"reduce\" { return REDUCE; }\n\"foreach\" { return FOREACH; }\n\"//\" { return DEFINEDOR; }\n\"try\" { return TRY; }\n\"catch\" { return CATCH; }\n\"label\" { return LABEL; }\n\"break\" { return BREAK; }\n\"$__loc__\" { return LOC; }\n\"|=\" { return SETPIPE; }\n\"+=\" { return SETPLUS; }\n\"-=\" { return SETMINUS; }\n\"*=\" { return SETMULT; }\n\"/=\" { return SETDIV; }\n\"%=\" { return SETMOD; }\n\"//=\" { return SETDEFINEDOR; }\n\"<=\" { return LESSEQ; }\n\">=\" { return GREATEREQ; }\n\"..\" { return REC; }\n\"?//\" { return ALTERNATION; }\n\".\"|\"?\"|\"=\"|\";\"|\",\"|\":\"|\"|\"|\"+\"|\"-\"|\"*\"|\"/\"|\"%\"|\"\\$\"|\"<\"|\">\" { return yytext[0];}\n\n\"[\"|\"{\"|\"(\" {\n  return enter(yytext[0], YY_START, yyscanner);\n}\n\n\"]\"|\"}\"|\")\" {\n  return try_exit(yytext[0], YY_START, yyscanner);\n}\n\n\"@\"[a-zA-Z0-9_]+ {\n  yylval->literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;\n}\n\n([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][+-]?[0-9]+)? {\n   yylval->literal = jv_parse_sized(yytext, yyleng); return LITERAL;\n}\n\n\"\\\"\" {\n  yy_push_state(IN_QQSTRING, yyscanner);\n  return QQSTRING_START;\n}\n\n<IN_QQSTRING>{\n  \"\\\\(\" {\n    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);\n  }\n  \"\\\"\" {\n    yy_pop_state(yyscanner);\n    return QQSTRING_END;\n  }\n  (\\\\[^u(]|\\\\u[a-zA-Z0-9]{0,4})+ {\n    /* pass escapes to the json parser */\n    jv escapes = jv_string_fmt(\"\\\"%.*s\\\"\", (int)yyleng, yytext);\n    yylval->literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));\n    jv_free(escapes);\n    return QQSTRING_TEXT;\n  }\n  [^\\\\\\\"]+ {\n    yylval->literal = jv_string_sized(yytext, yyleng);\n    return QQSTRING_TEXT;\n  }\n  . {\n    return INVALID_CHARACTER;\n  }\n}\n\n\n([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext); return IDENT;}\n\\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return FIELD;}\n\\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return BINDING;}\n\n[ \\r\\n\\t]+  {}",
+              "stories": [
+                "frontend-lexer"
+              ]
+            },
+            {
+              "name": "reject-invalid-characters",
+              "text": ". { return INVALID_CHARACTER; }\n\nstatic int try_exit(int c, int state, yyscan_t yyscanner) {\n  char match = 0;\n  int ret;\n  switch (state) {\n  case IN_PAREN: match = ret = ')'; break;\n  case IN_BRACKET: match = ret = ']'; break;\n  case IN_BRACE: match = ret = '}'; break;\n\n  case IN_QQINTERP:\n    match = ')';\n    ret = QQSTRING_INTERP_END;\n    break;\n\n  default:\n    // may not be the best error to give\n    return INVALID_CHARACTER;\n  }\n  assert(match);\n  if (match == c) {\n    yy_pop_state(yyscanner);\n    return ret;\n  } else {\n    // FIXME: should we pop? Give a better error at least\n    return INVALID_CHARACTER;\n  }\n}",
+              "stories": [
+                "frontend-diagnostics"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "parser.y": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "parse-jq-programs",
+              "text": "TopLevel:\nModule Imports Query {\n  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);\n} |\nModule Imports FuncDefs {\n  *answer = BLOCK($1, $2, $3);\n}",
+              "stories": [
+                "frontend-parser"
+              ]
+            },
+            {
+              "name": "report-parse-errors",
+              "text": "%define parse.error verbose",
+              "stories": [
+                "frontend-diagnostics"
+              ]
+            },
+            {
+              "name": "evaluate-value-streams",
+              "text": "Query '|' Query {\n  $$ = block_join($1, $3);\n} |\nQuery ',' Query {\n  $$ = gen_both($1, $3);\n}",
+              "stories": [
+                "core-generators"
+              ]
+            },
+            {
+              "name": "implement-expressions",
+              "text": "Expr '+' Expr {\n  $$ = gen_binop($1, $3, '+');\n} |\nExpr '-' Expr {\n  $$ = gen_binop($1, $3, '-');\n} |\nExpr '*' Expr {\n  $$ = gen_binop($1, $3, '*');\n} |\nExpr '/' Expr {\n  $$ = gen_binop($1, $3, '/');\n}",
+              "stories": [
+                "core-expressions"
+              ]
+            },
+            {
+              "name": "handle-errors-and-alternatives",
+              "text": "Expr \"//\" Expr {\n  $$ = gen_definedor($1, $3);\n} |\nTerm '?' {\n  $$ = gen_try($1, gen_op_simple(BACKTRACK));\n}",
+              "stories": [
+                "core-errors"
+              ]
+            },
+            {
+              "name": "discover-path-values",
+              "text": "Term FIELD %prec NONOPT {\n  $$ = gen_index($1, gen_const($2));\n} |\nTerm '[' Query ']' %prec NONOPT {\n  $$ = gen_index($1, $3);\n}",
+              "stories": [
+                "paths-discovery"
+              ]
+            },
+            {
+              "name": "mutate-path-values",
+              "text": "static block gen_update(block object, block val, int optype) {\n  block tmp = gen_op_var_fresh(STOREV, \"tmp\");",
+              "stories": [
+                "paths-mutation"
+              ]
+            },
+            {
+              "name": "assign-path-values",
+              "text": "Expr '=' Expr {\n  $$ = gen_call(\"_assign\", BLOCK(gen_lambda($1), gen_lambda($3)));\n} |\nExpr \"|=\" Expr {\n  $$ = gen_call(\"_modify\", BLOCK(gen_lambda($1), gen_lambda($3)));\n}",
+              "stories": [
+                "paths-assignment"
+              ]
+            },
+            {
+              "name": "control-conditionals",
+              "text": "\"if\" Query \"then\" Query ElseBody {\n  $$ = gen_cond($2, $4, $5);\n}",
+              "stories": [
+                "control-conditionals"
+              ]
+            },
+            {
+              "name": "reduce-and-foreach",
+              "text": "\"reduce\" Expr \"as\" Patterns '(' Query ';' Query ')' {\n  $$ = gen_reduce($2, $4, $6, $8);\n} |\n\"foreach\" Expr \"as\" Patterns '(' Query ';' Query ';' Query ')' {\n  $$ = gen_foreach($2, $4, $6, $8, $10);\n}",
+              "stories": [
+                "control-reductions"
+              ]
+            },
+            {
+              "name": "bind-and-destructure-values",
+              "text": "Expr \"as\" Patterns '|' Query {\n  $$ = gen_destructure($1, $3, $5);\n}",
+              "stories": [
+                "control-bindings"
+              ]
+            },
+            {
+              "name": "define-functions-and-recursion",
+              "text": "\"def\" IDENT ':' Query ';' {\n  $$ = gen_function(jv_string_value($2), gen_noop(), $4);\n  jv_free($2);\n} |\nREC {\n  $$ = gen_call(\"recurse\", gen_noop());\n}",
+              "stories": [
+                "control-functions"
+              ]
+            },
+            {
+              "name": "construct-collections",
+              "text": "'[' Query ']' {\n  $$ = gen_collect($2);\n} |\n'{' DictPairs '}' {\n  block o = gen_const_object($2);",
+              "stories": [
+                "builtins-structural"
+              ]
+            },
+            {
+              "name": "format-strings",
+              "text": "QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {\n  $$ = gen_binop($1, gen_format($3, jv_copy($<literal>0)), '+');\n}",
+              "stories": [
+                "builtins-strings"
+              ]
+            },
+            {
+              "name": "constant-fold-numeric-operations",
+              "text": "case '+': res = binop_plus(jv_a, jv_b); break;\ncase '-': res = binop_minus(jv_a, jv_b); break;\ncase '*': res = binop_multiply(jv_a, jv_b); break;\ncase '/': res = binop_divide(jv_a, jv_b); break;\ncase '%': res = binop_mod(jv_a, jv_b); break;",
+              "stories": [
+                "builtins-numeric"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "run_conformance.py": {
+      "state": "current",
+      "versions": [
+        {
+          "commit": "c092155",
+          "date": "2026-08-20",
+          "hash": "c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492",
+          "release": "",
+          "state": "consumed",
+          "via": "plan",
+          "ticket": null,
+          "requirements": [
+            {
+              "name": "run-jq-conformance-corpus",
+              "text": "Run the upstream jq conformance corpus against a candidate implementation.",
+              "stories": [
+                "frontend-lexer",
+                "frontend-parser",
+                "frontend-diagnostics",
+                "core-generators",
+                "core-expressions",
+                "core-errors",
+                "core-utilities",
+                "paths-discovery",
+                "paths-mutation",
+                "paths-assignment",
+                "control-conditionals",
+                "control-reductions",
+                "control-bindings",
+                "control-functions",
+                "builtins-structural",
+                "builtins-strings",
+                "builtins-regex",
+                "builtins-numeric",
+                "builtins-streaming",
+                "builtins-io",
+                "executable",
+                "conformance"
+              ]
+            },
+            {
+              "name": "stage-authoritative-assets",
+              "text": "It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.",
+              "stories": [
+                "delivery-assets"
+              ]
+            },
+            {
+              "name": "provide-project-metadata",
+              "text": "Imported sources land in ``sources/`` inside the application directory, so this is normally invoked as ``python3 sources/run_conformance.py`` from that directory.",
+              "stories": []
+            },
+            {
+              "name": "document-operation-verification",
+              "text": "Usage:\n    JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run\n    JQ=./jq python3 sources/run_conformance.py -v                  # list passing cases too\n    JQ=./jq python3 sources/run_conformance.py --json              # machine-readable report\n    JQ=./jq python3 sources/run_conformance.py --list              # print cases, run nothing\n    JQ=./jq python3 sources/run_conformance.py --select 'reduce'   # develop one construct",
+              "stories": [
+                "documentation"
+              ]
+            },
+            {
+              "name": "define-interpreter-boundaries",
+              "text": "It is deliberately external to the implementation.",
+              "stories": [
+                "architecture"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

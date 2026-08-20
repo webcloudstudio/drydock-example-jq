@@ -1,1 +1,0 @@
-{"criteria":[{"id":"st-001","verdict":"NOT MET","rationale":"The supplied conformance gate exited 1, with 129 tests passed and 408 failed.","evidence":["sh sources/full_test.sh returned code 1","governed gate: jq conformance: 129 passed, 408 failed, 0 errored, 13 skipped"]}],"improvements":["Fix the failing interpreter functionality until sources/full_test.sh exits zero."]}

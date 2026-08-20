@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Control-Functions.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Control-Functions.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Control-Functions.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Control Functions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Defines user-defined jq functions, parameters, lexical definitions, and recursion.</td></tr><tr><td>Depends On</td><td>FEATURE-Control-Bindings.md</td></tr><tr><td>Provides</td><td><code>def</code> functions, filter parameters, value parameters, recursion</td></tr><tr><td>Consumes</td><td>lexical bindings, generator evaluation, parser function definitions</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq function definitions and invocation, preserving filter parameters, value parameters, lexical scope, overloading, closures, generators, and recursion.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC control-functions-conformance ===<br>Intent: The scoped authoritative corpus cases covering function definitions, parameters, closures, redefinition, and recursion execute and pass.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;^def &quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC control-functions-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Filter arguments must not be eagerly evaluated as values.</li><li>Function scope and redefinition must follow lexical jq semantics.</li><li>Recursive calls must preserve stream ordering and multiplicity.</li><li>No third-party jq implementation or binding may be used.</li></ul></article>
+</main>
+</body>
+</html>

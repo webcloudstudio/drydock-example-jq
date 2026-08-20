@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.224633.586Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.224633.586Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.224633.586Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Builtins-Numeric.md ===
+# FEATURE: Builtins Numeric
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Provide date, mathematics, numeric conversion, and special-value jq builtins. |
+| Depends On  | FEATURE-Builtins-Regex.md |
+| Provides    | date, time, math, numeric, infinity, NaN, decnum builtins |
+| Consumes    | jq generator evaluator, jq value and comparison semantics |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements date and time conversion, `strptime`, `strftime`, `mktime`, standard mathematical functions, numeric conversion, infinities, NaN, numeric comparison, literal preservation, and `have_decnum` behavior. Native floating-point arithmetic is used while unmodified numeric literals retain their source representation where required.
+
+## Programmatic Acceptance
+
+=== AC builtins-numeric-conformance ===
+Intent: The numeric and date builtin corpus slice executes and passes with at least one selected case.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;(date|time|strftime|strptime|mktime|sin|cos|sqrt|pow|nan|infinite|decnum|tonumber)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-numeric-conformance ===
+
+## User Acceptance
+
+- Numeric behavior follows the supplied jq specification and corpus.
+
+## Guardrails
+
+- Use only Python standard-library functionality; do not add numeric or date dependencies.
+- Do not modify staged scoring assets.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Streaming.md ===
+# FEATURE: Builtins Streaming
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Provide jq streaming conversion, truncation, reconstruction, and SQL-style lookup builtins. |
+| Depends On  | FEATURE-Builtins-Numeric.md |
+| Provides    | tostream, fromstream, truncate_stream, INDEX, JOIN, IN |
+| Consumes    | jq generator evaluator, jq path operations, jq value comparison semantics |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements conversion between ordinary jq values and stream representations, stream truncation and reconstruction, and the `INDEX`, `JOIN`, and `IN` SQL-style builtins. It preserves generator ordering, lookup behavior, null results, and stream multiplicity.
+
+## Programmatic Acceptance
+
+=== AC builtins-streaming-conformance ===
+Intent: The streaming and SQL-style builtin corpus slice executes and passes with at least one selected case.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;(stream|tostream|fromstream|truncate_stream|INDEX|JOIN|IN\()&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-streaming-conformance ===
+
+## User Acceptance
+
+- Stream round-trips and lookup operations preserve the documented jq semantics.
+
+## Guardrails
+
+- Streaming builtins must not consume or reorder values beyond their specified generator behavior.
+- Do not modify staged scoring assets.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-IO.md ===
+# FEATURE: Builtins IO
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Provide jq input, diagnostic, environment, and source-location builtins. |
+| Depends On  | FEATURE-Builtins-Streaming.md |
+| Provides    | input, inputs, debug, stderr, env, ENV, $__loc__ |
+| Consumes    | stdin JSON stream, process environment, jq output streams |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements `input` and `inputs` over the shared JSON input stream, `debug` and `stderr` side effects, environment snapshots through `env` and `$ENV`, and source-location values through `$__loc__`. Standard output remains reserved for JSON filter results, while diagnostics and raw stderr output remain on standard error.
+
+## Programmatic Acceptance
+
+=== AC builtins-io-conformance ===
+Intent: The environment and I/O builtin corpus slice executes and passes with at least one selected case.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;(input|inputs|debug|stderr|env|ENV|__loc__)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-io-conformance ===
+
+## User Acceptance
+
+- I/O and diagnostic behavior is distinguishable between JSON output and stderr effects.
+
+## Guardrails
+
+- Preserve input ordering and generator semantics for `input` and `inputs`.
+- Diagnostics must not be compared or emitted as ordinary JSON results.
+- Do not modify staged scoring assets.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Delivery-Executable.md ===
+# FEATURE: Delivery Executable
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Provide the root-level jq executable and its command-line and exit-status protocol. |
+| Depends On  | FEATURE-Builtins-IO.md |
+| Provides    | ./jq -c PROGRAM, newline-delimited JSON stdin/stdout, exit codes 0, 3, 5 |
+| Consumes    | jq compiler, evaluator, builtin runtime |
+
+## Questions
+
+- None.
+
+## Scope
+
+The deliverable is an executable named `jq` at the application root. It accepts `-c PROGRAM`, reads newline-delimited JSON values from standard input, emits each produced value as one compact JSON value per line, and returns exit `0` on completion, `3` for compile failures, and `5` for runtime failures. Values emitted before a runtime failure remain observable.
+
+## Programmatic Acceptance
+
+=== AC executable-conformance ===
+Intent: The executable protocol is exercised by the identity corpus slice and passes with at least one selected case.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;^\.$&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC executable-conformance ===
+
+=== AC executable-exit-contract ===
+Intent: The executable distinguishes compilation and runtime failures using the specified exit statuses.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+compile_failure = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+runtime_failure = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert compile_failure.returncode == 3
+assert runtime_failure.returncode == 5
+=== END AC executable-exit-contract ===
+
+## User Acceptance
+
+- The executable can be invoked from the application root using the documented `./jq -c PROGRAM` form.
+
+## Guardrails
+
+- Do not shell out to a system jq executable.
+- Do not require third-party runtime packages, network access, or options beyond `-c`.
+- Preserve partial stdout output before runtime failure.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT README.md ===
+# jq
+
+## Intent
+
+jq is a standalone Python standard-library interpreter for the jq language. It reads JSON values from standard input, evaluates a jq filter, and writes compact JSON results one per line.
+
+Invoke it from the application root:
+
+```bash
+./jq -c &#x27;&lt;program&gt;&#x27;
+```
+
+The executable uses these exit statuses:
+
+- `0` when compilation and evaluation complete successfully.
+- `3` when the jq program cannot be compiled.
+- `5` when evaluation raises a runtime error.
+
+Runtime output produced before an error is preserved. Diagnostics are written to standard error.
+
+The supplied conformance suite can be run with:
+
+```bash
+sh sources/full_test.sh
+```
+
+The project requires no network access, package installation, or third-party runtime dependency.
+
+## Programmatic Acceptance
+
+- None. This specification documents operation; executable behavior is verified by the delivery and terminal conformance stories.
+
+## User Acceptance
+
+- The documented invocation, input/output behavior, exit statuses, and verification command are clear and accurate.
+
+## Guardrails
+
+- Keep this document concise and consistent with the executable contract.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

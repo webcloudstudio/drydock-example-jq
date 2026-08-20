@@ -1,0 +1,21 @@
+<requirement name="run-jq-conformance-corpus" stories="frontend-lexer,frontend-parser,frontend-diagnostics,core-generators,core-expressions,core-errors,core-utilities,paths-discovery,paths-mutation,paths-assignment,control-conditionals,control-reductions,control-bindings,control-functions,builtins-structural,builtins-strings,builtins-regex,builtins-numeric,builtins-streaming,builtins-io,executable,conformance">
+Run the upstream jq conformance corpus against a candidate implementation.
+</requirement>
+<requirement name="stage-authoritative-assets" stories="delivery-assets">
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+</requirement>
+<requirement name="provide-project-metadata" stories="">
+Imported sources land in ``sources/`` inside the application directory, so this is normally invoked as ``python3 sources/run_conformance.py`` from that directory.
+</requirement>
+<requirement name="document-operation-verification" stories="documentation">
+Usage:
+    JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run
+    JQ=./jq python3 sources/run_conformance.py -v                  # list passing cases too
+    JQ=./jq python3 sources/run_conformance.py --json              # machine-readable report
+    JQ=./jq python3 sources/run_conformance.py --list              # print cases, run nothing
+    JQ=./jq python3 sources/run_conformance.py --select 'reduce'   # develop one construct
+</requirement>
+<requirement name="define-interpreter-boundaries" stories="architecture">
+It is deliberately external to the implementation.
+</requirement>
+<unattached story="project-identity"/>

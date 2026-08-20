@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Core-Errors.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Core-Errors.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Core-Errors.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Core Errors</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Implement jq runtime errors, suppression, alternatives, and partial output.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Expressions.md</td></tr><tr><td>Provides</td><td>runtime exit status 5, try/catch, optional filters, empty, defined-or</td></tr><tr><td>Consumes</td><td>literals, indexing, construction, and core operators</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Runtime failures are distinct from compilation failures and return exit status 5. <code>try</code>, <code>catch</code>, <code>?</code>, <code>empty</code>, and <code>//</code> preserve jq stream semantics and partial output.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC errors-conformance ===<br>Intent: The selected error-handling corpus slice executes and passes.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(try|catch|\?|//|error|empty)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC errors-conformance ===</p>
+<p>=== AC errors-runtime-status ===<br>Intent: An uncaught runtime error returns the runtime-error status.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True) assert result.returncode == 5 assert result.stderr is not None === END AC errors-runtime-status ===</p>
+<p>=== AC errors-partial-output ===<br>Intent: Values emitted before a runtime error remain available.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True) assert result.returncode == 5 assert [json.loads(line) for line in result.stdout.splitlines()] == [1] === END AC errors-partial-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve output produced before runtime failure.</li><li><code>try</code> and optional evaluation must suppress only the relevant failure.</li><li>Never convert runtime failures into compile exit status 3.</li></ul></article>
+</main>
+</body>
+</html>

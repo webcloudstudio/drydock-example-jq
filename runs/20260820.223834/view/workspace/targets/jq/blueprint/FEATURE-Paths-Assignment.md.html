@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Paths Assignment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Apply jq plain, update, arithmetic, and defined-or assignments over paths.</td></tr><tr><td>Depends On</td><td>FEATURE-Paths-Mutation.md</td></tr><tr><td>Provides</td><td>=,</td><td>=, +=, -=, *=, /=, %=, //=</td></tr><tr><td>Consumes</td><td>path mutation, generator evaluation, runtime errors, bindings</td></tr></tbody></table></div>
+<h2>Capability</h2>
+<p>Assignment evaluates left-hand sides as path expressions over the original input and produces immutable replacement values while preserving jq ordering, multiplicity, and runtime behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-assignment-suite ===<br>Intent: The authoritative corpus executes the plain, update, arithmetic, and defined-or assignment cases owned by this story.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(=|\|=|\+=|-=|\*=|/=|%=|//=)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-assignment-suite ===</p>
+<p>=== AC paths-assignment-compile-status ===<br>Intent: Assignment syntax is accepted as a compiled jq program.<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.foo |= . + 1&quot;], input=&#x27;{&quot;foo&quot;: 1}\n&#x27;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode != 3 assert result.stderr is not None === END AC paths-assignment-compile-status ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Assignment must not mutate values previously emitted by the same program.</li><li>Plain assignment and update assignment must retain their distinct right-hand-side input semantics.</li><li>Multi-path assignments must preserve jq&#x27;s specified output order and multiplicity.</li><li>An uncaught assignment runtime error must use exit status 5.</li></ul></article>
+</main>
+</body>
+</html>

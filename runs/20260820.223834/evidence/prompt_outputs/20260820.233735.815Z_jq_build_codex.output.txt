@@ -1,0 +1,13 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- [jq](/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/build/jq/jq)
+
+SUMMARY:
+Repaired lexer-dependent parsing for comments, Unicode, bindings, destructuring alternatives, and nested path creation. Unicode/comments acceptance passes; lexer corpus improved to 121 passed, 19 failed.
+
+BLOCKERS:
+- Function scoping, assignment semantics, numeric behavior, and `fromjson` edge cases remain failing.
+
+FAILURE_SUMMARY: Lexer corpus still has 19 failing cases.
+FAILURE_DETAIL: The implementation requires further evaluator repairs for function definitions/scoping, assignments, numeric conversion, and runtime builtins before the declared lexer-corpus acceptance can pass.

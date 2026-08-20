@@ -1,0 +1,7 @@
+2026-08-20T23:38:52.248621Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/build/jq: path `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/build/jq` is not a file
+2026-08-20T23:39:03.441251Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/build/jq/jq:
+  if False and any(tok.k== 'VAR' for tok in self.t):
+2026-08-20T23:40:10.962710Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260820.223834/build/jq/jq:
+    elif x[0]=='bin' and x[1]=='as':
+     scan(x[2]); collect_pattern(x[3])
+     return

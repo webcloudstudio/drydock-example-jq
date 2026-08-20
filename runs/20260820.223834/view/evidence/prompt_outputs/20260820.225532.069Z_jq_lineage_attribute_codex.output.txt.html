@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.225532.069Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.225532.069Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.225532.069Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;stage-authoritative-assets&quot; stories=&quot;delivery-assets&quot;&gt;
+Record this table in the Analysis so every asset is staged onto disk in the build directory.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;define-python-execution-boundaries&quot; stories=&quot;architecture&quot;&gt;
+A `#!/usr/bin/env python3` script named `jq` that imports the real work from a package alongside it is the obvious one; `main` should parse arguments and delegate.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;tokenize-and-parse-jq&quot; stories=&quot;frontend-lexer,frontend-parser&quot;&gt;
+Lexer and parser. Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST. Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-invalid-programs&quot; stories=&quot;frontend-diagnostics&quot;&gt;
+Reject invalid programs with exit `3`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;evaluate-generator-streams&quot; stories=&quot;core-generators&quot;&gt;
+Almost every filter is a **generator**: it takes one input and produces a stream of zero, one, or many outputs, and downstream filters run once per upstream output.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-core-expressions&quot; stories=&quot;core-expressions&quot;&gt;
+Evaluate a filter as something that yields a stream of values: `.`, literals, `|`, `,`, field access, iteration, arithmetic, comparison, and `empty`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-runtime-errors-and-alternatives&quot; stories=&quot;core-errors&quot;&gt;
+A case may legitimately emit several values and then raise; the harness compares the values produced before the raise, so exit `5` is not by itself a failure.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-control-flow-and-utilities&quot; stories=&quot;core-utilities,control-conditionals,control-reductions&quot;&gt;
+Control flow. `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`, `reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`, `recurse`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-path-operations&quot; stories=&quot;paths-discovery,paths-mutation,paths-assignment&quot;&gt;
+Paths and assignment. `path(f)`, `getpath`, `setpath`, `delpaths`, `del`, and then `=`, `|=`, `+=`, and friends.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-bindings-and-destructuring&quot; stories=&quot;control-bindings&quot;&gt;
+`def` with arity and closures, `as` bindings, object and array patterns, and the `?//` alternative operator.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-functions-and-recursion&quot; stories=&quot;control-functions&quot;&gt;
+Functions, variables, and destructuring.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-structural-builtins&quot; stories=&quot;builtins-structural&quot;&gt;
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-string-builtins&quot; stories=&quot;builtins-strings&quot;&gt;
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-regex-builtins&quot; stories=&quot;builtins-regex&quot;&gt;
+The manual is normative and the corpus is precise.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-numeric-builtins-and-edge-cases&quot; stories=&quot;builtins-numeric&quot;&gt;
+Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals, and the `have_decnum` builtin — return `false` from it and the corpus takes its non-decNumber branch, which native floats satisfy.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-streaming-builtins&quot; stories=&quot;builtins-streaming&quot;&gt;
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;implement-io-builtins&quot; stories=&quot;builtins-io&quot;&gt;
+Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects, `sort_by`/`group_by`/`unique_by`, `@base64`/`@uri`/`@csv`/`@tsv`/`@sh` formats, the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-jq-executable-interface&quot; stories=&quot;executable&quot;&gt;
+The program is a filter: an executable file named `jq` at the application root, invoked as
+&lt;/requirement&gt;
+&lt;requirement name=&quot;document-operation-and-verification&quot; stories=&quot;documentation&quot;&gt;
+Deliver a concise project `README.md` documenting the stdin/stdout interface, the exit codes, and the `sh sources/full_test.sh` command.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;pass-authoritative-conformance&quot; stories=&quot;conformance&quot;&gt;
+- `sh sources/full_test.sh` runs cleanly with zero errors and exits zero.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;project-identity&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

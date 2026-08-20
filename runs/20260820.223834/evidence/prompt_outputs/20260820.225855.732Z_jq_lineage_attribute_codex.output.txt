@@ -1,0 +1,69 @@
+<requirement name="jq-conformance-corpus" stories="delivery-assets,conformance">
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+</requirement>
+<requirement name="lexical-analysis" stories="frontend-lexer">
+# Simple value tests to check parser
+</requirement>
+<requirement name="syntax-parsing" stories="frontend-parser">
+# Dictionary construction syntax
+</requirement>
+<requirement name="syntax-diagnostics" stories="frontend-diagnostics">
+%%FAIL
+</requirement>
+<requirement name="value-stream-evaluation" stories="core-generators">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="core-expression-semantics" stories="core-expressions">
+# Field access, piping
+</requirement>
+<requirement name="runtime-error-handling" stories="core-errors">
+# Try/catch and general `?` operator
+</requirement>
+<requirement name="generator-utilities" stories="core-utilities">
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+</requirement>
+<requirement name="path-discovery" stories="paths-discovery">
+# Paths
+</requirement>
+<requirement name="path-mutation" stories="paths-mutation">
+# setpath/2 does not leak the input after an invalid get #2970
+</requirement>
+<requirement name="assignment-operators" stories="paths-assignment">
+# Assignment
+</requirement>
+<requirement name="conditionals-and-breaks" stories="control-conditionals">
+# Conditionals
+</requirement>
+<requirement name="reductions-and-foreach" stories="control-reductions">
+# test recursion
+</requirement>
+<requirement name="bindings-and-destructuring" stories="control-bindings">
+# Variables
+</requirement>
+<requirement name="user-functions-and-recursion" stories="control-functions">
+# User-defined functions
+</requirement>
+<requirement name="structural-builtins" stories="builtins-structural">
+# Object construction
+</requirement>
+<requirement name="string-builtins" stories="builtins-strings">
+# string operations
+</requirement>
+<requirement name="regular-expression-builtins" stories="builtins-regex">
+<unattached story="builtins-regex"/>
+</requirement>
+<requirement name="numeric-and-date-builtins" stories="builtins-numeric">
+# Basic numbers tests: integers, powers of two
+</requirement>
+<requirement name="streaming-and-sql-builtins" stories="builtins-streaming">
+INDEX(range(5)|[., "foo\(.)"]; .[0])
+</requirement>
+<requirement name="io-builtins" stories="builtins-io">
+# calling input/0, or debug/0 in a test doesn't crash jq
+</requirement>
+<unattached story="project-identity"/>
+<unattached story="architecture"/>
+<unattached story="executable"/>
+<unattached story="documentation"/>

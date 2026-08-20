@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.224321.340Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.224321.340Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.224321.340Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Frontend-Diagnostics.md ===
+# FEATURE: Front End Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Reject invalid jq programs at compile time with the required exit status. |
+| Depends On  | FEATURE-Frontend-Parser.md |
+| Provides    | compile exit status 3 |
+| Consumes    | jq AST and filter grammar |
+
+## Questions
+
+- None.
+
+## Scope
+
+Compilation failures are distinct from runtime failures. Invalid syntax, literals, unresolved labels, invalid object keys, and invalid module grammar must be rejected without filesystem access. Diagnostics are written to standard error and are not part of the compatibility contract.
+
+## Programmatic Acceptance
+
+=== AC diagnostics-conformance ===
+Intent: The selected compile-diagnostic corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;(module|include|%::|break|Invalid escape)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC diagnostics-conformance ===
+
+=== AC diagnostics-exit-code ===
+Intent: A syntactically invalid program returns the compile-error exit status.
+
+import subprocess
+
+program = &quot;{&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC diagnostics-exit-code ===
+
+=== AC diagnostics-runtime-distinction ===
+Intent: A syntactically valid program is not classified as a compile failure.
+
+import subprocess
+
+program = &quot;error&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode != 3
+=== END AC diagnostics-runtime-distinction ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not read module files while rejecting invalid module grammar.
+- Do not shell out to a system jq executable.
+- Do not reproduce or compare diagnostic wording.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Core-Generators.md ===
+# FEATURE: Core Generators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Evaluate jq filters as ordered zero-, one-, or many-value streams. |
+| Depends On  | FEATURE-Frontend-Diagnostics.md |
+| Provides    | ordered generator evaluation, pipeline composition, backtracking |
+| Consumes    | jq AST and filter grammar |
+
+## Questions
+
+- None.
+
+## Scope
+
+The evaluator treats every filter as a generator over an input value. Identity, literals, comma, pipe, empty, iteration, collection, and downstream composition preserve ordering, multiplicity, cartesian behavior, and backtracking.
+
+## Programmatic Acceptance
+
+=== AC generators-conformance ===
+Intent: The selected generator corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;(\.|\.\[\]|,|\||empty)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC generators-conformance ===
+
+=== AC generators-order ===
+Intent: A generator preserves the supplied input ordering and multiplicity.
+
+import json
+import subprocess
+
+program = &quot;[.[]]&quot;
+payload = &quot;[3,1,3]\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = json.loads(payload)
+assert actual == expected
+=== END AC generators-order ===
+
+=== AC generators-pipeline ===
+Intent: A downstream filter runs once for each upstream generator output.
+
+import json
+import subprocess
+
+program = &quot;[.[] | . * 2]&quot;
+payload = &quot;[1,2,3]\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = [value * 2 for value in json.loads(payload)]
+assert actual == expected
+=== END AC generators-pipeline ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, and partial backtracking.
+- Do not collapse streams into single values during evaluation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Core-Expressions.md ===
+# FEATURE: Core Expressions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Implement jq values, indexing, construction, and core operators. |
+| Depends On  | FEATURE-Core-Generators.md |
+| Provides    | literals, field and index access, slices, arrays, objects, arithmetic, comparison, boolean operators |
+| Consumes    | ordered generator evaluation, pipeline composition, backtracking |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement JSON literals, field and index access, optional indexing, iteration, slices, array and object construction, recursive descent, arithmetic, comparisons, boolean operators, and native floating-point numeric behavior while preserving unmodified literal text where required.
+
+## Programmatic Acceptance
+
+=== AC expressions-conformance ===
+Intent: The selected core-expression corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;(\+|-|\*|/|%|==|!=|&lt;|&gt;|\[|\{|\.\[)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC expressions-conformance ===
+
+=== AC expressions-indexing ===
+Intent: Field and array indexing return values derived from the supplied JSON input.
+
+import json
+import subprocess
+
+payload = &#x27;{&quot;a&quot;:[10,20,30]}\n&#x27;
+program = &quot;[.a[1], .a[-1]]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+source = json.loads(payload)
+expected = [source[&quot;a&quot;][1], source[&quot;a&quot;][-1]]
+assert actual == expected
+=== END AC expressions-indexing ===
+
+=== AC expressions-arithmetic ===
+Intent: Numeric arithmetic evaluates using the supplied operands.
+
+operands = [2, 3]
+program = f&quot;{operands[0]} + {operands[1]}&quot;
+import json
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == sum(operands)
+=== END AC expressions-arithmetic ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not implicitly convert strings, booleans, arrays, or objects during arithmetic.
+- Preserve jq comparison ordering and boolean truthiness.
+- Use only Python standard-library facilities.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Core-Errors.md ===
+# FEATURE: Core Errors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Implement jq runtime errors, suppression, alternatives, and partial output. |
+| Depends On  | FEATURE-Core-Expressions.md |
+| Provides    | runtime exit status 5, try/catch, optional filters, empty, defined-or |
+| Consumes    | literals, indexing, construction, and core operators |
+
+## Questions
+
+- None.
+
+## Scope
+
+Runtime failures are distinct from compilation failures and return exit status 5. `try`, `catch`, `?`, `empty`, and `//` preserve jq stream semantics. Values emitted before an uncaught runtime error remain on standard output.
+
+## Programmatic Acceptance
+
+=== AC errors-conformance ===
+Intent: The selected error-handling corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;(try|catch|\?|//|error|empty)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC errors-conformance ===
+
+=== AC errors-runtime-status ===
+Intent: An uncaught runtime error returns the runtime-error status.
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+=== END AC errors-runtime-status ===
+
+=== AC errors-partial-output ===
+Intent: Values emitted before a runtime error remain available.
+
+import json
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1]
+assert actual == expected
+=== END AC errors-partial-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve output produced before runtime failure.
+- `try` and optional evaluation must suppress only the relevant failure.
+- Never convert runtime failures into compile exit status 3.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Core-Utilities.md ===
+# FEATURE: Core Utilities
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Implement jq generator utilities with correct short-circuiting and backtracking. |
+| Depends On  | FEATURE-Core-Errors.md |
+| Provides    | range, while, until, repeat, first, last, nth, limit, skip, any, all, combinations, transpose |
+| Consumes    | runtime exit status 5, try/catch, optional filters, empty, defined-or |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement generator utilities from the jq standard library, including numeric ranges, recursive update helpers, stream extraction, limits, skipping, quantifiers, combinations, transpose, and their specified error behavior. Utilities must preserve generator multiplicity and short-circuit where jq requires it.
+
+## Programmatic Acceptance
+
+=== AC utilities-conformance ===
+Intent: The selected generator-utility corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;(range|while|until|repeat|first|last|nth|limit|skip|any|all|combinations|transpose)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC utilities-conformance ===
+
+=== AC utilities-range ===
+Intent: Range generation produces the values derived from the supplied bounds.
+
+bounds = (2, 5)
+program = f&quot;[range({bounds[0]};{bounds[1]})]&quot;
+import json
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+expected = list(range(*bounds))
+assert actual == expected
+=== END AC utilities-range ===
+
+=== AC utilities-limit-skip ===
+Intent: Limit and skip select the corresponding positions from supplied generated values.
+
+import json
+import subprocess
+
+program = &quot;[limit(2; .[])]&quot;
+payload = &quot;[4,5,6,7]\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+source = json.loads(payload)
+assert json.loads(result.stdout) == source[:2]
+
+program = &quot;[skip(2; .[])]&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == source[2:]
+=== END AC utilities-limit-skip ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve utility generator ordering and multiplicity.
+- Implement short-circuiting without evaluating discarded branches.
+- Reject unsupported negative limits and skips with runtime errors.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

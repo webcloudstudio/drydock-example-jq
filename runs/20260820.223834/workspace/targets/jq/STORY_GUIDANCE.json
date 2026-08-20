@@ -1,0 +1,269 @@
+{
+  "stories": [
+    {
+      "id": "FRONTEND-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "^(true|false|null|[-0-9]|\\.|@|def|module|include|%::)"
+      ],
+      "note": "Lexer specification in sources/lexer.l and parser corpus cases in sources/jq.test."
+    },
+    {
+      "id": "FRONTEND-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(\\.|\\[|\\{|\\(|if|try|reduce|foreach|def| as |module|include)"
+      ],
+      "note": "Grammar and precedence in sources/parser.y."
+    },
+    {
+      "id": "CORE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(\\.|\\.\\[\\]|,|\\||empty)"
+      ],
+      "note": "Generator model required by sources/INSTRUCTIONS.md and sources/jq-manual.txt."
+    },
+    {
+      "id": "CORE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(\\+|-|\\*|/|%|==|!=|<|>|\\[|\\{|\\.[])"
+      ],
+      "note": "Basic filters, values, construction, indexing, and operators."
+    },
+    {
+      "id": "CORE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(try|catch|\\?|//|error|empty)"
+      ],
+      "note": "Error suppression and alternative semantics."
+    },
+    {
+      "id": "CORE-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(range|while|until|repeat|first|last|nth|limit|skip|any|all|combinations|transpose)"
+      ],
+      "note": "Generator utilities defined in sources/builtin.jq and the manual."
+    },
+    {
+      "id": "PATHS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(path|paths|getpath)"
+      ],
+      "note": "Path evaluation sections in sources/jq-manual.txt and path corpus cases."
+    },
+    {
+      "id": "PATHS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(setpath|delpaths|del\\()"
+      ],
+      "note": "Path mutation definitions and regression cases."
+    },
+    {
+      "id": "PATHS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(=|\\|=|\\+=|-=|\\*=|/=|%=|//=)"
+      ],
+      "note": "Assignment sections in sources/parser.y and sources/jq-manual.txt."
+    },
+    {
+      "id": "CONTROL-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(if|label|break|and|or|not)"
+      ],
+      "note": "Conditionals and lexical labels."
+    },
+    {
+      "id": "CONTROL-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(reduce|foreach)"
+      ],
+      "note": "Reduction and foreach grammar and examples."
+    },
+    {
+      "id": "CONTROL-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "( as \\$|\\?//|\\[\\$|\\{\\$)"
+      ],
+      "note": "Variables, patterns, and destructuring alternatives."
+    },
+    {
+      "id": "CONTROL-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "^def "
+      ],
+      "note": "Function definitions, arities, closures, and recursion."
+    },
+    {
+      "id": "BUILTINS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(map|sort|group_by|unique|entries|flatten|contains|inside|walk|keys|length)"
+      ],
+      "note": "Collection and structural builtins from sources/builtin.jq and the manual."
+    },
+    {
+      "id": "BUILTINS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(@|split|join|trim|explode|implode|tostring|tojson|fromjson|ascii_)"
+      ],
+      "note": "String and format builtin sections."
+    },
+    {
+      "id": "BUILTINS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(test|match|capture|scan|sub|gsub|splits)"
+      ],
+      "note": "Regular-expression builtin sections."
+    },
+    {
+      "id": "BUILTINS-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(date|time|strftime|strptime|mktime|sin|cos|sqrt|pow|nan|infinite|decnum|tonumber)"
+      ],
+      "note": "Dates, math, numeric edge cases, and special values."
+    },
+    {
+      "id": "BUILTINS-005",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(stream|tostream|fromstream|truncate_stream|INDEX|JOIN|IN\\()"
+      ],
+      "note": "Streaming and SQL-style builtin sections."
+    },
+    {
+      "id": "BUILTINS-006",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "(input|inputs|debug|stderr|env|ENV|__loc__)"
+      ],
+      "note": "I/O and environment builtin sections."
+    },
+    {
+      "id": "DELIVERY-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--jq",
+        "./jq",
+        "--select",
+        "^\\.$"
+      ],
+      "note": "Executable protocol defined by sources/INSTRUCTIONS.md and sources/full_test.sh."
+    },
+    {
+      "id": "DELIVERY-004",
+      "provenance": "plan",
+      "note": "Terminal acceptance uses the complete supplied suite through sources/full_test.sh."
+    }
+  ]
+}

@@ -1,0 +1,350 @@
+=== BEGIN ARTIFACT FEATURE-Control-Bindings.md ===
+# FEATURE: Control Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Defines lexical variable bindings, destructuring patterns, and binding alternatives. |
+| Depends On  | FEATURE-Control-Reductions.md |
+| Provides    | `as` bindings, lexical variables, array and object patterns, `?//` alternatives |
+| Consumes    | generator evaluation, filter scope, pattern matching |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq's lexical binding model. Bindings capture values produced by filters while the continuation receives the original input. Scope is lexical and immutable; nested bindings may shadow outer names.
+
+Support:
+
+- Scalar bindings with `as $name`.
+- Array and object destructuring patterns.
+- Missing array members and object keys binding to `null`.
+- Lexical scope and shadowing.
+- Destructuring alternatives using `?//`.
+- Generator-valued binding expressions and fallback behavior.
+- Error propagation from the final alternative.
+
+## Programmatic Acceptance
+
+=== AC control-bindings-conformance ===
+Intent: The scoped authoritative corpus cases covering bindings, patterns, lexical scope, and destructuring alternatives execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"( as \$|\?//|\[\$|\{\$)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC control-bindings-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Variable bindings must not leak outside their lexical scope.
+- Destructuring alternatives must preserve generator ordering and final-error behavior.
+- No third-party runtime dependency may be introduced.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Functions.md ===
+# FEATURE: Control Functions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Defines user-defined jq functions, parameters, lexical definitions, and recursion. |
+| Depends On  | FEATURE-Control-Bindings.md |
+| Provides    | `def` functions, filter parameters, value parameters, recursion |
+| Consumes    | lexical bindings, generator evaluation, parser function definitions |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq function definitions and invocation. Function parameters must preserve jq's distinction between filter parameters and value parameters.
+
+Support:
+
+- Zero-argument and multi-argument functions.
+- Filter parameters evaluated against the current input whenever referenced.
+- Value parameters using `$name` syntax.
+- Function overloading by arity.
+- Lexical definition scope and later redefinition.
+- Closures over lexical bindings.
+- Generator-valued arguments and cartesian output behavior.
+- Recursive and mutually recursive function execution.
+
+## Programmatic Acceptance
+
+=== AC control-functions-conformance ===
+Intent: The scoped authoritative corpus cases covering function definitions, parameters, closures, redefinition, and recursion execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"^def "
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC control-functions-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Filter arguments must not be eagerly evaluated as values.
+- Function scope and redefinition must follow lexical jq semantics.
+- Recursive calls must preserve stream ordering and multiplicity.
+- No third-party jq implementation or binding may be used.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Structural.md ===
+# FEATURE: Builtins Structural
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Defines jq's collection, structural, mapping, ordering, and containment builtins. |
+| Depends On  | FEATURE-Control-Functions.md |
+| Provides    | type predicates, collection builtins, mapping, sorting, grouping, uniqueness, entries, walking |
+| Consumes    | generator evaluation, functions, paths, immutable values |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement structural and collection builtins specified by the jq manual and reference builtin definitions.
+
+Support:
+
+- `type`, type predicates, `length`, and UTF-8 length.
+- `keys`, `keys_unsorted`, `has`, and `in`.
+- `map`, `map_values`, `add`, and flattening.
+- `sort`, `sort_by`, `group_by`, `min`, `max`, and keyed variants.
+- `unique`, `unique_by`, and reverse.
+- `contains` and `inside`.
+- `to_entries`, `from_entries`, and `with_entries`.
+- `walk`, `indices`, `index`, `rindex`, `startswith`, and `endswith`.
+- `combinations`, `transpose`, and related structural helpers.
+- Correct jq ordering across nulls, booleans, numbers, strings, arrays, and objects.
+
+## Programmatic Acceptance
+
+=== AC builtins-structural-conformance ===
+Intent: The scoped authoritative corpus cases covering structural and collection builtins execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"(map|sort|group_by|unique|entries|flatten|contains|inside|walk|keys|length)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-structural-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Builtins must preserve generator multiplicity and ordering.
+- Structural comparisons must distinguish booleans from numbers.
+- Mapping and deletion behavior must preserve jq's immutable-value semantics.
+- No third-party runtime dependency may be introduced.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Strings.md ===
+# FEATURE: Builtins Strings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Defines jq string transformations, encoding conversions, interpolation, and format filters. |
+| Depends On  | FEATURE-Builtins-Structural.md |
+| Provides    | string transforms, JSON conversion, URI, HTML, CSV, TSV, shell, base64 formats |
+| Consumes    | generator evaluation, structural builtins, regular strings |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq string and encoding functionality using Python standard-library facilities.
+
+Support:
+
+- Whitespace trimming and prefix/suffix trimming.
+- String splitting, joining, case conversion, exploding, and imploding.
+- `tostring`, `tonumber`, `tojson`, and `fromjson`.
+- String interpolation and format filters.
+- `@text`, `@json`, `@html`, `@uri`, `@urid`, `@csv`, `@tsv`, `@sh`, `@base64`, and `@base64d`.
+- Unicode codepoint and JSON escape behavior.
+- Generator-valued interpolation and format composition.
+
+## Programmatic Acceptance
+
+=== AC builtins-strings-conformance ===
+Intent: The scoped authoritative corpus cases covering string, encoding, conversion, interpolation, and format builtins execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"(@|split|join|trim|explode|implode|tostring|tojson|fromjson|ascii_)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-strings-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Unicode whitespace and codepoint handling must follow the supplied specification.
+- Format filters must not conflate JSON serialization with plain string conversion.
+- Diagnostics must remain on stderr and never corrupt JSON stdout.
+- No network or third-party package may be used.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Regex.md ===
+# FEATURE: Builtins Regex
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260820 V1 |
+| Description | Defines jq regular-expression matching, captures, scanning, splitting, and substitution. |
+| Depends On  | FEATURE-Builtins-Strings.md |
+| Provides    | `test`, `match`, `capture`, `scan`, `split`, `splits`, `sub`, `gsub` |
+| Consumes    | string transforms, generator evaluation, interpolation |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq regular-expression builtins with Python's standard-library regular-expression support.
+
+Support:
+
+- Boolean testing with `test`.
+- Match objects with offsets, lengths, strings, and captures.
+- Named and unnamed capture groups.
+- Global matching and supported jq flags.
+- `capture`, `scan`, `split`, and `splits`.
+- `sub` and `gsub` replacement expressions.
+- Generator-valued replacement filters.
+- Unicode codepoint offsets and unmatched capture representation.
+
+## Programmatic Acceptance
+
+=== AC builtins-regex-conformance ===
+Intent: The scoped authoritative corpus cases covering regex matching, captures, scanning, splitting, and substitution execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"(test|match|capture|scan|sub|gsub|splits)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-regex-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Regex behavior must remain within Python standard-library capabilities.
+- Match offsets must be measured in Unicode codepoints as required by jq.
+- Global matches must preserve order and non-overlap.
+- Replacement expressions must preserve jq generator semantics.
+- No third-party regex engine or jq binding may be introduced.
+
+=== END ARTIFACT ===

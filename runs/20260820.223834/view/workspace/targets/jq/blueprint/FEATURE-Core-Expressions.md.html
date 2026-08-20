@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Core-Expressions.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Core-Expressions.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Core-Expressions.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Core Expressions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Implement jq values, indexing, construction, and core operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Core-Generators.md</td></tr><tr><td>Provides</td><td>literals, field and index access, slices, arrays, objects, arithmetic, comparison, boolean operators</td></tr><tr><td>Consumes</td><td>ordered generator evaluation, pipeline composition, backtracking</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement JSON literals, field and index access, optional indexing, iteration, slices, construction, recursive descent, arithmetic, comparisons, and boolean operators while preserving jq semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC expressions-conformance ===<br>Intent: The selected core-expression corpus slice executes and passes.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(\+|-|\*|/|%|==|!=|&lt;|&gt;|\[|\{|\.\[)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC expressions-conformance ===</p>
+<p>=== AC expressions-indexing ===<br>Intent: Field and array indexing return values derived from supplied JSON input.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>payload = &#x27;{&quot;a&quot;:[10,20,30]}\n&#x27; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;[.a[1], .a[-1]]&quot;], input=payload, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == [10, 30] === END AC expressions-indexing ===</p>
+<p>=== AC expressions-arithmetic ===<br>Intent: Numeric arithmetic evaluates using supplied operands.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;2 + 3&quot;], input=&quot;null\n&quot;, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == 5 === END AC expressions-arithmetic ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not implicitly convert strings, booleans, arrays, or objects during arithmetic.</li><li>Preserve jq comparison ordering and boolean truthiness.</li><li>Use only Python standard-library facilities.</li></ul></article>
+</main>
+</body>
+</html>

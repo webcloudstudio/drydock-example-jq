@@ -1,0 +1,15 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq
+
+SUMMARY:
+Implemented a standard-library Python jq executable with lexer support for comments, strings, Unicode escapes, literals, operators, formats, and basic generator evaluation. Existing unit tests pass.
+
+Declared acceptance results: lexer-corpus 57 passed, 83 failed; lexer-unicode-comments 3 passed, 9 failed.
+
+BLOCKERS:
+- Parser/evaluator support remains incomplete for bindings, definitions, assignments, object construction, and several interpolation cases.
+
+FAILURE_SUMMARY: Acceptance selectors still fail substantially.
+FAILURE_DETAIL: The executable runs and unit tests pass, but both required conformance slices returned nonzero due to incomplete dependent frontend/evaluator behavior.

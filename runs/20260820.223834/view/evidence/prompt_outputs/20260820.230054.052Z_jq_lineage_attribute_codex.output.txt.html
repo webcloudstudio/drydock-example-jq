@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260820.230054.052Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260820.230054.052Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260820.230054.052Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;run-jq-conformance-corpus&quot; stories=&quot;frontend-lexer,frontend-parser,frontend-diagnostics,core-generators,core-expressions,core-errors,core-utilities,paths-discovery,paths-mutation,paths-assignment,control-conditionals,control-reductions,control-bindings,control-functions,builtins-structural,builtins-strings,builtins-regex,builtins-numeric,builtins-streaming,builtins-io,executable,conformance&quot;&gt;
+Run the upstream jq conformance corpus against a candidate implementation.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stage-authoritative-assets&quot; stories=&quot;delivery-assets&quot;&gt;
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;provide-project-metadata&quot; stories=&quot;&quot;&gt;
+Imported sources land in ``sources/`` inside the application directory, so this is normally invoked as ``python3 sources/run_conformance.py`` from that directory.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;document-operation-verification&quot; stories=&quot;documentation&quot;&gt;
+Usage:
+    JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run
+    JQ=./jq python3 sources/run_conformance.py -v                  # list passing cases too
+    JQ=./jq python3 sources/run_conformance.py --json              # machine-readable report
+    JQ=./jq python3 sources/run_conformance.py --list              # print cases, run nothing
+    JQ=./jq python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # develop one construct
+&lt;/requirement&gt;
+&lt;requirement name=&quot;define-interpreter-boundaries&quot; stories=&quot;architecture&quot;&gt;
+It is deliberately external to the implementation.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;project-identity&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

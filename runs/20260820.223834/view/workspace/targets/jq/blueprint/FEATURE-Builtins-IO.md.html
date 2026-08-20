@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtins-IO.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtins-IO.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtins-IO.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Builtins IO</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Provide jq input, diagnostic, environment, and source-location builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Builtins-Streaming.md</td></tr><tr><td>Provides</td><td>input, inputs, debug, stderr, env, ENV, $<strong>loc</strong></td></tr><tr><td>Consumes</td><td>stdin JSON stream, process environment, jq output streams</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>This feature implements <code>input</code> and <code>inputs</code> over the shared JSON input stream, <code>debug</code> and <code>stderr</code> side effects, environment snapshots through <code>env</code> and <code>$ENV</code>, and source-location values through <code>$__loc__</code>.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-io-conformance ===<br>Intent: The environment and I/O builtin corpus slice executes and passes with at least one selected case.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(input|inputs|debug|stderr|env|ENV|<strong>loc</strong>)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-io-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>I/O and diagnostic behavior is distinguishable between JSON output and stderr effects.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve input ordering and generator semantics for <code>input</code> and <code>inputs</code>.</li><li>Diagnostics must not be compared or emitted as ordinary JSON results.</li><li>Do not modify staged scoring assets.</li></ul></article>
+</main>
+</body>
+</html>

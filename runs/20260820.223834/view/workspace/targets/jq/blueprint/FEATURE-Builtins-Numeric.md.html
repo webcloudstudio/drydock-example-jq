@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Builtins-Numeric.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Builtins-Numeric.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Builtins-Numeric.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Builtins Numeric</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260820 V1</td></tr><tr><td>Description</td><td>Provide date, mathematics, numeric conversion, and special-value jq builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Builtins-Regex.md</td></tr><tr><td>Provides</td><td>date, time, math, numeric, infinity, NaN, decnum builtins</td></tr><tr><td>Consumes</td><td>jq generator evaluator, jq value and comparison semantics</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>This feature implements date and time conversion, <code>strptime</code>, <code>strftime</code>, <code>mktime</code>, standard mathematical functions, numeric conversion, infinities, NaN, numeric comparison, literal preservation, and <code>have_decnum</code> behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-numeric-conformance ===<br>Intent: The numeric and date builtin corpus slice executes and passes with at least one selected case.<br>Suite: behavioral<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;(date|time|strftime|strptime|mktime|sin|cos|sqrt|pow|nan|infinite|decnum|tonumber)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-numeric-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Numeric behavior follows the supplied jq specification and corpus.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library functionality; do not add numeric or date dependencies.</li><li>Do not modify staged scoring assets.</li></ul></article>
+</main>
+</body>
+</html>

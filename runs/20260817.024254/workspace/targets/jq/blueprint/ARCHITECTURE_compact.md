@@ -1,3 +1,0 @@
-<!-- Compacted from ARCHITECTURE.md sha256=f901d4810a6ccb373c41e83a62b08ef85c48d5832f5f377190a3d8261140199c on 2026-08-16 by drydock build agent -->
-
-Standalone Python jq interpreter contract: executable `./jq -c '<program>'`; JSON stdin to compact JSON lines on stdout. Exit `0` success, `3` compile/static failure, `5` runtime failure. Boundaries: CLI, lexer, parser/compiler, lazy evaluator, data model, paths/mutation, builtins, diagnostics, verification. Standard library only; no persistence, network, system jq, or third-party jq implementation. Evaluator preserves ordered generator multiplicity and partial output before runtime errors.

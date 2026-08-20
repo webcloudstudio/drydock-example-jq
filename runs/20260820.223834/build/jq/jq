@@ -1,0 +1,740 @@
+#!/usr/bin/env python3
+import sys,json,re,math,base64,urllib.parse,html
+
+class CompileError(Exception): pass
+class RuntimeErrorJQ(Exception):
+ def __init__(self,value='runtime error'):
+  self.value=value
+  super().__init__(str(value))
+class Tok:
+ def __init__(self,k,v,pos=0): self.k,self.v,self.pos=k,v,pos
+ def __repr__(self): return f'{self.k}:{self.v!r}'
+
+KEYS={'as','def','module','include','if','then','else','elif','end','and','or','reduce','foreach','try','catch','label','break'}
+OPS=['//=','?//','!=','==','|=','+=','-=','*=','/=','%=','<=','>=','//','..']
+def lex(s):
+ out=[]; i=0; n=len(s)
+ while i<n:
+  c=s[i]
+  if c.isspace(): i+=1; continue
+  if c=='#':
+   i+=1
+   while i<n and s[i]!='\n': i+=1
+   # A comment continues over the following newline only when the
+   # final run of backslashes has odd length.
+   while i<n and s[i]=='\n':
+    j=i-1; count=0
+    while j>=0 and s[j]=='\\': count+=1; j-=1
+    if count%2==0: break
+    i+=1
+    while i<n and s[i]!='\n': i+=1
+   continue
+  if s.startswith('\\(',i): out.append(Tok('INTERP','\\(',i)); i+=2; continue
+  if c=='"':
+   st=i; i+=1; esc=False; interp=0
+   while i<n:
+    if s.startswith('\\(',i) and not esc: interp+=1; i+=2; continue
+    if s[i]==')' and interp and not esc: interp-=1; i+=1; continue
+    if s[i]=='"' and not esc and interp==0: i+=1; break
+    if s[i]=='\n' and not esc: raise CompileError('unterminated string')
+    if s[i]=='\\' and not esc: esc=True
+    else: esc=False
+    i+=1
+   else: raise CompileError('unterminated string')
+   raw=s[st:i]
+   if '\\(' in raw:
+    body=raw[1:-1]; pieces=[]; cur=''; j=0
+    while j<len(body):
+     if body.startswith('\\(',j):
+      if cur:
+       try: pieces.append(json.loads('"'+cur+'"'))
+       except Exception: raise CompileError('invalid string escape')
+       cur=''
+      depth=1; q=j+2
+      while q<len(body) and depth:
+       depth += (body[q]=='(')-(body[q]==')'); q+=1
+      pieces.append('\\I'+body[j+2:q-1]+'\\E'); j=q
+     else: cur+=body[j]; j+=1
+    if cur:
+     try: pieces.append(json.loads('"'+cur+'"'))
+     except Exception: raise CompileError('invalid string escape')
+    val=''.join(pieces)
+   else:
+    try: val=json.loads(raw)
+    except Exception: raise CompileError('invalid string escape')
+   out.append(Tok('STR',val,st)); continue
+  if c=='$':
+   m=re.match(r'\$([A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*)',s[i:])
+   if not m: raise CompileError('invalid binding')
+   out.append(Tok('VAR',m.group(1),i)); i+=len(m.group(0)); continue
+  if c=='@':
+   m=re.match(r'@[A-Za-z0-9_]+',s[i:]);
+   if not m: raise CompileError('invalid format')
+   out.append(Tok('FORMAT',m.group(0)[1:],i)); i+=len(m.group(0)); continue
+  if c=='.' and i+1<n and s[i+1].isdigit():
+   m=re.match(r'\.[0-9]+(?:[eE][+-]?[0-9]+)?',s[i:]); out.append(Tok('NUM',m.group(0),i)); i+=len(m.group(0)); continue
+  if c.isdigit():
+   m=re.match(r'(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?',s[i:]); out.append(Tok('NUM',m.group(0),i)); i+=len(m.group(0)); continue
+  if c=='.' and i+1<n and re.match(r'[A-Za-z_]',s[i+1]):
+   m=re.match(r'\.([A-Za-z_][A-Za-z0-9_]*)',s[i:]); out.append(Tok('FIELD',m.group(1),i)); i+=len(m.group(0)); continue
+  if c.isalpha() or c=='_':
+   m=re.match(r'[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*',s[i:]); v=m.group(0); out.append(Tok(v if v in KEYS else 'ID',v,i)); i+=len(v); continue
+  found=next((op for op in OPS if s.startswith(op,i)),None)
+  if found: out.append(Tok(found,found,i)); i+=len(found); continue
+  if c in '.[]{}(),:;|+-*/%=?<>': out.append(Tok(c,c,i)); i+=1; continue
+  raise CompileError('invalid character')
+ out.append(Tok('EOF','',n)); return out
+
+class Parser:
+ def __init__(self,s): self.t=lex(s); self.i=0
+ def peek(self,*ks): return self.t[self.i].k in ks
+ def pop(self,k=None):
+  x=self.t[self.i]
+  if k and x.k!=k: raise CompileError('syntax error')
+  self.i+=1; return x
+ def program(self):
+  if self.peek('module','include'): raise CompileError('module unavailable')
+  # declarations are accepted and skipped into a local function table
+  defs={}
+  while self.peek('def'):
+   self.pop(); name=self.pop('ID').v
+   params=[]
+   if self.peek('('):
+    self.pop()
+    if not self.peek(')'):
+     while True:
+      p=self.pop()
+      if p.k not in ('ID','VAR'): raise CompileError('invalid function parameter')
+      params.append((p.v, p.k=='VAR'))
+      if self.peek(';'): self.pop(); continue
+      break
+    self.pop(')')
+   self.pop(':'); start=self.i; depth=0; nested_defs=0
+   while True:
+    if self.peek(';') and depth==0:
+     if nested_defs: nested_defs-=1; self.pop(); continue
+     break
+    x=self.pop(); depth += (x.k in '([{')-(x.k in ')]}')
+    if x.k=='def': nested_defs+=1
+   body_tokens=self._slice(start,self.i); self.pop(';')
+   body_parser=Parser(''); body_parser.t=body_tokens; body_parser.i=0
+   try: body_node, inner_defs=body_parser.program()
+   except CompileError: body_node=body_parser.expr(0); inner_defs={}
+   defs.update(inner_defs)
+   defs[(name,len(params))]=(params,body_node)
+  node=self.expr(0)
+  if not self.peek('EOF'): raise CompileError('trailing syntax')
+  if any(tok.k== 'VAR' for tok in self.t):
+   bound={'__loc__'}
+   def scan(x):
+    if isinstance(x,list):
+     for y in x: scan(y)
+     return
+    if not isinstance(x,tuple): return
+    if x[0]=='var':
+     if x[1] not in bound: raise CompileError('undefined binding')
+    elif x[0]=='bin' and x[1]=='as':
+     scan(x[2]); collect_pattern(x[3])
+     return
+    elif x[0]=='bin' and x[1]=='?//':
+     collect_pattern(x[2]); collect_pattern(x[3])
+     return
+    for y in x[1:]: scan(y)
+   def collect_pattern(p):
+    if not isinstance(p,tuple): return
+    if p[0]=='bin' and p[1] in ('as','?//'):
+     collect_pattern(p[3]); collect_pattern(p[2]); return
+    if p[0]=='pvar': bound.add(p[1])
+    elif p[0] in ('parray',):
+     for y in p[1]: collect_pattern(y)
+    elif p[0]=='pobj':
+     for _,y in p[1]: collect_pattern(y)
+    elif p[0]=='pseq':
+     for y in p[1]: collect_pattern(y)
+   scan(node)
+  return node,defs
+ def _slice(self,a,b): return self.t[a:b]+[Tok('EOF','')]
+ def expr(self,minp=0):
+  x=self.atom()
+  prec={'|':1,',':2,'as':3,'?//':3,'=':3,'|=':3,'//=':3,'+=':3,'-=':3,'*=':3,'/=':3,'%=':3,'//':4,'or':5,'and':6,'==':7,'!=':7,'<':7,'>':7,'<=':7,'>=':7,'+':8,'-':8,'*':9,'/':9,'%':9}
+  while self.t[self.i].k in prec and prec[self.t[self.i].k]>=minp:
+   op=self.pop().k; p=prec[op]
+   y=self.pattern() if op in ('as','?//') else self.expr(p+(0 if op in ('|','//','=') else 1)); x=('bin',op,x,y)
+  return x
+ def pattern(self):
+  if self.peek('VAR'):
+   return ('pvar',self.pop().v)
+  if self.peek('['):
+   self.pop(); items=[]
+   if self.peek(']'): raise CompileError('empty binding pattern')
+   while not self.peek(']'):
+    items.append(self.pattern())
+    if self.peek(','): self.pop()
+    else: break
+   self.pop(']'); return ('parray',items)
+  if self.peek('{'):
+   self.pop(); items=[]
+   if self.peek('}'): raise CompileError('empty binding pattern')
+   while not self.peek('}'):
+    if self.peek('('):
+     self.pop(); keyexpr=self.expr(0); self.pop(')'); key=('exprkey',keyexpr)
+    else: key=self.pop()
+    if isinstance(key,tuple):
+     if key[0]=='exprkey' and key[1][0] in ('lit','str') and not isinstance(key[1][1],str):
+      raise CompileError('object key must be string')
+     name=key
+    elif key.k in ('ID','STR','VAR','as','def','if','then','else','elif','end','and','or','reduce','foreach','try','catch','label','break','import','include','module'):
+     name=key.v
+     if key.k=='VAR': name=name.split('::')[-1]
+    else: raise CompileError('invalid binding pattern')
+    if self.peek(':'):
+     self.pop(); child=self.pattern()
+     if isinstance(key,Tok) and key.k=='VAR': child=('pseq',[('pvar',name),child])
+    else: child=('pvar',name)
+    items.append((name,child))
+    if self.peek(','): self.pop()
+    else: break
+   self.pop('}'); return ('pobj',items)
+  raise CompileError('invalid binding pattern')
+ def atom(self):
+  t=self.pop()
+  if t.k=='EOF': raise CompileError('unexpected eof')
+  if t.k=='-': return ('neg',self.atom())
+  if t.k=='.': x=('dot',)
+  elif t.k=='NUM': x=('lit',float(t.v) if any(c in t.v for c in '.eE') else int(t.v))
+  elif t.k=='STR': x=('str',t.v)
+  elif t.k=='ID':
+   if t.v in ('true','false','null'): x=('lit',{'true':True,'false':False,'null':None}[t.v])
+   elif self.peek('('):
+    self.pop(); args=[]
+    if not self.peek(')'):
+     while True:
+      args.append(self.expr(0))
+      if self.peek(';',','): self.pop(); continue
+      break
+    self.pop(')'); x=('call',t.v,args)
+   else: x=('call',t.v,[])
+  elif t.k=='VAR': x=('var',t.v)
+  elif t.k=='FIELD': x=('field',t.v)
+  elif t.k=='FORMAT':
+   x=('format',t.v)
+   if self.peek('STR'):
+    x=('formatstr',t.v,self.pop().v)
+  elif t.k=='try':
+   body=self.expr(3)
+   if self.peek('catch'):
+    self.pop(); x=('catch',body,self.expr(0))
+   else: x=('try',body)
+  elif t.k=='if':
+   cond=self.expr(0); self.pop('then'); yes=self.expr(0)
+   if self.peek('else'):
+    self.pop(); no=self.expr(0)
+   else: no=('dot',)
+   if self.peek('end'): self.pop()
+   x=('if',cond,yes,no)
+  elif t.k=='[':
+   vals=[]
+   if not self.peek(']'):
+    while True:
+     vals.append(self.expr(0))
+     if self.peek(','): self.pop(); continue
+     break
+   self.pop(']'); x=('array',vals)
+  elif t.k=='{':
+   fields=[]
+   if not self.peek('}'):
+    while True:
+     key=self.pop()
+     if key.k in ('ID','as','def','if','then','else','elif','end','and','or','reduce','foreach','try','catch','label','break','import','include','module'):
+      kn=('str',key.v)
+     elif key.k=='STR': kn=('str',key.v)
+     elif key.k=='VAR': kn=('var',key.v) if self.peek(':') else ('str',key.v.split('::')[-1])
+     elif key.k=='(':
+      kn=self.expr(0); self.pop(')')
+     else: raise CompileError('invalid object key')
+     if self.peek(':'):
+      self.pop(); val=self.expr(3)
+     else:
+      if key.k=='ID': val=('field',key.v)
+      elif key.k=='VAR': val=('var',key.v)
+      else: val=('dynamic_field',kn)
+     fields.append((kn,val))
+     if self.peek(','): self.pop(); continue
+     break
+   self.pop('}'); x=('object',fields)
+  elif t.k=='(':
+   x=self.expr(0); self.pop(')')
+  else: raise CompileError('unexpected token')
+  while True:
+   if self.peek('FIELD'): x=('pipe',x,('field',self.pop().v)); continue
+   if self.peek('STR'): x=('pipe',x,('field',self.pop().v)); continue
+   if self.peek('.') and self.i+1 < len(self.t) and self.t[self.i+1].k=='STR':
+    self.pop(); x=('pipe',x,('field',self.pop().v)); continue
+   if self.peek('['):
+    self.pop();
+    if self.peek(']'): self.pop(); x=('iter',x); continue
+    if self.peek(':'):
+     self.pop(); hi=None if self.peek(']') else self.expr(0); self.pop(']'); x=('slice',x,None,hi); continue
+    key=self.expr(0)
+    if self.peek(':'):
+     self.pop(); hi=None if self.peek(']') else self.expr(0); self.pop(']'); x=('slice',x,key,hi); continue
+    self.pop(']'); x=('index',x,key); continue
+   if self.peek('?'): self.pop(); x=('try',x); continue
+   break
+  return x
+
+def truth(v): return v is not None and v is not False
+def compact(v): return json.dumps(v,ensure_ascii=False,separators=(',',':'),allow_nan=True)
+def ev(n,v,env,defs):
+ k=n[0]
+ if k=='dot': return [v]
+ if k=='lit': return [n[1]]
+ if k=='str':
+  return [interpolate(n[1],v,env,defs)]
+ if k=='formatstr':
+  kind, template=n[1],n[2]
+  return [format_interpolated(kind,template,v,env,defs)]
+ if k=='var': return [env.get(n[1],{'file':'<top-level>','line':1} if n[1]=='__loc__' else None)]
+ if k=='object':
+  out=[{}]
+  for kn,vn in n[1]:
+   nxt=[]
+   for base in out:
+    for key in ev(kn,v,env,defs):
+     if not isinstance(key,str): raise RuntimeErrorJQ('object key must be string')
+     for val in ev(vn,v,env,defs):
+      z=dict(base); z[key]=val; nxt.append(z)
+   out=nxt
+  return out
+ if k=='field': return [v.get(n[1]) if isinstance(v,dict) else None]
+ if k=='dynamic_field':
+  return [v.get(str(key)) if isinstance(v,dict) else None for key in ev(n[1],v,env,defs)]
+ if k=='pipe':
+  out=[]
+  for a in ev(n[1],v,env,defs):
+   try: out.extend(ev(n[2],a,env,defs))
+   except RuntimeErrorJQ as ex:
+    ex.partial=out + getattr(ex,'partial',[]); raise
+  return out
+ if k=='array': return [[z for a in [v] for q in n[1] for z in ev(q,a,env,defs)]]
+ if k=='neg': return [-x for x in ev(n[1],v,env,defs)]
+ if k=='iter':
+  out=[]
+  for base in ev(n[1],v,env,defs):
+   if isinstance(base,dict): out.extend(base.values())
+   elif isinstance(base,list): out.extend(base)
+   else: raise RuntimeErrorJQ('cannot iterate')
+  return out
+ if k=='index':
+  out=[]
+  bases=ev(n[1],v,env,defs)
+  if not bases: return []
+  base=bases[0]
+  for key in ev(n[2],v,env,defs):
+   if isinstance(base,dict): out.append(base.get(str(key)))
+   elif isinstance(base,list) and isinstance(key,(int,float)) and int(key)==key:
+    ix=int(key); ix=ix if ix>=0 else len(base)+ix
+    out.append(base[ix] if 0<=ix<len(base) else None)
+   else: raise RuntimeErrorJQ('cannot index')
+  return out
+ if k=='slice':
+  base=ev(n[1],v,env,defs); out=[]
+  for item in base:
+   lo=0 if n[2] is None else int(ev(n[2],item,env,defs)[0])
+   hi=None if n[3] is None else int(ev(n[3],item,env,defs)[0])
+   if isinstance(item,(list,str)): out.append(item[lo:hi])
+   else: raise RuntimeErrorJQ('cannot slice')
+  return out
+ if k=='try':
+  try:return ev(n[1],v,env,defs)
+  except RuntimeErrorJQ as ex:return getattr(ex,'partial',[])
+ if k=='catch':
+  try:return ev(n[1],v,env,defs)
+  except RuntimeErrorJQ as ex:return getattr(ex,'partial',[]) + ev(n[2],getattr(ex,'value',str(ex)),env,defs)
+ if k=='if':
+  out=[]
+  for c in ev(n[1],v,env,defs):
+   try: out.extend(ev(n[2] if truth(c) else n[3],v,env,defs))
+   except RuntimeErrorJQ as ex:
+    ex.partial=out; raise
+  return out
+ if k=='format': return [fmt(n[1],v)]
+ if k=='call': return call(n[1],n[2],v,env,defs)
+ if k=='bin': return binary(n[1],n[2],n[3],v,env,defs)
+ raise RuntimeErrorJQ('unknown expression')
+
+def interpolate(template,v,env,defs,transform=None):
+ def sub(m):
+  try:
+   a=Parser(m.group(1)).expr(); vals=ev(a,v,env,defs)
+   text=''.join(x if isinstance(x,str) else compact(x) for x in vals) if vals else ''
+   return transform(text) if transform else text
+  except Exception:
+   return ''
+ return re.sub(r'\\I(.*?)\\E',sub,template)
+
+def bind(pattern,value,env):
+ if pattern[0]=='pvar': env[pattern[1]]=value; return
+ if pattern[0]=='pseq':
+  for item in pattern[1]: bind(item,value,env)
+  return
+ if pattern[0]=='parray':
+  if not isinstance(value,list): raise RuntimeErrorJQ('array pattern mismatch')
+  for i,p in enumerate(pattern[1]): bind(p,value[i] if isinstance(value,list) and i<len(value) else None,env)
+  return
+ if pattern[0]=='pobj':
+  if not isinstance(value,dict): raise RuntimeErrorJQ('object pattern mismatch')
+  for key,p in pattern[1]:
+   if isinstance(key,tuple):
+    vals=ev(key[1],value,env,{})
+    key=vals[0] if vals else None
+   bind(p,value.get(key) if isinstance(value,dict) else None,env)
+  return
+ raise RuntimeErrorJQ('invalid binding')
+
+def path_get(node, value, env, defs):
+ if node[0]=='field': return [(node[1],)]
+ if node[0]=='index':
+  keys=ev(node[2],value,env,defs)
+  return [('index',x) for x in keys]
+ if node[0]=='slice': return [('slice',node[2],node[3])]
+ if node[0]=='iter':
+  if isinstance(value,list): return [('index',i) for i in range(len(value))]
+  if isinstance(value,dict): return [('index',k) for k in value]
+ return []
+
+def selected_paths(node, value, env, defs, prefix=()):
+ if node[0]=='dot': return [prefix]
+ if node[0]=='field': return [prefix+(node[1],)]
+ if node[0]=='pipe':
+  # Path selectors are evaluated against the original value while retaining
+  # the concrete paths selected by each component.
+  if node[1][0]=='dot': return selected_paths(node[2],value,env,defs,prefix)
+  bases=selected_paths(node[1],value,env,defs,prefix); out=[]
+  for p in bases:
+   cur=value
+   for key in p:
+    cur=cur.get(key) if isinstance(cur,dict) else cur[int(key)] if isinstance(cur,list) and -len(cur)<=int(key)<len(cur) else None
+   out.extend(selected_paths(node[2],cur,env,defs,p))
+  return out
+ if node[0]=='index':
+  bases=selected_paths(node[1],value,env,defs,prefix); out=[]
+  for p in bases:
+   cur=value
+   for key in p: cur=cur.get(key) if isinstance(cur,dict) else cur[int(key)] if isinstance(cur,list) and -len(cur)<=int(key)<len(cur) else None
+   for key in ev(node[2],cur,env,defs): out.append(p+(key,))
+  return out
+ if node[0]=='slice':
+  bases=selected_paths(node[1],value,env,defs,prefix); out=[]
+  for p in bases:
+   cur=value
+   for key in p: cur=cur.get(key) if isinstance(cur,dict) else cur[int(key)] if isinstance(cur,list) and -len(cur)<=int(key)<len(cur) else None
+   lo=0 if node[2] is None else int(ev(node[2],cur,env,defs)[0]); hi=None if node[3] is None else int(ev(node[3],cur,env,defs)[0])
+   out.append(('__slice__',p,lo,hi))
+  return out
+ if node[0]=='iter':
+  bases=selected_paths(node[1],value,env,defs,prefix); out=[]
+  for p in bases:
+   cur=value
+   for key in p: cur=cur.get(key) if isinstance(cur,dict) else cur[int(key)]
+   if isinstance(cur,list): out.extend(p+(i,) for i in range(len(cur)))
+   elif isinstance(cur,dict): out.extend(p+(key,) for key in cur)
+  return out
+ if node[0]=='call' and node[1]=='getpath' and node[2]:
+  return [prefix+tuple(p) for p in ev(node[2][0],value,env,defs) if isinstance(p,list)]
+ if node[0]=='call' and (node[1],len(node[2])) in defs:
+  return selected_paths(defs[(node[1],len(node[2]))][1],value,env,defs,prefix)
+ return []
+
+def replace_path(value, path, new, delete=False):
+ if not path:
+  return None if delete else new
+ out=json.loads(json.dumps(value, allow_nan=True))
+ cur=out
+ for idx,(kind,*rest) in enumerate(path[:-1]):
+  key=rest[0]
+  next_key=path[idx+1][1] if len(path[idx+1])>1 else None
+  if kind=='index':
+   if isinstance(cur,list):
+    key=int(key)
+    if key<0: key+=len(cur)
+    while key>=len(cur): cur.append(None)
+    if cur[key] is None: cur[key]=[] if isinstance(next_key,(int,float)) else {}
+    cur=cur[key]
+   else:
+    if not isinstance(cur,dict): raise RuntimeErrorJQ('cannot index')
+    cur=cur.setdefault(str(key), [] if isinstance(next_key,(int,float)) else {})
+ last=path[-1]; kind=last[0]; key=last[1] if len(last)>1 else None
+ if kind=='slice':
+  lo=0 if key is None else int(ev(key,value,{},{} )[0]); hi=None if len(last)<3 or last[2] is None else int(ev(last[2],value,{},{} )[0])
+  if delete: del cur[lo:hi]
+  else: cur[lo:hi]=new
+ elif isinstance(cur,list):
+  key=int(key); key=key if key>=0 else len(cur)+key
+  if delete: del cur[key]
+  else:
+   while key>=len(cur): cur.append(None)
+   cur[key]=new
+ elif isinstance(cur,dict):
+  if delete: cur.pop(str(key),None)
+  else: cur[str(key)]=new
+ return out
+
+def format_interpolated(kind,template,v,env,defs):
+ # jq leaves literal text in a format-string untouched and formats only
+ # interpolated values.
+ return interpolate(template,v,env,defs,lambda x: fmt(kind,x))
+
+def binary(op,a,b,v,e,d):
+ if op==',': return ev(a,v,e,d)+ev(b,v,e,d)
+ if op=='|':
+  # Destructuring alternatives carry bindings into the following filter.
+  # Evaluate each pattern against the same input and select the first one
+  # whose shape matches.
+  def alternatives(node):
+   if node[0]=='bin' and node[1]=='?//':
+    left=alternatives(node[2])
+    return left+[(left[0][0],node[3])] if left else []
+   if node[0]=='bin' and node[1]=='as': return [(node[2],node[3])]
+   return []
+  if alternatives(a):
+   choices=alternatives(a); source=choices[0][0]; results=[]
+   for item in ev(source,v,e,d):
+    for choice in choices:
+     pat=choice[1]
+     ne=dict(e)
+     try:
+      bind(pat,item,ne); results.extend(ev(b,v,ne,d)); break
+     except RuntimeErrorJQ:
+      continue
+   return results
+  if a[0]=='bin' and a[1]=='as' and a[3][0]=='var':
+   out=[]
+   for x in ev(a[2],v,e,d):
+    ne=dict(e); bind(a[3],x,ne); out.extend(ev(b,v,ne,d))
+   return out
+  if a[0]=='bin' and a[1]=='as':
+   out=[]
+   for x in ev(a[2],v,e,d):
+    ne=dict(e); bind(a[3],x,ne); out.extend(ev(b,v,ne,d))
+   return out
+  out=[]
+  for x in ev(a,v,e,d):
+   try: out.extend(ev(b,x,e,d))
+   except RuntimeErrorJQ as ex:
+    ex.partial=out + getattr(ex,'partial',[])
+    raise
+  return out
+ if op=='as':
+  out=[]
+  for x in ev(a,v,e,d):
+   ne=dict(e); bind(b,x,ne); out.extend(ev(('dot',),v,ne,d))
+  return out
+ if op=='?//':
+  # Destructuring alternatives are represented as a chain of bindings.
+  if a[0]=='bin' and a[1]=='as':
+   out=[]
+   for x in ev(a[2],v,e,d):
+    ne=dict(e); bind(a[3],x,ne)
+    try: out.extend(ev(b,v,ne,d))
+    except RuntimeErrorJQ: continue
+   return out
+  return ev(a,v,e,d) or ev(b,v,e,d)
+ if op=='//':
+  x=[z for z in ev(a,v,e,d) if truth(z)]; return x or ev(b,v,e,d)
+ if op in ('=','|=','+=','-=','*=','/=','%=','//='):
+  paths=selected_paths(a,v,e,d)
+  if not paths: raise RuntimeErrorJQ('invalid path')
+  if op=='=':
+   vals=ev(b,v,e,d)
+   out=[]
+   for val in vals:
+    z=v
+    for p in paths:
+     if p and p[0]=='__slice__':
+      _,parent,lo,hi=p
+      z=json.loads(json.dumps(z,allow_nan=True)); cur=z
+      for key in parent:
+       cur=cur.get(key) if isinstance(cur,dict) else cur[int(key)]
+      cur[lo:hi]=val if isinstance(val,list) else [val]
+     else: z=replace_path(z,list((('index',x) for x in p)),val)
+    out.append(z)
+   return out
+  # Update assignments operate independently on every selected path, while
+  # sharing the original root.  This is what makes .[] += n and |= filters
+  # preserve both path multiplicity and array ordering.
+  # Deletions mutate arrays, so visit concrete indices from right to left.
+  paths=sorted(paths,key=lambda p: tuple(str(x) for x in p),reverse=True)
+  out=v
+  for p in paths:
+   if p and p[0]=='__slice__':
+    _,parent,lo,hi=p; old=v
+    for key in parent: old=old.get(key) if isinstance(old,dict) else old[int(key)]
+    vals=ev(b,old,e,d)
+    if op=='|=': vals=vals[:1]
+    if not vals:
+     out=replace_path(out,list((('index',x) for x in parent)),None,True)
+    else:
+     out=replace_path(out,list((('index',x) for x in parent)),vals[0][lo:hi] if isinstance(vals[0],(list,str)) else vals[0])
+    continue
+   old=v
+   for key in p: old=old.get(key) if isinstance(old,dict) else old[int(key)]
+   vals=ev(b,v if op=='//=' else old if op=='|=' else v,e,d); vals=vals[:1] if op in ('|=','//=') else vals
+   if not vals:
+    out=replace_path(out,list((('index',x) for x in p)),None,True)
+    continue
+   for val in vals:
+    new=val if op=='|=' else (old if op=='//' and truth(old) else arith(op[0],old,val))
+    out=replace_path(out,list((('index',x) for x in p)),new)
+  return [out]
+ left=ev(a,v,e,d); right=ev(b,v,e,d); return [arith(op,x,y) for x in left for y in right]
+def arith(op,x,y):
+ if op in ('==','!=','<','>','<=','>='):
+  try: return {'==':x==y,'!=':x!=y,'<':x<y,'>':x>y,'<=':x<=y,'>=':x>=y}[op]
+  except TypeError: return False
+ if op=='and': return truth(x) and truth(y)
+ if op=='or': return truth(x) or truth(y)
+ if x is None:return y
+ if y is None:return x
+ try:
+  if op=='+': return x+y
+  if op=='-': return [z for z in x if z not in y] if isinstance(x,list) and isinstance(y,list) else x-y
+  if op=='*': return x*y
+  if op=='/': return x/y if not isinstance(x,str) else x.split(y)
+  if op=='%': return x%y
+ except Exception: raise RuntimeErrorJQ('arithmetic error')
+ raise RuntimeErrorJQ('unsupported operator')
+def call(name,args,v,e,d):
+ if name in e and isinstance(e[name],tuple) and e[name][0]=='filter':
+  return ev(e[name][1],v,e,d)
+ user=d.get((name,len(args)))
+ if user is not None:
+  params,body=user; ne=dict(e)
+  for (p,is_value),arg in zip(params,args):
+   if is_value:
+    vals=ev(arg,v,e,d); ne[p]=vals[0] if vals else None
+   else: ne[p]=('filter',arg)
+  return ev(body,v,ne,d)
+ if name=='empty': return []
+ if name=='not': return [not truth(v)]
+ if name=='type': return ['null' if v is None else 'boolean' if isinstance(v,bool) else 'number' if isinstance(v,(int,float)) else 'string' if isinstance(v,str) else 'array' if isinstance(v,list) else 'object']
+ if name=='length': return [0 if v is None else len(v) if isinstance(v,(str,list,dict)) else abs(v)]
+ if name=='tostring': return [v if isinstance(v,str) else compact(v)]
+ if name=='tonumber':
+  if isinstance(v,(int,float)) and not isinstance(v,bool): return [v]
+  if isinstance(v,str):
+   try: return [float(v) if any(c in v for c in '.eE') else int(v)]
+   except ValueError: raise RuntimeErrorJQ('invalid number')
+  raise RuntimeErrorJQ('invalid number')
+ if name=='toboolean':
+  if isinstance(v,bool): return [v]
+  if isinstance(v,str) and v in ('true','false'): return [v=='true']
+  typ='null' if v is None else 'number' if isinstance(v,(int,float)) and not isinstance(v,bool) else 'string' if isinstance(v,str) else 'array' if isinstance(v,list) else 'object' if isinstance(v,dict) else 'boolean'
+  raise RuntimeErrorJQ(f'{typ} ({compact(v)}) cannot be parsed as a boolean')
+ if name=='tojson': return [compact(v)]
+ if name=='fromjson':
+  if isinstance(v,str) and v.lower()=='nan': return [float('nan')]
+  return [json.loads(v)]
+ if name=='keys': return [list(range(len(v))) if isinstance(v,list) else sorted(v)]
+ if name in ('index','rindex','indices'):
+  q=ev(args[0],v,e,d)[0]
+  if isinstance(v,str) and isinstance(q,str):
+   if name=='index': return [v.find(q) if v.find(q)>=0 else None]
+   if name=='rindex': return [v.rfind(q) if v.rfind(q)>=0 else None]
+   return [[i for i in range(len(v)) if v.startswith(q,i)]]
+  if isinstance(v,list):
+   hits=[]
+   if isinstance(q,list): hits=[i for i in range(len(v)-len(q)+1) if v[i:i+len(q)]==q]
+   else: hits=[i for i,x in enumerate(v) if x==q]
+   if name=='indices': return [hits]
+   return [(hits[0] if name=='index' and hits else hits[-1] if hits else None)]
+  raise RuntimeErrorJQ('cannot search')
+ if name in ('isnan','isinfinite','isfinite','isnormal'):
+  if not isinstance(v,(int,float)) or isinstance(v,bool): return [False]
+  if name=='isnan': return [math.isnan(v)]
+  if name=='isinfinite': return [math.isinf(v)]
+  if name=='isfinite': return [math.isfinite(v)]
+  return [math.isfinite(v) and v != 0]
+ if name in ('have_decnum','have_literal_numbers'): return [False]
+ if name in ('numbers','strings','arrays','objects','booleans','nulls','values','scalars','iterables'):
+  good={'numbers':isinstance(v,(int,float)) and not isinstance(v,bool),'strings':isinstance(v,str),'arrays':isinstance(v,list),'objects':isinstance(v,dict),'booleans':isinstance(v,bool),'nulls':v is None,'values':v is not None,'scalars':not isinstance(v,(list,dict)),'iterables':isinstance(v,(list,dict))}[name]
+  return [v] if good else []
+ if name=='add':
+  xs=v if not args else [z for a in args for z in ev(a,v,e,d)]
+  if not xs:return [None]
+  r=xs[0]
+  for x in xs[1:]:r=arith('+',r,x)
+  return [r]
+ if name=='join':
+  sep=ev(args[0],v,e,d)[0]
+  if not isinstance(v,list) or not isinstance(sep,str): raise RuntimeErrorJQ('join requires array')
+  return [sep.join('' if x is None else x if isinstance(x,str) else ('true' if x is True else 'false' if x is False else compact(x)) for x in v)]
+ if name=='map': return [[z for x in (v.values() if isinstance(v,dict) else v) for z in ev(args[0],x,e,d)]]
+ if name=='select':
+  q=ev(args[0],v,e,d); return [v] if q and truth(q[0]) else []
+ if name in ('any','all'):
+  if not args: vals=v if isinstance(v,list) else []
+  elif len(args)==1: vals=[x for item in (v if isinstance(v,list) else []) for x in ev(args[0],item,e,d)]
+  else: vals=[x for item in ev(args[0],v,e,d) for x in ev(args[1],item,e,d)]
+  return [any(truth(x) for x in vals) if name=='any' else all(truth(x) for x in vals)]
+ if name=='range':
+  vals=[ev(a,v,e,d)[0] for a in args]; start,end,step=(0,vals[0],1) if len(vals)==1 else (vals[0],vals[1],vals[2] if len(vals)>2 else 1)
+  return list(range(int(start),int(end),int(step)))
+ if name in ('ascii_upcase','ascii_downcase'): return [v.upper() if name.endswith('upcase') else v.lower()]
+ if name in ('startswith','endswith'):
+  q=ev(args[0],v,e,d)[0]
+  if not isinstance(v,str) or not isinstance(q,str): raise RuntimeErrorJQ('string argument required')
+  return [v.startswith(q) if name=='startswith' else v.endswith(q)]
+ if name in ('ltrimstr','rtrimstr','trimstr'):
+  q=ev(args[0],v,e,d)[0]
+  if not isinstance(v,str) or not isinstance(q,str): raise RuntimeErrorJQ('startswith() requires string inputs' if name!='rtrimstr' else 'endswith() requires string inputs')
+  left=v[len(q):] if v.startswith(q) else v
+  if name=='ltrimstr': return [left]
+  right=v[:-len(q)] if q and v.endswith(q) else v
+  if name=='rtrimstr': return [right]
+  return [right[len(q):] if q and right.startswith(q) else right]
+ if name=='error': raise RuntimeErrorJQ(ev(args[0],v,e,d)[0] if args else v)
+ if name=='INDEX':
+  if len(args)<2: raise RuntimeErrorJQ('INDEX requires arguments')
+  stream=ev(args[0],v,e,d)
+  result={}
+  for item in stream:
+   for key in ev(args[1],item,e,d): result[str(key)]=item
+  return [result]
+ raise RuntimeErrorJQ('unknown function')
+def fmt(kind,v):
+ s=v if isinstance(v,str) else compact(v)
+ if kind=='text':return s
+ if kind=='json':return compact(v)
+ if kind=='html':return html.escape(s,quote=True).replace('&#x27;','&apos;')
+ if kind=='uri':return urllib.parse.quote(s,safe='')
+ if kind=='urid':return urllib.parse.unquote(s)
+ if kind=='base64':return base64.b64encode(s.encode()).decode()
+ if kind=='base64d':return base64.b64decode(s).decode()
+ if kind=='csv':
+  if not isinstance(v,list): raise RuntimeErrorJQ('csv requires array')
+  return ','.join(('"'+x.replace('"','""')+'"') if isinstance(x,str) else ('' if x is None else ('true' if x is True else 'false' if x is False else compact(x))) for x in v)
+ if kind=='tsv':
+  if not isinstance(v,list): raise RuntimeErrorJQ('tsv requires array')
+  def tsv(x):
+   if x is None:return ''
+   if isinstance(x,str):return x.replace('\\','\\\\').replace('\n','\\n').replace('\r','\\r').replace('\t','\\t')
+   return compact(x)
+  return '\t'.join(tsv(x) for x in v)
+ if kind=='sh':return "'"+s.replace("'", "'\\''")+"'"
+ return s
+def main():
+ if len(sys.argv)!=3 or sys.argv[1]!='-c': return 3
+ try: ast,defs=Parser(sys.argv[2]).program()
+ except CompileError as ex: print(str(ex),file=sys.stderr); return 3
+ try:
+  data=sys.stdin.read()
+  for line in data.splitlines() or ['null']:
+   if not line.strip(): continue
+   line=line.lstrip('\ufeff')
+   for z in ev(ast,json.loads(line),{},defs): print(compact(z))
+  return 0
+ except (RuntimeErrorJQ,ValueError,TypeError,ZeroDivisionError) as ex:
+  for z in getattr(ex,'partial',[]): print(compact(z))
+  print(str(ex),file=sys.stderr); return 5
+if __name__=='__main__': sys.exit(main())
