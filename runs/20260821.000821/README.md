@@ -6,26 +6,26 @@
 
 | Claim | Verdict | Recorded outcome | Proof |
 |---|---|---|---|
-| Lifecycle completed | FAIL | 13 lifecycle commands executed; the run ended at 13-after-initial-build-workspace-status. | [result.json](result.json) |
+| Lifecycle completed | FAIL | 4 lifecycle commands executed; the run ended at 04-plan. | [result.json](result.json) |
 | External conformance suite passed | UNPROVEN | No external test command is defined for this project. | — |
 | Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
 | Acceptance score passed | UNPROVEN | No acceptance score was recorded for this run. | — |
 | Release score passed | UNPROVEN | No release score was recorded for this run. | — |
-| Integrity verification passed | PASS | 365 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 348 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
-- Drydock: `0.2.0` (commit `8e3d7db819ee8af26c3338c0ea84affb99de8039`)
+- Drydock: `0.2.0` (commit `b6c1ebbd70e6c4a587a2ceadd34f00847151ad9a`)
 - Provider and model: `codex` / `gpt-5.6-luna`
 - Platform: `Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35` on Python `3.12.13`
 - Target: `jq`
 - Run: `20260821.000821`
-- Ran: 2026-08-20 20:08:22 EDT — 2026-08-20 20:46:22 EDT
-- Elapsed: 2279.7s
-- LLM calls: 24
-- Tokens: cached 4,746,752; uncached 1,362,555; output 89,798
-- LLM elapsed: 2212.3s
-- Build passes: 1; repairs: 13 attempts allowed
+- Ran: 2026-08-21 10:52:54 EDT — 2026-08-21 11:05:33 EDT
+- Elapsed: 758.7s
+- LLM calls: 34
+- Tokens: cached 4,833,536; uncached 2,291,173; output 127,816
+- LLM elapsed: 2946.8s
+- Build passes: 1; repairs: not recorded
 - Conformance: no external suite defined
 - Verdict: expected PASSED, observed ERROR
 - Advisory scores: none recorded
@@ -43,7 +43,7 @@
 
 ## Shortfall
 
-- Degraded: initial-build-1 exited 1
+- Failure: jq: plan exited 1
 
 ## Commands
 
@@ -52,16 +52,7 @@
 | 01-init | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock init jq` | 0 | 2.6s | [stdout](evidence/commands/01-init.stdout.log) · [stderr](evidence/commands/01-init.stderr.log) |
 | 02-import-sources | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock import jq sources --format markdown` | 0 | 3.0s | [stdout](evidence/commands/02-import-sources.stdout.log) · [stderr](evidence/commands/02-import-sources.stderr.log) |
 | 03-analyze | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock analyze jq` | 0 | 122.7s | [stdout](evidence/commands/03-analyze.stdout.log) · [stderr](evidence/commands/03-analyze.stderr.log) · [llm](evidence/commands/03-analyze.llm.log) |
-| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 0 | 882.2s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/commands/04-plan.llm.log) |
-| 05-plan-verify | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan verify jq` | 0 | 1.8s | [stdout](evidence/commands/05-plan-verify.stdout.log) · [stderr](evidence/commands/05-plan-verify.stderr.log) |
-| 06-after-plan-build-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock build status jq` | 0 | 0.6s | [stdout](evidence/commands/06-after-plan-build-status.stdout.log) · [stderr](evidence/commands/06-after-plan-build-status.stderr.log) |
-| 07-after-plan-target-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status jq` | 0 | 1.2s | [stdout](evidence/commands/07-after-plan-target-status.stdout.log) · [stderr](evidence/commands/07-after-plan-target-status.stderr.log) |
-| 08-after-plan-workspace-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status` | 0 | 0.4s | [stdout](evidence/commands/08-after-plan-workspace-status.stdout.log) · [stderr](evidence/commands/08-after-plan-workspace-status.stderr.log) |
-| 09-initial-ready | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status jq --ready` | 0 | 0.4s | [stdout](evidence/commands/09-initial-ready.stdout.log) · [stderr](evidence/commands/09-initial-ready.stderr.log) |
-| 10-initial-build-1 | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock build jq --override --repair-attempts 13` | 1 | 1253.8s | [stdout](evidence/commands/10-initial-build-1.stdout.log) · [stderr](evidence/commands/10-initial-build-1.stderr.log) · [llm](evidence/commands/10-initial-build-1.llm.log) |
-| 11-after-initial-build-build-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock build status jq` | 0 | 1.1s | [stdout](evidence/commands/11-after-initial-build-build-status.stdout.log) · [stderr](evidence/commands/11-after-initial-build-build-status.stderr.log) |
-| 12-after-initial-build-target-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status jq` | 0 | 2.1s | [stdout](evidence/commands/12-after-initial-build-target-status.stdout.log) · [stderr](evidence/commands/12-after-initial-build-target-status.stderr.log) |
-| 13-after-initial-build-workspace-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status` | 0 | 0.6s | [stdout](evidence/commands/13-after-initial-build-workspace-status.stdout.log) · [stderr](evidence/commands/13-after-initial-build-workspace-status.stderr.log) |
+| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 1 | 745.2s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/commands/04-plan.llm.log) |
 
 ## Evidence
 

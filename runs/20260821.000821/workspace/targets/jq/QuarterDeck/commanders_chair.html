@@ -392,14 +392,14 @@ body {
   <div>
     <div class="target-line"><span class="label">Target:</span> jq</div>
     <ul class="header-meta">
-      <li>- Building: 2026-08-20</li>
+      <li>- Building: 2026-08-21</li>
     </ul>
   </div>
   <img src="/logo.png" alt="Drydock" style="height:64px;display:block;">
 </div>
 
-<section class="state-panel"><strong>STATE: BUILDING<span class="state-verdict state-pass">PASS</span></strong><span class="state-when">2026-08-20 20:25</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-current state-pass">BUILDING</li><li class="state-step">BUILT</li><li class="state-step">SCORE AC</li><li class="state-step">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li><li class="state-step">FINALIZED</li></ol></section>
-<section class="big-error-panel"><strong>Failed: programmatic acceptance failed: lexer-conformance-slice, parser-conformance-slice</strong><span>Command: build. Open <b>BIG ERRORS</b> for recovery.</span></section>
+<section class="state-panel"><strong>STATE: BUILT<span class="state-verdict state-fail">FAIL</span></strong><span>2 step(s) failed</span><span class="state-when">2026-08-20 20:46</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-held">BUILDING</li><li class="state-step state-current state-fail">BUILT</li><li class="state-step">SCORE AC</li><li class="state-step">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li><li class="state-step">FINALIZED</li></ol></section>
+<section class="big-error-panel"><strong>Error: plan output validation failed</strong><span>Command: plan. Open <b>BIG ERRORS</b> for recovery.</span></section>
 <nav class="chair-tabs" aria-label="Commanders Chair views">
   <button class="chair-tab active" type="button" data-chair-tab="overview">Overview</button>
   <button class="chair-tab" type="button" data-chair-tab="build">Build Report</button>

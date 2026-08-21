@@ -2,9 +2,9 @@
 
 The manifest records relative paths, byte counts, and SHA-256 hashes for the preserved evidence.
 
-- Commands: 13 (stdout and stderr captured separately)
-- Prompts: 24
-- Prompt outputs: 24
-- Provider raw transcripts: 24
-- LLM activity logs: 24
+- Commands: 4 (stdout and stderr captured separately)
+- Prompts: 34
+- Prompt outputs: 34
+- Provider raw transcripts: 34
+- LLM activity logs: 34
 - Machine index: `manifest.json`

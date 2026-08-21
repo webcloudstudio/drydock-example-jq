@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/04-plan.stderr.log</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/04-plan.stderr.log</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/commands/04-plan.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>========================================================================
+POST-LLM FAILURE  ·  plan  ·  plan output validation failed
+========================================================================
+
+  Plan generation failed: the declared work graph is inconsistent.
+    frontend-004: is phase 2 but depends on &#x27;core-001&#x27; in phase 3; the high-level topology (phases) and the actual topology (edges) must agree
+    No Blueprint or Manifest artifacts were written.
+    Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/logs/20260821.150244.995Z_jq_plan_codex.output.txt
+    contributing execution ids: 20260821.145300.587Z-b4861522, 20260821.145457.245Z-a72c419e, 20260821.145555.985Z-918a312e, 20260821.145705.003Z-13636297, 20260821.145810.537Z-9a6afd70, 20260821.145916.768Z-72174314, 20260821.150022.160Z-13d19368
+    No files were changed.
+
+  Recovery
+    Correct the plan input or model artifact, then run: drydock plan
+    jq
+
+========================================================================
+</pre></article>
+</main>
+</body>
+</html>

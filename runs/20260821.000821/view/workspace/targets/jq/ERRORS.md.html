@@ -10,13 +10,11 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
 <article class="doc"><h1>BIG ERRORS — action required</h1>
-<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-21T00:46:08+00:00</li><li>Execution ID: 20260821.004423.336Z-e56b6f96</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: lexer-conformance-slice, parser-conformance-slice</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/targets/jq/evidence/block-3.md</li></ul>
+<ul><li>Command: <code>plan</code></li><li>Phase: post-output validation</li><li>State: Error</li><li>Timestamp: 2026-08-21T15:05:18+00:00</li><li>Execution ID: 20260821.145300.587Z-b4861522</li><li>Challenge Execution ID: -</li><li>Classification: plan output validation failed</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/logs</li></ul>
 <h2>Diagnostic</h2>
-<p>Block &quot;Block 3 · Service&quot; [block-3] failed its acceptance criteria. Story &quot;Implement jq lexical scanning.&quot; [FRONTEND-001] does not meet its own acceptance criteria:</p>
-<ul><li>AC lexer-conformance-slice — The executable passes the non-empty conformance slice covering lexical forms, literals, strings, formats, delimiters, and invalid module syntax.</li></ul>
-<p>assertion: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) raised at: decoder.py:356 process exit code: 1 error: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) values at failure: s = &#x27;&#x27; check stderr: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ … (48 more lines truncated)</p>
+<p>Plan generation failed: the declared work graph is inconsistent. frontend-004: is phase 2 but depends on &#x27;core-001&#x27; in phase 3; the high-level topology (phases) and the actual topology (edges) must agree No Blueprint or Manifest artifacts were written.<br>Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/logs/20260821.150244.995Z_jq_plan_codex.output.txt contributing execution ids: 20260821.145300.587Z-b4861522, 20260821.145457.245Z-a72c419e, 20260821.145555.985Z-918a312e, 20260821.145705.003Z-13636297, 20260821.145810.537Z-9a6afd70, 20260821.145916.768Z-72174314, 20260821.150022.160Z-13d19368 No files were changed.</p>
 <h2>Recovery</h2>
-<p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
+<p>Correct the plan input or model artifact, then run: drydock plan jq</p></article>
 </main>
 </body>
 </html>

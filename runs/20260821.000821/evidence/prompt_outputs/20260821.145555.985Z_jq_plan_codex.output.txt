@@ -1,0 +1,483 @@
+=== BEGIN ARTIFACT FEATURE-Parser.md ===
+# FEATURE: jq Expression Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Define the jq parser and abstract syntax tree for valid expressions. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Lexer.md |
+| Provides    | parser, AST, precedence, expressions, constructors |
+| Consumes    | lexer, sources/parser.y |
+
+## Questions
+
+- None.
+
+## Scope
+
+The parser consumes lexer tokens and produces an AST representing jq programs. It must preserve the precedence and associativity defined by `sources/parser.y`, including pipelines, generators, operators, suffix access, arrays, objects, conditionals, function calls, bindings, and assignments.
+
+The AST must retain enough structure for downstream evaluation, static validation, generator semantics, path expressions, and runtime diagnostics.
+
+## Programmatic Acceptance
+
+=== AC parser-conformance ===
+Intent: The parser accepts the non-empty corpus slice covering parser-led jq constructs and the selected cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'^(\.|\[|\{|\{|\(|def|if|try|reduce|foreach|module|include|%::|"|@)'
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC parser-conformance ===
+
+=== AC parser-precedence ===
+Intent: The parser preserves the supplied precedence and associativity contract for arithmetic, comma, and pipe expressions.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'^\(?[0-9].*(\+|\-|\*|/|,|\|)'
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC parser-precedence ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The parser must not shell out to jq or depend on third-party parser libraries.
+- Syntax errors must remain distinguishable from runtime errors.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Compile-Errors.md ===
+# FEATURE: jq Compile-Time Validation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Reject malformed jq programs and invalid static references before evaluation. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Parser.md |
+| Provides    | compile validation, module grammar rejection, undefined-symbol rejection |
+| Consumes    | parser, AST, sources/jq.test |
+
+## Questions
+
+- None.
+
+## Scope
+
+Compilation validates syntax and statically resolvable symbols after parsing. Invalid object keys, malformed expressions, undefined variables or labels, invalid module metadata, and unsupported module grammar must produce diagnostics on standard error and exit status `3`.
+
+A compile failure must not be reported as a runtime status `5`.
+
+## Programmatic Acceptance
+
+=== AC compile-error-corpus ===
+Intent: The implementation rejects the supplied compile-error corpus cases with the required compile exit status.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'%%UNMATCHABLE_COMPILE_CASE_SELECTOR%%'
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC compile-error-corpus ===
+
+=== AC undefined-variable-exit ===
+Intent: An undefined variable is rejected before execution with exit status 3.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = ". as $known | [$known, $missing]"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC undefined-variable-exit ===
+
+=== AC malformed-program-exit ===
+Intent: A malformed jq program is rejected before execution with exit status 3.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "{"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+=== END AC malformed-program-exit ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics are sent only to standard error and their wording is not part of the contract.
+- Compile failures must never be reclassified as runtime failures.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Functions-and-Scope.md ===
+# FEATURE: jq Functions and Lexical Scope
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implement user-defined jq functions, parameters, closures, recursion, and lexical scope. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Parser.md, FEATURE-Generator-Core.md |
+| Provides    | def, filter arguments, value arguments, closures, recursion, redefinition |
+| Consumes    | parser, AST, ordered filter streams |
+
+## Questions
+
+- None.
+
+## Scope
+
+Function definitions support zero or more filter parameters and value parameters, lexical visibility, closures, recursion, arity, and redefinition. Function arguments are filters unless declared as value bindings. Definitions become visible according to jq's left-to-right lexical rules.
+
+Function invocation must preserve generator multiplicity and backtracking.
+
+## Programmatic Acceptance
+
+=== AC function-conformance ===
+Intent: The implementation passes the non-empty corpus slice containing user-defined functions and lexical scope behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'^def '
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-conformance ===
+
+=== AC recursive-function ===
+Intent: A user-defined recursive function evaluates through its base and recursive branches.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "def fac: if . == 1 then 1 else . * (. - 1 | fac) end; fac"
+input_value = "5\n"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=input_value,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["120"]
+=== END AC recursive-function ===
+
+=== AC filter-argument ===
+Intent: A filter-valued function argument is evaluated against the caller's current value.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "def twice(f): f | f; 5 | twice(.*2)"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["20"]
+=== END AC filter-argument ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function definitions must not leak bindings outside their lexical scope.
+- Function arguments must not be evaluated as ordinary eager values when declared as filters.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Destructuring.md ===
+# FEATURE: jq Destructuring and Alternatives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implement jq array and object destructuring with alternative-pattern backtracking. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Functions-and-Scope.md |
+| Provides    | array patterns, object patterns, missing bindings, ?// alternatives |
+| Consumes    | parser, AST, ordered filter streams |
+
+## Questions
+
+- None.
+
+## Scope
+
+Destructuring binds array positions and object members to lexical variables. Missing array positions and object members bind to `null`. Nested patterns compose across arrays and objects.
+
+The `?//` operator retries later patterns when an earlier pattern fails or downstream evaluation raises, retaining the bindings from the successful alternative and setting unavailable bindings to `null`.
+
+## Programmatic Acceptance
+
+=== AC destructuring-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering destructuring bindings and alternative patterns.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'\?//| as \$| as \['
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC destructuring-conformance ===
+
+=== AC nested-patterns ===
+Intent: Nested array and object patterns bind the corresponding source values.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = ". as {$a, b: [$c, {$d}]} | [$a, $c, $d]"
+input_value = '{"a":1,"b":[2,{"d":3}]}\n'
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=input_value,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["[1,2,3]"]
+=== END AC nested-patterns ===
+
+=== AC missing-bindings ===
+Intent: Missing members in destructuring bind null rather than raising.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = ". as [$a, $b] | [$a, $b]"
+input_value = "[1]\n"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=input_value,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["[1,null]"]
+=== END AC missing-bindings ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Alternative matching must preserve generator order.
+- Bindings from an unsuccessful alternative must not leak into the successful alternative.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: jq Generator Evaluation Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Evaluate every jq filter as an ordered zero-or-more value stream. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Parser.md |
+| Provides    | ordered filter streams, backtracking, multiplicity, empty |
+| Consumes    | parser, AST |
+
+## Questions
+
+- None.
+
+## Scope
+
+The evaluator represents each filter as a generator of zero or more values. Comma concatenates streams in source order; pipe evaluates its right side once for every left-side output; expressions with multiple outputs preserve cartesian products. `empty` produces no values and backtracking resumes the preceding generator.
+
+Runtime errors may occur after earlier values have been emitted; those values remain observable.
+
+## Programmatic Acceptance
+
+=== AC generator-conformance ===
+Intent: The implementation passes the non-empty corpus slice exercising ordered generators, multiplicity, backtracking, and empty.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r'\.|\[|,|empty|range|while|recurse'
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC generator-conformance ===
+
+=== AC stream-order ===
+Intent: Comma and pipe preserve generator ordering and downstream multiplicity.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "[(1,2) | (., .+10)]"
+input_value = "null\n"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=input_value,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["[1,11,2,12]"]
+=== END AC stream-order ===
+
+=== AC empty-generator ===
+Intent: The empty filter contributes no array element.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "[1, empty, 2]"
+input_value = "null\n"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input=input_value,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == ["[1,2]"]
+=== END AC empty-generator ===
+
+=== AC partial-runtime-output ===
+Intent: Values emitted before a runtime error remain on standard output and the process returns exit 5.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+program = "1, error(\"stop\")"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+assert result.stdout.splitlines() == ["1"]
+=== END AC partial-runtime-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Evaluation must not collapse streams into a single value.
+- Generator order, multiplicity, backtracking, and partial output are observable contract behavior.
+
+=== END ARTIFACT ===
