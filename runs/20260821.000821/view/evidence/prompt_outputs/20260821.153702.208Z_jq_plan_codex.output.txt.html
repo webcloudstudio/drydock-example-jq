@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.153702.208Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.153702.208Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.153702.208Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-BUILTINS-001.md ===
+# FEATURE: Structural and Collection Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-001-conformance ===
+Intent: Structural and collection builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;map(.)&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;[null]&quot;
+=== END AC builtins-001-conformance ===
+
+=== AC builtins-001-report ===
+Intent: Structural-builtin behavior returns a JSON result.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;keys&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;[&quot;a&quot;]&#x27;
+=== END AC builtins-001-report ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-002.md ===
+# FEATURE: String and Unicode Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-002-conformance ===
+Intent: String and Unicode builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;explode&quot;],
+    input=&#x27;&quot;é&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;[233]&quot;
+=== END AC builtins-002-conformance ===
+
+=== AC builtins-002-unicode ===
+Intent: Unicode codepoint behavior returns the expected value.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;implode&quot;],
+    input=&quot;[233]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;&quot;é&quot;&#x27;
+=== END AC builtins-002-unicode ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-003.md ===
+# FEATURE: Regular-Expression Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-003-conformance ===
+Intent: Regular-expression matching executes successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;test(\&quot;a\&quot;)&quot;],
+    input=&#x27;&quot;cat&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;true&quot;
+=== END AC builtins-003-conformance ===
+
+=== AC builtins-003-streams ===
+Intent: Regular-expression stream behavior returns a match.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;match(\&quot;a\&quot;) | .string&quot;],
+    input=&#x27;&quot;cat&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;&quot;a&quot;&#x27;
+=== END AC builtins-003-streams ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-004.md ===
+# FEATURE: Formatting and JSON Conversion Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-004-conformance ===
+Intent: Conversion and formatting builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;tostring&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;&quot;1&quot;&#x27;
+=== END AC builtins-004-conformance ===
+
+=== AC builtins-004-errors ===
+Intent: JSON conversion returns the expected decoded value.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromjson&quot;],
+    input=&#x27;&quot;[1,2]&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;[1,2]&quot;
+=== END AC builtins-004-errors ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-005.md ===
+# FEATURE: Date and Math Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-005-conformance ===
+Intent: Date and math builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;sqrt&quot;],
+    input=&quot;9\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;3&quot;
+=== END AC builtins-005-conformance ===
+
+=== AC builtins-005-special-numbers ===
+Intent: Numeric predicates return the expected result.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;isfinite&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;true&quot;
+=== END AC builtins-005-special-numbers ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-006.md ===
+# FEATURE: Environment, Diagnostics, and I/O Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-006-conformance ===
+Intent: Environment and diagnostic builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;input&quot;],
+    input=&quot;1\n2\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;2&quot;
+=== END AC builtins-006-conformance ===
+
+=== AC builtins-006-input-order ===
+Intent: Input consumption preserves input order.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;],
+    input=&quot;1\n2\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&quot;2&quot;]
+=== END AC builtins-006-input-order ===
+
+=== AC builtins-006-diagnostics ===
+Intent: Diagnostics do not corrupt JSON output.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;. | debug&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC builtins-006-diagnostics ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-007.md ===
+# FEATURE: Streaming Conversion Builtins
+
+## Programmatic Acceptance
+
+=== AC builtins-007-scoped-conformance ===
+Intent: Streaming conversion builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;tostream&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout
+=== END AC builtins-007-scoped-conformance ===
+
+=== AC builtins-007-round-trip ===
+Intent: Streaming conversion preserves a scalar value.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;fromstream(tostream)&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC builtins-007-round-trip ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-BUILTINS-008.md ===
+# FEATURE: Remaining Structural Helpers
+
+## Programmatic Acceptance
+
+=== AC builtins-008-scoped-conformance ===
+Intent: Structural helper builtins execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;walk(.)&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;{&quot;a&quot;:1}&#x27;
+=== END AC builtins-008-scoped-conformance ===
+
+=== AC builtins-008-structural-helpers ===
+Intent: Structural helper behavior returns a JSON result.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;bsearch(2)&quot;],
+    input=&quot;[1,2,3]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC builtins-008-structural-helpers ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CONTROL-001.md ===
+# FEATURE: Reductions and Bounded Iteration
+
+## Programmatic Acceptance
+
+=== AC control-001-conformance ===
+Intent: Reductions and bounded iteration execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;reduce .[] as $x (0; . + $x)&quot;],
+    input=&quot;[1,2]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;3&quot;
+=== END AC control-001-conformance ===
+
+=== AC control-001-report ===
+Intent: Bounded iteration returns the expected result.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;limit(2; .[])&quot;],
+    input=&quot;[1,2,3]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&quot;1&quot;, &quot;2&quot;]
+=== END AC control-001-report ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CONTROL-002.md ===
+# FEATURE: Recursive Generators
+
+## Programmatic Acceptance
+
+=== AC control-002-conformance ===
+Intent: Recursive generators execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;recurse(.children[]?) | .id&quot;],
+    input=&#x27;{&quot;id&quot;:1,&quot;children&quot;:[]}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC control-002-conformance ===
+
+=== AC control-002-report ===
+Intent: Recursive-generator output is non-empty and ordered.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;range(0; 2)&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&quot;0&quot;, &quot;1&quot;]
+=== END AC control-002-report ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CONTROL-003.md ===
+# FEATURE: Generator Predicates and Collection Utilities
+
+## Programmatic Acceptance
+
+=== AC control-003-conformance ===
+Intent: Generator predicates and collection utilities execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;any(.[]; . &gt; 1)&quot;],
+    input=&quot;[1,2]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;true&quot;
+=== END AC control-003-conformance ===
+
+=== AC control-003-report ===
+Intent: Range utility returns an executed non-empty result.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;range(0; 2)&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&quot;0&quot;, &quot;1&quot;]
+=== END AC control-003-report ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-001.md ===
+# FEATURE: Core Stream Evaluation
+
+## Programmatic Acceptance
+
+=== AC core-001-conformance ===
+Intent: Core stream evaluation preserves ordering and multiplicity.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[]&quot;],
+    input=&quot;[1,2]\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&quot;1&quot;, &quot;2&quot;]
+=== END AC core-001-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-002.md ===
+# FEATURE: Basic jq Filters and Constructors
+
+## Programmatic Acceptance
+
+=== AC core-002-conformance ===
+Intent: Core filters and constructors execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;[.a, .b]&quot;],
+    input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;[1,2]&quot;
+=== END AC core-002-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-003.md ===
+# FEATURE: jq Arithmetic, Comparison, and Boolean Operators
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+Intent: Arithmetic, comparison, and boolean operators execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;. + 2&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;3&quot;
+=== END AC core-003-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-004.md ===
+# FEATURE: jq Error Handling and Control Flow
+
+## Programmatic Acceptance
+
+=== AC core-004-conformance ===
+Intent: Conditionals and error-control operators execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;try .&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC core-004-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-FRONTEND-001.md ===
+# FEATURE: jq Lexical Scanner
+
+## Programmatic Acceptance
+
+=== AC lexer-conformance ===
+Intent: Valid lexical syntax is accepted.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;null&quot;
+=== END AC lexer-conformance ===
+
+=== AC lexer-invalid-program ===
+Intent: Invalid lexical characters are rejected with compile status 3.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;@&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 3
+assert result.stdout == &quot;&quot;
+=== END AC lexer-invalid-program ===
+
+=== AC lexer-comment-and-format ===
+Intent: Comments and format tokens are accepted in a valid program.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;@text # comment\n&quot;],
+    input=&#x27;&quot;hello&quot;\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;&quot;hello&quot;&#x27;
+=== END AC lexer-comment-and-format ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-FRONTEND-002.md ===
+# FEATURE: Frontend Expression Parser
+
+## Programmatic Acceptance
+
+=== AC frontend-002-conformance ===
+Intent: Expression, constructor, and control syntax parses successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;[.a]&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;[1]&quot;
+=== END AC frontend-002-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-FRONTEND-003.md ===
+# FEATURE: Frontend Compile Validation
+
+## Programmatic Acceptance
+
+=== AC frontend-003-conformance ===
+Intent: Invalid programs are rejected at compile time.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;$undefined&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 3
+assert result.stdout == &quot;&quot;
+=== END AC frontend-003-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-FRONTEND-004.md ===
+# FEATURE: Frontend Functions and Scope
+
+## Programmatic Acceptance
+
+=== AC frontend-004-conformance ===
+Intent: User-defined functions execute with lexical scope.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;def f: . + 1; f&quot;],
+    input=&quot;1\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;2&quot;
+=== END AC frontend-004-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-FRONTEND-005.md ===
+# FEATURE: Frontend Destructuring Alternatives
+
+## Programmatic Acceptance
+
+=== AC frontend-005-conformance ===
+Intent: Destructuring alternatives preserve bindings and fallback behavior.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as {a: $a} ?// {b: $a} | $a&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC frontend-005-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-PATHS-001.md ===
+# FEATURE: jq Path Discovery and Access
+
+## Programmatic Acceptance
+
+=== AC paths-001-conformance ===
+Intent: Path discovery and access execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;getpath([\&quot;a\&quot;])&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;1&quot;
+=== END AC paths-001-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-PATHS-002.md ===
+# FEATURE: jq Immutable Path Mutation and Deletion
+
+## Programmatic Acceptance
+
+=== AC paths-002-conformance ===
+Intent: Path mutation and deletion execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;setpath([\&quot;a\&quot;]; 2)&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;{&quot;a&quot;:2}&#x27;
+=== END AC paths-002-conformance ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-PATHS-003.md ===
+# FEATURE: Path Assignment Operators
+
+## Programmatic Acceptance
+
+=== AC paths-003-conformance ===
+Intent: Path assignment operators execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.a |= . + 1&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;{&quot;a&quot;:2}&#x27;
+=== END AC paths-003-conformance ===
+
+=== AC paths-003-report ===
+Intent: Assignment produces an immutable updated value.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.a = 2&quot;],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &#x27;{&quot;a&quot;:2}&#x27;
+=== END AC paths-003-report ===
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-VERIFICATION-001.md ===
+# FEATURE: Scoped Conformance Verification
+
+## Programmatic Acceptance
+
+=== AC verification-001-scoped-slices ===
+Intent: Implemented capabilities execute successfully.
+Suite: scoped
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert result.stdout.strip() == &quot;null&quot;
+=== END AC verification-001-scoped-slices ===
+
+=== AC verification-001-harness-report ===
+Intent: Verification consumes executable JSON output.
+Suite: scoped
+
+import json
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) is None
+=== END AC verification-001-harness-report ===
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

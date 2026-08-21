@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.153119.546Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.153119.546Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.153119.546Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-CORE-002.md ===
+# FEATURE: Basic jq Filters and Constructors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implements jq&#x27;s core filters, constructors, indexing, iteration, slices, and recursive descent. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-001.md |
+| Provides    | Identity, literals, comma, pipe, arrays, objects, field access, indexing, iteration, slices, recursive descent, empty |
+| Consumes    | Stream evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability adds the fundamental jq expression forms on top of the stream evaluator. It preserves generator ordering while constructing and inspecting JSON arrays and objects.
+
+## Behavior
+
+- Identity and literals produce one value.
+- Comma concatenates streams and pipe evaluates downstream filters for every upstream value.
+- Array and object constructors collect or combine generated values according to jq semantics.
+- Field access, indexing, iteration, and slices support arrays, objects, strings, missing values, optional access, and negative indexes.
+- Recursive descent emits the input and all descendants in jq order.
+- `empty` produces no values.
+
+## Programmatic Acceptance
+
+=== AC core-002-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering core filters and constructors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\.|\[|\{|\.\[|\.\w&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve stream order, multiplicity, and optional-error behavior.
+- Do not delegate evaluation to a system jq executable or third-party implementation.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CORE-003.md ===
+# FEATURE: jq Arithmetic, Comparison, and Boolean Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implements jq&#x27;s type-directed arithmetic, comparison, equality, truthiness, and boolean operators. |
+| Depends On  | FEATURE-CORE-002.md |
+| Provides    | Arithmetic operators, comparison operators, equality operators, `and`, `or`, `not` |
+| Consumes    | Core filters and stream evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability evaluates jq operators over generated operands with jq&#x27;s JSON type semantics, ordering rules, and runtime error behavior.
+
+## Behavior
+
+- Numeric arithmetic supports addition, subtraction, multiplication, division, and remainder.
+- Arrays, strings, objects, and null follow jq-specific operator semantics.
+- Equality is structural and distinguishes booleans from numbers.
+- Ordering follows jq&#x27;s null, boolean, number, string, array, and object ordering.
+- Boolean operators use jq truthiness and preserve generator multiplicity and short-circuit behavior.
+- Invalid operations and division by zero raise runtime errors with exit status 5.
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering arithmetic, comparisons, equality, and boolean operators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;[+*/%&lt;&gt;=]| and | or |==|!=&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not coerce incompatible JSON types implicitly.
+- Preserve outputs emitted before a runtime error.
+- Keep boolean values distinct from numeric values.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CORE-004.md ===
+# FEATURE: jq Error Handling and Control Flow
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implements jq conditionals, exception handling, optional suppression, alternatives, labels, and breaks. |
+| Depends On  | FEATURE-CORE-003.md, FEATURE-FRONTEND-005.md |
+| Provides    | `if`, `elif`, `else`, `try`, `catch`, `?`, `//`, `//=`, `label`, `break` |
+| Consumes    | Core operators, bindings, and stream evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability provides jq&#x27;s control-flow and error semantics while retaining generator backtracking and partial-output behavior.
+
+## Behavior
+
+- Conditional branches execute according to jq truthiness and preserve branch multiplicity.
+- `try` and `catch` handle runtime errors; `?` suppresses them.
+- Defined-or selects non-null and non-false outputs, falling back only when required.
+- Labels and breaks terminate the lexically associated generator.
+- Compile-time errors remain distinct from runtime errors.
+- Values emitted before an uncaught runtime error remain on stdout.
+
+## Programmatic Acceptance
+
+=== AC core-004-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering conditionals, errors, alternatives, labels, and breaks.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;if |try |\?| //|label |break &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must exit 3 and runtime failures must exit 5.
+- Never discard values already emitted before a runtime failure.
+- Breaks must remain lexically scoped to visible labels.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATHS-001.md ===
+# FEATURE: jq Path Discovery and Access
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implements jq path discovery, path enumeration, path access, and path-expression validation. |
+| Depends On  | FEATURE-CORE-002.md |
+| Provides    | `path`, `paths`, `getpath`, path expressions |
+| Consumes    | Core indexing, iteration, and recursive descent |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability exposes JSON locations as jq path arrays and reads values through explicit paths while distinguishing exact paths from generator path expressions.
+
+## Behavior
+
+- `path` returns arrays containing object keys and array indexes.
+- Exact path expressions produce paths even when values are missing where jq permits.
+- Pattern paths enumerate existing matching locations in traversal order.
+- `paths` excludes the empty root path and supports node filters.
+- `getpath` reads nested values and returns null for missing values where specified.
+- Invalid path expressions and invalid path components raise jq runtime errors.
+
+## Programmatic Acceptance
+
+=== AC paths-001-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering path discovery and access.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;path|paths|getpath&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC paths-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve path component types: object keys remain strings and array indexes remain numbers.
+- Do not confuse path discovery with value transformation.
+- Preserve jq&#x27;s invalid-path runtime behavior.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATHS-002.md ===
+# FEATURE: jq Immutable Path Mutation and Deletion
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Implements immutable nested path updates, deletion, and array or slice mutation. |
+| Depends On  | FEATURE-PATHS-001.md |
+| Provides    | `setpath`, `delpaths`, `del`, nested mutation and deletion |
+| Consumes    | Path discovery and access, immutable JSON value model |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability applies path-based changes to JSON values without mutation aliasing, supporting nested creation, deletion, slices, and jq&#x27;s index rules.
+
+## Behavior
+
+- `setpath` creates missing intermediate objects or arrays as jq requires.
+- `delpaths` removes the specified paths and handles overlapping paths deterministically.
+- `del` removes keys, indexes, slices, and generated path selections.
+- Array indexes support valid negative indexes and jq&#x27;s out-of-bounds behavior.
+- Updates return new immutable JSON values while leaving the original evaluation input unchanged.
+- Invalid path types and unsupported string updates raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC paths-002-conformance ===
+Intent: The implementation passes the non-empty corpus slice covering path mutation and deletion.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;setpath|delpaths|del\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC paths-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Treat JSON values as immutable from the filter author&#x27;s perspective.
+- Do not mutate prior outputs or sibling branches during updates.
+- Preserve deletion through `empty` and jq&#x27;s negative-index rules.
+
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

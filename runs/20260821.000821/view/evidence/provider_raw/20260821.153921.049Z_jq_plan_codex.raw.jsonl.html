@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/provider_raw/20260821.153921.049Z_jq_plan_codex.raw.jsonl</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/provider_raw/20260821.153921.049Z_jq_plan_codex.raw.jsonl</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/provider_raw/20260821.153921.049Z_jq_plan_codex.raw.jsonl">Raw file</a></div></header>
+<article class="doc"><pre>{&quot;type&quot;:&quot;thread.started&quot;,&quot;thread_id&quot;:&quot;01a024fa-0994-7fc2-a83b-92c652a01304&quot;}
+{&quot;type&quot;:&quot;turn.started&quot;}
+{&quot;type&quot;:&quot;item.completed&quot;,&quot;item&quot;:{&quot;id&quot;:&quot;item_0&quot;,&quot;type&quot;:&quot;agent_message&quot;,&quot;text&quot;:&quot;=== BEGIN ARTIFACT FEATURE-FRONTEND-004.md ===\n# FEATURE: Frontend Functions and Scope\n\nPhase: 3\n\n## Programmatic Acceptance\n\n=== AC frontend-004-conformance ===\nIntent: User-defined functions execute with lexical scope.\nSuite: scoped\n\nimport os\nimport subprocess\n\nresult = subprocess.run(\n    [\&quot;./jq\&quot;, \&quot;-c\&quot;, \&quot;def f: . + 1; f\&quot;],\n    input=\&quot;1\\n\&quot;,\n    capture_output=True,\n    text=True,\n    env={**os.environ},\n)\nassert result.returncode == 0\nassert result.stdout.strip() == \&quot;2\&quot;\n=== END AC frontend-004-conformance ===\n=== END ARTIFACT FEATURE-FRONTEND-004.md ===&quot;}}
+{&quot;type&quot;:&quot;turn.completed&quot;,&quot;usage&quot;:{&quot;input_tokens&quot;:15430,&quot;cached_input_tokens&quot;:5888,&quot;cache_write_input_tokens&quot;:0,&quot;output_tokens&quot;:702,&quot;reasoning_output_tokens&quot;:545}}
+</pre></article>
+</main>
+</body>
+</html>

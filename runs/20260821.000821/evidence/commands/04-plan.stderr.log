@@ -3,10 +3,10 @@ POST-LLM FAILURE  ·  plan  ·  plan output validation failed
 ========================================================================
 
   Plan generation failed: the declared work graph is inconsistent.
-    frontend-004: is phase 2 but depends on 'core-001' in phase 3; the high-level topology (phases) and the actual topology (edges) must agree
+    FRONTEND-004: is phase 2 but depends on 'CORE-001' in phase 3; the high-level topology (phases) and the actual topology (edges) must agree
     No Blueprint or Manifest artifacts were written.
-    Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/logs/20260821.150244.995Z_jq_plan_codex.output.txt
-    contributing execution ids: 20260821.145300.587Z-b4861522, 20260821.145457.245Z-a72c419e, 20260821.145555.985Z-918a312e, 20260821.145705.003Z-13636297, 20260821.145810.537Z-9a6afd70, 20260821.145916.768Z-72174314, 20260821.150022.160Z-13d19368
+    Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/logs/20260821.153857.120Z_jq_plan_codex.output.txt
+    contributing execution ids: 20260821.152730.559Z-385667d3, 20260821.152904.472Z-3b989f08, 20260821.153019.750Z-b2cc4560, 20260821.153119.546Z-5ff98d28, 20260821.153211.432Z-d25e32a3, 20260821.153319.399Z-4f65ec3a, 20260821.153435.464Z-a106301c
     No files were changed.
 
   Recovery

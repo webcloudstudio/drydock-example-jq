@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.153019.750Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.153019.750Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.153019.750Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-FRONTEND-002.md ===
+# FEATURE: Frontend Expression Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines the jq expression parser and abstract syntax tree forms. |
+| Depends On  | FEATURE-FRONTEND-001.md |
+| Provides    | jq expression AST, precedence handling, constructor parsing, assignment parsing |
+| Consumes    | jq lexical tokens |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the jq parser and AST construction layer from `sources/parser.y`. The parser must preserve jq precedence and associativity and represent expressions for evaluation by later runtime stories.
+
+## Scope
+
+The parser covers:
+
+- operator precedence, associativity, and grouping;
+- suffix access, indexing, iteration, slices, and optional operators;
+- literals, strings, interpolation, arrays, and objects;
+- conditionals, errors, reductions, bindings, functions, assignments, and module grammar;
+- AST nodes retaining generator structure and source locations where required.
+
+The parser must reject malformed syntax through the compile-time error boundary supplied by the executable story.
+
+## Programmatic Acceptance
+
+=== AC frontend-002-conformance ===
+Intent: The parser passes every selected corpus case exercising expression, constructor, control, string, and module syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;^(\.|\[|\{|def|if|try|reduce|foreach|module|include|%::|\&quot;|@)&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC frontend-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator-oriented AST structure.
+- Use only the standard library implementation defined by the project architecture.
+- Do not modify supplied parser, lexer, corpus, or harness assets.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-003.md ===
+# FEATURE: Frontend Compile Validation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines compile-time rejection for invalid jq programs and bindings. |
+| Depends On  | FEATURE-FRONTEND-002.md |
+| Provides    | Compile validation, undefined-binding detection, undefined-label detection, exit code 3 |
+| Consumes    | Parsed jq AST |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Reject malformed or statically invalid programs before evaluation and communicate compilation failure through exit status `3`.
+
+## Scope
+
+Validation includes syntax failures, invalid object keys, malformed module metadata and paths, undefined variables, undefined labels, and other static errors represented in the supplied corpus. Diagnostics are written to standard error but their wording is not part of the contract.
+
+## Programmatic Acceptance
+
+=== AC frontend-003-conformance ===
+Intent: The compiler rejects the corpus cases containing invalid module grammar, undefined labels or bindings, and malformed syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;module \(|module \[|include .*\(|%::|break \$|\$bar|\{|\}&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC frontend-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must remain distinct from runtime failures.
+- Invalid programs must exit `3` without executing their filters.
+- Do not compare or reproduce upstream diagnostic text.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-004.md ===
+# FEATURE: Frontend Functions and Scope
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines user-defined jq functions, arguments, closures, recursion, and lexical scope. |
+| Depends On  | FEATURE-FRONTEND-003.md, FEATURE-CORE-001.md |
+| Provides    | def declarations, filter arguments, value arguments, lexical bindings, recursive calls |
+| Consumes    | Parsed jq AST, stream evaluator |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq function definitions and calls with lexical symbol resolution and generator-preserving argument semantics.
+
+## Scope
+
+Support zero- and multi-argument `def` declarations, filter parameters, value parameters, closures, recursive functions, function redefinition, lexical binding visibility, and backtracking through function calls. Function arguments must be evaluated as jq filters where the grammar specifies filter arguments and as captured values where binding syntax specifies value arguments.
+
+## Programmatic Acceptance
+
+=== AC frontend-004-conformance ===
+Intent: Function-definition and lexical-scope corpus cases execute successfully with correct generator and recursion behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;^def &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC frontend-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function symbols and value bindings are lexically scoped.
+- Recursive calls must not lose generator ordering or multiplicity.
+- Redefinition affects only subsequent references according to jq semantics.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-005.md ===
+# FEATURE: Frontend Destructuring Alternatives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq destructuring patterns, missing bindings, and alternative matching. |
+| Depends On  | FEATURE-FRONTEND-004.md |
+| Provides    | Array patterns, object patterns, missing-value bindings, ?// alternatives |
+| Consumes    | Function and stream evaluation, runtime backtracking |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement structural binding patterns and the `?//` operator for inputs whose shapes may vary.
+
+## Scope
+
+Support array and object patterns, nested patterns, shorthand bindings, missing elements as `null`, multiple alternative patterns, binding availability after a successful alternative, and retrying an alternative when a later expression raises an error.
+
+## Programmatic Acceptance
+
+=== AC frontend-005-conformance ===
+Intent: Destructuring and alternative-pattern corpus cases preserve bindings, fallback selection, and backtracking semantics.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\?//| as \$| as \[&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC frontend-005-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Missing pattern values bind to `null`, not an implementation-specific sentinel.
+- Alternative matching must preserve generator order.
+- A failed later computation may trigger the next alternative only as specified by jq.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CORE-001.md ===
+# FEATURE: Core Stream Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq&#x27;s ordered zero-or-more-value generator evaluation model. |
+| Depends On  | FEATURE-FRONTEND-003.md |
+| Provides    | Stream evaluator, pipeline backtracking, generator ordering, empty stream |
+| Consumes    | Parsed jq AST, immutable JSON values |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Build the evaluator around jq&#x27;s generator model: every filter consumes one input and produces an ordered stream of zero or more outputs.
+
+## Scope
+
+The evaluator must support downstream execution for every upstream result, cartesian evaluation of multi-output expressions, comma concatenation, pipeline backtracking, multiplicity, empty-stream propagation, and preservation of values emitted before a runtime error.
+
+This story establishes the execution protocol used by all later filters and builtins; it does not own the complete syntax or builtin surface.
+
+## Programmatic Acceptance
+
+=== AC core-001-conformance ===
+Intent: Generator-core corpus cases preserve stream ordering, multiplicity, backtracking, iteration, ranges, and empty-stream behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\.|\[|,|empty|range|while|recurse&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never collapse a generator into a single value.
+- Preserve output order and multiplicity through pipelines and nested generators.
+- Preserve outputs emitted before a runtime failure.
+- Keep runtime evaluation independent of any system jq executable or third-party implementation.
+
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

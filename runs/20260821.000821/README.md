@@ -11,7 +11,7 @@
 | Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
 | Acceptance score passed | UNPROVEN | No acceptance score was recorded for this run. | — |
 | Release score passed | UNPROVEN | No release score was recorded for this run. | — |
-| Integrity verification passed | PASS | 348 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 370 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
@@ -20,11 +20,11 @@
 - Platform: `Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35` on Python `3.12.13`
 - Target: `jq`
 - Run: `20260821.000821`
-- Ran: 2026-08-21 10:52:54 EDT — 2026-08-21 11:05:33 EDT
-- Elapsed: 758.7s
-- LLM calls: 34
-- Tokens: cached 4,833,536; uncached 2,291,173; output 127,816
-- LLM elapsed: 2946.8s
+- Ran: 2026-08-21 11:27:26 EDT — 2026-08-21 11:40:00 EDT
+- Elapsed: 754.1s
+- LLM calls: 45
+- Tokens: cached 5,056,256; uncached 3,056,483; output 164,817
+- LLM elapsed: 3667.3s
 - Build passes: 1; repairs: not recorded
 - Conformance: no external suite defined
 - Verdict: expected PASSED, observed ERROR
@@ -52,7 +52,7 @@
 | 01-init | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock init jq` | 0 | 2.6s | [stdout](evidence/commands/01-init.stdout.log) · [stderr](evidence/commands/01-init.stderr.log) |
 | 02-import-sources | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock import jq sources --format markdown` | 0 | 3.0s | [stdout](evidence/commands/02-import-sources.stdout.log) · [stderr](evidence/commands/02-import-sources.stderr.log) |
 | 03-analyze | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock analyze jq` | 0 | 122.7s | [stdout](evidence/commands/03-analyze.stdout.log) · [stderr](evidence/commands/03-analyze.stderr.log) · [llm](evidence/commands/03-analyze.llm.log) |
-| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 1 | 745.2s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/commands/04-plan.llm.log) |
+| 04-plan | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock plan jq --override` | 1 | 732.3s | [stdout](evidence/commands/04-plan.stdout.log) · [stderr](evidence/commands/04-plan.stderr.log) · [llm](evidence/commands/04-plan.llm.log) |
 
 ## Evidence
 

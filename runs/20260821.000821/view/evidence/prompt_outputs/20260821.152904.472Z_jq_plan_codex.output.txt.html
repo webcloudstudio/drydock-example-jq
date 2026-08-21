@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.152904.472Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.152904.472Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.152904.472Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT ARCHITECTURE.md ===
+# ARCHITECTURE: jq Interpreter
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines the standalone standard-library Python architecture for the jq interpreter. |
+| Depends On  | sources/jq-manual.txt, sources/parser.y, sources/lexer.l, TECHNOLOGY_STACK.md |
+| Provides    | lexer, parser, AST, stream evaluator, path engine, builtin registry, jq CLI |
+| Consumes    | stdin JSON stream, jq filter program, staged conformance assets |
+
+## Questions
+
+- None.
+
+## Purpose
+
+The application is a standalone executable named `jq` at the application root. It accepts `-c` and a jq filter, reads JSON values from standard input, evaluates the filter as an ordered generator, and writes compact JSON outputs one per line.
+
+## Module Boundaries
+
+| Module | Responsibility |
+|---|---|
+| CLI | Argument validation, JSON input framing, output serialization, exit-code mapping |
+| Lexer | jq tokens, strings, interpolation, comments, operators, delimiters |
+| Parser | Precedence-aware grammar and AST construction |
+| Compiler | Static validation, binding resolution, function definitions, labels |
+| Evaluator | Generator execution, streams, backtracking, control flow, runtime errors |
+| Values | JSON-compatible immutable values, numeric semantics, structural comparison |
+| Paths | Path discovery, access, immutable updates, deletion, assignments |
+| Builtins | jq-defined functions and standard-library behavior |
+| Harness boundary | No runtime dependence on external jq or third-party packages |
+
+## Evaluation Model
+
+Every filter receives one input value and yields zero or more output values. Pipes execute the right-hand filter once for every left-hand output. Commas concatenate streams in source order. Collection constructors consume all outputs, while runtime errors preserve outputs already emitted.
+
+## Error Contract
+
+Compile and static errors return exit code `3`. Runtime errors return exit code `5`, after preserving any values already written. Successful completion returns `0`. Diagnostics are written only to standard error.
+
+## Technology Stack
+
+- Python 3.11 or newer, standard library only.
+- POSIX `sh` for the supplied conformance entry point.
+- No network access, package installation, third-party jq implementation, or system jq delegation.
+
+## Source Policy
+
+Files under `sources/` are staged supplied assets. The implementation reads them as specifications or scoring inputs and never modifies them. The conformance corpus and harness remain authoritative for behavioral correctness.
+
+## Programmatic Acceptance
+
+=== AC architecture-boundaries ===
+Intent: The staged architecture inputs identify the required jq language and scoring boundaries.
+
+from pathlib import Path
+
+manual = Path(&quot;sources/jq-manual.txt&quot;).read_text(encoding=&quot;utf-8&quot;)
+parser = Path(&quot;sources/parser.y&quot;).read_text(encoding=&quot;utf-8&quot;)
+lexer = Path(&quot;sources/lexer.l&quot;).read_text(encoding=&quot;utf-8&quot;)
+assert &quot;The jq Language Manual&quot; in manual
+assert &quot;Query:&quot; in parser and &quot;Expr:&quot; in parser
+assert &quot;IN_QQSTRING&quot; in lexer and &quot;INVALID_CHARACTER&quot; in lexer
+=== END AC architecture-boundaries ===
+
+=== AC architecture-runtime-policy ===
+Intent: The project architecture preserves the standard-library-only and no-delegation constraints.
+
+from pathlib import Path
+
+stack = Path(&quot;TECHNOLOGY_STACK.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+compass = Path(&quot;COMPASS.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+assert &quot;standard library only&quot; in compass
+assert &quot;Python&quot; in stack
+assert &quot;Do not shell out to a system `jq` executable.&quot; in compass
+=== END AC architecture-runtime-policy ===
+
+=== AC architecture-source-contract ===
+Intent: The supplied scoring boundary declares the executable and documented exit contract.
+
+from pathlib import Path
+
+instructions = Path(&quot;sources/INSTRUCTIONS.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+assert &quot;./jq -c &#x27;&lt;program&gt;&#x27;&quot; in instructions
+assert &quot;3&quot; in instructions and &quot;5&quot; in instructions
+assert &quot;one compact JSON value per line&quot; in instructions
+=== END AC architecture-source-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not shell out to a system jq executable.
+- Do not use third-party jq implementations or bindings.
+- Do not modify files under `sources/`.
+- Preserve generator order, multiplicity, backtracking, and partial runtime output.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FOUNDATION-001.md ===
+# FEATURE: Foundation Source Staging
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Stages and validates the pinned jq specifications and conformance assets. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | staged jq specifications, conformance corpus, exclusions, scoring harness |
+| Consumes    | ARCHITECTURE.md |
+
+## Questions
+
+- None.
+
+## Scope
+
+The application root contains the supplied `sources/` assets required to build and score the interpreter. Staging preserves the assets byte-for-byte, including the corpus, exclusions, harness, grammar references, manual, and builtin reference.
+
+## Staged Assets
+
+- `sources/jq-manual.txt`
+- `sources/jq.test`
+- `sources/parser.y`
+- `sources/lexer.l`
+- `sources/builtin.jq`
+- `sources/run_conformance.py`
+- `sources/full_test.sh`
+- `sources/exclusions.txt`
+
+The harness is imported directly for staging verification. It is not launched by this story.
+
+## Programmatic Acceptance
+
+=== AC staging-corpus ===
+Intent: The staged corpus parses into the authoritative number of cases.
+
+import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+assert len(cases) == 550
+=== END AC staging-corpus ===
+
+=== AC staging-exclusions ===
+Intent: Every declared exclusion matches the staged corpus and produces the authoritative excluded set.
+
+import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+exclusions = harness.parse_exclusions(harness.EXCLUSIONS)
+excluded = harness.apply_exclusions(cases, exclusions)
+assert len(exclusions) == 13
+assert len(excluded) == 13
+=== END AC staging-exclusions ===
+
+=== AC staging-harness-interface ===
+Intent: The staged harness exposes the parser and exclusion interfaces required by later stories.
+
+import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+assert callable(harness.parse_corpus)
+assert callable(harness.parse_exclusions)
+assert callable(harness.apply_exclusions)
+assert harness.EXIT_COMPILE_ERROR == 3
+assert harness.EXIT_RUNTIME_ERROR == 5
+=== END AC staging-harness-interface ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve all staged source assets without modification.
+- Do not run the candidate interpreter from this staging story.
+- Do not alter corpus cases or exclusion entries.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FOUNDATION-002.md ===
+# FEATURE: jq Executable Boundary
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides the executable jq command-line and JSON stream contract. |
+| Depends On  | FEATURE-FOUNDATION-001.md |
+| Provides    | `./jq -c &#x27;&lt;program&gt;&#x27;`, stdin JSON input, compact JSON output, exit codes 0/3/5 |
+| Consumes    | staged jq corpus and interpreter runtime |
+
+## Questions
+
+- None.
+
+## Interface
+
+The executable accepts `-c` followed by a jq program. It reads JSON values from standard input, evaluates each value, writes each generated result as one compact JSON value per line, and writes diagnostics to standard error.
+
+Exit codes:
+
+- `0`: compilation and execution completed.
+- `3`: the program did not compile.
+- `5`: the program compiled but raised at runtime.
+
+Values emitted before a runtime error remain on standard output.
+
+## Programmatic Acceptance
+
+=== AC cli-success ===
+Intent: The executable accepts the required option and round-trips supplied JSON values.
+
+import json
+import os
+import subprocess
+
+values = [{&quot;a&quot;: 1}, [1, 2], None]
+payload = &quot;\n&quot;.join(json.dumps(value) for value in values) + &quot;\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == values
+=== END AC cli-success ===
+
+=== AC cli-compile-error ===
+Intent: A syntactically invalid jq program returns the documented compile-failure status.
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 3
+=== END AC cli-compile-error ===
+
+=== AC cli-runtime-error ===
+Intent: A compiled runtime error returns status 5 while preserving prior generated output.
+
+import json
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 5
+assert [json.loads(line) for line in result.stdout.splitlines()] == [1]
+=== END AC cli-runtime-error ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Implement only the exercised `-c` interface.
+- Never delegate evaluation to a system jq executable.
+- Preserve output generated before runtime failure.
+- Keep diagnostics off standard output.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FOUNDATION-003.md ===
+# FEATURE: jq Project Documentation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Documents the jq executable interface, exit codes, and conformance command. |
+| Depends On  | FEATURE-FOUNDATION-002.md |
+| Provides    | README.md project handoff documentation |
+| Consumes    | `./jq -c &#x27;&lt;program&gt;&#x27;`, `sh sources/full_test.sh` |
+
+## Questions
+
+- None.
+
+## Documentation Contract
+
+`README.md` concisely documents:
+
+- the executable name and `-c` invocation;
+- JSON input through standard input;
+- compact one-value-per-line output through standard output;
+- exit codes `0`, `3`, and `5`;
+- the supplied verification command `sh sources/full_test.sh`;
+- the standard-library-only and no-system-jq constraints.
+
+## Programmatic Acceptance
+
+=== AC readme-content ===
+Intent: README.md records every required executable and verification contract token.
+
+from pathlib import Path
+
+readme = Path(&quot;README.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+required = [
+    &quot;jq&quot;,
+    &quot;-c&quot;,
+    &quot;stdin&quot;,
+    &quot;stdout&quot;,
+    &quot;sh sources/full_test.sh&quot;,
+    &quot;3&quot;,
+    &quot;5&quot;,
+]
+assert all(token in readme for token in required)
+=== END AC readme-content ===
+
+=== AC readme-contract-sections ===
+Intent: README.md provides independently readable interface and verification sections.
+
+from pathlib import Path
+
+readme = Path(&quot;README.md&quot;).read_text(encoding=&quot;utf-8&quot;)
+assert &quot;## Interface&quot; in readme
+assert &quot;## Verification&quot; in readme
+=== END AC readme-contract-sections ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Keep README concise and operational.
+- Do not claim unsupported command-line options.
+- Do not replace the supplied scoring command with a filtered or altered command.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-FRONTEND-001.md ===
+# FEATURE: jq Lexical Scanner
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Tokenizes jq programs according to the supplied lexer specification. |
+| Depends On  | FEATURE-FOUNDATION-002.md |
+| Provides    | jq lexer tokens for identifiers, bindings, literals, strings, interpolation, formats, operators, delimiters, comments, and invalid characters |
+| Consumes    | sources/lexer.l, sources/jq-manual.txt |
+
+## Questions
+
+- None.
+
+## Scope
+
+The lexer recognizes:
+
+- identifiers, field selectors, variable bindings, and module-qualified names;
+- JSON-compatible numeric and string literals;
+- string interpolation and format tokens;
+- keywords including `def`, `if`, `try`, `reduce`, `foreach`, `label`, `import`, and `include`;
+- arithmetic, comparison, assignment, defined-or, alternation, and stream operators;
+- brackets, braces, parentheses, comments, whitespace, and invalid characters.
+
+Lexical errors must be surfaced to the compiler so the executable returns exit code `3`.
+
+## Programmatic Acceptance
+
+=== AC lexer-conformance ===
+Intent: The executable passes the non-empty corpus slice selected by the lexical syntax families.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&#x27;^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|&quot;|@)&#x27;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report[&quot;summary&quot;]
+assert sum(tally.values()) &gt; 0
+assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC lexer-conformance ===
+
+=== AC lexer-invalid-program ===
+Intent: Invalid lexical characters are rejected with compile status 3.
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;@&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 3
+=== END AC lexer-invalid-program ===
+
+=== AC lexer-comment-and-format ===
+Intent: The scanner accepts comments and format tokens in a valid jq program.
+
+import json
+import os
+import subprocess
+
+program = &#x27;@text # comment\n&#x27;
+input_value = &quot;hello&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, program],
+    input=json.dumps(input_value) + &quot;\n&quot;,
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+assert result.returncode == 0
+assert json.loads(result.stdout) == input_value
+=== END AC lexer-comment-and-format ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Follow `sources/lexer.l` for token boundaries and escape handling.
+- Preserve Unicode strings and interpolation boundaries.
+- Reject invalid characters rather than silently dropping them.
+- Keep lexical compilation failures distinct from runtime failures.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

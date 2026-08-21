@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.153319.399Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.153319.399Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.153319.399Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-BUILTINS-002.md ===
+# FEATURE: String and Unicode Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides jq string, Unicode, trimming, splitting, joining, and substring builtins. |
+| Depends On  | FEATURE-BUILTINS-001.md |
+| Provides    | String and Unicode builtin filters |
+| Consumes    | Generator evaluator, jq value model |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement string and Unicode behavior defined by the jq manual and conformance corpus, including Unicode codepoint handling and jq-specific error behavior.
+
+## Scope
+
+The implementation covers `trim`, `ltrim`, `rtrim`, `ltrimstr`, `rtrimstr`, `trimstr`, `split`, `splits`, `join`, `explode`, `implode`, `indices`, `index`, `rindex`, `ascii_downcase`, `ascii_upcase`, `startswith`, and `endswith`.
+
+String lengths and offsets use Unicode codepoints. Invalid input raises a jq runtime error; optional evaluation may suppress that error through the core runtime.
+
+## Programmatic Acceptance
+
+=== AC builtins-002-conformance ===
+Intent: The authoritative corpus slice covering string and Unicode syntax executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;split|trim|explode|implode|indices|ascii_|startswith|endswith&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-002-conformance ===
+
+=== AC builtins-002-unicode ===
+Intent: The authoritative corpus exercises Unicode codepoint transformations and string boundary behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;explode|implode|indices|trim|ascii_|startswith|endswith&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-002-unicode ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only standard-library Unicode facilities.
+- Preserve jq generator ordering and runtime error behavior.
+- Do not introduce third-party regex, jq, or Unicode dependencies.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-BUILTINS-003.md ===
+# FEATURE: Regular-Expression Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides jq regular-expression matching, scanning, capture, and substitution filters. |
+| Depends On  | FEATURE-BUILTINS-002.md |
+| Provides    | Regular-expression builtin filters |
+| Consumes    | Generator evaluator, jq strings, Unicode indexing |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq regular-expression builtins using Python standard-library facilities while preserving jq&#x27;s stream, capture, offset, and replacement semantics.
+
+## Scope
+
+The implementation covers `test`, `match`, `capture`, `scan`, `split`, `splits`, `sub`, and `gsub`, including supported flags, named and unnamed captures, global matching, empty-match handling, Unicode codepoint offsets, and replacement streams.
+
+Unsupported or invalid expressions and invalid input types must raise runtime errors through the common evaluator.
+
+## Programmatic Acceptance
+
+=== AC builtins-003-conformance ===
+Intent: The authoritative corpus slice covering regular-expression filters executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;test\(|match\(|capture\(|scan\(|sub\(|gsub\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-003-conformance ===
+
+=== AC builtins-003-streams ===
+Intent: The authoritative corpus exercises both stream-producing matches and substitution output multiplicity.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;scan\(|splits\(|sub\(|gsub\(|match\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-003-streams ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not shell out to an external regex engine.
+- Preserve jq&#x27;s ordered generator multiplicity and replacement-stream behavior.
+- Keep diagnostics on stderr and preserve exit-code separation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-BUILTINS-004.md ===
+# FEATURE: Formatting and JSON Conversion Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides jq JSON conversion and text-formatting filters. |
+| Depends On  | FEATURE-BUILTINS-002.md |
+| Provides    | JSON conversion and @-format builtin filters |
+| Consumes    | Generator evaluator, jq value serialization |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq conversion and formatting filters using the standard library, preserving compact JSON semantics, escaping, Unicode handling, and stream ordering.
+
+## Scope
+
+The implementation covers `tostring`, `tonumber`, `toboolean`, `tojson`, `fromjson`, and `@text`, `@json`, `@html`, `@uri`, `@urid`, `@csv`, `@tsv`, `@sh`, `@base64`, and `@base64d`. String interpolation following format filters must apply the format only to interpolated portions as specified by jq.
+
+Invalid conversion and format inputs raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC builtins-004-conformance ===
+Intent: The authoritative corpus slice covering conversion and formatting filters executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;@|tojson|fromjson|tostring|tonumber|toboolean&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-004-conformance ===
+
+=== AC builtins-004-errors ===
+Intent: The authoritative corpus includes invalid conversion and formatting inputs and all selected cases pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;tonumber|toboolean|fromjson|@csv|@tsv|@base64d&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-004-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only standard-library serialization, URL, shell-escaping, and base64 facilities.
+- Do not compare formatted output by ad hoc text assertions; the conformance corpus is authoritative.
+- Preserve jq&#x27;s compact JSON value boundaries and runtime failures.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-BUILTINS-005.md ===
+# FEATURE: Date and Math Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides jq date, time, mathematical, and special-number builtin filters. |
+| Depends On  | FEATURE-BUILTINS-001.md |
+| Provides    | Date, time, math, and numeric-predicate builtin filters |
+| Consumes    | Generator evaluator, jq numeric value model |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq&#x27;s date/time and mathematical builtin surface with UTC behavior, standard-library math functions, and jq-compatible special-number semantics.
+
+## Scope
+
+The implementation covers date conversion and formatting (`fromdate`, `todate`, `fromdateiso8601`, `todateiso8601`, `gmtime`, `localtime`, `mktime`, `strptime`, `strftime`, `strflocaltime`), mathematical functions, numeric predicates, infinity, NaN, and related floating-point edge cases.
+
+Time functions must use UTC where jq specifies UTC. Invalid arguments raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC builtins-005-conformance ===
+Intent: The authoritative corpus slice covering date and math filters executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;date|strftime|strptime|mktime|gmtime|pow\(|sin|cos|sqrt|floor&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-005-conformance ===
+
+=== AC builtins-005-special-numbers ===
+Intent: The authoritative corpus exercises infinity, NaN, numeric predicates, and floating-point boundaries.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;infinite|nan|isnan|isinfinite|isfinite|isnormal|pow\(|log|round|floor&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-005-special-numbers ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library `math`, `datetime`, and `time`.
+- Keep date calculations deterministic under UTC requirements.
+- Preserve jq&#x27;s distinction between numeric NaN/infinity values and JSON serialization behavior.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-BUILTINS-006.md ===
+# FEATURE: Environment, Diagnostics, and I/O Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides jq process environment, input-stream, diagnostics, and builtin-introspection behavior. |
+| Depends On  | FEATURE-BUILTINS-004.md |
+| Provides    | input, inputs, debug, stderr, env, $ENV, location, and builtins filters |
+| Consumes    | CLI stdin/stdout/stderr boundary, generator evaluator |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq&#x27;s constrained process integrations while preserving the CLI contract and generator semantics.
+
+## Scope
+
+The implementation covers `input`, `inputs`, `debug`, `stderr`, `env`, `$ENV`, `$__loc__`, `input_filename`, `input_line_number`, build-configuration bindings, and `builtins`.
+
+Input filters consume the process&#x27;s remaining JSON values in order. Diagnostic filters write to stderr without corrupting stdout values. Environment filters expose the process environment as specified. Location metadata identifies top-level source location sufficiently for corpus behavior.
+
+## Programmatic Acceptance
+
+=== AC builtins-006-conformance ===
+Intent: The authoritative corpus slice covering environment, diagnostics, I/O, location, and builtin introspection executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;input|inputs|debug|stderr|env|\$ENV|\$__loc__|builtins&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-006-conformance ===
+
+=== AC builtins-006-input-order ===
+Intent: The authoritative corpus exercises consumption of remaining stdin values and preserves generator order.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;input|inputs&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-006-input-order ===
+
+=== AC builtins-006-diagnostics ===
+Intent: The authoritative corpus exercises stderr diagnostics without changing the candidate&#x27;s stdout result stream.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;debug|stderr&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC builtins-006-diagnostics ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not expose secrets beyond the environment behavior specified by jq.
+- Keep diagnostic output on stderr and JSON result values on stdout.
+- Do not invoke external commands or services.
+- Preserve partial output and documented compile/runtime exit distinctions.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,445 @@
+=== BEGIN ARTIFACT FEATURE-PATHS-003.md ===
+# FEATURE: Path Assignment Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq plain, update, arithmetic, and defined-or assignment semantics. |
+| Depends On  | FEATURE-PATHS-002.md |
+| Provides    | jq assignment operators: =, |=, +=, -=, *=, /=, %=, //= |
+| Consumes    | Immutable path mutation and deletion |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Assignment evaluates left-hand paths against the original input and produces immutable updated values. Plain assignment applies every right-hand-side result; update and arithmetic assignments use the first update result, and `empty` deletes the selected path.
+
+## Behavior
+
+- Support multi-path left-hand expressions and generator right-hand expressions.
+- Implement `=`, `|=`, `+=`, `-=`, `*=`, `/=`, `%=`, and `//=`.
+- Preserve jq path ordering and output multiplicity.
+- Delete paths when update assignment produces `empty`.
+- Never mutate the original value visible to sibling expressions.
+
+## Programmatic Acceptance
+
+=== AC paths-003-conformance ===
+Intent: The supplied conformance corpus cases covering assignment operators execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"[.]?[^\n]*(\|=|\+=|-=|\*=|/=|%=|//=| = )"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC paths-003-conformance ===
+
+=== AC paths-003-report ===
+Intent: The assignment conformance gate reports a valid executed case set.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"[.]?[^\n]*(\|=|\+=|-=|\*=|/=|%=|//=| = )"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert isinstance(report["cases"], list)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+=== END AC paths-003-report ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not implement assignment through in-place mutation.
+- Do not collapse multiple assignment outputs into one.
+- Do not change supplied scoring assets.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CONTROL-001.md ===
+# FEATURE: Reductions and Bounded Iteration
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq reductions, iteration bounds, extraction, and accumulator behavior. |
+| Depends On  | FEATURE-PATHS-003.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth |
+| Consumes    | Generator evaluation, path assignment, labels, and break control |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Reduction and bounded-iteration filters consume ordered generator streams while preserving accumulator state, extraction order, multiplicity, and early termination.
+
+## Behavior
+
+- Implement `reduce EXP as $var (INIT; UPDATE)`.
+- Implement `foreach` with optional extraction.
+- Implement `limit`, `skip`, `first`, `last`, and `nth`.
+- Evaluate generator arguments cartesianly where jq requires it.
+- Preserve labels, breaks, empty streams, and runtime errors.
+
+## Programmatic Acceptance
+
+=== AC control-001-conformance ===
+Intent: The supplied conformance corpus cases covering reductions and bounded iteration execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"reduce|foreach|limit|skip|first\(|last\(|nth\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC control-001-conformance ===
+
+=== AC control-001-report ===
+Intent: The reduction and bounded-iteration gate reports executed cases without failures or errors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"reduce|foreach|limit|skip|first\(|last\(|nth\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert isinstance(report["summary"], dict)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+=== END AC control-001-report ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve stream order and accumulator transitions.
+- Do not treat generators as single-valued functions.
+- Do not run the unscoped corpus from this story.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CONTROL-002.md ===
+# FEATURE: Recursive Generators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq recursive generator filters and their termination semantics. |
+| Depends On  | FEATURE-CONTROL-001.md |
+| Provides    | while, until, repeat, recurse |
+| Consumes    | Generator evaluation, conditionals, and error handling |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Recursive filters produce ordered recursive streams while retaining jq's termination, conditional, and error behavior.
+
+## Behavior
+
+- Implement `while(cond; update)`.
+- Implement `until(cond; next)`.
+- Implement `repeat(exp)` with error-driven termination.
+- Implement `recurse`, `recurse(f)`, and conditional recursion.
+- Preserve depth-first ordering, multiplicity, empty results, and termination conditions.
+
+## Programmatic Acceptance
+
+=== AC control-002-conformance ===
+Intent: The supplied conformance corpus cases covering recursive generators execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"while|until|repeat|recurse"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC control-002-conformance ===
+
+=== AC control-002-report ===
+Intent: The recursive-generator gate reports an executed, failure-free case set.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"while|until|repeat|recurse"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert isinstance(report["cases"], list)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+=== END AC control-002-report ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve recursive output order.
+- Ensure terminating conditions and error-driven termination do not leak extra outputs.
+- Do not introduce external runtime dependencies.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CONTROL-003.md ===
+# FEATURE: Generator Predicates and Collection Utilities
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq generator predicates, combinations, ranges, and matrix utilities. |
+| Depends On  | FEATURE-CONTROL-002.md |
+| Provides    | any, all, isempty, combinations, range, transpose |
+| Consumes    | Generator evaluation and recursive control |
+
+## Questions
+
+- None.
+
+## Purpose
+
+These utilities evaluate generator streams with jq truthiness, short-circuiting, cartesian expansion, and collection semantics.
+
+## Behavior
+
+- Implement `any`, `all`, and `isempty`.
+- Implement `combinations` and `combinations(n)`.
+- Implement one-, two-, and three-argument `range`.
+- Implement `transpose` with null padding for jagged matrices.
+- Preserve short-circuit behavior and empty-stream identities.
+
+## Programmatic Acceptance
+
+=== AC control-003-conformance ===
+Intent: The supplied conformance corpus cases covering generator predicates and collection utilities execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"any|all|isempty|combinations|range|transpose"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC control-003-conformance ===
+
+=== AC control-003-report ===
+Intent: The generator-utility gate reports executed cases without failures or errors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"any|all|isempty|combinations|range|transpose"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert isinstance(report["summary"], dict)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+=== END AC control-003-report ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve short-circuiting for predicate generators.
+- Preserve cartesian argument evaluation and generator multiplicity.
+- Do not substitute Python truthiness for jq truthiness.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-BUILTINS-001.md ===
+# FEATURE: Structural and Collection Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Defines jq type, structural, collection, sorting, grouping, and containment builtins. |
+| Depends On  | FEATURE-CONTROL-003.md |
+| Provides    | type, length, keys, keys_unsorted, has, contains, inside, map, map_values, flatten, sort, sort_by, group_by, unique, unique_by, join, to_entries, from_entries, with_entries |
+| Consumes    | Generator predicates, collection utilities, immutable values, and comparison ordering |
+
+## Questions
+
+- None.
+
+## Purpose
+
+This feature supplies jq's structural and collection library over arrays, objects, strings, and scalar values.
+
+## Behavior
+
+- Implement type selectors, `length`, keys, insertion-order keys, and membership helpers.
+- Implement containment and inverse containment with recursive structural semantics.
+- Implement mapping, value mapping, flattening, joins, entries conversion, and entry transformation.
+- Implement jq ordering for mixed JSON values and use it for sorting, grouping, and uniqueness.
+- Preserve generator multiplicity and deletion behavior from `empty`.
+
+## Programmatic Acceptance
+
+=== AC builtins-001-conformance ===
+Intent: The supplied conformance corpus cases covering structural and collection builtins execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"map|select|sort|group_by|unique|contains|keys|entries|flatten|join"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-001-conformance ===
+
+=== AC builtins-001-report ===
+Intent: The structural-builtin gate reports executed cases without failures or errors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"map|select|sort|group_by|unique|contains|keys|entries|flatten|join"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert isinstance(report["cases"], list)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+=== END AC builtins-001-report ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Match jq's structural ordering rather than Python's mixed-type ordering.
+- Preserve object key semantics and array multiplicity.
+- Do not silently coerce unsupported collection values.
+=== END ARTIFACT ===
