@@ -1,0 +1,16 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status — workspace
+
+Target: jq
+   Phase:     Implement
+   State:     Failed: programmatic acceptance failed: lexer-conformance-slice, parser-conformance-slice
+   Detail:    9 imported · 28 authored · metadata building
+   Analysis:  Ready · 28 stories · 0 questions · 0 blockers
+   Plan:      23 pending · 3 closed/implemented · 2 closed/failed
+   Next Step: drydock run quarterdeck jq
+   8-21:      ✅  drydock build status jq
+   8-21:      ❌  drydock build jq --override --repair-attempts 13
+   8-21:      ✅  drydock build status jq
+   8-21:      ✅  drydock plan verify jq
+   8-21:      ✅  drydock plan jq --override
+

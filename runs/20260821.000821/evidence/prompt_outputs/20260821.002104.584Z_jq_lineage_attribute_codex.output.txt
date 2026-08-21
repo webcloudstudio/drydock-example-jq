@@ -1,0 +1,37 @@
+<requirement name="stage-pinned-scoring-assets" stories="FOUNDATION-001">
+Stage the pinned jq source and scoring assets.
+</requirement>
+<requirement name="preserve-upstream-corpus" stories="FOUNDATION-001,VERIFICATION-002">
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+</requirement>
+<requirement name="validate-exclusion-entries" stories="FOUNDATION-001,VERIFICATION-002">
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+</requirement>
+<requirement name="exclude-module-loader-cases" stories="FOUNDATION-001,FOUNDATION-002,VERIFICATION-002">
+Only the loader cases are excluded.
+</requirement>
+<requirement name="reject-module-grammar-errors" stories="FRONTEND-001,FRONTEND-002,FRONTEND-003,VERIFICATION-002">
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`, `include "\(a)"; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+</requirement>
+<unattached story="FOUNDATION-003"/>
+<unattached story="FRONTEND-004"/>
+<unattached story="FRONTEND-005"/>
+<unattached story="CORE-001"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="PATHS-001"/>
+<unattached story="PATHS-002"/>
+<unattached story="PATHS-003"/>
+<unattached story="CONTROL-001"/>
+<unattached story="CONTROL-002"/>
+<unattached story="CONTROL-003"/>
+<unattached story="BUILTINS-001"/>
+<unattached story="BUILTINS-002"/>
+<unattached story="BUILTINS-003"/>
+<unattached story="BUILTINS-004"/>
+<unattached story="BUILTINS-005"/>
+<unattached story="BUILTINS-006"/>
+<unattached story="BUILTINS-007"/>
+<unattached story="BUILTINS-008"/>
+<unattached story="VERIFICATION-001"/>

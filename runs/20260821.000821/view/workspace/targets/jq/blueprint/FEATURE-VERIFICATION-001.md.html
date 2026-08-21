@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-VERIFICATION-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-VERIFICATION-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-VERIFICATION-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Scoped Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provides executing, scoped conformance verification for implemented jq capabilities.</td></tr><tr><td>Depends On</td><td>FEATURE-BUILTINS-008.md</td></tr><tr><td>Provides</td><td>scoped conformance verification</td></tr><tr><td>Consumes</td><td>executable jq, staged conformance harness, implemented capability slices</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Bind each implementation area to an executing, non-empty slice of the supplied authoritative conformance corpus.</p>
+<h2>Behavior</h2>
+<ul><li>Every scoped invocation supplies the candidate through the inherited <code>JQ</code> environment.</li><li>Selectors match program syntax owned by implemented capabilities.</li><li>The machine-readable report is parsed as JSON.</li><li>A scoped verification passes only when it matched cases, reported no failures or errors, and exited successfully.</li><li>This story does not run the unfiltered corpus.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC verification-001-scoped ===<br>Intent: The authoritative scoped conformance slice executes non-empty cases for representative implemented capabilities and passes completely.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce|foreach|recurse|path|def|map|split|test|@&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC verification-001-scoped ===</p>
+<p>=== AC verification-001-environment ===<br>Intent: The scoped verification command receives the candidate through JQ and returns a machine-readable successful report.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;walk|pick|INDEX|JOIN|IN\(|bsearch&quot; candidate = f&quot;{os.getcwd()}/jq&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: candidate}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) assert report[&quot;candidate&quot;] == [candidate] assert sum(report[&quot;summary&quot;].values()) &gt; 0 assert result.returncode == 0 === END AC verification-001-environment ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never invoke the harness in non-executing enumeration or dry-run mode.</li><li>Never invoke the unfiltered corpus from this story.</li><li>Preserve the supplied harness and corpus unchanged.</li></ul></article>
+</main>
+</body>
+</html>

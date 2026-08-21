@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CORE-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CORE-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CORE-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Stream-Based Filter Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Evaluate every jq filter as an ordered stream of zero or more values.</td></tr><tr><td>Depends On</td><td>FEATURE-FRONTEND-003.md</td></tr><tr><td>Provides</td><td>generator evaluation, backtracking, downstream stream execution</td></tr><tr><td>Consumes</td><td>jq parser and AST</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Build the evaluator around ordered generators. Comma concatenates streams, pipes run downstream filters once per upstream value, and multi-output expressions preserve cartesian products, backtracking, multiplicity, and partial output before runtime errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-001-generators ===<br>Intent: The implementation passes the executing conformance cases for generator ordering, pipes, commas, and iteration.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\.|\[|,|empty|range|while|recurse&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-001-generators ===</p>
+<p>=== AC core-001-backtracking ===<br>Intent: The implementation passes the executing cases that require multiplicity and downstream backtracking.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;foreach|limit|skip|first\(|last\(|nth\(|try |empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-001-backtracking ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never collapse a generator into a single value.</li><li>Preserve output order, multiplicity, and downstream cartesian evaluation.</li><li>Preserve values emitted before a runtime failure.</li></ul></article>
+</main>
+</body>
+</html>

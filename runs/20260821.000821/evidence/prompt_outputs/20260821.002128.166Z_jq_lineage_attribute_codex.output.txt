@@ -1,0 +1,32 @@
+<requirement name="executable-jq-contract" stories="FOUNDATION-002">
+The deliverable is an executable named jq that reads JSON on stdin.
+</requirement>
+<requirement name="run-conformance-scoring" stories="VERIFICATION-002">
+`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.
+</requirement>
+<unattached story="FOUNDATION-001"/>
+<unattached story="FOUNDATION-003"/>
+<unattached story="FRONTEND-001"/>
+<unattached story="FRONTEND-002"/>
+<unattached story="FRONTEND-003"/>
+<unattached story="CORE-001"/>
+<unattached story="FRONTEND-004"/>
+<unattached story="FRONTEND-005"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="PATHS-001"/>
+<unattached story="PATHS-002"/>
+<unattached story="PATHS-003"/>
+<unattached story="CONTROL-001"/>
+<unattached story="CONTROL-002"/>
+<unattached story="CONTROL-003"/>
+<unattached story="BUILTINS-001"/>
+<unattached story="BUILTINS-002"/>
+<unattached story="BUILTINS-003"/>
+<unattached story="BUILTINS-004"/>
+<unattached story="BUILTINS-005"/>
+<unattached story="BUILTINS-006"/>
+<unattached story="BUILTINS-007"/>
+<unattached story="BUILTINS-008"/>
+<unattached story="VERIFICATION-001"/>

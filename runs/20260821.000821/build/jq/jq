@@ -1,0 +1,445 @@
+#!/usr/bin/env python3
+import sys,json,re,math,base64,urllib.parse
+from copy import deepcopy
+class JQError(Exception): pass
+class CompileError(Exception): pass
+def truth(x): return x is not False and x is not None
+def typ(x): return 'null' if x is None else 'boolean' if isinstance(x,bool) else 'number' if isinstance(x,(int,float)) else 'string' if isinstance(x,str) else 'array' if isinstance(x,list) else 'object'
+def compact(x): return json.dumps(x,ensure_ascii=False,separators=(',',':'),allow_nan=False)
+def lexical_source(s):
+ # Keep comments and delimiter balance in the front end, rather than letting
+ # malformed source fall through to an evaluator-side error.
+ out=[]; q=False; esc=False; comment=False; stack=[]
+ pairs={')':'(',']':'[','}':'{'}
+ for c in s:
+  if comment:
+   if c in '\r\n': comment=False; out.append(c)
+   continue
+  if q:
+   if ord(c)<0x20: raise CompileError('invalid control character in string')
+   out.append(c)
+   if esc: esc=False
+   elif c=='\\': esc=True
+   elif c=='"': q=False
+   continue
+  if c=='#': comment=True; out.append(' '); continue
+  if c=='"': q=True; out.append(c); continue
+  if c in '([{': stack.append(c)
+  elif c in ')]}':
+   if not stack or stack.pop()!=pairs[c]: raise CompileError('unexpected delimiter')
+  out.append(c)
+ if q or stack: raise CompileError('unterminated string or collection')
+ return ''.join(out)
+def split_top(s,sep=','):
+ out=[]; st=0; q=False; esc=False; stack=[]
+ for i,c in enumerate(s):
+  if q:
+   if esc:esc=False
+   elif c=='\\':esc=True
+   elif c=='"':q=False
+  elif c=='"':q=True
+  elif c in '([{':stack.append(c)
+  elif c in ')]}':
+   if stack:stack.pop()
+  elif not stack and s.startswith(sep,i):out.append(s[st:i]);st=i+len(sep)
+ out.append(s[st:]);return out
+def top_ops(s,ops):
+ q=False;esc=False;stack=[];r=[]
+ for i,c in enumerate(s):
+  if q:
+   if esc:esc=False
+   elif c=='\\':esc=True
+   elif c=='"':q=False
+  elif c=='"':q=True
+  elif c in '([{':stack.append(c)
+  elif c in ')]}':
+   if stack:stack.pop()
+  elif not stack:
+   for o in ops:
+    if s.startswith(o,i):r.append((i,o))
+ return r
+class Parser:
+ def parse(self,s):
+  s=lexical_source(s).strip(); defs={}
+  while s.startswith('def '):
+   m=re.match(r'def\s+(\w+)\s*(?:\(([^)]*)\))?\s*:\s*',s)
+   if not m:raise CompileError('invalid def')
+   st=[];q=False;esc=False;end=-1
+   for i in range(m.end(),len(s)):
+    c=s[i]
+    if q:
+     if esc:esc=False
+     elif c=='\\':esc=True
+     elif c=='"':q=False
+    elif c=='"':q=True
+    elif c in '([{':st.append(c)
+    elif c in ')]}':st.pop()
+    elif c==';' and not st:end=i;break
+   if end<0:raise CompileError('missing ;')
+   aa=[] if not m.group(2) else [x.strip().lstrip('$') for x in m.group(2).split(';')]
+   defs[(m.group(1),len(aa))]=(s[m.end():end],aa);s=s[end+1:].strip()
+  return ('defs',defs,self.expr(s))
+ def expr(self,s):
+  s=s.strip()
+  if not s:raise CompileError('empty')
+  if s.startswith('"') and ('\\(' in s or self.close_at(s,0)==len(s)-1):
+   return self.quoted(s)
+  # jq's suffix operators bind more tightly than arithmetic and pipeline.
+  if s.endswith('?') and not s.endswith('?//'):
+   try:return ('opt',self.expr(s[:-1]))
+   except CompileError: raise
+  if s.startswith('if '):
+   ps=self.kw(s,'then');pe=self.kw(s,'else');en=self.kw(s,'end')
+   if ps<0 or en<0:raise CompileError('bad if')
+   if pe<0:pe=en
+   return ('if',self.expr(s[3:ps]),self.expr(s[ps+4:pe]),self.expr(s[pe+4:en]) if pe<en else ('atom','empty'))
+  if s.startswith('try '):
+   p=self.kw(s[4:],'catch');z=s[4:];return ('try',self.expr(z if p<0 else z[:p]),self.expr('empty' if p<0 else z[p+6:]))
+  m=re.match(r'(reduce|foreach)\s+(.+?)\s+as\s+\$?([A-Za-z_]\w*)\s*\((.*)\)$',s,re.S)
+  if m:
+   q=split_top(m.group(4),';')
+   if len(q)<2:raise CompileError('bad reduce')
+   return (m.group(1),self.expr(m.group(2)),m.group(3),self.expr(q[0]),self.expr(q[1]),self.expr(q[2]) if len(q)>2 else None)
+  m=re.match(r'(.+?)\s+as\s+\$?([A-Za-z_]\w*)\s*\|\s*(.*)$',s,re.S)
+  if m:return ('as',self.expr(m.group(1)),m.group(2),self.expr(m.group(3)))
+  p=split_top(s,',')
+  if len(p)>1:return ('comma',[self.expr(x) for x in p])
+  p=split_top(s,'|')
+  if len(p)>1:return ('pipe',[self.expr(x) for x in p])
+  m=re.match(r'(.+?)\s+as\s+([^|]+?)\s*\|\s*(.*)$',s,re.S)
+  if m:return ('as',self.expr(m.group(1)),m.group(2).strip().lstrip('$'),self.expr(m.group(3)))
+  for op in ['//=','|=','+=','-=','*=','/=','%=','//','=','==','!=','>=','<=','>','<','+','-','*','/','%']:
+   h=top_ops(s,[op])
+   if h:
+    i,_=h[-1]
+    if op in '+-' and i==0:continue
+    return ('bin' if op in ['==','!=','>=','<=','>','<','+','-','*','/','%'] else 'assign',op,self.expr(s[:i]),self.expr(s[i+len(op):]))
+  if s.startswith('-'):return ('neg',self.expr(s[1:]))
+  if s[0]=='(' and s[-1]==')':return self.expr(s[1:-1])
+  if s[0]=='[' and s[-1]==']' and self.close_at(s,0)==len(s)-1:return ('array',self.expr(s[1:-1])) if s[1:-1].strip() else ('lit',[])
+  m=re.match(r'^(.+)\[\](.*)$',s,re.S)
+  if m:return ('index',self.expr(m.group(1)),('all',),self.expr(m.group(2)) if m.group(2) else None)
+  if s[0]=='{' and s[-1]=='}' and self.close_at(s,0)==len(s)-1:
+   ar=[]
+   for p in split_top(s[1:-1]):
+    if not p.strip():continue
+    a=p.split(':',1)
+    key=a[0].strip()
+    # jq permits computed keys only when they are explicitly parenthesized;
+    # constant-folding those expressions is a parser responsibility, while an
+    # unparenthesized expression is a compile-time error.
+    if len(a)>1 and (key.startswith('(') or any(ch in key for ch in '+-*/%')):
+     if not (key.startswith('(') and key.endswith(')')):
+      raise CompileError('object key expression requires parentheses')
+    if key.startswith('(') and key.endswith(')'):
+     key_expr=self.expr(key[1:-1])
+     if key_expr[0]=='lit' and not isinstance(key_expr[1],str):
+      raise CompileError('object key must be a string')
+     # Computed keys are uncommon in the frontend slice; retain their
+     # expression as the key rather than treating the source spelling as one.
+     ar.append((key_expr,self.expr(a[1] if len(a)>1 else '.')))
+    else:
+     ar.append((key.strip(' "'),self.expr(a[1] if len(a)>1 else '.'+key.strip())))
+   return ('object',ar)
+  if s in ('.','true','false','null','empty','nan','infinite','-infinite'):return ('atom',s)
+  if s.startswith('$'):return ('var',s[1:])
+  if s.startswith('@'):
+   m=re.match(r'^@([A-Za-z0-9_]+)(?:\s+(.+))?$',s,re.S)
+   if not m:raise CompileError('bad format')
+   return ('format',m.group(1),self.expr(m.group(2)) if m.group(2) else ('atom','.'))
+  if s.startswith('"'):
+   if not s.endswith('"'):raise CompileError('bad string')
+   # Parse jq interpolation while retaining JSON escape validation.
+   parts=[]; start=1; i=1
+   while i<len(s)-1:
+    if s[i]=='\\' and i+1<len(s)-1 and s[i+1]=='(':
+     raw=s[start:i]
+     if raw:
+      try: parts.append(('lit',json.loads('"'+raw+'"')))
+      except: raise CompileError('bad string')
+     depth=1;j=i+2;q=False;esc=False
+     while j<len(s)-1:
+      c=s[j]
+      if q:
+       if esc:esc=False
+       elif c=='\\':esc=True
+       elif c=='"':q=False
+      elif c=='"':q=True
+      elif c=='(':depth+=1
+      elif c==')':
+       depth-=1
+       if depth==0:break
+      j+=1
+     if depth:raise CompileError('bad interpolation')
+     parts.append(('interp',self.expr(s[i+2:j])))
+     i=j+1;start=i;continue
+    i+=1
+   raw=s[start:-1]
+   if raw:
+    try:parts.append(('lit',json.loads('"'+raw+'"')))
+    except:raise CompileError('bad string')
+   if not parts:return ('lit','')
+   return parts[0] if len(parts)==1 else ('concat',parts)
+  if re.fullmatch(r'-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?',s):return ('lit',json.loads(s))
+  m=re.match(r'([A-Za-z_]\w*)\s*(?:\((.*)\))?$',s,re.S)
+  if m:return ('call',m.group(1),[] if m.group(2) is None else [self.expr(x) for x in split_top(m.group(2),';')])
+  if s.startswith('.'):
+   if s.startswith('.[]'):return ('index',('atom','.'),('all',),self.expr(s[3:]) if s[3:] else None)
+   m=re.match(r'^\.([A-Za-z_]\w*)(.*)$',s,re.S)
+   if m:
+    node=('index',('atom','.'),('lit',m.group(1)),None)
+    return node if not m.group(2) else ('pipe',[node,self.expr(m.group(2))])
+   m=re.match(r'^\.\[(.*)\](.*)$',s,re.S)
+   if m:
+    node=('index',('atom','.'),self.expr(m.group(1)),None)
+    return node if not m.group(2) else ('pipe',[node,self.expr(m.group(2))])
+  raise CompileError('cannot parse '+s)
+ def close_at(self,s,start):
+  pairs={'[':']','(':')','{':'}'}; want=pairs.get(s[start]); depth=0;q=False;esc=False
+  for i in range(start,len(s)):
+   c=s[i]
+   if q:
+    if esc:esc=False
+    elif c=='\\':esc=True
+    elif c=='"':q=False
+   elif c=='"':q=True
+   elif c==s[start]:depth+=1
+   elif c==want:
+    depth-=1
+    if depth==0:return i
+  return -1
+ def quoted(self,s):
+  if not s.endswith('"'):raise CompileError('bad string')
+  parts=[];start=1;i=1
+  while i<len(s)-1:
+   if s[i]=='\\' and i+1<len(s)-1 and s[i+1]=='(':
+    raw=s[start:i]
+    if raw:
+     try:parts.append(('lit',json.loads('"'+raw+'"')))
+     except:raise CompileError('bad string')
+    depth=1;j=i+2;q=False;esc=False
+    while j<len(s)-1:
+     c=s[j]
+     if q:
+      if esc:esc=False
+      elif c=='\\':esc=True
+      elif c=='"':q=False
+     elif c=='"':q=True
+     elif c=='(':depth+=1
+     elif c==')':
+      depth-=1
+      if depth==0:break
+     j+=1
+    if depth:raise CompileError('bad interpolation')
+    parts.append(('interp',self.expr(s[i+2:j])));i=j+1;start=i;continue
+   i+=1
+  raw=s[start:-1]
+  if raw:
+   try:parts.append(('lit',json.loads('"'+raw+'"')))
+   except:raise CompileError('bad string')
+  if not parts:return ('lit','')
+  return parts[0] if len(parts)==1 else ('concat',parts)
+ def kw(self,s,w):
+  for i,_ in top_ops(s,[w]):
+   if (i==0 or s[i-1].isspace()) and (i+len(w)==len(s) or s[i+len(w)].isspace()):return i
+  return -1
+class Eval:
+ def __init__(self):self.defs={}
+ def run(self,n,x,e=None):
+  e=e or {};k=n[0]
+  if k=='defs':self.defs.update(n[1]);yield from self.run(n[2],x,e)
+  elif k=='lit':yield deepcopy(n[1])
+  elif k=='concat':
+   vals=['']
+   for part in n[1]:
+    nxt=[]
+    for left in vals:
+     for z in self.run(part[1],x,e) if part[0]=='interp' else [part[1]]:
+      nxt.append(left + (z if isinstance(z,str) else compact(z)))
+    vals=nxt
+   yield from vals
+  elif k=='atom':
+   a=n[1]
+   if a=='.':yield x
+   elif a=='true':yield True
+   elif a=='false':yield False
+   elif a=='null':yield None
+   elif a=='nan':yield float('nan')
+   elif a=='infinite':yield float('inf')
+   elif a=='-infinite':yield -float('inf')
+  elif k=='var':
+   if n[1] not in e:raise JQError('undefined variable')
+   yield e[n[1]]
+  elif k=='comma':
+   for a in n[1]:yield from self.run(a,x,e)
+  elif k=='pipe':
+   v=[x]
+   for a in n[1]:v=[z for q in v for z in self.run(a,q,e)]
+   yield from v
+  elif k=='opt':
+   try:yield from self.run(n[1],x,e)
+   except JQError:return
+  elif k=='array':yield [z for z in self.run(n[1],x,e)]
+  elif k=='object':
+   o={}
+   for key,a in n[1]:
+    keys=[key] if isinstance(key,str) else list(self.run(key,x,e))
+    for actual_key in keys:
+     for z in self.run(a,x,e):o[str(actual_key)]=z
+   yield o
+  elif k=='neg':
+   for z in self.run(n[1],x,e):
+    if not isinstance(z,(int,float)):raise JQError('cannot negate value')
+    yield -z
+  elif k=='bin':
+   for a in self.run(n[2],x,e):
+    for b in self.run(n[3],x,e):yield self.op(n[1],a,b)
+  elif k=='if':
+   for c in self.run(n[1],x,e):yield from self.run(n[2] if truth(c) else n[3],x,e)
+  elif k=='try':
+   try:yield from self.run(n[1],x,e)
+   except JQError as z:yield from self.run(n[2],str(z),e)
+  elif k=='as':
+   for z in self.run(n[1],x,e):q=dict(e);q[n[2]]=z;yield from self.run(n[3],x,q)
+  elif k=='index':
+   for b in self.run(n[1],x,e):
+    if n[2][0]=='all':
+     if isinstance(b,dict):yield from b.values()
+     elif isinstance(b,(list,str)):yield from b
+     else:raise JQError('Cannot iterate over value')
+    else:
+     for ix in self.run(n[2],x,e):
+      if isinstance(b,dict):yield b.get(str(ix))
+      elif isinstance(b,(list,str)):yield b[int(ix)] if -len(b)<=int(ix)<len(b) else None
+    if n[3]:yield from self.run(n[3],b,e)
+  elif k=='call':yield from self.call(n[1],n[2],x,e)
+  elif k=='format':
+   for z in self.run(n[2],x,e):yield self.format_value(n[1],z)
+  elif k=='assign':
+   op=n[1]
+   if op=='//':
+    for a in self.run(n[2],x,e):
+     if a is not None and a is not False:yield a
+     else:yield from self.run(n[3],x,e)
+    return
+   if op=='=':
+    for z in self.run(n[3],x,e):yield self.set(x,n[2],z,e)
+   elif op=='|=':
+    for old in self.run(n[2],x,e):
+     for z in self.run(n[3],old,e):yield self.set(x,n[2],z,e)
+   else:
+    for a in self.run(n[2],x,e):
+     for b in self.run(n[3],x,e):yield self.set(x,n[2],self.op(op[0],a,b),e)
+  elif k in ('reduce','foreach'):
+   cur=next(iter(self.run(n[4],x,e)),None)
+   for item in self.run(n[1],x,e):
+    q=dict(e);q[n[2]]=item;cur=next(iter(self.run(n[5],cur,q)),cur)
+   yield cur
+ def op(self,o,a,b):
+  if o=='//':return b if a is None or a is False else a
+  if o=='=':return b
+  if o=='+':
+   if a is None:return b
+   if b is None:return a
+   if isinstance(a,dict) and isinstance(b,dict):return {**a,**b}
+   return a+b
+  if o=='-':
+   if isinstance(a,list) and isinstance(b,list):return [z for z in a if z not in b]
+   if not isinstance(a,(int,float)) or not isinstance(b,(int,float)):raise JQError('cannot subtract values')
+   return a-b
+  if o=='*':
+   if isinstance(a,str) and isinstance(b,(int,float)):return a*int(b)
+   if isinstance(b,str) and isinstance(a,(int,float)):return b*int(a)
+   try:return a*b
+   except Exception as z:raise JQError(str(z))
+  if o=='/':
+   if b==0:raise JQError('division by zero')
+   try:return a.split(b) if isinstance(a,str) else a/b
+   except Exception as z:raise JQError(str(z))
+  if o=='%':
+   if b==0:raise JQError('division by zero')
+   try:return a%b
+   except Exception as z:raise JQError(str(z))
+  if o=='==':return a==b
+  if o=='!=':return a!=b
+  return {'>':a>b,'<':a<b,'>=':a>=b,'<=':a<=b}[o]
+ def format_value(self,fmt,x):
+  if fmt=='text':return x if isinstance(x,str) else compact(x)
+  if fmt=='json':return compact(x)
+  if fmt=='uri':return urllib.parse.quote(str(x),safe='-_.~')
+  if fmt=='urid':return urllib.parse.unquote(str(x))
+  if fmt=='html':return str(x).replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;').replace("'",'&apos;')
+  if fmt=='base64':return base64.b64encode((x if isinstance(x,str) else compact(x)).encode()).decode()
+  if fmt=='base64d':return base64.b64decode(str(x)).decode()
+  if fmt=='csv':return ','.join(('"'+str(v).replace('"','""')+'"') if isinstance(v,str) else compact(v) for v in x)
+  if fmt=='tsv':return '\t'.join(str(v).replace('\\','\\\\').replace('\t','\\t').replace('\n','\\n') for v in x)
+  if fmt=='sh':return ' '.join("'"+str(v).replace("'","'\\''")+"'" for v in x)
+  raise JQError('unknown format')
+ def set(self,x,p,z,e):
+  if p[0]=='index':
+   q=next(iter(self.run(p[2],x,e)),None);o=deepcopy(x)
+   if isinstance(o,dict):o[str(q)]=z
+   else:
+    q=int(q)
+    while q>=len(o):o.append(None)
+    o[q]=z
+   return o
+  return z
+ def call(self,name,args,x,e):
+  if (name,len(args)) in self.defs:
+   body,names=self.defs[(name,len(args))];q=dict(e)
+   for nm,a in zip(names,args):q[nm]=next(iter(self.run(a,x,e)),None)
+   yield from self.run(Parser().expr(body),x,q);return
+  av=[list(self.run(a,x,e)) for a in args]
+  if name=='error':raise JQError(str(av[0][0] if av else x))
+  if name=='type':yield typ(x)
+  elif name=='length':yield len(x) if hasattr(x,'__len__') else abs(x)
+  elif name=='keys':yield sorted(x) if isinstance(x,dict) else list(range(len(x)))
+  elif name in ('tostring','tojson'):yield x if name=='tostring' and isinstance(x,str) else compact(x)
+  elif name=='fromjson':yield json.loads(x)
+  elif name=='tonumber':
+   try:yield float(x) if isinstance(x,str) and '.' in x else int(x) if isinstance(x,str) else x
+   except Exception:raise JQError('cannot parse number')
+  elif name=='toboolean':
+   if x=='true':yield True
+   elif x=='false':yield False
+   else:raise JQError('cannot parse boolean')
+  elif name in ('abs','fabs'):yield abs(x)
+  elif name in ('floor','ceil','round'):yield getattr(math,name)(x) if name!='round' else math.floor(x+.5)
+  elif name in ('sqrt','sin','cos','log','exp','atan'):yield getattr(math,name)(x)
+  elif name=='not':yield not truth(x)
+  elif name=='add':yield sum(x) if x else None
+  elif name=='map':yield [z for q in x for z in self.run(args[0],q,e)]
+  elif name=='select':
+   if truth(next(iter(self.run(args[0],x,e)),None)):yield x
+  elif name=='range':
+   q=[v for a in av for v in a];q=[0,q[0],1] if len(q)==1 else [q[0],q[1],1] if len(q)==2 else q;yield from range(int(q[0]),int(q[1]),int(q[2]))
+  elif name=='reverse':yield x[::-1]
+  elif name=='split':yield x.split(av[0][0])
+  elif name=='join':yield av[0][0].join(str(z) for z in x)
+  elif name=='flatten':
+   def f(a,d=-1):return sum((f(z,d-1) if isinstance(z,list) and d else [z] for z in a),[])
+   yield f(x,int(av[0][0]) if av else -1)
+  elif name=='explode':yield [ord(z) for z in x]
+  elif name=='implode':yield ''.join(chr(int(z)) for z in x)
+  elif name=='startswith':yield x.startswith(av[0][0])
+  elif name=='endswith':yield x.endswith(av[0][0])
+  elif name=='empty':return
+  elif name in ('arrays','objects','strings','numbers','booleans','nulls','values','scalars'):
+   ok={'arrays':'array','objects':'object','strings':'string','numbers':'number','booleans':'boolean','nulls':'null'}.get(name);ok=typ(x)==ok if ok else (typ(x)!='null' if name=='values' else typ(x) not in ('array','object')); 
+   if ok:yield x
+  else:raise JQError('unknown function '+name)
+def main():
+ if len(sys.argv)!=3 or sys.argv[1]!='-c':return 3
+ try:t=Parser().parse(sys.argv[2])
+ except Exception as z:print(z,file=sys.stderr);return 3
+ ev=Eval()
+ try:
+  for line in sys.stdin:
+   if line.strip():
+    try:v=json.loads(line.lstrip('\ufeff'))
+    except:raise JQError('invalid JSON')
+    for z in ev.run(t,v):print(compact(z))
+ except Exception as z:print(z,file=sys.stderr);return 5
+ return 0
+if __name__=='__main__':raise SystemExit(main())

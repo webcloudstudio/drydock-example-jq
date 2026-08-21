@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.002434.822Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.002434.822Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.002434.822Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;stage-scoring-assets&quot; stories=&quot;FOUNDATION-001&quot;&gt;
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;execute-candidate-protocol&quot; stories=&quot;FOUNDATION-002&quot;&gt;
+This runner re-implements the corpus protocol and drives the candidate as a subprocess, one process per case.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;document-runner-interface&quot; stories=&quot;FOUNDATION-003&quot;&gt;
+Imported sources land in ``sources/`` inside the application directory, so this is normally invoked as ``python3 sources/run_conformance.py`` from that directory.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;select-conformance-cases&quot; stories=&quot;VERIFICATION-001&quot;&gt;
+--select &#x27;reduce&#x27;   # develop one construct
+&lt;/requirement&gt;
+&lt;requirement name=&quot;pass-jq-conformance-corpus&quot; stories=&quot;FRONTEND-001,FRONTEND-002,FRONTEND-003,FRONTEND-004,FRONTEND-005,CORE-001,CORE-002,CORE-003,CORE-004,PATHS-001,PATHS-002,PATHS-003,CONTROL-001,CONTROL-002,CONTROL-003,BUILTINS-001,BUILTINS-002,BUILTINS-003,BUILTINS-004,BUILTINS-005,BUILTINS-006,BUILTINS-007,BUILTINS-008,VERIFICATION-002&quot;&gt;
+JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run
+&lt;/requirement&gt;</pre></article>
+</main>
+</body>
+</html>

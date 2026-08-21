@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.002104.584Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.002104.584Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.002104.584Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;stage-pinned-scoring-assets&quot; stories=&quot;FOUNDATION-001&quot;&gt;
+Stage the pinned jq source and scoring assets.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;preserve-upstream-corpus&quot; stories=&quot;FOUNDATION-001,VERIFICATION-002&quot;&gt;
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;validate-exclusion-entries&quot; stories=&quot;FOUNDATION-001,VERIFICATION-002&quot;&gt;
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;exclude-module-loader-cases&quot; stories=&quot;FOUNDATION-001,FOUNDATION-002,VERIFICATION-002&quot;&gt;
+Only the loader cases are excluded.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-module-grammar-errors&quot; stories=&quot;FRONTEND-001,FRONTEND-002,FRONTEND-003,VERIFICATION-002&quot;&gt;
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`, `include &quot;\(a)&quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;FOUNDATION-003&quot;/&gt;
+&lt;unattached story=&quot;FRONTEND-004&quot;/&gt;
+&lt;unattached story=&quot;FRONTEND-005&quot;/&gt;
+&lt;unattached story=&quot;CORE-001&quot;/&gt;
+&lt;unattached story=&quot;CORE-002&quot;/&gt;
+&lt;unattached story=&quot;CORE-003&quot;/&gt;
+&lt;unattached story=&quot;CORE-004&quot;/&gt;
+&lt;unattached story=&quot;PATHS-001&quot;/&gt;
+&lt;unattached story=&quot;PATHS-002&quot;/&gt;
+&lt;unattached story=&quot;PATHS-003&quot;/&gt;
+&lt;unattached story=&quot;CONTROL-001&quot;/&gt;
+&lt;unattached story=&quot;CONTROL-002&quot;/&gt;
+&lt;unattached story=&quot;CONTROL-003&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-001&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-002&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-003&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-004&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-005&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-006&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-007&quot;/&gt;
+&lt;unattached story=&quot;BUILTINS-008&quot;/&gt;
+&lt;unattached story=&quot;VERIFICATION-001&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

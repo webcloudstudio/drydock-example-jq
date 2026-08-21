@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-PATHS-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-PATHS-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-PATHS-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Assignment Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Defines jq plain, update, arithmetic, and defined-or assignment operators over paths.</td></tr><tr><td>Depends On</td><td>FEATURE-PATHS-002.md</td></tr><tr><td>Provides</td><td>=,</td><td>=, +=, -=, *=, /=, %=, //=</td></tr><tr><td>Consumes</td><td>path discovery, setpath, delpaths, generator evaluator</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement assignment operators over path expressions. Plain assignment evaluates the RHS against the original input and uses every RHS output; update assignment evaluates the RHS against each selected old value and uses the first result; empty RHS deletes the selected path.</p>
+<h2>Behavior</h2>
+<ul><li><code>=</code> supports multiple LHS paths and multiple RHS outputs in jq order.</li><li><code>|=</code> updates selected values using the update filter.</li><li><code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, and <code>%=</code> are update assignments using the corresponding arithmetic operator.</li><li><code>//=</code> updates only null or false values.</li><li>Assignments remain immutable and preserve the original input for sibling expressions.</li><li>Generator paths, slices, deletion through <code>empty</code>, and invalid updates follow jq runtime semantics.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-003-conformance ===<br>Intent: The assignment corpus slice executes and passes for plain, update, arithmetic, and defined-or assignments.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;[.]?[^\n]<em>(\|=|\+=|-=|\</em>=|/=|%=|//=| = )&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-003-conformance ===</p>
+<p>=== AC paths-003-generator-and-deletion ===<br>Intent: The assignment slice covers multi-path updates, generator RHS behavior, and deletion through empty.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.[] =|range\(3\)|\|= empty|\.foo\[1,4,2,3\] \|= empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-003-generator-and-deletion ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never mutate the source value in place.</li><li>Keep plain assignment distinct from update assignment.</li><li>Use exit status <code>5</code> for runtime assignment failures and preserve earlier output.</li><li>Do not implement assignments by shelling out to another jq executable.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTINS-007.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTINS-007.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTINS-007.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Streaming Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provide jq stream encoding, reconstruction, and path-truncation filters.</td></tr><tr><td>Depends On</td><td>FEATURE-BUILTINS-006.md</td></tr><tr><td>Provides</td><td>tostream, fromstream, truncate_stream</td></tr><tr><td>Consumes</td><td>path engine, generator evaluator</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s streaming representation for nested arrays, objects, scalars, and empty containers. Support reconstruction from stream events and truncation of leading path components while preserving event ordering.</p>
+<h2>Behavior</h2>
+<ul><li><code>tostream</code> emits path/value and container-end stream records in jq order.</li><li><code>fromstream</code> reconstructs JSON values from stream records.</li><li><code>truncate_stream</code> removes the requested number of leading path elements and discards or emits records according to jq semantics.</li><li>Nested values, empty containers, and multiple stream values preserve ordering.</li><li>Invalid stream structures raise runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-007-streaming ===<br>Intent: The authoritative corpus slice covering tostream, fromstream, and truncate_stream executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;tostream|fromstream|truncate_stream&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-007-streaming ===</p>
+<p>=== AC builtins-007-roundtrip ===<br>Intent: The authoritative streaming round-trip cases execute and pass without failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;fromstream|tostream&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-007-roundtrip ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve stream event ordering and multiplicity.</li><li>Do not confuse jq stream records with ordinary output values.</li><li>Use immutable reconstruction semantics and retain runtime error status 5 for invalid inputs.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FRONTEND-005.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FRONTEND-005.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FRONTEND-005.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Destructuring and Alternative Patterns</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Support jq destructuring patterns and fallback alternatives.</td></tr><tr><td>Depends On</td><td>FEATURE-FRONTEND-004.md</td></tr><tr><td>Provides</td><td>array patterns, object patterns, missing bindings, ?// alternatives</td></tr><tr><td>Consumes</td><td>jq parser, lexical bindings, generator runtime</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement array and object patterns, null bindings for missing members, repeated alternative patterns, and fallback when a pattern or downstream expression fails.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC frontend-005-patterns ===<br>Intent: The implementation passes the executing conformance cases for array and object destructuring.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot; as \$| as \[&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC frontend-005-patterns ===</p>
+<p>=== AC frontend-005-alternatives ===<br>Intent: The implementation passes the executing conformance cases for ?// alternative destructuring.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\?//&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC frontend-005-alternatives ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Missing pattern members bind to null.</li><li>Alternative patterns must preserve bindings from the successful branch only.</li><li>Downstream errors must trigger the next alternative where jq specifies that behavior.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<requirement name="test-fixture-format" stories="FOUNDATION-002">
+# Tests are groups of three lines: program, input, expected output
+</requirement>
+<requirement name="lexical-scanning" stories="FRONTEND-001">
+# We test escapes by matching them against Unicode codepoints
+</requirement>
+<requirement name="expression-parsing" stories="FRONTEND-002">
+# Dictionary construction syntax
+</requirement>
+<requirement name="reject-invalid-programs" stories="FRONTEND-003">
+%%FAIL
+</requirement>
+<requirement name="stream-filter-evaluation" stories="CORE-001">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="user-defined-functions" stories="FRONTEND-004">
+# User-defined functions
+</requirement>
+<requirement name="destructuring-alternatives" stories="FRONTEND-005">
+# Destructuring with alternation
+</requirement>
+<requirement name="basic-filters-constructors" stories="CORE-002">
+# Builtin functions
+</requirement>
+<requirement name="operators" stories="CORE-003">
+# Check numeric comparison binops
+</requirement>
+<requirement name="error-handling-control-flow" stories="CORE-004">
+# Try/catch and general `?` operator
+</requirement>
+<requirement name="path-discovery-access" stories="PATHS-001">
+# Paths
+</requirement>
+<requirement name="path-mutation-deletion" stories="PATHS-002">
+del(.), del(empty), del((.foo,.bar,.baz) | .[2,3,0]), del(.foo[0], .bar[0], .foo, .baz.bar[0].x)
+</requirement>
+<requirement name="assignment-operators" stories="PATHS-003">
+# Assignment
+</requirement>
+<requirement name="reductions-bounded-iteration" stories="CONTROL-001">
+[limit(3; .[])]
+</requirement>
+<requirement name="recursive-generators" stories="CONTROL-002">
+# test recursion
+</requirement>
+<requirement name="generator-predicates-utilities" stories="CONTROL-003">
+# Check short-circuiting
+</requirement>
+<requirement name="structural-collection-builtins" stories="BUILTINS-001">
+# Real-world use case for add(empty)
+</requirement>
+<requirement name="string-unicode-builtins" stories="BUILTINS-002">
+# string operations
+</requirement>
+<requirement name="json-format-conversion" stories="BUILTINS-004">
+[.[]|tojson|fromjson]
+</requirement>
+<requirement name="date-mathematics-builtins" stories="BUILTINS-005">
+# Check day-of-week and day of year computations
+</requirement>
+<requirement name="environment-diagnostics-io" stories="BUILTINS-006">
+# calling input/0, or debug/0 in a test doesn't crash jq
+</requirement>
+<requirement name="streaming-conversions" stories="BUILTINS-007">
+to_entries
+</requirement>
+<requirement name="remaining-structural-helpers" stories="BUILTINS-008">
+# walk
+</requirement>
+<unattached story="FOUNDATION-001"/>
+<unattached story="FOUNDATION-003"/>
+<unattached story="BUILTINS-003"/>
+<unattached story="VERIFICATION-001"/>
+<unattached story="VERIFICATION-002"/>

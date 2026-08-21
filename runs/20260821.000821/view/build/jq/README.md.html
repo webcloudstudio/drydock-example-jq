@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/README.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/README.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/README.md">Raw file</a></div></header>
+<article class="doc"><h1>jq</h1>
+<p>This project provides a standalone jq interpreter implemented with only the Python standard library. Invoke it from the project root as <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>.</p>
+<p>The command reads JSON values from stdin, evaluates the filter for each value, and writes each result as one compact JSON value per line to stdout. Diagnostics go to stderr. The exit status <code>0</code> means success, <code>3</code> means compile failure, and <code>5</code> means runtime failure; values emitted before a runtime failure are retained.</p>
+<p>Run the supplied verification with <code>sh sources/full_test.sh</code>.</p></article>
+</main>
+</body>
+</html>

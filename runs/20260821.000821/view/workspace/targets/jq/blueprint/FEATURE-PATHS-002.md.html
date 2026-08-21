@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-PATHS-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-PATHS-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-PATHS-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Path Mutation and Deletion</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Defines immutable path creation, replacement, deletion, and nested update behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-PATHS-001.md</td></tr><tr><td>Provides</td><td>setpath, delpaths, del, immutable nested updates and deletion</td></tr><tr><td>Consumes</td><td>path discovery and getpath</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement <code>setpath</code>, <code>delpaths</code>, and <code>del</code> over immutable jq values. Support nested object and array creation, array growth with null padding, slices, negative indices, multiple paths, and deletion without modifying the original input.</p>
+<h2>Behavior</h2>
+<ul><li><code>setpath</code> creates missing containers according to path components.</li><li><code>delpaths</code> removes each requested path and safely ignores absent paths where jq specifies.</li><li><code>del</code> converts path expressions to deletion paths.</li><li>Multiple deletions are applied with jq&#x27;s ordering and coalescing semantics.</li><li>Invalid path types and out-of-bounds operations produce runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-002-conformance ===<br>Intent: The path mutation and deletion corpus slice executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;setpath|delpaths|del\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-002-conformance ===</p>
+<p>=== AC paths-002-nested-creation-and-errors ===<br>Intent: The mutation slice covers nested creation, deletion, array growth, and invalid-path errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;setpath\(\[|delpaths\(\[|try delpaths|try setpath&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-002-nested-creation-and-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Treat jq values as immutable; each mutation produces a new value.</li><li>Do not silently convert invalid path components into object keys.</li><li>Preserve deletion ordering and generator multiplicity.</li></ul></article>
+</main>
+</body>
+</html>

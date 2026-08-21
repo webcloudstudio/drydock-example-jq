@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/ERRORS.md</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
+<article class="doc"><h1>BIG ERRORS — action required</h1>
+<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-21T00:46:08+00:00</li><li>Execution ID: 20260821.004423.336Z-e56b6f96</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: lexer-conformance-slice, parser-conformance-slice</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/targets/jq/evidence/block-3.md</li></ul>
+<h2>Diagnostic</h2>
+<p>Block &quot;Block 3 · Service&quot; [block-3] failed its acceptance criteria. Story &quot;Implement jq lexical scanning.&quot; [FRONTEND-001] does not meet its own acceptance criteria:</p>
+<ul><li>AC lexer-conformance-slice — The executable passes the non-empty conformance slice covering lexical forms, literals, strings, formats, delimiters, and invalid module syntax.</li></ul>
+<p>assertion: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) raised at: decoder.py:356 process exit code: 1 error: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) values at failure: s = &#x27;&#x27; check stderr: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ … (48 more lines truncated)</p>
+<h2>Recovery</h2>
+<p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,90 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Next: drydock build jq
+
+Blueprint: jq
+Target: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260821.000821/workspace/targets/jq
+Rows: <state> <type>  <Name>  [<id>]   — pass [<id>] to --step
+
+Block: Build Block 1 · Foundational  [block-1]   — 0/1 stories done
+  [built]   story  Stage the pinned jq source and scoring assets.  [FOUNDATION-001]  <- verify
+
+Block: Build Block 2 · Foundational  [block-2]   — 0/2 stories done
+  [built]   story  Implement the executable jq command-line contract.  [FOUNDATION-002]  <- verify
+  [built]   story  Document the jq project interface and verification command.  [FOUNDATION-003]  <- verify
+
+Block: Build Block 3 · Service  [block-3]   — 0/2 stories done
+  [FAILED]  story  Implement jq lexical scanning.  [FRONTEND-001]  <- resume (repairs in place)
+  [FAILED]  story  Implement jq expression parsing and AST construction.  [FRONTEND-002]  <- resume (repairs in place)
+
+Block: Build Block 4 · Service  [block-4]   — 0/1 stories done
+  [pending] story  Implement compile-time rejection and static validation.  [FRONTEND-003]
+
+Block: Build Block 5 · Service  [block-5]   — 0/1 stories done
+  [pending] story  Implement stream-based filter evaluation.  [CORE-001]
+
+Block: Build Block 6 · Service  [block-6]   — 0/1 stories done
+  [pending] story  Implement user-defined functions and lexical scope.  [FRONTEND-004]
+
+Block: Build Block 7 · Service  [block-7]   — 0/1 stories done
+  [pending] story  Implement destructuring and ?// alternatives.  [FRONTEND-005]
+
+Block: Build Block 8 · Service  [block-8]   — 0/1 stories done
+  [pending] story  Implement basic jq filters and constructors.  [CORE-002]
+
+Block: Build Block 9 · Service  [block-9]   — 0/1 stories done
+  [pending] story  Implement arithmetic, comparison, and boolean operators.  [CORE-003]
+
+Block: Build Block 10 · Service  [block-10]   — 0/1 stories done
+  [pending] story  Implement jq error handling and control flow.  [CORE-004]
+
+Block: Build Block 11 · Service  [block-11]   — 0/1 stories done
+  [pending] story  Implement jq path discovery and access.  [PATHS-001]
+
+Block: Build Block 12 · Service  [block-12]   — 0/1 stories done
+  [pending] story  Implement immutable path mutation and deletion.  [PATHS-002]
+
+Block: Build Block 13 · Service  [block-13]   — 0/1 stories done
+  [pending] story  Implement jq assignment operators.  [PATHS-003]
+
+Block: Build Block 14 · Service  [block-14]   — 0/1 stories done
+  [pending] story  Implement reductions and bounded iteration.  [CONTROL-001]
+
+Block: Build Block 15 · Service  [block-15]   — 0/1 stories done
+  [pending] story  Implement recursive generators and recursive control.  [CONTROL-002]
+
+Block: Build Block 16 · Service  [block-16]   — 0/1 stories done
+  [pending] story  Implement generator predicates and collection utilities.  [CONTROL-003]
+
+Block: Build Block 17 · Service  [block-17]   — 0/1 stories done
+  [pending] story  Implement structural and collection builtins.  [BUILTINS-001]
+
+Block: Build Block 18 · Service  [block-18]   — 0/1 stories done
+  [pending] story  Implement string and Unicode builtins.  [BUILTINS-002]
+
+Block: Build Block 19 · Service  [block-19]   — 0/1 stories done
+  [pending] story  Implement regular-expression builtins.  [BUILTINS-003]
+
+Block: Build Block 20 · Service  [block-20]   — 0/1 stories done
+  [pending] story  Implement format and JSON conversion builtins.  [BUILTINS-004]
+
+Block: Build Block 21 · Service  [block-21]   — 0/1 stories done
+  [pending] story  Implement date and mathematics builtins.  [BUILTINS-005]
+
+Block: Build Block 22 · Service  [block-22]   — 0/1 stories done
+  [pending] story  Implement environment, diagnostics, and input/output builtins.  [BUILTINS-006]
+
+Block: Build Block 23 · Service  [block-23]   — 0/1 stories done
+  [pending] story  Implement streaming conversion builtins.  [BUILTINS-007]
+
+Block: Build Block 24 · Service  [block-24]   — 0/1 stories done
+  [pending] story  Implement remaining structural helpers.  [BUILTINS-008]
+
+Block: Build Block 25 · Service  [block-25]   — 0/2 stories done
+  [pending] story  Verify scoped conformance slices for implemented capabilities.  [VERIFICATION-001]
+  [pending] story  Pass the complete supplied jq conformance corpus.  [VERIFICATION-002]
+
+Steps: 28 total — 0 done, 3 built (await verify), 0 in review, 23 pending, 0 blocked by questions, 2 failed (0% complete)
+Buildable now: block-3
+Failed (resume with drydock build, or --step <id>; --reset discards work instead): FRONTEND-001, FRONTEND-002
+Build score evidence: none
+Target - committed project workspace git store

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.004003.674Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.004003.674Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.004003.674Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;reusable-compact filename=&quot;parser.y&quot;&gt;
+The parser contract defines jq’s frontend grammar and AST construction:
+
+- Entry points: `jq_parse(locations, answer)` and `jq_parse_library(locations, answer)` return an error count and populate `answer`.
+- Top-level syntax supports module metadata, imports/includes, function definitions, and queries.
+- Queries support function binding, destructuring with `as`, labels/break, pipelines (`|`), comma generators, and expressions.
+- Expressions support defined-or, assignments/update assignments, boolean operators, comparisons, arithmetic, precedence, and associativity.
+- Terms support literals, strings/interpolation, variables, identifiers/function calls, recursion (`..`), indexing, optional indexing, slices, iteration, arrays, objects, conditionals, `try/catch`, `reduce`, and `foreach`.
+- Patterns support variable bindings, array/object destructuring, alternative patterns (`?//`), and object-key patterns.
+- String syntax supports `@format` prefixes, interpolation via `\(query)`, and JSON-compatible escapes.
+- Object keys may be identifiers, keywords, strings, bindings, location metadata, or parenthesized expressions; invalid non-string constant keys are compile errors.
+- Compile-time syntax errors must remain distinct from runtime evaluation failures.
+- AST generation must preserve generator ordering, multiplicity, backtracking, assignment semantics, lexical bindings, and location metadata.
+- Library parsing rejects programs containing a main expression.
+&lt;/reusable-compact&gt;
+
+AC_BROKEN: lexer-conformance-slice, parser-conformance-slice
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq
+
+SUMMARY:
+Implemented targeted parser fixes for chained suffix access and invalid dynamic object keys. Project tests pass: 6 passed. Both authoritative conformance criteria remain unexecutable because their fixed selector is an invalid regular expression, causing the harness to exit `1` before producing JSON.
+
+BLOCKERS:
+- The staged selector `^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|&quot;|@)` raises `re.error: unterminated character set`.
+- The selector must be corrected in the Blueprint or harness invocation before these criteria can execute.</pre></article>
+</main>
+</body>
+</html>

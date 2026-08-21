@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CONTROL-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CONTROL-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CONTROL-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Reductions and Bounded Iteration</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provides jq reductions and bounded generator iteration.</td></tr><tr><td>Depends On</td><td>FEATURE-CORE-001.md, FEATURE-CORE-004.md, FEATURE-PATHS-003.md</td></tr><tr><td>Provides</td><td>reduce, foreach, limit, skip, first, last, nth</td></tr><tr><td>Consumes</td><td>generator evaluation, lexical bindings, control flow, path assignment</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement accumulator-based reduction and iteration primitives while preserving generator ordering, destructured bindings, multiplicity, and lexical break behavior.</p>
+<h2>Behavior</h2>
+<ul><li><code>reduce</code> consumes every value from its generator in order and emits the final accumulator.</li><li><code>foreach</code> emits extracted intermediate accumulator values.</li><li><code>limit</code>, <code>skip</code>, <code>first</code>, <code>last</code>, and <code>nth</code> operate on ordered streams.</li><li>Destructuring patterns bind reducer values, including absent members as <code>null</code>.</li><li>Generator arguments retain jq cartesian evaluation semantics.</li><li>Invalid negative limits or indices raise runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC control-001-reduce ===<br>Intent: The authoritative corpus slice exercising reduce and foreach executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce|foreach&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC control-001-reduce ===</p>
+<p>=== AC control-001-bounds ===<br>Intent: The authoritative corpus slice exercising bounded stream operators executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;limit|skip|first\(|last\(|nth\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC control-001-bounds ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator order and multiplicity.</li><li>Do not consume more values than the bounded operation requires.</li><li>Keep runtime failures distinct from compile failures.</li></ul></article>
+</main>
+</body>
+</html>

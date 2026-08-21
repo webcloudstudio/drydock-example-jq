@@ -1,0 +1,29 @@
+<reusable-compact filename="parser.y">
+The parser contract defines jq’s frontend grammar and AST construction:
+
+- Entry points: `jq_parse(locations, answer)` and `jq_parse_library(locations, answer)` return an error count and populate `answer`.
+- Top-level syntax supports module metadata, imports/includes, function definitions, and queries.
+- Queries support function binding, destructuring with `as`, labels/break, pipelines (`|`), comma generators, and expressions.
+- Expressions support defined-or, assignments/update assignments, boolean operators, comparisons, arithmetic, precedence, and associativity.
+- Terms support literals, strings/interpolation, variables, identifiers/function calls, recursion (`..`), indexing, optional indexing, slices, iteration, arrays, objects, conditionals, `try/catch`, `reduce`, and `foreach`.
+- Patterns support variable bindings, array/object destructuring, alternative patterns (`?//`), and object-key patterns.
+- String syntax supports `@format` prefixes, interpolation via `\(query)`, and JSON-compatible escapes.
+- Object keys may be identifiers, keywords, strings, bindings, location metadata, or parenthesized expressions; invalid non-string constant keys are compile errors.
+- Compile-time syntax errors must remain distinct from runtime evaluation failures.
+- AST generation must preserve generator ordering, multiplicity, backtracking, assignment semantics, lexical bindings, and location metadata.
+- Library parsing rejects programs containing a main expression.
+</reusable-compact>
+
+AC_BROKEN: lexer-conformance-slice, parser-conformance-slice
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq
+
+SUMMARY:
+Implemented targeted parser fixes for chained suffix access and invalid dynamic object keys. Project tests pass: 6 passed. Both authoritative conformance criteria remain unexecutable because their fixed selector is an invalid regular expression, causing the harness to exit `1` before producing JSON.
+
+BLOCKERS:
+- The staged selector `^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|"|@)` raises `re.error: unterminated character set`.
+- The selector must be corrected in the Blueprint or harness invocation before these criteria can execute.

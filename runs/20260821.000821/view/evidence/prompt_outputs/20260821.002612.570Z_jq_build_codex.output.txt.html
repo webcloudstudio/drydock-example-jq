@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260821.002612.570Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260821.002612.570Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260821.002612.570Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;reusable-compact filename=&quot;run_conformance.py&quot;&gt;
+Requires `JQ` candidate command. Parses 550 corpus cases and 13 exclusions, runs each with `-c`, accepts compile exit `3` and runtime exit `5`, compares JSON structurally, and returns `0` only with zero failures/errors.
+&lt;/reusable-compact&gt;
+
+&lt;reusable-compact filename=&quot;full_test.sh&quot;&gt;
+Requires executable `./jq`, sets `JQ=&quot;$PWD/jq&quot;`, and runs the complete conformance corpus via `python3 sources/run_conformance.py`.
+&lt;/reusable-compact&gt;
+
+RESULT: FAILED
+
+FILES CHANGED:
+- jq
+- README.md
+- tests/test_cli_contract.py
+
+SUMMARY:
+Implemented the executable CLI, exit-status contract, README, and contract tests. CLI tests pass; full conformance result: 439 passed, 216 failed, 0 errored, 0 skipped.
+
+BLOCKERS:
+- jq language implementation remains incomplete for the full corpus.
+
+FAILURE_SUMMARY: Full jq conformance suite has 216 failures.
+FAILURE_DETAIL: The CLI boundary and documentation checks pass, but broader jq parsing and evaluation features remain unsupported. Extend the parser/evaluator and rerun `sh sources/full_test.sh`.</pre></article>
+</main>
+</body>
+</html>

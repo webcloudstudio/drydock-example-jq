@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTINS-004.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTINS-004.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTINS-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Format and JSON Conversion Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provide jq scalar conversion, JSON conversion, and formatting filters.</td></tr><tr><td>Depends On</td><td>FEATURE-BUILTINS-003.md</td></tr><tr><td>Provides</td><td>tostring, tonumber, toboolean, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d</td></tr><tr><td>Consumes</td><td>core value model, string builtins</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s scalar conversion and format filters with compact JSON semantics, Unicode-safe escaping, URI and HTML encoding, tabular and shell formatting, and RFC 4648 base64 conversion.</p>
+<h2>Behavior</h2>
+<ul><li><code>tostring</code>, <code>tonumber</code>, and <code>toboolean</code> follow jq&#x27;s accepted input types and runtime-error behavior.</li><li><code>tojson</code> serializes a value as a JSON string and <code>fromjson</code> parses JSON text.</li><li>Format filters produce text according to jq&#x27;s escaping rules.</li><li>Format strings may combine literal text and interpolated values.</li><li>Invalid conversion or format inputs raise runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-004-conversion ===<br>Intent: The authoritative corpus slice covering scalar and JSON conversion filters executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;tojson|fromjson|tostring|tonumber|toboolean&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-004-conversion ===</p>
+<p>=== AC builtins-004-formats ===<br>Intent: The authoritative corpus slice covering jq format filters executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;@&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-004-formats ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library serialization and encoding facilities.</li><li>Preserve compact JSON value semantics and jq&#x27;s distinction between <code>tostring</code> and <code>tojson</code>.</li><li>Do not assert or depend on diagnostic wording.</li></ul></article>
+</main>
+</body>
+</html>

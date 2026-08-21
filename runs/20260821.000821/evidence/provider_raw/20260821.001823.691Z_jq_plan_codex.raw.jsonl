@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a021ae-e0a7-7912-b230-fdaec1e6dd12"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"The reported defect is inconsistent with the supplied artifacts: every listed acceptance invokes `sources/run_conformance.py` with `--select ... --json`, exactly as required by the normative protocol. Using `--list` would violate that protocol."}}
+{"type":"turn.completed","usage":{"input_tokens":35118,"cached_input_tokens":5888,"cache_write_input_tokens":0,"output_tokens":2123,"reasoning_output_tokens":2070}}

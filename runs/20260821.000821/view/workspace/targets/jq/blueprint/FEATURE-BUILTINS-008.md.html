@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-BUILTINS-008.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-BUILTINS-008.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-BUILTINS-008.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Remaining Structural Helpers</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provides recursive structural helpers, projections, joins, membership tests, and binary search.</td></tr><tr><td>Depends On</td><td>FEATURE-BUILTINS-007.md</td></tr><tr><td>Provides</td><td>walk, pick, INDEX, JOIN, IN, bsearch</td></tr><tr><td>Consumes</td><td>structural builtins, paths, generators</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement the remaining jq structural helpers defined by the manual and reference builtin library.</p>
+<h2>Behavior</h2>
+<ul><li><code>walk(f)</code> recursively transforms arrays and objects before applying <code>f</code>.</li><li><code>pick(paths)</code> projects selected paths while preserving their structure.</li><li><code>INDEX</code> and <code>JOIN</code> build and query object indexes from generators.</li><li><code>IN</code> tests membership in a generator or source stream.</li><li><code>bsearch(x)</code> returns an existing index or the encoded insertion point.</li><li>Helpers preserve jq generator ordering and runtime error behavior.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC builtins-008-structural ===<br>Intent: The authoritative corpus slice covering walk, pick, INDEX, JOIN, IN, and bsearch passes completely.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;walk|pick|INDEX|JOIN|IN\(|bsearch&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-008-structural ===</p>
+<p>=== AC builtins-008-stream-membership ===<br>Intent: The authoritative corpus slice for stream membership and structural helpers executes non-empty cases without failures.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;INDEX|JOIN|IN\(|bsearch|walk&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC builtins-008-stream-membership ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Do not shell out to a system jq or use a third-party jq implementation.</li><li>Preserve immutable values, generator ordering, multiplicity, and runtime errors.</li></ul></article>
+</main>
+</body>
+</html>

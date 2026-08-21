@@ -1,0 +1,15 @@
+<requirement name="stage-scoring-assets" stories="FOUNDATION-001">
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+</requirement>
+<requirement name="execute-candidate-protocol" stories="FOUNDATION-002">
+This runner re-implements the corpus protocol and drives the candidate as a subprocess, one process per case.
+</requirement>
+<requirement name="document-runner-interface" stories="FOUNDATION-003">
+Imported sources land in ``sources/`` inside the application directory, so this is normally invoked as ``python3 sources/run_conformance.py`` from that directory.
+</requirement>
+<requirement name="select-conformance-cases" stories="VERIFICATION-001">
+--select 'reduce'   # develop one construct
+</requirement>
+<requirement name="pass-jq-conformance-corpus" stories="FRONTEND-001,FRONTEND-002,FRONTEND-003,FRONTEND-004,FRONTEND-005,CORE-001,CORE-002,CORE-003,CORE-004,PATHS-001,PATHS-002,PATHS-003,CONTROL-001,CONTROL-002,CONTROL-003,BUILTINS-001,BUILTINS-002,BUILTINS-003,BUILTINS-004,BUILTINS-005,BUILTINS-006,BUILTINS-007,BUILTINS-008,VERIFICATION-002">
+JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run
+</requirement>

@@ -1,0 +1,292 @@
+{
+  "stories": [
+    {
+      "id": "FOUNDATION-001",
+      "provenance": "plan",
+      "note": "Build Instructions: source roles and read-only scoring assets"
+    },
+    {
+      "id": "FOUNDATION-002",
+      "provenance": "plan",
+      "note": "Build Instructions: interface contract"
+    },
+    {
+      "id": "FOUNDATION-003",
+      "provenance": "plan",
+      "note": "Definition of Done: README requirement"
+    },
+    {
+      "id": "FRONTEND-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|\"|@)"
+      ],
+      "note": "Suggested implementation order: lexer"
+    },
+    {
+      "id": "FRONTEND-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|\"|@)"
+      ],
+      "note": "Suggested implementation order: parser and AST"
+    },
+    {
+      "id": "FRONTEND-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "%%UNMATCHABLE_COMPILE_CASE_SELECTOR%%"
+      ],
+      "note": "Compile-error corpus cases are selected by their program text in the implementation plan."
+    },
+    {
+      "id": "FRONTEND-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^def "
+      ],
+      "note": "Suggested implementation order: functions, variables, and destructuring"
+    },
+    {
+      "id": "FRONTEND-005",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\?//| as \\$| as \\["
+      ],
+      "note": "Suggested implementation order: destructuring and ?//"
+    },
+    {
+      "id": "CORE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.|\\[|,|empty|range|while|recurse"
+      ],
+      "note": "Suggested implementation order: generator core"
+    },
+    {
+      "id": "CORE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.|\\[|\\{|\\.\\[|\\.\\w"
+      ],
+      "note": "Suggested implementation order: basic filters and constructors"
+    },
+    {
+      "id": "CORE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "[+*/%<>=]| and | or |==|!="
+      ],
+      "note": "Suggested implementation order: arithmetic and comparison"
+    },
+    {
+      "id": "CORE-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "if |try |\\?| //|label |break "
+      ],
+      "note": "Suggested implementation order: control flow and errors"
+    },
+    {
+      "id": "PATHS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "path|paths|getpath"
+      ],
+      "note": "Suggested implementation order: paths"
+    },
+    {
+      "id": "PATHS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "setpath|delpaths|del\\("
+      ],
+      "note": "Suggested implementation order: path mutation and deletion"
+    },
+    {
+      "id": "PATHS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "[.]?[^\\n]*(\\|=|\\+=|-=|\\*=|/=|%=|//=| = )"
+      ],
+      "note": "Suggested implementation order: assignment"
+    },
+    {
+      "id": "CONTROL-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "reduce|foreach|limit|skip|first\\(|last\\(|nth\\("
+      ],
+      "note": "Suggested implementation order: reductions and iteration"
+    },
+    {
+      "id": "CONTROL-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "while|until|repeat|recurse"
+      ],
+      "note": "Suggested implementation order: recursive control"
+    },
+    {
+      "id": "CONTROL-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "any|all|isempty|combinations|range|transpose"
+      ],
+      "note": "Suggested implementation order: generator utilities"
+    },
+    {
+      "id": "BUILTINS-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "map|select|sort|group_by|unique|contains|keys|entries|flatten|join"
+      ],
+      "note": "Builtin definitions and manual: structural and collection builtins"
+    },
+    {
+      "id": "BUILTINS-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "split|trim|explode|implode|indices|ascii_|startswith|endswith"
+      ],
+      "note": "Manual: string and Unicode builtins"
+    },
+    {
+      "id": "BUILTINS-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "test\\(|match\\(|capture\\(|scan\\(|sub\\(|gsub\\("
+      ],
+      "note": "Manual: regular expressions"
+    },
+    {
+      "id": "BUILTINS-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "@|tojson|fromjson|tostring|tonumber|toboolean"
+      ],
+      "note": "Manual: format strings and JSON conversion"
+    },
+    {
+      "id": "BUILTINS-005",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "date|strftime|strptime|mktime|gmtime|pow\\(|sin|cos|sqrt|floor"
+      ],
+      "note": "Manual: dates and math"
+    },
+    {
+      "id": "BUILTINS-006",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "input|inputs|debug|stderr|env|\\$ENV|\\$__loc__|builtins"
+      ],
+      "note": "Manual: I/O and diagnostics"
+    },
+    {
+      "id": "BUILTINS-007",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "tostream|fromstream|truncate_stream"
+      ],
+      "note": "Manual: streaming"
+    },
+    {
+      "id": "BUILTINS-008",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "walk|pick|INDEX|JOIN|IN\\(|bsearch"
+      ],
+      "note": "Builtin definitions and manual: remaining helpers"
+    },
+    {
+      "id": "VERIFICATION-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "reduce|foreach|recurse|path|def|map|split|test|@"
+      ],
+      "note": "Instructions: every non-terminal story uses a scoped, executing corpus slice"
+    },
+    {
+      "id": "VERIFICATION-002",
+      "provenance": "plan",
+      "gate": [
+        "sh",
+        "sources/full_test.sh"
+      ],
+      "note": "Sea Trial st-001 and Definition of Done: complete supplied corpus"
+    }
+  ]
+}

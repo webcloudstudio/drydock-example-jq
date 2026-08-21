@@ -1,0 +1,243 @@
+=== BEGIN ARTIFACT FEATURE-BUILTINS-008.md ===
+# FEATURE: Remaining Structural Helpers
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides recursive structural helpers, projections, joins, membership tests, and binary search. |
+| Depends On  | FEATURE-BUILTINS-007.md |
+| Provides    | walk, pick, INDEX, JOIN, IN, bsearch |
+| Consumes    | structural builtins, paths, generators |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the remaining jq structural helpers defined by the manual and reference builtin library.
+
+## Behavior
+
+- `walk(f)` recursively transforms arrays and objects before applying `f`.
+- `pick(paths)` projects selected paths while preserving their structure.
+- `INDEX` and `JOIN` build and query object indexes from generators.
+- `IN` tests membership in a generator or source stream.
+- `bsearch(x)` returns an existing index or the encoded insertion point.
+- Helpers preserve jq generator ordering and runtime error behavior.
+
+## Programmatic Acceptance
+
+=== AC builtins-008-structural ===
+Intent: The authoritative corpus slice covering walk, pick, INDEX, JOIN, IN, and bsearch passes completely.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"walk|pick|INDEX|JOIN|IN\(|bsearch"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-008-structural ===
+
+=== AC builtins-008-stream-membership ===
+Intent: The authoritative corpus slice for stream membership and structural helpers executes non-empty cases without failures.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"INDEX|JOIN|IN\(|bsearch|walk"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC builtins-008-stream-membership ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Do not shell out to a system jq or use a third-party jq implementation.
+- Preserve immutable values, generator ordering, multiplicity, and runtime errors.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-VERIFICATION-001.md ===
+# FEATURE: Scoped Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides executing, scoped conformance verification for implemented jq capabilities. |
+| Depends On  | FEATURE-BUILTINS-008.md |
+| Provides    | scoped conformance verification |
+| Consumes    | executable jq, staged conformance harness, implemented capability slices |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Bind each implementation area to an executing, non-empty slice of the supplied authoritative conformance corpus.
+
+## Behavior
+
+- Every scoped invocation supplies the candidate through the inherited `JQ` environment.
+- Selectors match program syntax owned by implemented capabilities.
+- The machine-readable report is parsed as JSON.
+- A scoped verification passes only when it matched cases, reported no failures or errors, and exited successfully.
+- This story does not run the unfiltered corpus.
+
+## Programmatic Acceptance
+
+=== AC verification-001-scoped ===
+Intent: The authoritative scoped conformance slice executes non-empty cases for representative implemented capabilities and passes completely.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"reduce|foreach|recurse|path|def|map|split|test|@"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC verification-001-scoped ===
+
+=== AC verification-001-environment ===
+Intent: The scoped verification command receives the candidate through JQ and returns a machine-readable successful report.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"walk|pick|INDEX|JOIN|IN\(|bsearch"
+candidate = f"{os.getcwd()}/jq"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": candidate},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+assert report["candidate"] == [candidate]
+assert sum(report["summary"].values()) > 0
+assert result.returncode == 0
+=== END AC verification-001-environment ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never invoke the harness in non-executing enumeration or dry-run mode.
+- Never invoke the unfiltered corpus from this story.
+- Preserve the supplied harness and corpus unchanged.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-VERIFICATION-002.md ===
+# FEATURE: Complete Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260821 V1 |
+| Description | Provides terminal verification against the complete supplied jq conformance corpus. |
+| Depends On  | FEATURE-VERIFICATION-001.md |
+| Provides    | complete jq conformance release verification |
+| Consumes    | executable jq, staged conformance assets, all implemented capabilities |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Run the supplied scoring entry point as the terminal release gate after all implementation stories have completed.
+
+## Behavior
+
+The terminal verification executes `sh sources/full_test.sh` from the application root. The supplied script performs the executable check and invokes the complete conformance corpus with the candidate bound through `JQ`. Captured output is printed for diagnosis; the script's exit status is the sole verdict.
+
+## Programmatic Acceptance
+
+=== AC verification-002-full ===
+Intent: The completed interpreter passes the supplied complete conformance corpus and release script.
+Suite: full
+Requires: executable=sh; scope=test
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+=== END AC verification-002-full ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- This is the only story that runs the unfiltered corpus.
+- Do not alter, filter, skip, or reinterpret the supplied scoring script.
+- Treat the script exit status as the release verdict; diagnostics are informational only.
+
+=== END ARTIFACT ===

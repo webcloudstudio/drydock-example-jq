@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-VERIFICATION-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-VERIFICATION-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-VERIFICATION-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Complete Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provides terminal verification against the complete supplied jq conformance corpus.</td></tr><tr><td>Depends On</td><td>FEATURE-VERIFICATION-001.md</td></tr><tr><td>Provides</td><td>complete jq conformance release verification</td></tr><tr><td>Consumes</td><td>executable jq, staged conformance assets, all implemented capabilities</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Run the supplied scoring entry point as the terminal release gate after all implementation stories have completed.</p>
+<h2>Behavior</h2>
+<p>The terminal verification executes <code>sh sources/full_test.sh</code> from the application root. The supplied script performs the executable check and invokes the complete conformance corpus with the candidate bound through <code>JQ</code>. Captured output is printed for diagnosis; the script&#x27;s exit status is the sole verdict.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC verification-002-full ===<br>Intent: The completed interpreter passes the supplied complete conformance corpus and release script.<br>Suite: full<br>Requires: executable=sh; scope=test<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, env={**os.environ}, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 === END AC verification-002-full ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>This is the only story that runs the unfiltered corpus.</li><li>Do not alter, filter, skip, or reinterpret the supplied scoring script.</li><li>Treat the script exit status as the release verdict; diagnostics are informational only.</li></ul></article>
+</main>
+</body>
+</html>

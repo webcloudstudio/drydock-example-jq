@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FOUNDATION-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FOUNDATION-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FOUNDATION-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Executable jq Command Contract</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Provides the executable jq command-line, JSON stream boundary, and documented exit statuses.</td></tr><tr><td>Depends On</td><td>FEATURE-FOUNDATION-001.md</td></tr><tr><td>Provides</td><td>executable jq, -c CLI, JSON stdin/stdout boundary, compile exit status 3, runtime exit status 5</td></tr><tr><td>Consumes</td><td>staged jq assets</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The application root contains an executable named <code>jq</code>, invoked as <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>. It reads JSON values from standard input, evaluates the supplied filter for each input value, writes each produced value as one compact JSON value per line, and writes diagnostics to standard error.</p>
+<p>Compilation failures return status <code>3</code>. Runtime failures return status <code>5</code>, while retaining values emitted before the failure. Successful completion returns status <code>0</code>.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC cli-round-trip ===<br>Intent: The executable accepts the exercised -c form and emits each supplied JSON value as compact JSON.</p>
+<p>import json import os import subprocess</p>
+<p>payload_values = [{&quot;a&quot;: 1}, [2, 3], &quot;text&quot;] payload = &quot;\n&quot;.join(json.dumps(value) for value in payload_values) + &quot;\n&quot;</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=payload, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual == payload_values === END AC cli-round-trip ===</p>
+<p>=== AC cli-compile-status ===<br>Intent: A syntactically invalid jq program returns the documented compile-failure status.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 === END AC cli-compile-status ===</p>
+<p>=== AC cli-runtime-status ===<br>Intent: A runtime error returns status 5 after preserving values emitted before the error.</p>
+<p>import json import os import subprocess</p>
+<p>prefix = 1 result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 5 assert [json.loads(line) for line in result.stdout.splitlines()] == [prefix] === END AC cli-runtime-status ===</p>
+<h2>User Acceptance</h2>
+<ul><li>The command can be invoked directly as <code>./jq -c &#x27;&lt;program&gt;&#x27;</code> from the application root.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Implement the interpreter in Python using only the standard library.</li><li>Do not shell out to a system jq executable or use a third-party jq implementation.</li><li>Diagnostics belong on standard error and are not part of the JSON output stream.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FRONTEND-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FRONTEND-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FRONTEND-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Lexical Scanner</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260821 V1</td></tr><tr><td>Description</td><td>Tokenizes jq programs according to the pinned jq lexer specification.</td></tr><tr><td>Depends On</td><td>FEATURE-FOUNDATION-002.md</td></tr><tr><td>Provides</td><td>jq lexer</td></tr><tr><td>Consumes</td><td>executable jq</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The lexer recognizes jq identifiers, field names, variable bindings, numeric and string literals, interpolation boundaries, format tokens, keywords, comments, operators, delimiters, recursive descent, optional and alternative operators, and invalid characters. It preserves string escapes and reports invalid lexical forms for compile-time rejection.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-conformance-slice ===<br>Intent: The executable passes the non-empty conformance slice covering lexical forms, literals, strings, formats, delimiters, and invalid module syntax.</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&#x27;^(\\.|\\[|\\{|def|if|try|reduce|foreach|module|include|%::|&quot;|@)&#x27;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC lexer-conformance-slice ===</p>
+<p>=== AC lexer-invalid-escape ===<br>Intent: An invalid string escape is rejected as a compile-time error.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC lexer-invalid-escape ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Lexical behavior follows the supplied <code>sources/lexer.l</code> contract.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep source assets under <code>sources/</code> read-only.</li><li>Do not delegate lexical scanning to an external jq executable or third-party parser.</li></ul></article>
+</main>
+</body>
+</html>
