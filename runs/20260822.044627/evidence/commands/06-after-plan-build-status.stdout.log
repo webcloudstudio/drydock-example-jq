@@ -1,4 +1,6 @@
 Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Target - setup project workspace git store
+Target - committed project workspace git store
 Next: drydock build jq
 
 Blueprint: jq
@@ -6,29 +8,29 @@ Target: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspac
 Rows: <state> <type>  <Name>  [<id>]   — pass [<id>] to --step
 
 Block: Build Block 1 · Foundational  [block-1]   — 0/1 stories done
-  [pending] story  Define the standalone jq interpreter architecture and module boundaries.  [architecture-foundation]  <- next
+  [built]   story  Define the standalone jq interpreter architecture and module boundaries.  [architecture-foundation]  <- verify
 
 Block: Build Block 2 · Foundational  [block-2]   — 0/1 stories done
-  [pending] story  Implement the executable jq entry point.  [EXEC-001]
+  [built]   story  Implement the executable jq entry point.  [EXEC-001]  <- verify
 
 Block: Build Block 3 · Service  [block-3]   — 0/1 stories done
-  [pending] story  Implement jq process exit and diagnostic behavior.  [EXEC-002]
+  [built]   story  Implement jq process exit and diagnostic behavior.  [EXEC-002]  <- verify
 
 Block: Build Block 4 · Service  [block-4]   — 0/1 stories done
-  [pending] story  Implement JSON input and compact output handling.  [EXEC-003]
+  [built]   story  Implement JSON input and compact output handling.  [EXEC-003]  <- verify
 
 Block: Build Block 5 · Foundational  [block-5]   — 0/1 stories done
-  [pending] story  Stage and validate immutable conformance assets.  [CONF-001]
+  [built]   story  Stage and validate immutable conformance assets.  [CONF-001]  <- verify
 
 Block: Build Block 6 · Service  [block-6]   — 0/1 stories done
-  [pending] story  Implement jq lexical scanning.  [PARSE-001]
+  [built]   story  Implement jq lexical scanning.  [PARSE-001]  <- verify
 
 Block: Build Block 7 · Service  [block-7]   — 0/1 stories done
-  [pending] story  Implement literals, strings, escapes, and interpolation.  [PARSE-002]
+  [built]   story  Implement literals, strings, escapes, and interpolation.  [PARSE-002]  <- verify
 
 Block: Build Block 8 · Service  [block-8]   — 0/2 stories done
-  [pending] story  Implement jq filter expression grammar.  [PARSE-003]
-  [pending] story  Implement declarations and control syntax parsing.  [PARSE-004]
+  [FAILED]  story  Implement jq filter expression grammar.  [PARSE-003]  <- resume (repairs in place)
+  [FAILED]  story  Implement declarations and control syntax parsing.  [PARSE-004]  <- resume (repairs in place)
 
 Block: Build Block 9 · Service  [block-9]   — 0/1 stories done
   [pending] story  Implement the stream-valued filter evaluator.  [CORE-001]
@@ -135,5 +137,6 @@ Block: Build Block 42 · Service  [block-42]   — 0/1 stories done
 Block: Build Block 43 · Service  [block-43]   — 0/1 stories done
   [pending] story  Run the complete jq conformance corpus.  [CONF-003]
 
-Steps: 44 total — 0 done, 0 built (await verify), 0 in review, 44 pending, 0 blocked by questions, 0 failed (0% complete)
-Buildable now: block-1
+Steps: 44 total — 0 done, 7 built (await verify), 0 in review, 35 pending, 0 blocked by questions, 2 failed (0% complete)
+Buildable now: block-8
+Failed (resume with drydock build, or --step <id>; --reset discards work instead): PARSE-003, PARSE-004

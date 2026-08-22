@@ -8,7 +8,7 @@
     "unverified": 0
   },
   "attestations": [],
-  "build_passes": 2,
+  "build_passes": 3,
   "commands": [
     {
       "argv": [
@@ -104,7 +104,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 6566,
+      "elapsed_ms": 1952,
       "label": "05-plan-verify",
       "llm_executions": [],
       "returncode": 0,
@@ -121,7 +121,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1411,
+      "elapsed_ms": 3051,
       "label": "06-after-plan-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -137,7 +137,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 3380,
+      "elapsed_ms": 1445,
       "label": "07-after-plan-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -152,7 +152,7 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1292,
+      "elapsed_ms": 495,
       "label": "08-after-plan-workspace-status",
       "llm_executions": [],
       "returncode": 0,
@@ -169,7 +169,7 @@
         "--ready"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 879,
+      "elapsed_ms": 493,
       "label": "09-initial-ready",
       "llm_executions": [],
       "returncode": 0,
@@ -188,23 +188,16 @@
         "6"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 5393448,
+      "elapsed_ms": 4896574,
       "label": "10-initial-build-1",
       "llm_executions": [
-        "20260822.194717.195Z-0948cafd",
-        "20260822.194909.871Z-c0f03947",
-        "20260822.195011.791Z-7425cbae",
-        "20260822.195122.332Z-1d5baaf1",
-        "20260822.195319.493Z-08895953",
-        "20260822.195437.799Z-9e8b87c7",
-        "20260822.195833.572Z-be3705d7",
-        "20260822.200621.180Z-32a3e230",
-        "20260822.201548.188Z-8d3e6716",
-        "20260822.202556.681Z-3a0c6100",
-        "20260822.203559.802Z-c267f35e",
-        "20260822.204217.533Z-0c917fdf",
-        "20260822.205352.047Z-99e6d523",
-        "20260822.210533.139Z-e0792409"
+        "20260822.220746.747Z-525f03f6",
+        "20260822.222140.216Z-50c59f2d",
+        "20260822.223147.922Z-75b9cff2",
+        "20260822.224330.910Z-6102de7b",
+        "20260822.225404.795Z-9d946a42",
+        "20260822.230353.199Z-399c8a04",
+        "20260822.231236.324Z-ca97b585"
       ],
       "returncode": 1,
       "stderr_path": "evidence/commands/10-initial-build-1.stderr.log",
@@ -220,7 +213,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1996,
+      "elapsed_ms": 1225,
       "label": "11-after-initial-build-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -236,7 +229,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 2795,
+      "elapsed_ms": 1383,
       "label": "12-after-initial-build-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -251,7 +244,7 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 615,
+      "elapsed_ms": 518,
       "label": "13-after-initial-build-workspace-status",
       "llm_executions": [],
       "returncode": 0,
@@ -262,17 +255,17 @@
   "degraded": [
     "initial-build-1 exited 1"
   ],
-  "elapsed_ms": 6282384,
+  "elapsed_ms": 4937229,
   "environment": {
     "drydock_version": "0.2.0",
     "effort": "",
-    "finished_at": "2026-08-22T21:18:01.348067Z",
+    "finished_at": "2026-08-22T23:25:45.165283Z",
     "git_commit": "b6180cf90d8f416e778a09e787101cfc5e91831d",
     "model": "gpt-5.6-luna",
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "provider": "codex",
     "python_version": "3.12.13",
-    "started_at": "2026-08-22T19:33:18.845024Z"
+    "started_at": "2026-08-22T22:03:27.867908Z"
   },
   "error": "jq: stopped at initial-build-1: The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.",
   "evidence_dir": "evidence",
@@ -282,18 +275,18 @@
   "observed_verdict": "ERROR",
   "output_dir": ".",
   "release_verdict": "",
-  "resumed_from": "plan",
+  "resumed_from": "verify",
   "run_id": "20260822.044627",
   "score_exit_codes": {},
   "status": "failed",
   "target": "jq",
   "usage": {
-    "cached_input_tokens": 23992320,
-    "calls": 127,
-    "fresh_input_tokens": 7094356,
-    "input_tokens": 31086676,
+    "cached_input_tokens": 43618304,
+    "calls": 134,
+    "fresh_input_tokens": 7831128,
+    "input_tokens": 51449432,
     "invalid_records": 0,
-    "llm_elapsed_ms": 10037378,
-    "output_tokens": 391481
+    "llm_elapsed_ms": 13746709,
+    "output_tokens": 465982
   }
 }

@@ -10,6 +10,12 @@ from .diagnostics import report_compile_error, report_runtime_error
 from .errors import CompileError, RuntimeError
 from .interpreter import Interpreter, parse_inputs
 
+# The conformance corpus deliberately exercises jq's deep-value limit with
+# values around ten thousand levels deep.  Python's default limit is lower
+# than that and would turn valid jq processing into an uncaught RecursionError
+# while encoding an intermediate value.
+sys.setrecursionlimit(100000)
+
 
 def _inputs() -> Iterator[object]:
     yield from parse_inputs(sys.stdin.read())
@@ -41,10 +47,8 @@ def main(argv: list[str] | None = None) -> int:
         return report_compile_error(error)
     try:
         for output in interpreter.run(_inputs()):
-            print(
-                json.dumps(_json_output(output), separators=(",", ":"), ensure_ascii=False),
-                flush=True,
-            )
+            from .evaluator import _deep_json_dumps
+            print(_deep_json_dumps(output), flush=True)
     except (RuntimeError, ValueError, TypeError, json.JSONDecodeError) as error:
         return report_runtime_error(RuntimeError(str(error)))
     return 0

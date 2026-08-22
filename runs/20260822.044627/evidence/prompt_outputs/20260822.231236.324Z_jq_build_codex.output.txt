@@ -1,0 +1,18 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Implemented parser/evaluator fixes for recursive descent, generator indexes, ranges, slices, computed-key validation, paths, bindings, and control precedence. Project tests pass: 32 passed.
+
+Scoped acceptance remains failing:
+- parse-003: 331 passed, 123 failed, 1 errored, 9 skipped
+- parse-004: 153 passed, 57 failed, 1 errored, 13 skipped
+
+BLOCKERS:
+- Significant evaluator functionality remains incomplete, including builtins, assignment semantics, function scoping, and advanced control behavior.
+
+FAILURE_SUMMARY: Scoped conformance suites still fail.
+FAILURE_DETAIL: Both authoritative acceptance commands executed successfully but reported nonzero fail/error tallies; further evaluator and builtin implementation is required.

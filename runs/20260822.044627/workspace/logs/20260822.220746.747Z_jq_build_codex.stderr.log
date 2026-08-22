@@ -1,0 +1,6 @@
+2026-08-22T22:17:02.557735Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name == 'map':
+        result=[]
+        for x in value:
+            result.extend(_node(args[0], x, env))
+        yield result; return

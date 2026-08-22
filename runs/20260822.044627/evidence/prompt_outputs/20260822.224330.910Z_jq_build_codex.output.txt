@@ -1,0 +1,16 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/cli.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+- Fixed deep JSON recursion and iterative flattening.
+- Fixed function overload resolution by arity.
+- `^reduce` scoped checks now pass: 12/12.
+- Remaining declaration/function cases still fail due to lexical function-definition scoping and assignment behavior.
+- Full declared acceptance checks were not brought to green.
+
+BLOCKERS:
+- `parse-003-conformance` and `parse-004-conformance` still report failures.
+- Function definitions currently resolve against the final function environment rather than definition-time lexical scope.

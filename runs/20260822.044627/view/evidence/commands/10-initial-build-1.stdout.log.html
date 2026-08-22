@@ -12,108 +12,83 @@
 <article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
 Build: jq
 scope: entire project
-frontier: architecture-foundation
-
-LLM BUILD: Block 1 · Foundational [block-1]
-  stories: Define the standalone jq interpreter architecture and module boundaries. [architecture-foundation]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 2/2 AC passed
-built: architecture-foundation — closed/verified · execution 20260822.194717.195Z-0948cafd
-
-LLM BUILD: Block 2 · Foundational [block-2]
-  stories: Implement the executable jq entry point. [EXEC-001]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 2/2 AC passed
-built: EXEC-001 — closed/verified · execution 20260822.194909.871Z-c0f03947
-
-LLM BUILD: Block 3 · Service [block-3]
-  stories: Implement jq process exit and diagnostic behavior. [EXEC-002]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 3/3 AC passed
-built: EXEC-002 — closed/verified · execution 20260822.195011.791Z-7425cbae
-
-LLM BUILD: Block 4 · Service [block-4]
-  stories: Implement JSON input and compact output handling. [EXEC-003]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 3/3 AC passed
-built: EXEC-003 — closed/verified · execution 20260822.195122.332Z-1d5baaf1
-
-LLM BUILD: Block 5 · Foundational [block-5]
-  stories: Stage and validate immutable conformance assets. [CONF-001]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 1/1 AC passed
-built: CONF-001 — closed/verified · execution 20260822.195319.493Z-08895953
-
-LLM BUILD: Block 6 · Service [block-6]
-  stories: Implement jq lexical scanning. [PARSE-001]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 3/3 AC passed
-built: PARSE-001 — closed/verified · execution 20260822.195437.799Z-9e8b87c7
-
-LLM BUILD: Block 7 · Service [block-7]
-  stories: Implement literals, strings, escapes, and interpolation. [PARSE-002]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
-  Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 1/1 AC passed
-built: PARSE-002 — closed/verified · execution 20260822.195833.572Z-be3705d7
+frontier: resume block-8
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
-  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  call: 1 of up to 7 · resumed repair · codex/gpt-5.6-luna
+  failing: parse-003-conformance (210/464 cases), parse-004-conformance (92/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 0/2 AC passed · failed: parse-003-conformance (93/464 cases), parse-004-conformance (24/224 cases)
+acceptance: call 1 · 0/2 AC passed · failed: parse-003-conformance (235/464 cases), parse-004-conformance (105/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (93/464 cases), parse-004-conformance (24/224 cases)
+  failing: parse-003-conformance (235/464 cases), parse-004-conformance (105/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 2 · 0/2 AC passed · failed: parse-003-conformance (135/464 cases), parse-004-conformance (66/224 cases)
+acceptance: call 2 · 0/2 AC passed · failed: parse-003-conformance (253/464 cases), parse-004-conformance (116/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (135/464 cases), parse-004-conformance (66/224 cases)
+  failing: parse-003-conformance (253/464 cases), parse-004-conformance (116/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 3 · 0/2 AC passed · failed: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+acceptance: call 3 · 0/2 AC passed · failed: parse-003-conformance (275/464 cases), parse-004-conformance (122/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 4 of up to 7 · automatic repair 3 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+  failing: parse-003-conformance (275/464 cases), parse-004-conformance (122/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 4 · 0/2 AC passed · failed: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+acceptance: call 4 · 0/2 AC passed · failed: parse-003-conformance (282/464 cases), parse-004-conformance (130/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 5 of up to 7 · automatic repair 4 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+  failing: parse-003-conformance (282/464 cases), parse-004-conformance (130/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 5 · 0/2 AC passed · failed: parse-003-conformance (153/464 cases), parse-004-conformance (75/224 cases)
+acceptance: call 5 · 0/2 AC passed · failed: parse-003-conformance (289/464 cases), parse-004-conformance (133/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 6 of up to 7 · automatic repair 5 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (153/464 cases), parse-004-conformance (75/224 cases)
+  failing: parse-003-conformance (289/464 cases), parse-004-conformance (133/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 6 · 0/2 AC passed · failed: parse-003-conformance (187/464 cases), parse-004-conformance (87/224 cases)
+acceptance: call 6 · 0/2 AC passed · failed: parse-003-conformance (306/464 cases), parse-004-conformance (143/224 cases)
 
 LLM BUILD: Block 8 · Service [block-8]
   stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 7 of up to 7 · automatic repair 6 of 6 · codex/gpt-5.6-luna
-  failing: parse-003-conformance (187/464 cases), parse-004-conformance (87/224 cases)
+  failing: parse-003-conformance (306/464 cases), parse-004-conformance (143/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 7 · 0/2 AC passed · failed: parse-003-conformance (210/464 cases), parse-004-conformance (92/224 cases)
-failed: PARSE-003 — closed/failed · execution 20260822.210533.139Z-e0792409
+acceptance: call 7 · 0/2 AC passed · failed: parse-003-conformance (331/464 cases), parse-004-conformance (153/224 cases)
+failed: PARSE-003 — closed/failed · execution 20260822.231236.324Z-ca97b585
 
-result: 7 built, 2 failed, 0 unchanged
-elapsed: 1 hour 29 minutes 49 seconds
+result: 0 built, 2 failed, 0 unchanged
+elapsed: 1 hour 21 minutes 34 seconds
+
+BUILD STALLED — 37 block(s) outstanding and none could advance:
+  PARSE-003
+  PARSE-004
+  CORE-001
+  CORE-002
+  CORE-003
+  CORE-004
+  VALUE-001
+  VALUE-002
+  VALUE-003
+  VALUE-004
+  FLOW-001
+  FLOW-002
+  FLOW-003
+  FLOW-004
+  FLOW-005
+  FLOW-006
+  FUNC-001
+  FUNC-002
+  FUNC-003
+  FUNC-004
+  ... and 17 more
 
 ========================================================================
 BUILD FAILED: jq  (1 step)
@@ -126,10 +101,12 @@ BUILD FAILED: jq  (1 step)
       Story: Implement jq filter expression grammar. [PARSE-003]
     Cause: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
     agent summary:
-      Fixed scalar indexing errors, optional access, range, common
-      builtins, interpolation, nested `elif`, and `try` parsing.
-      Project tests pass: 32 passed. Scoped conformance remains
-      failing: PARSE-003 191/408 passed; PARSE-004 92/211 passed.
+      Implemented parser/evaluator fixes for recursive descent,
+      generator indexes, ranges, slices, computed-key validation,
+      paths, bindings, and control precedence. Project tests pass:
+      32 passed. Scoped acceptance remains failing: - parse-003:
+      331 passed, 123 failed, 1 errored, 9 skipped - parse-004:
+      153 passed, 57 failed, 1 errored, 13 skipped
     acceptance: 0/1 passing · baseline 0/1 · unchanged
     Assertion
       Acceptance checks:
@@ -150,10 +127,10 @@ BUILD FAILED: jq  (1 step)
         to continue the build. This story resumes where it left off and is
         retried against the checks it failed.
     agent blockers:
-      - Broad evaluator functionality remains incomplete,
-      especially advanced builtins, assignments, function scoping,
-      and control semantics.
-    execution: 20260822.210533.139Z-e0792409
+      - Significant evaluator functionality remains incomplete,
+      including builtins, assignment semantics, function scoping,
+      and advanced control behavior.
+    execution: 20260822.231236.324Z-ca97b585
     evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-8.md
 
   Next
@@ -170,13 +147,13 @@ POST-LLM FAILURE  ·  build  ·  programmatic acceptance failed: parse-003-confo
     Story &quot;Implement jq filter expression grammar.&quot; [PARSE-003] does not meet its own acceptance criteria:
       - AC parse-003-conformance — The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
           assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError
-          cases: pass=210 fail=245 error=0 skip=9 total=464 from=summary
+          cases: pass=331 fail=124 error=0 skip=9 total=464 from=summary
           raised at: parse-003-conformance.py:18
           process exit code: 1
           values at failure:
-            summary = {&#x27;pass&#x27;: 210, &#x27;fail&#x27;: 245, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 9}
+            summary = {&#x27;pass&#x27;: 331, &#x27;fail&#x27;: 124, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 9}
           observed output:
-                  &quot;line&quot;: 2633,
+                  &quot;line&quot;: 2607,
   … (46 more lines truncated)
 
   Recovery

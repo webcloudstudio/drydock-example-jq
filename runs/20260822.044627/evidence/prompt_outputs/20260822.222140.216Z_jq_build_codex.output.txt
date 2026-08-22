@@ -1,0 +1,14 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Implemented parser/evaluator fixes and added jq semantics for bindings, indexing, errors, booleans, string helpers, Unicode helpers, and depth guards. Existing tests pass: 32 passed. PARSE-004 remains failing: 116 passed, 95 failed, 13 skipped. PARSE-003 timed out on the authoritative corpus.
+
+BLOCKERS:
+- Significant evaluator semantics remain incomplete, including assignments, user-defined function scoping, paths, reductions, and deep structures.
+
+FAILURE_SUMMARY: Scoped conformance criteria still fail.
+FAILURE_DETAIL: pytest passes, but the authoritative PARSE-004 slice reports 95 failures and PARSE-003 does not complete within the timeout. Further evaluator implementation is required.

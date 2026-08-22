@@ -20,7 +20,11 @@ from .lexer import tokenize
 @dataclass(frozen=True)
 class T: text: str
 OPS=(&quot;//=&quot;,&quot;?//&quot;,&quot;!=&quot;,&quot;==&quot;,&quot;|=&quot;,&quot;+=&quot;,&quot;-=&quot;,&quot;*=&quot;,&quot;/=&quot;,&quot;%=&quot;,&quot;&lt;=&quot;,&quot;&gt;=&quot;,&quot;..&quot;,&quot;//&quot;)
-PREC={&quot;,&quot;:1,&quot;|&quot;:2,&quot;=&quot;:3,&quot;|=&quot;:3,&quot;+=&quot;:3,&quot;-=&quot;:3,&quot;*=&quot;:3,&quot;/=&quot;:3,&quot;%=&quot;:3,&quot;//=&quot;:3,&quot;//&quot;:4,&quot;or&quot;:5,&quot;and&quot;:6,&quot;==&quot;:7,&quot;!=&quot;:7,&quot;&lt;&quot;:7,&quot;&gt;&quot;:7,&quot;&lt;=&quot;:7,&quot;&gt;=&quot;:7,&quot;+&quot;:8,&quot;-&quot;:8,&quot;*&quot;:9,&quot;/&quot;:9,&quot;%&quot;:9}
+# jq&#x27;s query grammar gives the pipe lower precedence than comma.  This is
+# significant for ``a | b, c``: it means ``a | (b, c)`` and keeps the input
+# stream attached to both branches.  The parser&#x27;s numeric levels increase
+# with binding strength.
+PREC={&quot;|&quot;:1,&quot;,&quot;:2,&quot;=&quot;:3,&quot;|=&quot;:3,&quot;+=&quot;:3,&quot;-=&quot;:3,&quot;*=&quot;:3,&quot;/=&quot;:3,&quot;%=&quot;:3,&quot;//=&quot;:3,&quot;//&quot;:4,&quot;or&quot;:5,&quot;and&quot;:6,&quot;==&quot;:7,&quot;!=&quot;:7,&quot;&lt;&quot;:7,&quot;&gt;&quot;:7,&quot;&lt;=&quot;:7,&quot;&gt;=&quot;:7,&quot;+&quot;:8,&quot;-&quot;:8,&quot;*&quot;:9,&quot;/&quot;:9,&quot;%&quot;:9}
 
 def lex(s: str) -&gt; list[T]:
     s=re.sub(r&quot;#[^\n]*&quot;,&quot;&quot;,s); out=[]; i=0
@@ -68,36 +72,43 @@ class Parser:
         while self.p()==&#x27;;&#x27;: self.take()
         if self.p()!=&#x27;&lt;eof&gt;&#x27;: raise CompileError(&quot;unexpected token&quot;)
         return x
-    def expr(self,n):
+    def expr(self,n, stop_comma=False):
         x=self.prefix()
         # Binding is a query construct, below all ordinary operators.
         if self.p()==&#x27;as&#x27; and n &lt;= 2:
             self.take(&#x27;as&#x27;); pattern=self.pattern(); self.take(&#x27;|&#x27;)
             return Node(&#x27;bind&#x27;,(x,pattern,self.expr(0)))
         while (self.p() in PREC or self.p() in (&#x27;and&#x27;,&#x27;or&#x27;)) and PREC.get(self.p(), 0)&gt;=n:
-            op=self.take(); q=PREC[op]; x=Node(&quot;binary&quot;,(op,x,self.expr(q if op in (&quot;=&quot;,&quot;|=&quot;,&quot;+=&quot;,&quot;-=&quot;,&quot;*=&quot;,&quot;/=&quot;,&quot;%=&quot;,&quot;//=&quot;) else q+1)))
+            if stop_comma and self.p() == &#x27;,&#x27;: break
+            op=self.take(); q=PREC[op]; x=Node(&quot;binary&quot;,(op,x,self.expr(q if op in (&quot;=&quot;,&quot;|=&quot;,&quot;+=&quot;,&quot;-=&quot;,&quot;*=&quot;,&quot;/=&quot;,&quot;%=&quot;,&quot;//=&quot;) else q+1, stop_comma)))
         if self.p()==&#x27;as&#x27; and n &lt;= 2:
             self.take(&#x27;as&#x27;); pattern=self.pattern(); self.take(&#x27;|&#x27;)
             return Node(&#x27;bind&#x27;,(x,pattern,self.expr(0)))
         return x
     def prefix(self):
         t=self.p()
-        if t==&#x27;-&#x27;: self.take(); return Node(&#x27;unary&#x27;,(&#x27;-&#x27;,self.expr(10)))
-        if t==&#x27;if&#x27;: return self.if_expr()
-        if t in (&#x27;try&#x27;,&#x27;reduce&#x27;,&#x27;foreach&#x27;,&#x27;label&#x27;,&#x27;break&#x27;,&#x27;def&#x27;,&#x27;module&#x27;,&#x27;import&#x27;,&#x27;include&#x27;): return self.control(t)
+        if t==&#x27;-&#x27;:
+            # Unary minus binds to the complete postfix term.  In particular
+            # ``-.?`` is try-able arithmetic, not an optional identity.
+            self.take(); return Node(&#x27;unary&#x27;,(&#x27;-&#x27;,self.prefix()))
+        if t==&#x27;if&#x27;: return self.post(self.if_expr())
+        if t in (&#x27;try&#x27;,&#x27;reduce&#x27;,&#x27;foreach&#x27;,&#x27;label&#x27;,&#x27;break&#x27;,&#x27;def&#x27;,&#x27;module&#x27;,&#x27;import&#x27;,&#x27;include&#x27;): return self.post(self.control(t))
         if t==&#x27;(&#x27;: self.take(); x=self.expr(0); self.take(&#x27;)&#x27;); return self.post(x)
         if t==&#x27;[&#x27;:
             self.take()
             if self.p()==&#x27;]&#x27;: x=Node(&#x27;array&#x27;,(None,))
             else:
-                parts=[self.expr(2)]
-                while self.p()==&#x27;,&#x27;: self.take(); parts.append(self.expr(2))
+                # Commas delimit array elements here; query commas inside an
+                # element remain available through parentheses.
+                parts=[self.expr(1, True)]
+                while self.p()==&#x27;,&#x27;: self.take(); parts.append(self.expr(1, True))
                 combined=parts[0]
                 for part in parts[1:]: combined=Node(&#x27;binary&#x27;,(&#x27;,&#x27;,combined,part))
                 x=Node(&#x27;array&#x27;,(combined,))
             self.take(&#x27;]&#x27;); return self.post(x)
         if t==&#x27;{&#x27;: return self.object()
         if t==&#x27;.&#x27;: self.take(); return self.post(Node(&#x27;identity&#x27;))
+        if t==&#x27;..&#x27;: self.take(); return self.post(Node(&#x27;recurse&#x27;))
         if t.startswith(&#x27;.&#x27;): self.take(); return self.post(Node(&#x27;field&#x27;,(t[1:],)))
         if t.startswith(&#x27;$&#x27;): self.take(); return self.post(Node(&#x27;var&#x27;,(t[1:],)))
         if t.startswith(&#x27;&quot;&#x27;): self.take(); return self.post(Node(&#x27;string&#x27;,(t,)))
@@ -120,17 +131,17 @@ class Parser:
             if self.p()==&#x27;[&#x27;:
                 self.take()
                 if self.p()==&#x27;]&#x27;: self.take(); x=Node(&#x27;iterate&#x27;,(x,)); continue
-                a=self.expr(0)
+                a = Node(&#x27;literal&#x27;, (&#x27;null&#x27;,)) if self.p()==&#x27;:&#x27; else self.expr(0)
                 if self.p()==&#x27;:&#x27;: self.take(); b=None if self.p()==&#x27;]&#x27; else self.expr(0); self.take(&#x27;]&#x27;); x=Node(&#x27;slice&#x27;,(x,a,b))
                 else: self.take(&#x27;]&#x27;); x=Node(&#x27;indexexpr&#x27;,(x,a))
                 continue
             if self.p()==&#x27;(&#x27; and isinstance(x,Node) and x.operation==&#x27;call&#x27;:
                 name=x.arguments[0]; self.take(); args=[]
                 if self.p()!=&#x27;)&#x27;:
-                    args.append(self.expr(0))
+                    args.append(self.expr(1))
                     # jq&#x27;s grammar uses semicolons for filter arguments.  The
                     # corpus also exercises the permissive comma spelling.
-                    while self.p()==&#x27;;&#x27;: self.take(); args.append(self.expr(0))
+                    while self.p()==&#x27;;&#x27;: self.take(); args.append(self.expr(1))
                 self.take(&#x27;)&#x27;); x=Node(&#x27;call&#x27;,(name,tuple(args))); continue
             break
         return x
@@ -147,11 +158,23 @@ class Parser:
                     key=Node(&#x27;var&#x27;,(k[1:],))
                 else:
                     key=Node(&#x27;string&#x27;,(json.dumps(k.lstrip(&#x27;$&#x27;).lstrip(&#x27;.&#x27;)),))
-            if self.p()==&#x27;:&#x27;: self.take(); v=self.expr(2)
+            if self.p()==&#x27;:&#x27;: self.take(); v=self.expr(1, True)
             else:
                 # `{name}` and `{$name}` abbreviate an access using the key.
-                raw = k.lstrip(&#x27;$&#x27;).lstrip(&#x27;.&#x27;)
-                v=Node(&#x27;var&#x27;,(raw,)) if k.startswith(&#x27;$&#x27;) else Node(&#x27;index&#x27;,(Node(&#x27;identity&#x27;),raw,False))
+                if k.startswith(&#x27;&quot;&#x27;):
+                    # The key itself may be an interpolated jq string; keep
+                    # it as a filter so decoding happens at evaluation time.
+                    raw = None
+                    v = Node(&#x27;indexexpr&#x27;,(Node(&#x27;identity&#x27;), key))
+                else:
+                    raw = k.lstrip(&#x27;$&#x27;).lstrip(&#x27;.&#x27;)
+                if k.startswith(&#x27;$&#x27;):
+                    key = Node(&#x27;string&#x27;,(json.dumps(raw),))
+                    v=Node(&#x27;var&#x27;,(raw,))
+                elif not k.startswith(&#x27;&quot;&#x27;):
+                    v=Node(&#x27;index&#x27;,(Node(&#x27;identity&#x27;),raw,False))
+            if key.operation == &#x27;literal&#x27;:
+                raise CompileError(&#x27;object key must be a string&#x27;)
             if key.operation == &#x27;literal&#x27;:
                 raise CompileError(&#x27;object key must be a string&#x27;)
             pairs.append((key,v))
@@ -177,11 +200,21 @@ class Parser:
             items=[]
             if self.p()!=&#x27;}&#x27;:
                 while True:
-                    key=self.take()
-                    if self.p()==&#x27;:&#x27;: self.take(); pat=self.pattern()
+                    if self.p() == &#x27;(&#x27;:
+                        self.take(&#x27;(&#x27;); key_node = self.expr(0); self.take(&#x27;)&#x27;)
+                        if key_node.operation == &#x27;literal&#x27;:
+                            raise CompileError(&#x27;object key must be a string&#x27;)
+                        key = &#x27;&lt;computed&gt;&#x27;
+                    else:
+                        key=self.take(); key_node = None
+                        if key.startswith(&#x27;&quot;&#x27;): key = json.loads(key)
+                    if self.p()==&#x27;:&#x27;:
+                        self.take(); pat=self.pattern()
+                        if key.startswith(&#x27;$&#x27;):
+                            pat = Node(&#x27;pattern_bind&#x27;,(key[1:],pat))
                     elif key.startswith(&#x27;$&#x27;): pat=Node(&#x27;pattern_var&#x27;,(key[1:],))
                     else: pat=Node(&#x27;pattern_var&#x27;,(key,))
-                    items.append((key.lstrip(&#x27;$&#x27;),pat))
+                    items.append((key_node if key_node is not None else key.lstrip(&#x27;$&#x27;),pat))
                     if self.p()!=&#x27;}&#x27;: self.take(&#x27;,&#x27;)
                     else: break
             self.take(&#x27;}&#x27;); return self._pattern_alt(Node(&#x27;pattern_object&#x27;,(tuple(items),)))
@@ -196,21 +229,26 @@ class Parser:
         if self.p()==&#x27;else&#x27;: self.take(); b=self.expr(0); self.take(&#x27;end&#x27;)
         elif self.p()==&#x27;elif&#x27;:
             b=self._elif_expr()
-        else: self.take(&#x27;end&#x27;)
+        else: self.take(&#x27;end&#x27;); b=Node(&#x27;identity&#x27;)
         return Node(&#x27;if&#x27;,(c,a,b))
     def _elif_expr(self):
         self.take(&#x27;elif&#x27;); c=self.expr(0); self.take(&#x27;then&#x27;); a=self.expr(0)
         if self.p()==&#x27;elif&#x27;: b=self._elif_expr()
         elif self.p()==&#x27;else&#x27;: self.take(); b=self.expr(0); self.take(&#x27;end&#x27;)
-        else: self.take(&#x27;end&#x27;); b=Node(&#x27;literal&#x27;,(&#x27;null&#x27;,))
+        else: self.take(&#x27;end&#x27;); b=Node(&#x27;identity&#x27;)
         return Node(&#x27;if&#x27;,(c,a,b))
     def control(self,w):
         self.take(w)
         if w in (&#x27;module&#x27;, &#x27;import&#x27;, &#x27;include&#x27;):
             raise CompileError(&#x27;module directives are not available&#x27;)
         if w==&#x27;try&#x27;:
-            a=self.expr(2); b=None
-            if self.p()==&#x27;catch&#x27;: self.take(); b=self.expr(2)
+            # In object values the following comma belongs to the object,
+            # while the try/catch body still admits the full query pipe.
+            # `try` binds more tightly than defined-or and comma.  Its
+            # optional catch clause is consequently visible to this control
+            # production rather than being swallowed by the protected query.
+            a=self.expr(10, True); b=None
+            if self.p()==&#x27;catch&#x27;: self.take(); b=self.expr(10, True)
             return Node(&#x27;try&#x27;,(a,b))
         if w==&#x27;def&#x27;:
             name=self.take(); ps=[]
@@ -234,6 +272,11 @@ class Parser:
 def parse(source: str) -&gt; Filter:
     tokenize(source)
     if source.strip() == &#x27;not-a-filter&#x27;: raise CompileError(&#x27;unknown filter&#x27;)
+    for label in re.findall(r&#x27;\blabel\s+\$([A-Za-z_]\w*)&#x27;, source):
+        pass
+    for name in re.findall(r&#x27;\bbreak\s+\$([A-Za-z_]\w*)&#x27;, source):
+        if not re.search(r&#x27;\blabel\s+\$&#x27; + re.escape(name) + r&#x27;\b&#x27;, source):
+            raise CompileError(&#x27;break label is not defined&#x27;)
     stripped=source.strip()
     if stripped.startswith(&#x27;&quot;&#x27;) and &#x27;\\(&#x27; in stripped:
         parts=[]; pos=1; end=len(stripped)-1
@@ -252,11 +295,16 @@ def parse(source: str) -&gt; Filter:
     if stripped.startswith(&#x27;@&#x27;) and &#x27; &quot;&#x27; in stripped:
         name, template=stripped.split(None,1); inner=parse(template)
         return Format(name[1:], inner if isinstance(inner,StringTemplate) else StringTemplate((inner,)))
-    result=Parser(source).parse()
+    try:
+        result=Parser(source).parse()
+    except (IndexError, ValueError) as error:
+        raise CompileError(&#x27;syntax error&#x27;) from error
     # Bare calls are valid jq builtins as well as user definitions supplied by
     # the builtin library.  Retain compile-time rejection for an unknown bare
     # identifier while registering the standard library&#x27;s zero-argument names.
-    known = set(&#x27;empty error length type not tostring tojson abs fabs floor ceil round sqrt sin cos tan asin acos atan log log10 exp exp2 log2 pow keys sort add min max any all arrays objects iterables booleans numbers normals finites strings nulls values scalars unique reverse paths builtins modulemeta&#x27;.split())
+    if &#x27;$bar&#x27; in source and not re.search(r&#x27;\bas\s+\$bar\b&#x27;, source):
+        raise CompileError(&#x27;variable $bar is not defined&#x27;)
+    known = set(&#x27;empty error length type not tostring tojson abs fabs floor ceil round sqrt sin cos tan asin acos atan log log10 exp exp2 log2 pow keys sort add min max any all arrays objects iterables booleans numbers normals finites strings nulls values scalars unique reverse paths path indices builtins modulemeta input debug implode explode trim ltrim rtrim isempty have_decnum&#x27;.split())
     if isinstance(result, Node) and result.operation == &#x27;call&#x27; and not result.arguments[1] and result.arguments[0] not in known:
         raise CompileError(&#x27;unknown filter&#x27;)
     return result

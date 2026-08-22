@@ -32,7 +32,7 @@ def evaluate(program: Filter, value: JsonValue) -&gt; ValueStream:
         elif isinstance(value, dict):
             yield from value.values()
         else:
-            raise RuntimeError(&quot;cannot iterate over value&quot;)
+            raise RuntimeError(f&quot;Cannot iterate over {_type_name(value)} ({_stringify(value)})&quot;)
         return
     if isinstance(program, Literal):
         yield program.value
@@ -98,7 +98,9 @@ def _node(node: Node, value: object, env: dict[str, object]) -&gt; ValueStream:
     elif op == &quot;var&quot;:
         if a[0] not in env: raise RuntimeError(f&quot;variable ${a[0]} is not defined&quot;)
         bound = env[a[0]]
-        if isinstance(bound, Node):
+        if isinstance(bound, tuple) and bound and bound[0] == &#x27;__closure__&#x27;:
+            yield from _node(bound[1], value, {**env, **bound[2]})
+        elif isinstance(bound, Node):
             yield from _node(bound, value, env)
         else:
             yield bound
@@ -111,18 +113,32 @@ def _node(node: Node, value: object, env: dict[str, object]) -&gt; ValueStream:
             # remainder continues with the original input.
             yield from _node(a[2], value, bound)
     elif op == &quot;field&quot;: yield _index(value, a[0])
+    elif op == &quot;recurse&quot;:
+        def walk(item):
+            yield item
+            if isinstance(item, list):
+                for child in item: yield from walk(child)
+            elif isinstance(item, dict):
+                for child in item.values(): yield from walk(child)
+        yield from walk(value)
     elif op == &quot;index&quot;:
         for base in _node(a[0],value,env): yield _index(base,a[1])
     elif op == &quot;iterate&quot;:
         for base in _node(a[0],value,env):
             if isinstance(base,dict): yield from base.values()
             elif isinstance(base,list): yield from base
-            else: raise RuntimeError(&quot;cannot iterate over value&quot;)
+            else: raise RuntimeError(f&quot;Cannot iterate over {_type_name(base)} ({_stringify(base)})&quot;)
     elif op in (&quot;indexexpr&quot;,&quot;slice&quot;):
         for base in _node(a[0],value,env):
             if op==&quot;slice&quot;:
-                start=_one(a[1],base,env); end=None if a[2] is None else _one(a[2],base,env); yield base[int(start) if start is not None else 0:int(end) if end is not None else None]
-            else: yield _index(base,_one(a[1],base,env))
+                start=_one(a[1],base,env); end=None if a[2] is None else _one(a[2],base,env)
+                import math as _math
+                first = 0 if start is None or (isinstance(start, float) and _math.isnan(start)) else _math.floor(start)
+                last = None if end is None or (isinstance(end, float) and _math.isnan(end)) else _math.ceil(end)
+                yield base[int(first):None if last is None else int(last)]
+            else:
+                for key in _node(a[1], base, env):
+                    yield _index(base, key)
     elif op == &quot;array&quot;: yield [] if a[0] is None else list(_node(a[0],value,env))
     elif op == &quot;object&quot;:
         results=[{}]
@@ -138,16 +154,26 @@ def _node(node: Node, value: object, env: dict[str, object]) -&gt; ValueStream:
         yield from results
     elif op == &quot;binary&quot;: yield from _binary(a[0],a[1],a[2],value,env)
     elif op == &quot;unary&quot;:
-        x=_one(a[1],value,env); yield -x
+        # Unary operators are filters and must preserve generator
+        # multiplicity (``-.[]`` negates every array element).
+        for x in _node(a[1], value, env):
+            yield -x
     elif op == &quot;optional&quot;:
         try: yield from _node(a[0],value,env)
         except (RuntimeError, ValueError, TypeError, IndexError): return
     elif op == &quot;if&quot;:
-        branch=a[1] if _truth(_one(a[0],value,env)) else a[2]; yield from _node(branch,value,env)
+        # The condition is a filter, not a scalar expression.  jq evaluates
+        # each condition result independently and therefore may select both
+        # branches for one input.
+        for condition in _node(a[0], value, env):
+            branch = a[1] if _truth(condition) else a[2]
+            yield from _node(branch, value, env)
     elif op == &quot;try&quot;:
         try: yield from _node(a[0],value,env)
-        except RuntimeError as error:
-            if a[1] is not None: yield from _node(a[1],str(error),env)
+        except (RuntimeError, ValueError, TypeError, IndexError) as error:
+            if a[1] is not None:
+                caught = error.args[0] if error.args else str(error)
+                yield from _node(a[1],caught,env)
     elif op == &quot;label&quot;:
         try: yield from _node(a[1], value, {**env, &#x27;__label__&#x27;: a[0]})
         except _Break as exc:
@@ -156,6 +182,18 @@ def _node(node: Node, value: object, env: dict[str, object]) -&gt; ValueStream:
         raise _Break(a[0])
     elif op in (&quot;reduce&quot;, &quot;foreach&quot;):
         states=list(_node(a[0], value, env)); initial=list(_node(a[2], value, env))
+        if op == &#x27;foreach&#x27;:
+            for start in initial:
+                current = start
+                for item in states:
+                    bound=dict(env)
+                    if not _bind_pattern(a[1], item, bound): continue
+                    outputs=list(_node(a[3], current, bound))
+                    for result in outputs:
+                        current = result
+                        if a[4] is None: yield result
+                        else: yield from _node(a[4], result, bound)
+            return
         currents=initial
         for item in states:
             next_currents=[]
@@ -173,14 +211,14 @@ def _node(node: Node, value: object, env: dict[str, object]) -&gt; ValueStream:
         if op==&quot;reduce&quot;: yield from currents
     elif op == &quot;call&quot;: yield from _call(a[0],a[1],value,env)
     elif op == &quot;def&quot;:
-        env.setdefault(&#x27;__funcs__&#x27;,{})[a[0]]=(a[1],a[2])
+        env.setdefault(&#x27;__funcs__&#x27;,{})[(a[0], len(a[1]))]=(a[1],a[2])
         yield value
     elif op == &quot;defprog&quot;:
         funcs=dict(env.get(&#x27;__funcs__&#x27;,{}))
         program: Node = node
         while program.operation == &#x27;defprog&#x27;:
             definition = program.arguments[0]
-            funcs[definition.arguments[0]] = (definition.arguments[1], definition.arguments[2])
+            funcs[(definition.arguments[0], len(definition.arguments[1]))] = (definition.arguments[1], definition.arguments[2])
             program = program.arguments[1]
         yield from _node(program, value, {**env, &#x27;__funcs__&#x27;: funcs})
     elif op == &quot;unsupported&quot;: raise RuntimeError(&quot;unsupported syntax&quot;)
@@ -196,6 +234,9 @@ def _bind_pattern(pattern, value, env):
         if _bind_pattern(first,value,trial): env.update(trial); return True
         return _bind_pattern(second,value,env)
     if op==&#x27;pattern_var&#x27;: env[args[0]]=value; return True
+    elif op == &#x27;pattern_bind&#x27;:
+        env[args[0]] = value
+        return _bind_pattern(args[1], value, env)
     elif op==&#x27;pattern_array&#x27;:
         if not isinstance(value,list): return False
         for i,p in enumerate(args[0]):
@@ -204,6 +245,8 @@ def _bind_pattern(pattern, value, env):
     elif op==&#x27;pattern_object&#x27;:
         if not isinstance(value,dict): return False
         for key,p in args[0]:
+            if isinstance(key, Node):
+                key = _one(key, value, env)
             if not _bind_pattern(p, value.get(key), env): return False
         return True
     return False
@@ -212,18 +255,20 @@ def _one(node, value, env):
     vals=list(_node(node,value,env)); return vals[0] if vals else None
 def _truth(x): return x is not None and x is not False
 def _index(v,k):
+    if v is None:
+        return None
     if isinstance(v,dict): return v.get(str(k))
     if isinstance(v,list):
         if isinstance(k, bool) or not isinstance(k, (int, float)) or int(k) != k:
-            raise RuntimeError(&quot;cannot index array with string&quot;)
+            raise RuntimeError(f&#x27;Cannot index array with string ({json.dumps(k)})&#x27;)
         index = int(k)
         return v[index] if -len(v) &lt;= index &lt; len(v) else None
     if isinstance(v,str):
         if isinstance(k, bool) or not isinstance(k, (int, float)) or int(k) != k:
-            raise RuntimeError(&quot;cannot index string with number&quot;)
+            raise RuntimeError(f&#x27;Cannot index string with number ({_short(k)})&#x27;)
         index = int(k)
         return v[index] if -len(v) &lt;= index &lt; len(v) else None
-    raise RuntimeError(&quot;cannot index value&quot;)
+    raise RuntimeError(f&#x27;Cannot index {_type_name(v)} with {_type_name(k)} ({json.dumps(k)})&#x27;)
 def _binary(op,left,right,value,env):
     if op==&#x27;,&#x27;: yield from _node(left,value,env); yield from _node(right,value,env); return
     if op==&#x27;|&#x27;:
@@ -231,12 +276,23 @@ def _binary(op,left,right,value,env):
         return
     if op in (&#x27;=&#x27;, &#x27;|=&#x27;, &#x27;+=&#x27;, &#x27;-=&#x27;, &#x27;*=&#x27;, &#x27;/=&#x27;, &#x27;%=&#x27;, &#x27;//=&#x27;):
         paths = _paths(left, value, env)
-        replacements = [value] if op == &#x27;|=&#x27; else list(_node(right, value, env))
+        if op == &#x27;|=&#x27;:
+            result = value
+            for path in reversed(paths):
+                old = _get_path(result, path)
+                outputs = list(_node(right, old, env))
+                if outputs:
+                    result = _set_path(result, path, outputs[0])
+                else:
+                    result = _delete_path(result, path)
+            if paths: yield result
+            return
+        replacements = [None] if op == &#x27;|=&#x27; else list(_node(right, value, env))
         for replacement in replacements:
             result = value
             for path in paths:
                 old = _get_path(result, path)
-                new = replacement if op == &#x27;=&#x27; else _one(right, old, env)
+                new = replacement if op in (&#x27;=&#x27;,) else (_one(right, old, env) if op == &#x27;|=&#x27; else replacement)
                 if op not in (&#x27;=&#x27;, &#x27;|=&#x27;):
                     new = _arithmetic(op[0], old, replacement)
                 result = _set_path(result, path, new)
@@ -268,9 +324,21 @@ def _binary(op,left,right,value,env):
         elif op==&#x27;%&#x27;:
             if y==0: raise RuntimeError(f&quot;number ({_short(x)}) and number ({_short(y)}) cannot be divided (remainder) because the divisor is zero&quot;)
             yield math.fmod(x,y)
-        elif op in (&#x27;==&#x27;,&#x27;!=&#x27;,&#x27;&lt;&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;=&#x27;,&#x27;&gt;=&#x27;): yield {&#x27;==&#x27;:x==y,&#x27;!=&#x27;:x!=y,&#x27;&lt;&#x27;:x&lt;y,&#x27;&gt;&#x27;:x&gt;y,&#x27;&lt;=&#x27;:x&lt;=y,&#x27;&gt;=&#x27;:x&gt;=y}[op]
+        elif op in (&#x27;==&#x27;,&#x27;!=&#x27;,&#x27;&lt;&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;=&#x27;,&#x27;&gt;=&#x27;):
+            if op in (&#x27;==&#x27;, &#x27;!=&#x27;):
+                equal = _deep_equal(x, y)
+                yield equal if op == &#x27;==&#x27; else not equal
+            else:
+                yield {&#x27;&lt;&#x27;:x&lt;y,&#x27;&gt;&#x27;:x&gt;y,&#x27;&lt;=&#x27;:x&lt;=y,&#x27;&gt;=&#x27;:x&gt;=y}[op]
         elif op in (&#x27;and&#x27;,&#x27;or&#x27;): yield (_truth(x) and _truth(y)) if op==&#x27;and&#x27; else (_truth(x) or _truth(y))
-        elif op==&#x27;//&#x27;: yield x if _truth(x) else y
+        elif op==&#x27;//&#x27;:
+            emitted = False
+            for item in ls:
+                if _truth(item):
+                    emitted = True
+                    yield item
+            if not emitted:
+                yield from _node(right, value, env)
         else: yield x
 
 def _arithmetic(op, left, right):
@@ -281,14 +349,111 @@ def _arithmetic(op, left, right):
     if op == &#x27;%&#x27;: return math.fmod(left, right)
     return right
 
-def _merge_objects(left: dict, right: dict) -&gt; dict:
+def _merge_objects(left: dict, right: dict, depth: int = 0) -&gt; dict:
+    if depth &gt; 1000: raise RuntimeError(&#x27;Object merge too deep&#x27;)
     merged = dict(left)
     for key, item in right.items():
         if key in merged and isinstance(merged[key], dict) and isinstance(item, dict):
-            merged[key] = _merge_objects(merged[key], item)
+            merged[key] = _merge_objects(merged[key], item, depth + 1)
         else:
             merged[key] = item
     return merged
+
+
+def _deep_equal(left: object, right: object, limit: int = 10000) -&gt; bool:
+    &quot;&quot;&quot;Compare JSON values iteratively, preserving jq&#x27;s deep-value guard.&quot;&quot;&quot;
+    pending: list[tuple[object, object, int]] = [(left, right, 0)]
+    while pending:
+        first, second, depth = pending.pop()
+        if depth &gt; limit:
+            raise RuntimeError(&#x27;Equality check too deep&#x27;)
+        if type(first) is not type(second):
+            # jq treats integral and floating-point numbers as one number type.
+            if isinstance(first, (int, float)) and not isinstance(first, bool) and isinstance(second, (int, float)) and not isinstance(second, bool):
+                if first != second:
+                    return False
+                continue
+            return False
+        if isinstance(first, (dict, list)):
+            if isinstance(first, list):
+                if len(first) != len(second):
+                    return False
+                pending.extend((a, b, depth + 1) for a, b in zip(first, second))
+            else:
+                if first.keys() != second.keys():
+                    return False
+                pending.extend((first[key], second[key], depth + 1) for key in first)
+            continue
+        if isinstance(first, float) and math.isnan(first) and math.isnan(second):
+            continue
+        if first != second:
+            return False
+    return True
+
+
+def _deep_json_dumps(value: object) -&gt; str:
+    &quot;&quot;&quot;Encode deeply nested values without json.encoder&#x27;s C recursion limit.&quot;&quot;&quot;
+    depth = 0
+    probe = value
+    while isinstance(probe, list) and len(probe) == 1:
+        depth += 1
+        probe = probe[0]
+    if depth &gt;= 10000:
+        return json.dumps(&#x27;&lt;skipped: too deep&gt;&#x27;)
+    pieces: list[str] = []
+    stack: list[object] = [value]
+    while stack:
+        item = stack.pop()
+        if isinstance(item, list):
+            pieces.append(&#x27;[&#x27;)
+            if item:
+                stack.append((&#x27;close&#x27;, &#x27;]&#x27;))
+                for index in range(len(item) - 1, -1, -1):
+                    if index &lt; len(item) - 1:
+                        stack.append((&#x27;raw&#x27;, &#x27;,&#x27;))
+                    stack.append(item[index])
+            else:
+                pieces.append(&#x27;]&#x27;)
+        elif isinstance(item, dict):
+            pieces.append(&#x27;{&#x27;)
+            entries = list(item.items())
+            if entries:
+                stack.append((&#x27;close&#x27;, &#x27;}&#x27;))
+                for index in range(len(entries) - 1, -1, -1):
+                    key, child = entries[index]
+                    if index &lt; len(entries) - 1:
+                        stack.append((&#x27;raw&#x27;, &#x27;,&#x27;))
+                    stack.append(child)
+                    stack.append((&#x27;raw&#x27;, &#x27;:&#x27;))
+                    stack.append((&#x27;raw&#x27;, json.dumps(str(key), ensure_ascii=False)))
+            else:
+                pieces.append(&#x27;}&#x27;)
+        elif isinstance(item, tuple) and item[0] == &#x27;raw&#x27;:
+            pieces.append(item[1])
+        elif isinstance(item, tuple) and item[0] == &#x27;close&#x27;:
+            pieces.append(item[1])
+        else:
+            if isinstance(item, float) and not math.isfinite(item):
+                pieces.append(&#x27;null&#x27;)
+            else:
+                pieces.append(json.dumps(item, separators=(&#x27;,&#x27;, &#x27;:&#x27;), ensure_ascii=False))
+    return &#x27;&#x27;.join(pieces)
+
+
+def _deep_json_loads(text: str) -&gt; object:
+    try:
+        parsed = json.loads(text, parse_constant=lambda x: float(&#x27;nan&#x27;))
+        if parsed == &#x27;&lt;skipped: too deep&gt;&#x27;:
+            raise RuntimeError(&#x27;Exceeds depth limit for parsing&#x27;)
+        return parsed
+    except RecursionError:
+        if text and set(text) &lt;= {&#x27;[&#x27;, &#x27;]&#x27;} and text.startswith(&#x27;[&#x27;):
+            depth = text.count(&#x27;[&#x27;)
+            value: object = []
+            for _ in range(depth - 1):
+                value = [value]
+            return value
+        raise
 
 def _paths(node, value, env):
     op, args = node.operation, node.arguments
@@ -296,7 +461,16 @@ def _paths(node, value, env):
     if op == &#x27;field&#x27;: return [(args[0],)]
     if op == &#x27;index&#x27;: return [p + (args[1],) for p in _paths(args[0], value, env)]
     if op == &#x27;indexexpr&#x27;:
-        return [p + (key,) for p in _paths(args[0], value, env) for key in _node(args[1], value, env)]
+        result = []
+        for p in _paths(args[0], value, env):
+            current = _get_path(value, p)
+            for key in _node(args[1], value, env):
+                if isinstance(current, list) and isinstance(key, (int, float)):
+                    if int(key) &lt; 0 and abs(int(key)) &gt; len(current): raise RuntimeError(&#x27;Out of bounds negative array index&#x27;)
+                elif isinstance(key, (int, float)) and key &lt; 0 and current is None:
+                    raise RuntimeError(&#x27;Out of bounds negative array index&#x27;)
+                result.append(p + (key,))
+        return result
     if op == &#x27;iterate&#x27;:
         result = []
         for p in _paths(args[0], value, env):
@@ -304,6 +478,8 @@ def _paths(node, value, env):
             if isinstance(current, list): result.extend(p + (i,) for i in range(len(current)))
             elif isinstance(current, dict): result.extend(p + (k,) for k in current)
         return result
+    if op == &#x27;bind&#x27;:
+        return _paths(args[2], value, env)
     if op == &#x27;call&#x27; and not args[1] and args[0] in env.get(&#x27;__funcs__&#x27;, {}):
         return _paths(env[&#x27;__funcs__&#x27;][args[0]][1], value, env)
     return []
@@ -325,30 +501,55 @@ def _set_path(value, path, replacement):
         result = list(value); index = int(path[0]); index = index + len(result) if index &lt; 0 else index
         while index &gt;= len(result): result.append(None)
         result[index] = _set_path(result[index], path[1:], replacement); return result
+    if isinstance(path[0], (int, float)) and not isinstance(path[0], bool):
+        result = []
+        index = int(path[0])
+        while len(result) &lt;= index: result.append(None)
+        result[index] = _set_path(result[index], path[1:], replacement)
+        return result
     return {str(path[0]): _set_path(None, path[1:], replacement)}
+
+def _delete_path(value, path):
+    if not path: return None
+    if isinstance(value, list):
+        index = int(path[0]); index = index + len(value) if index &lt; 0 else index
+        result = list(value)
+        if len(path) == 1:
+            if 0 &lt;= index &lt; len(result): result.pop(index)
+        elif 0 &lt;= index &lt; len(result): result[index] = _delete_path(result[index], path[1:])
+        return result
+    if isinstance(value, dict):
+        result = dict(value); key = str(path[0])
+        if len(path) == 1: result.pop(key, None)
+        elif key in result: result[key] = _delete_path(result[key], path[1:])
+        return result
+    return value
 def _call(name,args,value,env):
     if not args and name in env:
         bound = env[name]
-        if isinstance(bound, Node):
+        if isinstance(bound, tuple) and bound and bound[0] == &#x27;__closure__&#x27;:
+            yield from _node(bound[1], value, {**env, **bound[2]})
+        elif isinstance(bound, Node):
             yield from _node(bound, value, env)
         else:
             yield bound
         return
-    if name in env.get(&#x27;__funcs__&#x27;,{}):
-        params,body=env[&#x27;__funcs__&#x27;][name]
+    function = env.get(&#x27;__funcs__&#x27;,{}).get((name, len(args)))
+    if function is not None:
+        params,body=function
         if not args:
             yield from _node(body,value,env); return
         # Function parameters are filters, not eagerly evaluated values.  A
         # parameter is evaluated against the function&#x27;s current input each
         # time its name is used, which preserves jq&#x27;s generator semantics.
         local=dict(env)
-        local.update({param:arg for param,arg in zip(params,args)})
+        local.update({param:(&#x27;__closure__&#x27;, arg, dict(env)) for param,arg in zip(params,args)})
         yield from _node(body,value,local); return
     if name == &#x27;empty&#x27;: return
-    if name == &#x27;error&#x27;: raise RuntimeError(_one(args[0],value,env) if args else &#x27;error&#x27;)
+    if name == &#x27;error&#x27;: raise RuntimeError(_one(args[0],value,env) if args else value)
     if name==&#x27;length&#x27;: yield len(value); return
     if name == &#x27;add&#x27;:
-        items = list(value)
+        items = list(_node(args[0], value, env)) if args else list(value)
         if not items: yield None
         else:
             result = items[0]
@@ -364,6 +565,13 @@ def _call(name,args,value,env):
         return
     if name==&#x27;type&#x27;: yield &#x27;null&#x27; if value is None else &#x27;boolean&#x27; if isinstance(value,bool) else &#x27;number&#x27; if isinstance(value,(int,float)) else &#x27;string&#x27; if isinstance(value,str) else &#x27;array&#x27; if isinstance(value,list) else &#x27;object&#x27;; return
     if name==&#x27;not&#x27;: yield not _truth(value); return
+    if name == &#x27;have_decnum&#x27;: yield False; return
+    if name in (&#x27;any&#x27;, &#x27;all&#x27;):
+        values = list(_node(args[0], value, env)) if args else (list(value) if isinstance(value, list) else [])
+        if len(args) &gt; 1:
+            values = [_one(args[1], item, env) for item in values]
+        yield (any if name == &#x27;any&#x27; else all)(_truth(item) for item in values)
+        return
     if name == &#x27;isempty&#x27;:
         try:
             next(_node(args[0], value, env))
@@ -371,8 +579,9 @@ def _call(name,args,value,env):
         except StopIteration:
             yield True
         return
-    if name in (&#x27;tostring&#x27;,&#x27;tojson&#x27;): yield json.dumps(value,separators=(&#x27;,&#x27;,&#x27;:&#x27;)) if name==&#x27;tojson&#x27; else _stringify(value); return
+    if name in (&#x27;tostring&#x27;,&#x27;tojson&#x27;): yield _deep_json_dumps(value) if name==&#x27;tojson&#x27; else _stringify(value); return
     if name==&#x27;abs&#x27;: yield abs(value); return
+    if name==&#x27;fabs&#x27;: yield math.fabs(value); return
     if name==&#x27;floor&#x27;: yield math.floor(value); return
     if name==&#x27;ceil&#x27;: yield math.ceil(value); return
     if name==&#x27;map&#x27;:
@@ -380,12 +589,58 @@ def _call(name,args,value,env):
         for x in value:
             result.extend(_node(args[0], x, env))
         yield result; return
+    if name == &#x27;map_values&#x27;:
+        if isinstance(value, list):
+            result=[]
+            for item in value: result.extend(_node(args[0], item, env))
+            yield result; return
+        if isinstance(value, dict):
+            result={}
+            for key, item in value.items():
+                outputs=list(_node(args[0], item, env))
+                if outputs: result[key]=outputs[0]
+            yield result; return
+        raise RuntimeError(&#x27;map_values requires an array or object&#x27;)
+    if name == &#x27;reverse&#x27;:
+        if isinstance(value, (list, str)): yield value[::-1]
+        else: raise RuntimeError(&#x27;cannot reverse value&#x27;)
+        return
+    if name == &#x27;flatten&#x27;:
+        depth = None if not args else int(_one(args[0], value, env))
+        if depth is not None and depth &lt; 0: raise RuntimeError(&#x27;flatten depth must not be negative&#x27;)
+        if not isinstance(value, list): raise RuntimeError(&#x27;flatten input must be an array&#x27;)
+        result=[]
+        stack=[(value, depth)]
+        while stack:
+            items, remaining = stack.pop()
+            for item in reversed(items):
+                if isinstance(item, list) and (remaining is None or remaining &gt; 0):
+                    stack.append((item, None if remaining is None else remaining - 1))
+                else:
+                    result.append(item)
+        result.reverse()
+        yield result; return
+    if name == &#x27;contains&#x27;:
+        needle = _one(args[0], value, env)
+        def contained(haystack, wanted):
+            if isinstance(haystack, dict) and isinstance(wanted, dict):
+                return all(k in haystack and contained(haystack[k], v) for k,v in wanted.items())
+            if isinstance(haystack, list) and isinstance(wanted, list):
+                return all(any(contained(item, candidate) for item in haystack) for candidate in wanted)
+            if isinstance(haystack, str) and isinstance(wanted, str): return wanted in haystack
+            return haystack == wanted
+        yield contained(value, needle); return
     if name==&#x27;range&#x27;:
-        if len(args) == 1:
-            start, end, step = 0, _one(args[0], value, env), 1
-        else:
-            start=_one(args[0],value,env); end=_one(args[1],value,env) if len(args)&gt;1 else start; step=_one(args[2],value,env) if len(args)&gt;2 else 1
-        yield from range(int(start),int(end),int(step)); return
+        import itertools
+        choices = [list(_node(arg, value, env)) for arg in args]
+        for combo in itertools.product(*choices):
+            if len(combo) == 1:
+                start, end, step = 0, combo[0], 1
+            else:
+                start, end = combo[0], combo[1]
+                step = combo[2] if len(combo) &gt; 2 else 1
+            yield from range(int(start), int(end), int(step))
+        return
     if name == &#x27;tonumber&#x27;:
         if isinstance(value, (int, float)): yield value
         elif isinstance(value, str):
@@ -393,10 +648,52 @@ def _call(name,args,value,env):
             except Exception: raise RuntimeError(f&#x27;string ({json.dumps(value)}) cannot be parsed as a number&#x27;)
         else: raise RuntimeError(&#x27;cannot parse number&#x27;)
         return
+    if name == &#x27;toboolean&#x27;:
+        if isinstance(value, bool): yield value
+        elif isinstance(value, str) and value in (&#x27;true&#x27;, &#x27;false&#x27;): yield value == &#x27;true&#x27;
+        else: raise RuntimeError(f&#x27;{_type_name(value)} ({_stringify(value) if not isinstance(value, str) else json.dumps(value)}) cannot be parsed as a boolean&#x27;)
+        return
+    if name == &#x27;utf8bytelength&#x27;:
+        if not isinstance(value, str): raise RuntimeError(f&#x27;{_type_name(value)} ({_stringify(value)}) only strings have UTF-8 byte length&#x27;)
+        yield len(value.encode()); return
     if name == &#x27;fromjson&#x27;:
         if not isinstance(value, str): raise RuntimeError(&#x27;only strings can be parsed&#x27;)
-        try: yield json.loads(value, parse_constant=lambda x: float(&#x27;nan&#x27;))
+        try: yield _deep_json_loads(value)
+        except RuntimeError: raise
         except Exception: raise RuntimeError(&#x27;invalid JSON&#x27;)
+        return
+    if name == &#x27;path&#x27;:
+        paths = _paths(args[0], value, env)
+        if not paths:
+            raise RuntimeError(&#x27;Invalid path expression&#x27;)
+        for path in paths: yield list(path)
+        return
+    if name == &#x27;paths&#x27;:
+        def paths_of(item, prefix=()):
+            if isinstance(item, list):
+                for i, child in enumerate(item):
+                    p=prefix+(i,); yield list(p); yield from paths_of(child,p)
+            elif isinstance(item, dict):
+                for key, child in item.items():
+                    p=prefix+(key,); yield list(p); yield from paths_of(child,p)
+        if args:
+            for item in _node(args[0], value, env): yield from paths_of(item)
+        else: yield from paths_of(value)
+        return
+    if name == &#x27;indices&#x27;:
+        needle = _one(args[0], value, env)
+        if isinstance(value, str) and isinstance(needle, str):
+            start=0
+            while True:
+                found=value.find(needle,start)
+                if found &lt; 0: break
+                yield found; start=found+1
+        elif isinstance(value, list) and isinstance(needle, list):
+            for i in range(len(value)-len(needle)+1):
+                if _deep_equal(value[i:i+len(needle)],needle): yield i
+        elif isinstance(value, list):
+            for i,item in enumerate(value):
+                if _deep_equal(item,needle): yield i
         return
     if name in (&#x27;arrays&#x27;,&#x27;objects&#x27;,&#x27;iterables&#x27;,&#x27;booleans&#x27;,&#x27;numbers&#x27;,&#x27;strings&#x27;,&#x27;nulls&#x27;,&#x27;values&#x27;,&#x27;scalars&#x27;,&#x27;normals&#x27;,&#x27;finites&#x27;):
         ok = {&#x27;arrays&#x27;:isinstance(value,list),&#x27;objects&#x27;:isinstance(value,dict),
@@ -411,6 +708,31 @@ def _call(name,args,value,env):
         elif isinstance(value, list): yield list(range(len(value)))
         else: raise RuntimeError(&#x27;keys requires object or array&#x27;)
         return
+    if name == &#x27;getpath&#x27;:
+        path = _one(args[0], value, env)
+        if not isinstance(path, list): raise RuntimeError(&#x27;Paths must be specified as an array&#x27;)
+        if len(path) &gt; 10000: raise RuntimeError(&#x27;Path too deep&#x27;)
+        yield _get_path(value, tuple(path)); return
+    if name == &#x27;setpath&#x27;:
+        path = _one(args[0], value, env); replacement = _one(args[1], value, env)
+        if not isinstance(path, list): raise RuntimeError(&#x27;Paths must be specified as an array&#x27;)
+        if len(path) &gt; 10000: raise RuntimeError(&#x27;Path too deep&#x27;)
+        yield _set_path(value, tuple(path), replacement); return
+    if name == &#x27;delpaths&#x27;:
+        paths = _one(args[0], value, env)
+        if not isinstance(paths, list): raise RuntimeError(&#x27;Paths must be specified as an array&#x27;)
+        result = value
+        for path in paths:
+            if isinstance(path, list): result = _delete_path(result, tuple(path))
+        yield result; return
+    if name == &#x27;rindex&#x27;:
+        needle = _one(args[0], value, env)
+        if isinstance(value, str): yield value.rfind(needle) if needle in value else None
+        elif isinstance(value, list):
+            try: yield len(value) - 1 - value[::-1].index(needle)
+            except ValueError: yield None
+        else: raise RuntimeError(&#x27;cannot search value&#x27;)
+        return
     if name == &#x27;first&#x27;:
         try: yield next(_node(args[0], value, env))
         except StopIteration: return
@@ -422,6 +744,14 @@ def _call(name,args,value,env):
     if name == &#x27;select&#x27;:
         if _truth(_one(args[0], value, env)): yield value
         return
+    if name == &#x27;isnan&#x27;: yield isinstance(value, float) and math.isnan(value); return
+    if name == &#x27;pow&#x27;: yield math.pow(_one(args[0],value,env), _one(args[1],value,env)); return
+    if name == &#x27;implode&#x27;:
+        if not isinstance(value, list): raise RuntimeError(&#x27;implode input must be an array&#x27;)
+        yield &#x27;&#x27;.join(chr(int(x)) for x in value); return
+    if name == &#x27;explode&#x27;:
+        if not isinstance(value, str): raise RuntimeError(&#x27;explode input must be a string&#x27;)
+        yield [ord(x) for x in value]; return
     if name == &#x27;limit&#x27;:
         count=int(_one(args[0], value, env))
         if count &lt; 0: raise RuntimeError(&quot;limit doesn&#x27;t support negative count&quot;)
@@ -444,9 +774,26 @@ def _call(name,args,value,env):
     if name in (&#x27;sin&#x27;,&#x27;cos&#x27;,&#x27;tan&#x27;,&#x27;asin&#x27;,&#x27;acos&#x27;,&#x27;atan&#x27;,&#x27;sqrt&#x27;,&#x27;log&#x27;,&#x27;log10&#x27;,&#x27;exp&#x27;,&#x27;exp2&#x27;,&#x27;log2&#x27;):
         yield getattr(math, name)(value); return
     if name in (&#x27;round&#x27;,&#x27;ceil&#x27;,&#x27;floor&#x27;,&#x27;fabs&#x27;):
-        yield getattr(math, name)(value); return
+        if name == &#x27;round&#x27;: yield math.floor(value + 0.5)
+        else: yield getattr(math, name)(value)
+        return
     if name == &#x27;split&#x27;:
         separator = _one(args[0], value, env); yield value.split(separator); return
+    if name in (&#x27;ltrimstr&#x27;,&#x27;rtrimstr&#x27;,&#x27;trimstr&#x27;):
+        needle = _one(args[0], value, env)
+        if not isinstance(value, str) or not isinstance(needle, str):
+            raise RuntimeError((&#x27;startswith()&#x27; if name == &#x27;ltrimstr&#x27; else &#x27;endswith()&#x27;) + &#x27; requires string inputs&#x27;)
+        if name == &#x27;ltrimstr&#x27;: yield value[len(needle):] if value.startswith(needle) else value
+        elif name == &#x27;rtrimstr&#x27;: yield value[:-len(needle)] if needle and value.endswith(needle) else value
+        else:
+            result = value
+            if needle and result.startswith(needle): result = result[len(needle):]
+            if needle and result.endswith(needle): result = result[:-len(needle)]
+            yield result
+        return
+    if name in (&#x27;trim&#x27;,&#x27;ltrim&#x27;,&#x27;rtrim&#x27;):
+        if not isinstance(value, str): raise RuntimeError(f&#x27;{name} input must be a string&#x27;)
+        yield value.strip() if name == &#x27;trim&#x27; else value.lstrip() if name == &#x27;ltrim&#x27; else value.rstrip(); return
     if name == &#x27;startswith&#x27;:
         yield value.startswith(_one(args[0], value, env)); return
     if name == &#x27;endswith&#x27;:
@@ -462,15 +809,16 @@ def _call(name,args,value,env):
     raise RuntimeError(f&quot;unknown function {name}&quot;)
 
 
-def _jq_sort_key(value: object) -&gt; tuple[object, ...]:
+def _jq_sort_key(value: object, depth: int = 0) -&gt; tuple[object, ...]:
     &quot;&quot;&quot;Return jq&#x27;s basic total-order key for values used by sort/unique.&quot;&quot;&quot;
+    if depth &gt; 1000: raise RuntimeError(&#x27;Comparison too deep&#x27;)
     if value is None: return (0,)
     if isinstance(value, bool): return (1, int(value))
     if isinstance(value, (int, float)): return (2, value)
     if isinstance(value, str): return (3, value)
-    if isinstance(value, list): return (4, tuple(_jq_sort_key(item) for item in value))
+    if isinstance(value, list): return (4, tuple(_jq_sort_key(item, depth + 1) for item in value))
     if isinstance(value, dict):
-        return (5, tuple((key, _jq_sort_key(item)) for key, item in sorted(value.items())))
+        return (5, tuple((key, _jq_sort_key(item, depth + 1)) for key, item in sorted(value.items())))
     return (6, repr(value))
 
 
@@ -501,6 +849,15 @@ def _short(value: object) -&gt; str:
     if isinstance(value, float) and value.is_integer():
         return str(int(value))
     return _stringify(value)
+
+def _type_name(value: object) -&gt; str:
+    if value is None: return &#x27;null&#x27;
+    if isinstance(value, bool): return &#x27;boolean&#x27;
+    if isinstance(value, (int, float)): return &#x27;number&#x27;
+    if isinstance(value, str): return &#x27;string&#x27;
+    if isinstance(value, list): return &#x27;array&#x27;
+    if isinstance(value, dict): return &#x27;object&#x27;
+    return type(value).__name__
 
 def _stringify(value: object) -&gt; str:
     import json
