@@ -1,0 +1,323 @@
+=== BEGIN ARTIFACT FEATURE-Streaming.md ===
+# FEATURE: Streaming Transformations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Reconstruct, emit, and truncate jq streaming representations. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Generator-Core.md, FEATURE-Input-Controls.md |
+| Provides    | tostream, fromstream, truncate_stream |
+| Consumes    | ordered jq generator evaluation, input stream controls |
+
+## Questions
+
+- None.
+
+## Intent
+
+Streaming filters convert JSON values to jq's path/value stream representation and reconstruct values from that representation. The implementation must preserve ordering, empty-container markers, nested paths, and truncation semantics while remaining within the standard-library-only runtime.
+
+## Behavior
+
+- `tostream` emits leaf values and container termination markers with their paths.
+- `fromstream` reconstructs arrays, objects, scalars, and empty containers.
+- `truncate_stream` removes a specified number of leading path components.
+- Filters preserve generator ordering and support the supplied stream expressions.
+
+## Programmatic Acceptance
+
+=== AC streaming-conformance ===
+Intent: The streaming filters pass every matching case in the authoritative conformance slice.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"tostream|fromstream|truncate_stream"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC streaming-conformance ===
+
+=== AC streaming-roundtrip-suite ===
+Intent: The authoritative suite executes the stream round-trip and truncation behaviors without failures.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"tostream|fromstream|truncate_stream"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert summary["pass"] > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC streaming-roundtrip-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Do not change the supplied conformance assets.
+- Preserve stream ordering and container markers.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conformance-Assets.md ===
+# FEATURE: Conformance Assets
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Stage and validate the immutable jq conformance assets. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | staged conformance corpus and harness |
+| Consumes    | jq interpreter architecture |
+
+## Questions
+
+- None.
+
+## Intent
+
+The build must contain the supplied manual, grammar references, builtin reference, corpus, exclusions, runner, and scoring script unchanged. The staging story validates the harness parsers and corpus/exclusion consistency without launching the candidate interpreter.
+
+## Behavior
+
+- All required source assets are available below `sources/`.
+- The corpus parses into the pinned set of cases.
+- Every exclusion matches a corpus case.
+- The harness module imports successfully and exposes its parsers.
+- No candidate execution occurs during staging validation.
+
+## Programmatic Acceptance
+
+=== AC conformance-assets-parse ===
+Intent: The staged corpus and exclusion list parse to the authoritative expected counts.
+
+import sys
+
+sys.path.insert(0, "sources")
+import run_conformance as harness
+
+expected_cases = 550
+expected_exclusions = 13
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding="utf-8"))
+excluded = harness.apply_exclusions(
+    cases,
+    harness.parse_exclusions(harness.EXCLUSIONS),
+)
+assert len(cases) == expected_cases
+assert len(excluded) == expected_exclusions
+assert all(case.line in excluded for case in cases if case.line in excluded)
+=== END AC conformance-assets-parse ===
+
+=== AC conformance-assets-present ===
+Intent: Every required staged asset is present for implementation and scoring.
+
+from pathlib import Path
+
+required = [
+    "sources/jq-manual.txt",
+    "sources/jq.test",
+    "sources/parser.y",
+    "sources/lexer.l",
+    "sources/builtin.jq",
+    "sources/run_conformance.py",
+    "sources/full_test.sh",
+    "sources/exclusions.txt",
+]
+missing = [path for path in required if not Path(path).is_file()]
+assert missing == []
+=== END AC conformance-assets-present ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Treat `sources/` as read-only.
+- Do not launch the conformance runner from this staging story.
+- Do not modify, regenerate, trim, or substitute any supplied asset.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Scoped-Conformance.md ===
+# FEATURE: Scoped Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide executable, selector-scoped conformance verification for implementation slices. |
+| Depends On  | FEATURE-Conformance-Assets.md, FEATURE-Executable-Entry-Point.md |
+| Provides    | scoped conformance verification |
+| Consumes    | staged conformance corpus and harness, ./jq -c program interface |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implementation stories use the supplied runner over a construct-specific selector. The verification must set `JQ` by extending the inherited environment, execute matching cases, parse the machine-readable report, and distinguish an empty selection from a passing slice.
+
+## Behavior
+
+- The runner executes cases selected by the story's syntax selector.
+- The candidate executable is supplied through `JQ`.
+- A non-empty selected slice is required.
+- Any failed or errored case fails verification.
+- Harness diagnostics are printed for diagnosis but are not used as an oracle.
+
+## Programmatic Acceptance
+
+=== AC scoped-conformance ===
+Intent: The reduce conformance slice executes and passes through the candidate executable.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"reduce"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC scoped-conformance ===
+
+=== AC scoped-conformance-contract ===
+Intent: Scoped verification reports a parsed, non-empty result while preserving the runner's exit contract.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"reduce"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert isinstance(summary, dict)
+assert sum(summary.values()) > 0
+assert result.returncode == 0
+=== END AC scoped-conformance-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never use a non-executing enumeration mode for behavioral verification.
+- Always extend `os.environ` when supplying `JQ`.
+- Do not assert against human-readable runner output.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Full-Conformance.md ===
+# FEATURE: Full Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Verify the completed jq interpreter against the complete supplied conformance suite. |
+| Depends On  | FEATURE-Scoped-Conformance.md |
+| Provides    | complete jq conformance verification |
+| Consumes    | scoped conformance verification |
+
+## Questions
+
+- None.
+
+## Intent
+
+This terminal verification assembles the completed interpreter and invokes the supplied scoring entry point from the application root. The full suite is the release acceptance verdict after all implementation and staging stories have completed.
+
+## Behavior
+
+- `sources/full_test.sh` is invoked unchanged.
+- The completed executable is checked and exercised by the supplied runner.
+- The full corpus is executed exactly once by this terminal story.
+- The story passes only when the scoring command exits successfully.
+
+## Programmatic Acceptance
+
+=== AC full-conformance ===
+Intent: The completed interpreter passes the supplied full conformance scoring entry point.
+Suite: full
+Requires: executable=sh; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+=== END AC full-conformance ===
+
+=== AC full-conformance-exit ===
+Intent: The terminal scoring command returns the successful process status required by the project contract.
+
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+=== END AC full-conformance-exit ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- This is the sole story permitted to run the unscoped corpus.
+- Do not alter `sources/full_test.sh`, `sources/run_conformance.py`, `sources/jq.test`, or `sources/exclusions.txt`.
+- Treat the command exit status as the acceptance verdict.
+=== END ARTIFACT ===

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.050725.172Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.050725.172Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.050725.172Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;filter-model&quot; stories=&quot;CORE-001&quot;&gt;
+A jq program is a &quot;filter&quot;: it takes an input, and produces an output.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;filter-composition&quot; stories=&quot;CORE-002&quot;&gt;
+Filters can be combined in various ways - you can pipe the output of
+one filter into another filter, or collect the output of a filter
+into an array.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stream-values&quot; stories=&quot;CORE-001&quot;&gt;
+Some filters produce multiple results, for instance there&#x27;s one that
+produces all the elements of its input array.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;numeric-semantics&quot; stories=&quot;VALUE-001&quot;&gt;
+Numbers in jq are internally represented by their IEEE754 double
+precision approximation.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;object-access&quot; stories=&quot;VALUE-002&quot;&gt;
+The simplest *useful* filter has the form `.foo`. When given a
+JSON object (aka dictionary or hash) as input, `.foo` produces
+the value at the key &quot;foo&quot; if the key is present, or null otherwise.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;array-access-and-iteration&quot; stories=&quot;VALUE-003&quot;&gt;
+When the index value is an integer, `.[&lt;number&gt;]` can index
+arrays. Arrays are zero-based, so `.[2]` returns the third
+element.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;slices&quot; stories=&quot;VALUE-003&quot;&gt;
+The `.[&lt;number&gt;:&lt;number&gt;]` syntax can be used to return a
+subarray of an array or substring of a string.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;lexical-scanning&quot; stories=&quot;PARSE-001&quot;&gt;
+A `#` character (not part of a string) starts a comment.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;literals-and-interpolation&quot; stories=&quot;PARSE-002&quot;&gt;
+Inside a string, you can put an expression inside parens
+after a backslash. Whatever the expression returns will be
+interpolated into the string.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;core-filter-grammar&quot; stories=&quot;PARSE-003&quot;&gt;
+The | operator combines two filters by feeding the output(s) of
+the one on the left into the input of the one on the right.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;advanced-filter-grammar&quot; stories=&quot;PARSE-004&quot;&gt;
+You can give a filter a name using &quot;def&quot; syntax:
+&lt;/requirement&gt;
+&lt;requirement name=&quot;runtime-errors-and-optional-evaluation&quot; stories=&quot;CORE-003&quot;&gt;
+Errors can be caught by using `try EXP catch EXP`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;truthiness-and-comparison&quot; stories=&quot;CORE-004&quot;&gt;
+The expression &#x27;a == b&#x27; will produce &#x27;true&#x27; if the results of evaluating
+a and b are equal (that is, if they represent equivalent JSON values) and
+&#x27;false&#x27; otherwise.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;arithmetic-and-structural-operators&quot; stories=&quot;FLOW-001&quot;&gt;
+The operator `+` takes two filters, applies them both
+to the same input, and adds the results together.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;boolean-and-default-operators&quot; stories=&quot;FLOW-002&quot;&gt;
+jq supports the normal Boolean operators `and`, `or`, `not`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;conditionals-and-exception-flow&quot; stories=&quot;FLOW-003&quot;&gt;
+`if A then B else C end` will act the same as `B` if `A`
+produces a value other than false or null, but act the same as
+`C` otherwise.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;labels-and-breaks&quot; stories=&quot;FLOW-004&quot;&gt;
+jq has a syntax for named lexical labels to
+break or go (back) to:
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reductions-and-iteration-control&quot; stories=&quot;FLOW-005&quot;&gt;
+The `reduce` syntax allows you to combine all of the results of
+an expression by accumulating them into a single answer.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recursive-generators&quot; stories=&quot;FLOW-006&quot;&gt;
+The `recurse(f)` function allows you to search through a
+recursive structure, and extract interesting data from all
+levels.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;variable-bindings&quot; stories=&quot;FUNC-001&quot;&gt;
+jq lets you define variables using
+`expression as $variable`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-parameters&quot; stories=&quot;FUNC-002&quot;&gt;
+Arguments are passed as _filters_ (functions with no
+arguments), _not_ as values.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-definitions-and-scope&quot; stories=&quot;FUNC-003&quot;&gt;
+It is also possible to define functions in jq, although this
+is a feature whose biggest use is defining jq&#x27;s standard library
+&lt;/requirement&gt;
+&lt;requirement name=&quot;destructuring-alternatives&quot; stories=&quot;FUNC-004&quot;&gt;
+The destructuring alternative operator provides a concise mechanism
+for destructuring an input that can take one of several forms.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-discovery-and-projection&quot; stories=&quot;PATH-001&quot;&gt;
+`paths` outputs the paths to all the elements in its input
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-access-and-mutation&quot; stories=&quot;PATH-002&quot;&gt;
+The builtin function `getpath` outputs the values in `.` found
+at each path in `PATHS`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;assignment-operators&quot; stories=&quot;PATH-003&quot;&gt;
+Most users will want to use modification assignment operators,
+such as `|=` or `+=`, rather than `=`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;complex-assignments&quot; stories=&quot;PATH-004&quot;&gt;
+Any filter may be used on the
+left-hand side of an equals - whichever paths it selects from the
+input will be where the assignment is performed.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;collection-transformations&quot; stories=&quot;DATA-001&quot;&gt;
+For any filter `f`, `map(f)` and `map_values(f)` apply `f`
+to each of the values in the input array or object, that is,
+to the values of `.[]`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;sorting-grouping-and-extrema&quot; stories=&quot;DATA-002&quot;&gt;
+The `sort` functions sorts its input, which must be an
+array.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;object-entries-and-containment&quot; stories=&quot;DATA-003&quot;&gt;
+These functions convert between an object and an array of
+key-value pairs.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;index-membership-and-sql-utilities&quot; stories=&quot;DATA-004&quot;&gt;
+The builtin function `has` returns whether the input object
+has the given key, or the input array has an element
+at the given index.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;string-manipulation&quot; stories=&quot;TEXT-001&quot;&gt;
+The `split` function splits an input string on the separator argument.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;json-conversion-and-output-formats&quot; stories=&quot;TEXT-002&quot;&gt;
+The `tojson` and `fromjson` builtins dump values as JSON texts
+or parse JSON texts into values, respectively.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;regular-expression-filters&quot; stories=&quot;TEXT-003&quot;&gt;
+jq uses the
+[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),
+&lt;/requirement&gt;
+&lt;requirement name=&quot;date-and-time-filters&quot; stories=&quot;TEXT-004&quot;&gt;
+jq provides some basic date handling functionality, with some
+high-level and low-level builtins.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;input-stream-controls&quot; stories=&quot;IO-001&quot;&gt;
+Two builtins functions
+are provided for this, `input` and `inputs`, that read from
+the same sources
+&lt;/requirement&gt;
+&lt;requirement name=&quot;diagnostics-and-stderr&quot; stories=&quot;IO-002&quot;&gt;
+The `debug` builtin can have as a side-effect the production of one or more messages on stderr.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;streaming-transformations&quot; stories=&quot;IO-003&quot;&gt;
+With the `--stream` option jq can parse input texts in a streaming
+fashion, allowing jq programs to start processing large JSON texts
+immediately rather than after the parse completes.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;process-exit-and-errors&quot; stories=&quot;EXEC-002&quot;&gt;
+The given `exit_code` (defaulting to `5`) will be jq&#x27;s
+exit status.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;json-input-and-output&quot; stories=&quot;EXEC-003&quot;&gt;
+jq&#x27;s output values are always
+output as JSON texts on `stdout`.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;value-types-and-primitives&quot; stories=&quot;VALUE-004&quot;&gt;
+jq supports the same set of datatypes as JSON - numbers,
+strings, booleans, arrays, objects (which in JSON-speak are
+hashes with only string keys), and &quot;null&quot;.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture-foundation&quot;/&gt;
+&lt;unattached story=&quot;EXEC-001&quot;/&gt;
+&lt;unattached story=&quot;CONF-001&quot;/&gt;
+&lt;unattached story=&quot;CONF-002&quot;/&gt;
+&lt;unattached story=&quot;CONF-003&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

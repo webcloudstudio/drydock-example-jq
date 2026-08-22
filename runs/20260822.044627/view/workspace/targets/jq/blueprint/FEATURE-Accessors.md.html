@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Accessors.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Accessors.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Accessors.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Accessors</h1>
+<p>Object fields, array indices, dynamic keys, optional access, and negative indices follow jq semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-002-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\[|\.&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC value-002-conformance ===</p></article>
+</main>
+</body>
+</html>

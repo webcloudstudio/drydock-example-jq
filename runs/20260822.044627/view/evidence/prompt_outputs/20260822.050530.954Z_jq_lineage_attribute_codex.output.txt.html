@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.050530.954Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.050530.954Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.050530.954Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;error-and-selection&quot; stories=&quot;CORE-003,FLOW-003&quot;&gt;
+def halt_error: halt_error(5);
+def error(msg): msg|error;
+def select(f): if f then . else empty end;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;collection-mapping&quot; stories=&quot;DATA-001&quot;&gt;
+def map(f): [.[] | f];
+def map_values(f): .[] |= f;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;sorting-and-grouping&quot; stories=&quot;DATA-002&quot;&gt;
+def sort_by(f): _sort_by_impl(map([f]));
+def group_by(f): _group_by_impl(map([f]));
+def unique_by(f): _unique_by_impl(map([f]));
+def max_by(f): _max_by_impl(map([f]));
+def min_by(f): _min_by_impl(map([f]));
+&lt;/requirement&gt;
+&lt;requirement name=&quot;object-entries-and-containment&quot; stories=&quot;DATA-003&quot;&gt;
+def to_entries: [keys_unsorted[] as $k | {key: $k, value: .[$k]}];
+def from_entries: map({ (.key // .Key // .name // .Name):
+  if has(&quot;value&quot;) then .value else .Value end }) | add // {};
+def with_entries(f): to_entries | map(f) | from_entries;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;index-and-membership&quot; stories=&quot;DATA-004&quot;&gt;
+def indices($i): if type == &quot;array&quot; and ($i|type) == &quot;array&quot; then .[$i]
+  elif type == &quot;array&quot; then .[[$i]]
+  elif type == &quot;string&quot; and ($i|type) == &quot;string&quot; then _strindices($i)
+  else .[$i] end;
+def index($i):   indices($i) | .[0];       # TODO: optimize
+def rindex($i):  indices($i) | .[-1:][0];  # TODO: optimize
+def in(xs): . as $x | xs | has($x);
+def inside(xs): . as $x | xs | contains($x);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;string-manipulation&quot; stories=&quot;TEXT-001&quot;&gt;
+def join($x): reduce .[] as $i (null;
+            (if .==null then &quot;&quot; else .+$x end) +
+            ($i | if type==&quot;boolean&quot; or type==&quot;number&quot; then tostring else .//&quot;&quot; end)
+        ) // &quot;&quot;;
+def ltrimstr($left): if startswith($left) then .[$left | length:] end;
+def rtrimstr($right): if endswith($right) then .[:length - ($right | length)] end;
+def trimstr($val): ltrimstr($val) | rtrimstr($val);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;regular-expression-filters&quot; stories=&quot;TEXT-003&quot;&gt;
+def match(re; mode): _match_impl(re; mode; false)|.[];
+def test(re; mode): _match_impl(re; mode; true);
+def capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);
+def scan($re; $flags):
+  match($re; &quot;g&quot; + $flags)
+    | if (.captures|length &gt; 0)
+      then [ .captures | .[] | .string ]
+      else .string
+      end;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;date-and-time-filters&quot; stories=&quot;TEXT-004&quot;&gt;
+def fromdateiso8601: strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|mktime;
+def todateiso8601: strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;);
+def fromdate: fromdateiso8601;
+def todate: todateiso8601;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;input-stream-controls&quot; stories=&quot;IO-001&quot;&gt;
+def inputs: try repeat(input) catch if .==&quot;break&quot; then empty else error end;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;diagnostics&quot; stories=&quot;IO-002&quot;&gt;
+def debug(msgs): (msgs | debug | empty), .;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stream-valued-evaluation&quot; stories=&quot;CORE-001,FLOW-005&quot;&gt;
+def while(cond; update):
+     def _while:
+         if cond then ., (update | _while) else empty end;
+     _while;
+def until(cond; next):
+     def _until:
+         if cond then . else (next|_until) end;
+     _until;
+def limit($n; expr):
+  if $n &gt; 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . &lt;= 0 then break $out else empty end)
+  elif $n == 0 then empty
+  else error(&quot;limit doesn&#x27;t support negative count&quot;) end;
+def skip($n; expr):
+  if $n &gt; 0 then foreach expr as $item ($n; . - 1; if . &lt; 0 then $item else empty end)
+  elif $n == 0 then expr
+  else error(&quot;skip doesn&#x27;t support negative count&quot;) end;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;composition-and-combinations&quot; stories=&quot;CORE-002&quot;&gt;
+def combinations:
+    if length == 0 then [] else
+        .[0][] as $x
+          | (.[1:] | combinations) as $y
+          | [$x] + $y
+    end;
+def combinations(n):
+    . as $dot
+      | [range(n) | $dot]
+      | combinations;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;truthiness-and-membership&quot; stories=&quot;CORE-004,FLOW-002&quot;&gt;
+def IN(s): any(s == .; .);
+def IN(src; s): any(src == s; .);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;value-types-and-numeric-primitives&quot; stories=&quot;VALUE-001,VALUE-004,FLOW-001&quot;&gt;
+def abs: if . &lt; 0 then - . else . end;
+def isfinite: type == &quot;number&quot; and (isinfinite | not);
+def arrays: select(type == &quot;array&quot;);
+def objects: select(type == &quot;object&quot;);
+def iterables: select(type|. == &quot;array&quot; or . == &quot;object&quot;);
+def booleans: select(type == &quot;boolean&quot;);
+def numbers: select(type == &quot;number&quot;);
+def normals: select(isnormal);
+def finites: select(isfinite);
+def strings: select(type == &quot;string&quot;);
+def nulls: select(. == null);
+def values: select(. != null);
+def scalars: select(type|. != &quot;array&quot; and . != &quot;object&quot;);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;accessors-and-slices&quot; stories=&quot;VALUE-002,VALUE-003&quot;&gt;
+def first: .[0];
+def last: .[-1];
+def nth($n): .[$n];
+def reverse: [.[length - 1 - range(0;length)]];
+def flatten($x): if $x &lt; 0 then error(&quot;flatten depth must not be negative&quot;) else _flatten($x) end;
+def flatten: _flatten(-1);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recursive-generators&quot; stories=&quot;FLOW-006&quot;&gt;
+def recurse(f): def r: ., (f | r); r;
+def recurse(f; cond): def r: ., (f | select(cond) | r); r;
+def recurse: recurse(.[]?);
+def repeat(exp):
+     def _repeat:
+         exp, _repeat;
+     _repeat;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;labels-and-breaks&quot; stories=&quot;FLOW-004&quot;&gt;
+def _modify(paths; update):
+    reduce path(paths) as $p ([., []];
+        . as $dot
+      | null
+      | label $out
+      | ($dot[0] | getpath($p)) as $v
+      | (
+          (   $$$$v
+            | update
+            | (., break $out) as $v
+&lt;/requirement&gt;
+&lt;requirement name=&quot;variable-bindings-and-parameters&quot; stories=&quot;FUNC-001,FUNC-002&quot;&gt;
+def add(f): reduce f as $x (null; . + $x);
+def add: add(.[]);
+def all(generator; condition): isempty(generator|condition and empty);
+def any(generator; condition): isempty(generator|condition or empty)|not;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-definitions-and-recursion&quot; stories=&quot;FUNC-003&quot;&gt;
+def _flatten($x): reduce .[] as $i ([]; if $i | type == &quot;array&quot; and $x != 0 then . + ($i | _flatten($x-1)) else . + [$i] end);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-discovery-and-projection&quot; stories=&quot;PATH-001&quot;&gt;
+def paths: path(recurse)|select(length &gt; 0);
+def paths(node_filter): path(recurse|select(node_filter))|select(length &gt; 0);
+def pick(pathexps):
+  . as $in
+  | reduce path(pathexps) as $a (null;
+      setpath($a; $in|getpath($a)) );
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-access-and-mutation&quot; stories=&quot;PATH-002,PATH-004&quot;&gt;
+def _assign(paths; $value): reduce path(paths) as $p (.; setpath($p; $value));
+def _modify(paths; update):
+    reduce path(paths) as $p ([., []];
+        . as $dot
+      | ($dot[0] | getpath($p)) as $v
+      | $$$$dot
+      | setpath([0] + $p; $v)
+&lt;/requirement&gt;
+&lt;requirement name=&quot;deletion-and-assignment&quot; stories=&quot;PATH-003&quot;&gt;
+def del(f): delpaths([path(f)]);
+&lt;/requirement&gt;
+&lt;requirement name=&quot;conformance-verification&quot; stories=&quot;CONF-002,CONF-003&quot;&gt;
+# ensure the output of debug(m1,m2) is kept together:
+def debug(msgs): (msgs | debug | empty), .;
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture-foundation&quot;/&gt;
+&lt;unattached story=&quot;EXEC-001&quot;/&gt;
+&lt;unattached story=&quot;EXEC-002&quot;/&gt;
+&lt;unattached story=&quot;EXEC-003&quot;/&gt;
+&lt;unattached story=&quot;PARSE-001&quot;/&gt;
+&lt;unattached story=&quot;PARSE-002&quot;/&gt;
+&lt;unattached story=&quot;PARSE-003&quot;/&gt;
+&lt;unattached story=&quot;PARSE-004&quot;/&gt;
+&lt;unattached story=&quot;CONF-001&quot;/&gt;
+&lt;unattached story=&quot;FUNC-004&quot;/&gt;
+&lt;unattached story=&quot;IO-003&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<requirement name="stage-conformance-assets" stories="CONF-001">
+It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.
+</requirement>
+<requirement name="run-conformance-corpus" stories="CONF-003">
+Run the upstream jq conformance corpus against a candidate implementation.
+</requirement>
+<requirement name="execute-candidate-cases" stories="EXEC-001,EXEC-003">
+This runner re-implements the corpus protocol and drives the candidate as a subprocess, one process per case.
+</requirement>
+<requirement name="enforce-process-contract" stories="EXEC-002">
+Its exit status is the acceptance verdict.
+</requirement>
+<requirement name="parse-corpus" stories="CONF-003">
+Parse the jq test corpus.
+</requirement>
+<requirement name="apply-exclusions" stories="CONF-001">
+An exclusion that matches nothing is a hard error rather than a shrug.
+</requirement>
+<requirement name="compare-outputs" stories="EXEC-003">
+Structural, not textual: ``1`` and ``1.0`` are the same jq value and the corpus relies on that.
+</requirement>
+<requirement name="handle-timeouts" stories="EXEC-002">
+A case that has not produced output in this long is not going to.
+</requirement>
+<requirement name="support-scoped-runs" stories="CONF-002">
+run only cases whose program matches REGEX
+</requirement>
+<requirement name="report-results" stories="EXEC-002">
+jq conformance: {tally[PASS]} passed, {tally[FAIL]} failed, {tally[ERROR]} errored, {tally[SKIP]} skipped
+</requirement>
+<requirement name="provide-cli-options" stories="EXEC-001">
+--json
+</requirement>
+<unattached story="architecture-foundation"/>
+<unattached story="PARSE-001"/>
+<unattached story="PARSE-002"/>
+<unattached story="PARSE-003"/>
+<unattached story="PARSE-004"/>
+<unattached story="CORE-001"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="VALUE-001"/>
+<unattached story="VALUE-002"/>
+<unattached story="VALUE-003"/>
+<unattached story="VALUE-004"/>
+<unattached story="FLOW-001"/>
+<unattached story="FLOW-002"/>
+<unattached story="FLOW-003"/>
+<unattached story="FLOW-004"/>
+<unattached story="FLOW-005"/>
+<unattached story="FLOW-006"/>
+<unattached story="FUNC-001"/>
+<unattached story="FUNC-002"/>
+<unattached story="FUNC-003"/>
+<unattached story="FUNC-004"/>
+<unattached story="PATH-001"/>
+<unattached story="PATH-002"/>
+<unattached story="PATH-003"/>
+<unattached story="PATH-004"/>
+<unattached story="DATA-001"/>
+<unattached story="DATA-002"/>
+<unattached story="DATA-003"/>
+<unattached story="DATA-004"/>
+<unattached story="TEXT-001"/>
+<unattached story="TEXT-002"/>
+<unattached story="TEXT-003"/>
+<unattached story="TEXT-004"/>
+<unattached story="IO-001"/>
+<unattached story="IO-002"/>
+<unattached story="IO-003"/>

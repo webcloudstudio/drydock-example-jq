@@ -1,0 +1,132 @@
+<requirement name="handle-comments" stories="PARSE-001">
+"#" { yy_push_state(IN_COMMENT, yyscanner); }
+<IN_COMMENT>{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+<IN_COMMENT><<EOF>> { yy_pop_state(yyscanner); }
+</requirement>
+<requirement name="recognize-keywords" stories="PARSE-001,PARSE-003,PARSE-004,FUNC-003,FLOW-003,FLOW-004,FLOW-005">
+"as" { return AS; }
+"import" { return IMPORT; }
+"include" { return INCLUDE; }
+"module" { return MODULE; }
+"def" { return DEF; }
+"if" { return IF; }
+"then" { return THEN; }
+"else" { return ELSE; }
+"elif" { return ELSE_IF; }
+"and" { return AND; }
+"or" { return OR; }
+"end" { return END; }
+"reduce" { return REDUCE; }
+"foreach" { return FOREACH; }
+"try" { return TRY; }
+"catch" { return CATCH; }
+"label" { return LABEL; }
+"break" { return BREAK; }
+"$__loc__" { return LOC; }
+</requirement>
+<requirement name="recognize-operators" stories="PARSE-001,FLOW-001,FLOW-002,FLOW-003,FLOW-004,FLOW-006,PATH-003">
+"!=" { return NEQ; }
+"==" { return EQ; }
+"//" { return DEFINEDOR; }
+"|=" { return SETPIPE; }
+"+=" { return SETPLUS; }
+"-=" { return SETMINUS; }
+"*=" { return SETMULT; }
+"/=" { return SETDIV; }
+"%=" { return SETMOD; }
+"//=" { return SETDEFINEDOR; }
+"<=" { return LESSEQ; }
+">=" { return GREATEREQ; }
+".." { return REC; }
+"?//" { return ALTERNATION; }
+"."|"?"|"="|";"|","|":"|"|"|"+"|"-"|"*"|"/"|"%"|"\$"|"<"|">" { return yytext[0];}
+</requirement>
+<requirement name="track-delimited-states" stories="PARSE-001,PARSE-003,PARSE-004">
+"["|"{"|"(" {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+"]"|"}"|")" {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+</requirement>
+<requirement name="scan-formats-and-numbers" stories="PARSE-001,PARSE-002,VALUE-001,TEXT-002">
+"@"[a-zA-Z0-9_]+ {
+  yylval->literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval->literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+</requirement>
+<requirement name="scan-strings-and-interpolation" stories="PARSE-001,PARSE-002">
+"\"" {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+
+<IN_QQSTRING>{
+  "\\(" {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+  "\"" {
+    yy_pop_state(yyscanner);
+    return QQSTRING_END;
+  }
+  (\\[^u(]|\\u[a-zA-Z0-9]{0,4})+ {
+    /* pass escapes to the json parser */
+    jv escapes = jv_string_fmt("\"%.*s\"", (int)yyleng, yytext);
+    yylval->literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));
+    jv_free(escapes);
+    return QQSTRING_TEXT;
+  }
+  [^\\\"]+ {
+    yylval->literal = jv_string_sized(yytext, yyleng);
+    return QQSTRING_TEXT;
+  }
+  . {
+    return INVALID_CHARACTER;
+  }
+}
+</requirement>
+<requirement name="scan-identifiers-and-accessors" stories="PARSE-001,FUNC-001,FUNC-002,VALUE-002">
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval->literal = jv_string(yytext+1); return BINDING;}
+</requirement>
+<requirement name="ignore-whitespace-and-reject-invalid-characters" stories="PARSE-001,PARSE-004">
+[ \r\n\t]+  {}
+
+. { return INVALID_CHARACTER; }
+</requirement>
+<unattached story="architecture-foundation"/>
+<unattached story="EXEC-001"/>
+<unattached story="EXEC-002"/>
+<unattached story="EXEC-003"/>
+<unattached story="CORE-001"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="VALUE-003"/>
+<unattached story="VALUE-004"/>
+<unattached story="CONF-001"/>
+<unattached story="FLOW-006"/>
+<unattached story="FUNC-004"/>
+<unattached story="PATH-001"/>
+<unattached story="PATH-002"/>
+<unattached story="PATH-004"/>
+<unattached story="DATA-001"/>
+<unattached story="DATA-002"/>
+<unattached story="DATA-003"/>
+<unattached story="DATA-004"/>
+<unattached story="TEXT-001"/>
+<unattached story="TEXT-003"/>
+<unattached story="TEXT-004"/>
+<unattached story="IO-001"/>
+<unattached story="IO-002"/>
+<unattached story="IO-003"/>
+<unattached story="CONF-002"/>
+<unattached story="CONF-003"/>

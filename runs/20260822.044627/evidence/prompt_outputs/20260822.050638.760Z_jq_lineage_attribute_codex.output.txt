@@ -1,0 +1,50 @@
+<requirement name="document-excluded-cases" stories="CONF-001">
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case cannot run under this kit's harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file. This file is a scoring asset: it is hash-verified against the import and restored before grading.
+</requirement>
+<requirement name="validate-exclusion-entries" stories="CONF-001,EXEC-002">
+One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+</requirement>
+<requirement name="exclude-module-loader-cases" stories="CONF-001">
+Only the loader cases are excluded. The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`, `include "\(a)"; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+</requirement>
+<unattached story="architecture-foundation"/>
+<unattached story="EXEC-001"/>
+<unattached story="EXEC-003"/>
+<unattached story="PARSE-001"/>
+<unattached story="PARSE-002"/>
+<unattached story="PARSE-003"/>
+<unattached story="CORE-001"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="VALUE-001"/>
+<unattached story="VALUE-002"/>
+<unattached story="VALUE-003"/>
+<unattached story="VALUE-004"/>
+<unattached story="FLOW-001"/>
+<unattached story="FLOW-002"/>
+<unattached story="FLOW-003"/>
+<unattached story="FLOW-004"/>
+<unattached story="FLOW-005"/>
+<unattached story="FLOW-006"/>
+<unattached story="FUNC-001"/>
+<unattached story="FUNC-002"/>
+<unattached story="FUNC-003"/>
+<unattached story="FUNC-004"/>
+<unattached story="PATH-001"/>
+<unattached story="PATH-002"/>
+<unattached story="PATH-003"/>
+<unattached story="PATH-004"/>
+<unattached story="DATA-001"/>
+<unattached story="DATA-002"/>
+<unattached story="DATA-003"/>
+<unattached story="DATA-004"/>
+<unattached story="TEXT-001"/>
+<unattached story="TEXT-002"/>
+<unattached story="TEXT-003"/>
+<unattached story="TEXT-004"/>
+<unattached story="IO-001"/>
+<unattached story="IO-002"/>
+<unattached story="IO-003"/>
+<unattached story="CONF-002"/>
+<unattached story="CONF-003"/>

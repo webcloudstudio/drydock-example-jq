@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>result.json</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>result.json</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../result.json">Raw file</a></div></header>
+<article class="doc"><pre>{
+  &quot;acceptance_status&quot;: &quot;NOT_RUN&quot;,
+  &quot;assertions&quot;: {
+    &quot;failed&quot;: 0,
+    &quot;harness_defects&quot;: 0,
+    &quot;passed&quot;: 0,
+    &quot;product_defects&quot;: 0,
+    &quot;unverified&quot;: 0
+  },
+  &quot;attestations&quot;: [],
+  &quot;build_passes&quot;: 0,
+  &quot;commands&quot;: [
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;init&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 2324,
+      &quot;label&quot;: &quot;01-init&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/01-init.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/01-init.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;import&quot;,
+        &quot;jq&quot;,
+        &quot;sources&quot;,
+        &quot;--format&quot;,
+        &quot;markdown&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 3807,
+      &quot;label&quot;: &quot;02-import-sources&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/02-import-sources.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/02-import-sources.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;analyze&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 129642,
+      &quot;label&quot;: &quot;03-analyze&quot;,
+      &quot;llm_executions&quot;: [
+        &quot;20260822.044635.394Z-1e0f6b31&quot;
+      ],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/03-analyze.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/03-analyze.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1357093,
+      &quot;label&quot;: &quot;04-plan&quot;,
+      &quot;llm_executions&quot;: [
+        &quot;20260822.044845.296Z-1ad5d192&quot;,
+        &quot;20260822.045052.808Z-86803200&quot;,
+        &quot;20260822.045208.012Z-1bf12ecd&quot;,
+        &quot;20260822.045308.830Z-8b502ba1&quot;,
+        &quot;20260822.045356.962Z-e7179081&quot;,
+        &quot;20260822.045454.044Z-b266e3f9&quot;,
+        &quot;20260822.045552.050Z-7cdc3953&quot;,
+        &quot;20260822.045643.966Z-95953c0f&quot;,
+        &quot;20260822.045735.979Z-0a9cc87d&quot;,
+        &quot;20260822.045839.601Z-5ca45241&quot;,
+        &quot;20260822.045941.036Z-9962ffad&quot;,
+        &quot;20260822.050141.846Z-de206ed3&quot;,
+        &quot;20260822.050310.364Z-9b7ac1bf&quot;,
+        &quot;20260822.050451.082Z-66ca3667&quot;,
+        &quot;20260822.050530.954Z-935fcb31&quot;,
+        &quot;20260822.050638.760Z-c2f8f5c3&quot;,
+        &quot;20260822.050703.533Z-47d7817c&quot;,
+        &quot;20260822.050725.172Z-fe043c42&quot;,
+        &quot;20260822.050818.584Z-fea7ad08&quot;,
+        &quot;20260822.050857.869Z-e519ccd9&quot;,
+        &quot;20260822.050946.683Z-7346d972&quot;,
+        &quot;20260822.051044.302Z-e9391334&quot;
+      ],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/04-plan.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/04-plan.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1981,
+      &quot;label&quot;: &quot;05-plan-verify&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 1,
+      &quot;stderr_path&quot;: &quot;evidence/commands/05-plan-verify.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/05-plan-verify.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;repair&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 303268,
+      &quot;label&quot;: &quot;06-plan-repair&quot;,
+      &quot;llm_executions&quot;: [
+        &quot;20260822.051124.360Z-4cbfac34&quot;,
+        &quot;20260822.051141.737Z-0b79d680&quot;,
+        &quot;20260822.051157.809Z-b8aff4ff&quot;,
+        &quot;20260822.051213.892Z-78bf0634&quot;,
+        &quot;20260822.051229.913Z-bf21039c&quot;,
+        &quot;20260822.051246.215Z-cd93da18&quot;,
+        &quot;20260822.051300.745Z-0d18301f&quot;,
+        &quot;20260822.051318.017Z-589d0d52&quot;,
+        &quot;20260822.051326.800Z-fa597ba7&quot;,
+        &quot;20260822.051338.276Z-5f61734c&quot;,
+        &quot;20260822.051355.328Z-2bebd559&quot;,
+        &quot;20260822.051411.709Z-aa88c805&quot;,
+        &quot;20260822.051422.823Z-bff7b0c5&quot;,
+        &quot;20260822.051439.215Z-e0c9c693&quot;,
+        &quot;20260822.051450.838Z-459d9d8b&quot;,
+        &quot;20260822.051459.317Z-e031e20f&quot;,
+        &quot;20260822.051510.487Z-6c04226d&quot;,
+        &quot;20260822.051521.311Z-26e8e7fd&quot;,
+        &quot;20260822.051534.065Z-c41093ac&quot;,
+        &quot;20260822.051556.958Z-ddde8232&quot;,
+        &quot;20260822.051610.201Z-8c4fe110&quot;
+      ],
+      &quot;returncode&quot;: 1,
+      &quot;stderr_path&quot;: &quot;evidence/commands/06-plan-repair.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/06-plan-repair.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 2910,
+      &quot;label&quot;: &quot;07-plan-verify-after-repair&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 1,
+      &quot;stderr_path&quot;: &quot;evidence/commands/07-plan-verify-after-repair.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/07-plan-verify-after-repair.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1348,
+      &quot;label&quot;: &quot;08-after-plan-build-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/08-after-plan-build-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/08-after-plan-build-status.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1169,
+      &quot;label&quot;: &quot;09-after-plan-target-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/09-after-plan-target-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/09-after-plan-target-status.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;status&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 387,
+      &quot;label&quot;: &quot;10-after-plan-workspace-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/10-after-plan-workspace-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/10-after-plan-workspace-status.stdout.log&quot;
+    }
+  ],
+  &quot;degraded&quot;: [],
+  &quot;elapsed_ms&quot;: 1811157,
+  &quot;environment&quot;: {
+    &quot;drydock_version&quot;: &quot;0.2.0&quot;,
+    &quot;effort&quot;: &quot;&quot;,
+    &quot;finished_at&quot;: &quot;2026-08-22T05:16:38.691879Z&quot;,
+    &quot;git_commit&quot;: &quot;4e0368d03ff9c237a39c51b815227b9714776ffe&quot;,
+    &quot;model&quot;: &quot;gpt-5.6-luna&quot;,
+    &quot;platform&quot;: &quot;Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35&quot;,
+    &quot;provider&quot;: &quot;codex&quot;,
+    &quot;python_version&quot;: &quot;3.12.13&quot;,
+    &quot;started_at&quot;: &quot;2026-08-22T04:46:27.482870Z&quot;
+  },
+  &quot;error&quot;: &quot;jq: stopped at plan-repair: acceptance criteria still cannot run after one repair pass&quot;,
+  &quot;evidence_dir&quot;: &quot;evidence&quot;,
+  &quot;execution_status&quot;: &quot;ERROR&quot;,
+  &quot;expected_verdict&quot;: &quot;PASSED&quot;,
+  &quot;fixture&quot;: &quot;jq&quot;,
+  &quot;observed_verdict&quot;: &quot;ERROR&quot;,
+  &quot;output_dir&quot;: &quot;.&quot;,
+  &quot;release_verdict&quot;: &quot;&quot;,
+  &quot;resumed_from&quot;: &quot;&quot;,
+  &quot;run_id&quot;: &quot;20260822.044627&quot;,
+  &quot;score_exit_codes&quot;: {},
+  &quot;status&quot;: &quot;failed&quot;,
+  &quot;target&quot;: &quot;jq&quot;,
+  &quot;usage&quot;: {
+    &quot;cached_input_tokens&quot;: 457472,
+    &quot;calls&quot;: 44,
+    &quot;fresh_input_tokens&quot;: 1597114,
+    &quot;input_tokens&quot;: 2054586,
+    &quot;invalid_records&quot;: 0,
+    &quot;llm_elapsed_ms&quot;: 1742164,
+    &quot;output_tokens&quot;: 87375
+  }
+}
+</pre></article>
+</main>
+</body>
+</html>

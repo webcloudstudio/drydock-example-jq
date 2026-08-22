@@ -1,0 +1,76 @@
+# FEATURE: Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq diagnostic, raw stderr, debug, and halt-error behavior. |
+| Depends On  | FEATURE-Process-Contract.md, FEATURE-Errors-and-Optional.md |
+| Provides    | debug, stderr, halt_error |
+| Consumes    | compile and runtime exit contract |
+
+## Scope
+
+Implement `debug`, `stderr`, and `halt_error`, preserving jq's separation of JSON results on stdout from diagnostic and raw output on stderr. `halt_error` must stop evaluation and use its requested exit status while ordinary runtime failures retain exit status 5.
+
+## Programmatic Acceptance
+
+=== AC diagnostics-conformance ===
+Intent: The authoritative corpus cases covering jq diagnostics and stderr filters execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"debug|stderr|halt_error"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC diagnostics-streams ===
+Intent: The authoritative corpus verifies stdout preservation, stderr side effects, and halt behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"debug|stderr|halt_error"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert summary["pass"] > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC diagnostics-streams ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics must never be emitted on stdout.
+- Preserve values emitted before a runtime or halt error.
+- Do not compare or depend on diagnostic message text outside the authoritative corpus.

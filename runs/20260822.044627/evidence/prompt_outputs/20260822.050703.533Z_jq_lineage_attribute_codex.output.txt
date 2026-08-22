@@ -1,0 +1,50 @@
+<requirement name="executable-json-interface" stories="EXEC-001,EXEC-003">
+The deliverable is an executable named jq that reads JSON on stdin.
+</requirement>
+<requirement name="distinguish-interface-and-conformance-failures" stories="EXEC-002">
+The interface check is separate from the conformance run so that a missing or non-executable program and a genuine conformance failure are distinguishable in the evidence.
+</requirement>
+<requirement name="score-full-conformance-run" stories="CONF-003">
+`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.
+</requirement>
+<unattached story="architecture-foundation"/>
+<unattached story="PARSE-001"/>
+<unattached story="PARSE-002"/>
+<unattached story="PARSE-003"/>
+<unattached story="PARSE-004"/>
+<unattached story="CORE-001"/>
+<unattached story="CORE-002"/>
+<unattached story="CORE-003"/>
+<unattached story="CORE-004"/>
+<unattached story="VALUE-001"/>
+<unattached story="VALUE-002"/>
+<unattached story="VALUE-003"/>
+<unattached story="VALUE-004"/>
+<unattached story="CONF-001"/>
+<unattached story="FLOW-001"/>
+<unattached story="FLOW-002"/>
+<unattached story="FLOW-003"/>
+<unattached story="FLOW-004"/>
+<unattached story="FLOW-005"/>
+<unattached story="FLOW-006"/>
+<unattached story="FUNC-001"/>
+<unattached story="FUNC-002"/>
+<unattached story="FUNC-003"/>
+<unattached story="FUNC-004"/>
+<unattached story="PATH-001"/>
+<unattached story="PATH-002"/>
+<unattached story="PATH-003"/>
+<unattached story="PATH-004"/>
+<unattached story="DATA-001"/>
+<unattached story="DATA-002"/>
+<unattached story="DATA-003"/>
+<unattached story="DATA-004"/>
+<unattached story="TEXT-001"/>
+<unattached story="TEXT-002"/>
+<unattached story="TEXT-003"/>
+<unattached story="TEXT-004"/>
+<unattached story="IO-001"/>
+<unattached story="IO-002"/>
+<unattached story="IO-003"/>
+<unattached story="CONF-002"/>
+</numerusform

@@ -1,0 +1,285 @@
+=== BEGIN ARTIFACT FEATURE-Collection-Transformations.md ===
+# FEATURE: Collection Transformations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq collection transformation and recursive traversal builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Composition.md, FEATURE-Assignment-Operators.md, FEATURE-Recursive-Generators.md |
+| Provides    | map, map_values, select, add, flatten, transpose, combinations, walk |
+| Consumes    | ordered jq generator evaluation, assignment operators, recursive generators |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Collection filters transform arrays and objects while preserving jq generator ordering and multiplicity. `map` collects all outputs for each input element, `map_values` updates values while dropping paths whose update is empty, and `select` retains inputs whose condition is truthy. `add`, `flatten`, `transpose`, and `combinations` implement the corresponding collection operations, including empty and bounded cases. `walk` recursively visits descendants before applying its filter to composite values.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+Intent: The authoritative jq corpus passes the collection-transformation cases selected by map, flatten, transpose, combinations, and walk syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"map|flatten|transpose|combinations|walk"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, empty-stream behavior, and immutable input semantics.
+- Do not implement collection behavior by invoking an external jq executable.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Sorting-and-Grouping.md ===
+# FEATURE: Sorting and Grouping
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq sorting, grouping, uniqueness, and extrema builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Truthiness-and-Comparison.md, FEATURE-Collection-Transformations.md |
+| Provides    | sort, sort_by, group_by, unique, unique_by, min, max, min_by, max_by |
+| Consumes    | jq structural comparison, generator evaluation, and collection transformations |
+
+## Questions
+
+- None.
+
+## Behavior
+
+Sorting follows jq's total ordering across nulls, booleans, numbers, strings, arrays, and objects. Keyed variants evaluate their filters for each element and compare generated keys lexicographically. Grouping sorts by keys before forming groups; uniqueness removes duplicate keys while retaining the first representative. Minimum and maximum filters operate on arrays and support keyed forms.
+
+## Programmatic Acceptance
+
+=== AC data-002-conformance ===
+Intent: The authoritative jq corpus passes sorting, grouping, uniqueness, and extrema cases selected by their builtin syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"sort|group_by|unique|min|max"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use jq comparison semantics, including numeric equivalence and recursive structural ordering.
+- Preserve stable representative selection for keyed uniqueness.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Object-Entries-and-Containment.md ===
+# FEATURE: Object Entries and Containment
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq object-key, entry-conversion, and containment builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Accessors.md, FEATURE-Truthiness-and-Comparison.md, FEATURE-Collection-Transformations.md |
+| Provides    | keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries |
+| Consumes    | jq value accessors, structural comparison, and collection transformations |
+
+## Questions
+
+- None.
+
+## Behavior
+
+`keys` sorts object keys by Unicode codepoint order and returns array indices for arrays; `keys_unsorted` preserves object insertion order. `has` and `in` test object keys or valid array indices. `contains` and `inside` perform recursive containment checks for strings, arrays, objects, and scalar values. Entry conversion supports the accepted key and value spellings, and `with_entries` transforms entries through a filter.
+
+## Programmatic Acceptance
+
+=== AC data-003-conformance ===
+Intent: The authoritative jq corpus passes object-entry, key, containment, and entry-transformation cases selected by their builtin syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"keys|has\(|contains|inside|to_entries|from_entries"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Keep object-key ordering distinct between `keys` and `keys_unsorted`.
+- Enforce recursive containment and comparison depth behavior without external dependencies.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Index-and-Membership.md ===
+# FEATURE: Index and Membership
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq search, quantifier, emptiness, and SQL-style membership utilities. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Sorting-and-Grouping.md, FEATURE-Object-Entries-and-Containment.md, FEATURE-Reductions-and-Iteration-Control.md |
+| Provides    | indices, index, rindex, bsearch, all, any, isempty, INDEX, JOIN, IN |
+| Consumes    | jq comparison, collection, reduction, and generator semantics |
+
+## Questions
+
+- None.
+
+## Behavior
+
+Search utilities locate scalar or sequence occurrences in arrays and strings, including first and last matches. `bsearch` returns an existing index or the encoded insertion point. `all`, `any`, and `isempty` preserve generator short-circuiting. `INDEX`, `JOIN`, and `IN` evaluate streams and index expressions with jq's cartesian and membership behavior.
+
+## Programmatic Acceptance
+
+=== AC data-004-conformance ===
+Intent: The authoritative jq corpus passes index, membership, quantifier, emptiness, and SQL-style utility cases selected by their syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"indices|index\(|rindex|bsearch|any|all|IN\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve short-circuiting so later generator errors are not evaluated after a decisive result.
+- Preserve stream order and cartesian argument evaluation.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-String-Manipulation.md ===
+# FEATURE: String Manipulation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq string trimming, conversion, splitting, joining, and case filters. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Literals-and-Strings.md, FEATURE-Type-and-Numeric-Primitives.md, FEATURE-Arithmetic-and-Structural-Operators.md |
+| Provides    | trim, ltrim, rtrim, ltrimstr, rtrimstr, trimstr, ascii_downcase, ascii_upcase, explode, implode, split, splits, join, startswith, endswith |
+| Consumes    | jq string values, Unicode handling, numeric primitives, and generator evaluation |
+
+## Questions
+
+- None.
+
+## Behavior
+
+String filters operate on Unicode codepoints. Trimming uses the Unicode whitespace definition; prefix and suffix filters remove matching strings only. ASCII case filters affect only ASCII letters. `explode` and `implode` convert between strings and codepoint arrays with jq's replacement behavior for invalid codepoints. `split`, `splits`, and `join` preserve empty fields and generator semantics, while `startswith` and `endswith` validate string operands.
+
+## Programmatic Acceptance
+
+=== AC text-001-conformance ===
+Intent: The authoritative jq corpus passes string manipulation cases selected by split, join, trimming, case, codepoint, prefix, and suffix syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"split|join|trim|ascii_|explode|implode|startswith|endswith"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC text-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve Unicode codepoints, embedded NULs, empty strings, and empty split fields.
+- Keep regex-based split behavior separate from the single-argument string split behavior.
+
+=== END ARTIFACT ===

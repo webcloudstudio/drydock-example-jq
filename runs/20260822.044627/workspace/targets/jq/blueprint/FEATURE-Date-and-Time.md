@@ -1,0 +1,76 @@
+# FEATURE: Date and Time
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq date parsing, formatting, and UTC time conversion filters. |
+| Depends On  | FEATURE-Type-and-Numeric-Primitives.md, FEATURE-String-Manipulation.md |
+| Provides    | strptime, strftime, strflocaltime, gmtime, localtime, mktime, fromdate, todate |
+| Consumes    | jq string and numeric primitives |
+
+## Scope
+
+Implement ISO-8601 date conversion and the low-level date filters exercised by the corpus. UTC behavior is normative for `fromdate`, `todate`, `gmtime`, `strptime`, `strftime`, and `mktime`; provide the documented local-time variants where exercised.
+
+## Programmatic Acceptance
+
+=== AC date-conformance ===
+Intent: The authoritative corpus cases covering jq date and time filters execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"date|strftime|strptime|gmtime|mktime"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC date-utc-and-errors ===
+Intent: The authoritative corpus verifies UTC conversion, broken-down time handling, formatting, and invalid-input runtime behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"fromdate|todate|gmtime|localtime|mktime|strptime|strftime|strflocaltime"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert summary["pass"] > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC date-utc-and-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Date behavior must use standard-library facilities only.
+- UTC conversion must not depend on the machine's local timezone.
+- Invalid date inputs remain runtime errors with exit status 5 when uncaught.

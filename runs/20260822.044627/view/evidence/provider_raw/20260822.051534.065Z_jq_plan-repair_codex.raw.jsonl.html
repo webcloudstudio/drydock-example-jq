@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/provider_raw/20260822.051534.065Z_jq_plan-repair_codex.raw.jsonl</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/provider_raw/20260822.051534.065Z_jq_plan-repair_codex.raw.jsonl</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/provider_raw/20260822.051534.065Z_jq_plan-repair_codex.raw.jsonl">Raw file</a></div></header>
+<article class="doc"><pre>{&quot;type&quot;:&quot;thread.started&quot;,&quot;thread_id&quot;:&quot;01a027e5-4e6f-7462-8090-8d9a556fbfc3&quot;}
+{&quot;type&quot;:&quot;turn.started&quot;}
+{&quot;type&quot;:&quot;item.completed&quot;,&quot;item&quot;:{&quot;id&quot;:&quot;item_0&quot;,&quot;type&quot;:&quot;agent_message&quot;,&quot;text&quot;:&quot;I’m checking the specification file directly so the repaired block preserves every original line except the reported syntax defect.&quot;}}
+{&quot;type&quot;:&quot;item.started&quot;,&quot;item&quot;:{&quot;id&quot;:&quot;item_1&quot;,&quot;type&quot;:&quot;command_execution&quot;,&quot;command&quot;:&quot;/bin/bash -lc \&quot;sed -n &#x27;1,120p&#x27; FEATURE-String-Manipulation.md | nl -ba\&quot;&quot;,&quot;aggregated_output&quot;:&quot;&quot;,&quot;exit_code&quot;:null,&quot;status&quot;:&quot;in_progress&quot;}}
+{&quot;type&quot;:&quot;item.completed&quot;,&quot;item&quot;:{&quot;id&quot;:&quot;item_1&quot;,&quot;type&quot;:&quot;command_execution&quot;,&quot;command&quot;:&quot;/bin/bash -lc \&quot;sed -n &#x27;1,120p&#x27; FEATURE-String-Manipulation.md | nl -ba\&quot;&quot;,&quot;aggregated_output&quot;:&quot;     1\t# FEATURE: String Manipulation\n     2\t\n     3\tString trimming, conversion, splitting, joining, case, and Unicode filters are supported.\n     4\t\n     5\t## Programmatic Acceptance\n     6\t\n     7\t=== AC text-001-conformance ===\n     8\timport json\n     9\timport os\n    10\timport subprocess\n    11\timport sys\n    12\t\n    13\tSELECT = r\&quot;split|join|ascii_downcase|ascii_upcase|trim\&quot;\n    14\t\n    15\tresult = subprocess.run(\n    16\t    [sys.executable, \&quot;sources/run_conformance.py\&quot;, \&quot;--select\&quot;, SELECT, \&quot;--json\&quot;],\n    17\t    capture_output=True,\n    18\t    text=True,\n    19\t    env={**os.environ, \&quot;JQ\&quot;: f\&quot;{os.getcwd()}/jq\&quot;},\n    20\t)\n    21\tprint(result.stdout)\n    22\tprint(result.stderr, file=sys.stderr)\n    23\treport = json.loads(result.stdout)\n    24\ttally = report[\&quot;summary\&quot;]\n    25\tassert sum(tally.values()) &gt; 0, f\&quot;selector matched no case: {SELECT}\&quot;\n    26\tassert tally[\&quot;fail\&quot;] == 0 and tally[\&quot;error\&quot;] == 0, tally\n    27\tassert result.returncode == 0, result.returncode\n    28\t=== END AC text-001-conformance\n    29\t=== END AC text-001-conformance ===\n&quot;,&quot;exit_code&quot;:0,&quot;status&quot;:&quot;completed&quot;}}
+{&quot;type&quot;:&quot;item.completed&quot;,&quot;item&quot;:{&quot;id&quot;:&quot;item_2&quot;,&quot;type&quot;:&quot;agent_message&quot;,&quot;text&quot;:&quot;=== AC text-001-conformance ===\nimport json\nimport os\nimport subprocess\nimport sys\n\nSELECT = r\&quot;split|join|ascii_downcase|ascii_upcase|trim\&quot;\n\nresult = subprocess.run(\n    [sys.executable, \&quot;sources/run_conformance.py\&quot;, \&quot;--select\&quot;, SELECT, \&quot;--json\&quot;],\n    capture_output=True,\n    text=True,\n    env={**os.environ, \&quot;JQ\&quot;: f\&quot;{os.getcwd()}/jq\&quot;},\n)\nprint(result.stdout)\nprint(result.stderr, file=sys.stderr)\nreport = json.loads(result.stdout)\ntally = report[\&quot;summary\&quot;]\nassert sum(tally.values()) &gt; 0, f\&quot;selector matched no case: {SELECT}\&quot;\nassert tally[\&quot;fail\&quot;] == 0 and tally[\&quot;error\&quot;] == 0, tally\nassert result.returncode == 0, result.returncode\n=== END AC text-001-conformance ===&quot;}}
+{&quot;type&quot;:&quot;turn.completed&quot;,&quot;usage&quot;:{&quot;input_tokens&quot;:28597,&quot;cached_input_tokens&quot;:22016,&quot;cache_write_input_tokens&quot;:0,&quot;output_tokens&quot;:983,&quot;reasoning_output_tokens&quot;:671}}
+</pre></article>
+</main>
+</body>
+</html>

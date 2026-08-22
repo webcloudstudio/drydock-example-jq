@@ -1,0 +1,263 @@
+{
+  "acceptance_status": "NOT_RUN",
+  "assertions": {
+    "failed": 0,
+    "harness_defects": 0,
+    "passed": 0,
+    "product_defects": 0,
+    "unverified": 0
+  },
+  "attestations": [],
+  "build_passes": 0,
+  "commands": [
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "init",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 2324,
+      "label": "01-init",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/01-init.stderr.log",
+      "stdout_path": "evidence/commands/01-init.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "import",
+        "jq",
+        "sources",
+        "--format",
+        "markdown"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 3807,
+      "label": "02-import-sources",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/02-import-sources.stderr.log",
+      "stdout_path": "evidence/commands/02-import-sources.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "analyze",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 129642,
+      "label": "03-analyze",
+      "llm_executions": [
+        "20260822.044635.394Z-1e0f6b31"
+      ],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/03-analyze.stderr.log",
+      "stdout_path": "evidence/commands/03-analyze.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "plan",
+        "jq",
+        "--override"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1357093,
+      "label": "04-plan",
+      "llm_executions": [
+        "20260822.044845.296Z-1ad5d192",
+        "20260822.045052.808Z-86803200",
+        "20260822.045208.012Z-1bf12ecd",
+        "20260822.045308.830Z-8b502ba1",
+        "20260822.045356.962Z-e7179081",
+        "20260822.045454.044Z-b266e3f9",
+        "20260822.045552.050Z-7cdc3953",
+        "20260822.045643.966Z-95953c0f",
+        "20260822.045735.979Z-0a9cc87d",
+        "20260822.045839.601Z-5ca45241",
+        "20260822.045941.036Z-9962ffad",
+        "20260822.050141.846Z-de206ed3",
+        "20260822.050310.364Z-9b7ac1bf",
+        "20260822.050451.082Z-66ca3667",
+        "20260822.050530.954Z-935fcb31",
+        "20260822.050638.760Z-c2f8f5c3",
+        "20260822.050703.533Z-47d7817c",
+        "20260822.050725.172Z-fe043c42",
+        "20260822.050818.584Z-fea7ad08",
+        "20260822.050857.869Z-e519ccd9",
+        "20260822.050946.683Z-7346d972",
+        "20260822.051044.302Z-e9391334"
+      ],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/04-plan.stderr.log",
+      "stdout_path": "evidence/commands/04-plan.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1981,
+      "label": "05-plan-verify",
+      "llm_executions": [],
+      "returncode": 1,
+      "stderr_path": "evidence/commands/05-plan-verify.stderr.log",
+      "stdout_path": "evidence/commands/05-plan-verify.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "plan",
+        "repair",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 303268,
+      "label": "06-plan-repair",
+      "llm_executions": [
+        "20260822.051124.360Z-4cbfac34",
+        "20260822.051141.737Z-0b79d680",
+        "20260822.051157.809Z-b8aff4ff",
+        "20260822.051213.892Z-78bf0634",
+        "20260822.051229.913Z-bf21039c",
+        "20260822.051246.215Z-cd93da18",
+        "20260822.051300.745Z-0d18301f",
+        "20260822.051318.017Z-589d0d52",
+        "20260822.051326.800Z-fa597ba7",
+        "20260822.051338.276Z-5f61734c",
+        "20260822.051355.328Z-2bebd559",
+        "20260822.051411.709Z-aa88c805",
+        "20260822.051422.823Z-bff7b0c5",
+        "20260822.051439.215Z-e0c9c693",
+        "20260822.051450.838Z-459d9d8b",
+        "20260822.051459.317Z-e031e20f",
+        "20260822.051510.487Z-6c04226d",
+        "20260822.051521.311Z-26e8e7fd",
+        "20260822.051534.065Z-c41093ac",
+        "20260822.051556.958Z-ddde8232",
+        "20260822.051610.201Z-8c4fe110"
+      ],
+      "returncode": 1,
+      "stderr_path": "evidence/commands/06-plan-repair.stderr.log",
+      "stdout_path": "evidence/commands/06-plan-repair.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 2910,
+      "label": "07-plan-verify-after-repair",
+      "llm_executions": [],
+      "returncode": 1,
+      "stderr_path": "evidence/commands/07-plan-verify-after-repair.stderr.log",
+      "stdout_path": "evidence/commands/07-plan-verify-after-repair.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1348,
+      "label": "08-after-plan-build-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/08-after-plan-build-status.stderr.log",
+      "stdout_path": "evidence/commands/08-after-plan-build-status.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "status",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1169,
+      "label": "09-after-plan-target-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/09-after-plan-target-status.stderr.log",
+      "stdout_path": "evidence/commands/09-after-plan-target-status.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "status"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 387,
+      "label": "10-after-plan-workspace-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/10-after-plan-workspace-status.stderr.log",
+      "stdout_path": "evidence/commands/10-after-plan-workspace-status.stdout.log"
+    }
+  ],
+  "degraded": [],
+  "elapsed_ms": 1811157,
+  "environment": {
+    "drydock_version": "0.2.0",
+    "effort": "",
+    "finished_at": "2026-08-22T05:16:38.691879Z",
+    "git_commit": "4e0368d03ff9c237a39c51b815227b9714776ffe",
+    "model": "gpt-5.6-luna",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "provider": "codex",
+    "python_version": "3.12.13",
+    "started_at": "2026-08-22T04:46:27.482870Z"
+  },
+  "error": "jq: stopped at plan-repair: acceptance criteria still cannot run after one repair pass",
+  "evidence_dir": "evidence",
+  "execution_status": "ERROR",
+  "expected_verdict": "PASSED",
+  "fixture": "jq",
+  "observed_verdict": "ERROR",
+  "output_dir": ".",
+  "release_verdict": "",
+  "resumed_from": "",
+  "run_id": "20260822.044627",
+  "score_exit_codes": {},
+  "status": "failed",
+  "target": "jq",
+  "usage": {
+    "cached_input_tokens": 457472,
+    "calls": 44,
+    "fresh_input_tokens": 1597114,
+    "input_tokens": 2054586,
+    "invalid_records": 0,
+    "llm_elapsed_ms": 1742164,
+    "output_tokens": 87375
+  }
+}

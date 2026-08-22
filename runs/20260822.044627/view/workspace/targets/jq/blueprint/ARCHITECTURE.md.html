@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/ARCHITECTURE.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE.md">Raw file</a></div></header>
+<article class="doc"><h1>ARCHITECTURE: jq</h1>
+<p>The standalone <code>jq</code> executable is implemented in Python using only the standard library. It parses jq filters, evaluates ordered generators over JSON input, and emits compact JSON values.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC architecture-boundary === from pathlib import Path import ast entry = Path(&quot;jq&quot;) assert entry.is_file() assert entry.stat().st_mode &amp; 0o111 assert ast.parse(entry.read_text(encoding=&quot;utf-8&quot;)) === END AC architecture-boundary ===</p></article>
+</main>
+</body>
+</html>

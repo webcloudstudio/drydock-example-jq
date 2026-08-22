@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260822.050310.364Z_jq_plan_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260822.050310.364Z_jq_plan_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260822.050310.364Z_jq_plan_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;pblock label=&quot;Plan artifact repair&quot; kind=&quot;repair&quot;&gt;</p>
+<h1>Plan Artifact Repair</h1>
+<p>Drydock accepted the Plan response shape but rejected the emitted Blueprint artifact(s) below. Repair only the deterministic defect. Preserve all unrelated content, contracts, headings, decisions, and acceptance assertions byte-for-byte where possible. Do not remove or weaken a valid assertion while adding a missing one. Every artifact with a programmatic surface retains at least two concrete Python acceptance assertions. Every DECISIONS.json is the sole decision disclosure surface; do not emit Markdown question sections.</p>
+<p>Emit each artifact below in exactly this form, and emit no other text:</p>
+<p>=== BEGIN ARTIFACT &lt;FILENAME&gt; === &lt;the complete file body&gt; === END ARTIFACT ===</p>
+<p>The filename appears once, in the opening delimiter. The closing delimiter is the constant token above and never carries a name.</p>
+<p>Emit exactly one such block for each of: FEATURE-Accessors.md, FEATURE-Arithmetic-and-Structural-Operators.md, FEATURE-Boolean-and-Alternative-Operators.md, FEATURE-Complex-Assignments.md, FEATURE-Conditionals-and-Exception-Flow.md, FEATURE-Destructuring-Alternatives.md, FEATURE-Filter-Grammar.md, FEATURE-Function-Definitions.md, FEATURE-Generator-Core.md, FEATURE-Labels-and-Breaks.md, FEATURE-Literals-and-Strings.md, FEATURE-Path-Discovery.md, FEATURE-Recursive-Generators.md, FEATURE-Regular-Expressions.md, FEATURE-Scoped-Conformance.md, FEATURE-Sorting-and-Grouping.md, FEATURE-String-Manipulation.md, FEATURE-Type-and-Numeric-Primitives.md, FEATURE-Variable-Bindings.md.</p>
+<p>Repair pass: 3</p>
+<p>Deterministic validation defect:<br>Plan generation failed: an acceptance criterion cannot pass as written. FEATURE-Accessors.md [value-002-conformance]: story VALUE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Arithmetic-and-Structural-Operators.md [flow-001-conformance]: story FLOW-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Boolean-and-Alternative-Operators.md [flow-002-conformance]: story FLOW-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Complex-Assignments.md [path-004-conformance]: story PATH-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Conditionals-and-Exception-Flow.md [flow-003-conformance]: story FLOW-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Destructuring-Alternatives.md [func-004-conformance]: story FUNC-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Filter-Grammar.md [parse-003-conformance]: story PARSE-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Function-Definitions.md [function-definitions-scoped-conformance]: story FUNC-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Generator-Core.md [core-001-conformance]: story CORE-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Labels-and-Breaks.md [flow-004-conformance]: story FLOW-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Literals-and-Strings.md [parse-002-conformance]: story PARSE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Path-Discovery.md [path-001-conformance]: story PATH-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Recursive-Generators.md [recursive-generators-scoped-conformance]: story FLOW-006 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Regular-Expressions.md [regex-conformance]: story TEXT-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Scoped-Conformance.md [scoped-conformance]: story CONF-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Sorting-and-Grouping.md [data-002-conformance]: story DATA-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-String-Manipulation.md [text-001-conformance]: story TEXT-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Type-and-Numeric-Primitives.md [value-004-conformance]: story VALUE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Variable-Bindings.md [variable-bindings-scoped-conformance]: story FUNC-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. No Blueprint or Manifest artifacts were written.<br>Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/logs/20260822.050141.846Z_jq_plan_codex.output.txt</p>
+<p>Normative Compass sections. They bind every assertion you write or retain, including one you add to satisfy the defect above.</p>
+<h2>Constraints</h2>
+<ul><li>Implement in Python using only the standard library.</li><li>Provide an executable named <code>jq</code> at the application root, invoked as <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>.</li><li><code>-c</code> is the only option exercised. No other command-line option is required.</li><li>Run without network access, package installation, or external runtime dependencies.</li><li>Exit <code>0</code> when the program compiled and ran to completion, <code>3</code> when it did not compile, and <code>5</code></li></ul>
+<p>when it compiled and raised at run time. The harness grades on this distinction.</p>
+<ul><li>Diagnostics go to standard error and are never compared.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not shell out to a system <code>jq</code> executable.</li><li>Do not use a third-party jq implementation or binding.</li><li>Do not modify, rewrite, trim, regenerate, or substitute any file under <code>sources/</code>. Those assets</li></ul>
+<p>are restored before grading and an edit is reported as tampering.</p>
+<ul><li>Preserve generator ordering, multiplicity, backtracking, and partial-output runtime behavior.</li><li>Keep compile failures distinct from runtime failures using exit codes 3 and 5.</li></ul>
+<h2>Verification Protocol</h2>
+<p>This section is normative. It governs which story may invoke the supplied harness, and how.</p>
+<h3>Invoking the harness</h3>
+<p><code>sources/run_conformance.py</code> <strong>requires</strong> the environment variable <code>JQ</code>, the command that runs the candidate implementation. Without it the harness exits <code>2</code> on its own usage code, which is a harness fault and never a verdict about the interpreter. Every invocation, in every acceptance criterion and every developer command, supplies it:</p>
+<pre><code>JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py            # whole corpus, the scored run
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # run one construct for real</code></pre>
+<p>Those two commands are the only ways this build runs the harness. They are specified verbatim below under <em>The two harness invocations</em>, together with the flag this build forbids.</p>
+<p><code>sources/</code> is read only. No story edits, patches, or regenerates <code>sources/run_conformance.py</code>, <code>sources/jq.test</code>, or <code>sources/exclusions.txt</code>; a harness defect is reported, not repaired in place. A story that needs to experiment with the harness works on a copy outside <code>sources/</code>, and every acceptance criterion invokes the original <code>sources/run_conformance.py</code>.</p>
+<p>An acceptance criterion written in Python supplies it by <strong>extending</strong> the inherited environment, never by replacing it:</p>
+<pre><code>env={**os.environ, &quot;JQ&quot;: str(build_dir / &quot;jq&quot;)}</code></pre>
+<p><code>env={&quot;JQ&quot;: ...}</code> alone leaves the child with no <code>PATH</code>, so nothing it invokes resolves and the criterion is false at every level of implementation quality.</p>
+<p><code>sources/full_test.sh</code> sets <code>JQ</code> itself for the runner it wraps and therefore takes no environment from its caller.</p>
+<p>The harness reserves exit <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion list. Exit <code>2</code> never means the interpreter is wrong.</p>
+<p>The summary line is:</p>
+<pre><code>jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)</code></pre>
+<h3>The two harness invocations</h3>
+<p>An acceptance criterion that runs <code>sources/run_conformance.py</code> uses one of these two commands. No criterion in this build passes any other flag to the harness.</p>
+<div class="scroll"><table><thead><tr><th>Story kind</th><th>Command</th><th>Executes cases?</th><th>Asserts</th></tr></thead><tbody><tr><td>Every behavioral story</td><td><code>--select &lt;regex&gt; --json</code></td><td>Yes, the selected slice</td><td>exit <code>0</code>, zero <code>fail</code>, zero <code>error</code>, non-zero case count</td></tr><tr><td>Terminal story (once, last)</td><td><code>sh sources/full_test.sh</code></td><td>Yes, all of them</td><td>exit <code>0</code></td></tr></tbody></table></div>
+<p>The staging story does not appear in this table. It does not run the harness at all; see <em>The staging story</em> below.</p>
+<h4><code>--list</code> is never run</h4>
+<p><code>sources/run_conformance.py</code> accepts a flag, spelled <code>--list</code>, that prints the names of the matching cases and then exits without executing any of them. <code>sources/INSTRUCTIONS.md</code>, the file header, and <code>--help</code> all document it.</p>
+<p><strong>This build never runs it. Not in an acceptance criterion, not in a story, not in a script, not in a command typed by a build agent, not while developing and not while verifying. The string <code>--list</code> does not appear anywhere in this project&#x27;s output. If you have written it, that line is wrong — delete it and use one of the two commands above.</strong></p>
+<p>A Drydock build is headless. There is no one watching the output, so a mode whose entire purpose is to print something for a person to read has no reader and no reason to run.</p>
+<p>The flag returns <code>0</code> at the top of the run — before the harness reads <code>JQ</code>, before it resolves the candidate command, before it executes a single case. A criterion built on it passes when <code>jq</code> is an empty file, when <code>jq</code> does not exist, and when the story it gates was never written. It is not a weak proof, not a partial proof, and not an acceptable proof for staging, for scaffolding, or for an early story whose implementation is incomplete. It is not a proof. Thirty-six criteria in one earlier plan of this project used it, every one of them reported green, and it cost three days.</p>
+<p>If you are writing a criterion and reaching for that flag, the reason is always the same: the story&#x27;s code does not exist yet and you want a command that will not fail. That is the definition of a criterion that proves nothing. Write the <code>--select ... --json</code> form instead and let it be red until the story makes it green. <strong>A criterion is supposed to fail before its story is built.</strong></p>
+<p>The same prohibition covers any other flag whose effect is to not execute the cases — enumeration, dry-run, validation, or help. If a flag&#x27;s documented purpose is &quot;run nothing&quot;, it has no place in an acceptance criterion.</p>
+<h4>Behavioral criterion — copy this, changing only <code>SELECT</code></h4>
+<pre><code>import json
+import os
+import subprocess
+import sys
+
+SELECT = r&quot;reduce&quot;
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report[&quot;summary&quot;]
+assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot;
+assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally
+assert result.returncode == 0, result.returncode</code></pre>
+<p>Three assertions, and all three are required.</p>
+<ol><li><strong>The selector matched something.</strong> <code>--select</code> is a regular expression matched against the</li></ol>
+<p>program text of each case. A selector that matches nothing yields zero cases, zero failures, and exit <code>0</code> — green, and worth nothing. Alternations naming ideas rather than syntax (<code>closure</code>, <code>recursive</code>, <code>optional</code>) match no jq program and are the common way to write one by accident. Select on syntax the corpus actually contains: <code>reduce</code>, <code>foreach</code>, <code>def</code>, <code>as \$</code>, <code>try</code>, <code>//</code>, <code>path(</code>.</p>
+<ol><li><strong>No case failed or errored.</strong> Read off the parsed JSON tally, not off any printed line.</li><li><strong>The exit status is <code>0</code>.</strong> The harness returns <code>0</code> only when <code>fail</code> and <code>error</code> are both zero,</li></ol>
+<p>and reserves <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion list. Exit <code>2</code> is never a verdict about the interpreter.</p>
+<p><code>--json</code> writes the report and nothing else to stdout, so <code>json.loads(result.stdout)</code> is total. Do not assert against the human summary line, and do not grep stdout for <code>passed</code> or <code>failed</code>.</p>
+<h3>The terminal story</h3>
+<p>The <strong>terminal story</strong> is the last story in the build order: the one on which every other story is a transitive dependency, and after which no further story runs. It is a verification story. Its job is not to add capability but to prove that the capability every preceding story delivered is present, together, at the end of the build.</p>
+<p>The terminal story of this project runs <code>sh sources/full_test.sh</code>, asserts <code>returncode == 0</code>, prints the captured stdout and stderr so a failure is diagnosable from the evidence alone, and carries the Sea Trial. It is the only story permitted to run the whole corpus.</p>
+<p>A story is not terminal because its name contains &quot;verify&quot;, because it is a test harness, or because it stages the test assets. Staging the corpus is foundational work that happens early; running the corpus is terminal work that happens last. Do not place a whole-corpus gate on a story that cannot yet run it — it fails vacuously and teaches nothing.</p>
+<h3>Scope of every other story</h3>
+<p>Every non-terminal story is gated on its own declared behavior only, through <code>--select</code> against the constructs that story implements, and the criterion asserts the selected slice passes. A non-terminal story never invokes <code>sources/full_test.sh</code> and never runs the corpus unfiltered: a partial interpreter fails most of an authoritative corpus by construction, and its unimplemented cases exhaust the harness&#x27;s per-case timeout rather than returning, so the unscoped run costs the most exactly where it teaches the least.</p>
+<p>Regression across stories is not the responsibility of any story&#x27;s criteria. Drydock re-runs every previously proven criterion after each block and attributes a criterion that was green and is now red to the block that broke it, so a criterion proven at story 2 and broken at story 6 fails story</p>
+<ol><li>Do not author a mid-build story whose purpose is to re-run earlier stories&#x27; checks.</li></ol>
+<h3>The staging story</h3>
+<p>The story that stages the conformance assets is gated on the assets being present, complete, and mutually consistent — not on a bare file-existence assertion, and not on the corpus running. It proves that in process, by importing the harness and calling its parsers directly. It never launches the harness, so the question of which flags to pass does not arise:</p>
+<pre><code>import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+EXPECTED_CASES = 550
+EXPECTED_EXCLUSIONS = 13
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+excluded = harness.apply_exclusions(cases, harness.parse_exclusions(harness.EXCLUSIONS))
+assert len(cases) == EXPECTED_CASES, len(cases)
+assert len(excluded) == EXPECTED_EXCLUSIONS, len(excluded)</code></pre>
+<p>This reads state rather than output: the harness module imports, the corpus parses into the expected number of cases, and every exclusion still matches a case — <code>apply_exclusions</code> raises on a stale entry, so a corpus and an exclusion list that have drifted apart fail here rather than silently skipping cases later.</p>
+<p>It claims nothing about the interpreter, because at this point in the build there is nothing to claim. Every story that claims a construct works runs that construct through <code>--select ... --json</code>.</p>
+<p>Original FEATURE-Accessors.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Accessors.md ===</p>
+<h1>FEATURE: Accessors</h1>
+<p>Object fields, array indices, dynamic keys, optional access, and negative indices follow jq semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-002-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\[|\.&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC value-002-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Arithmetic-and-Structural-Operators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Arithmetic-and-Structural-Operators.md ===</p>
+<h1>FEATURE: Arithmetic and Structural Operators</h1>
+<p>Arithmetic, string, array, object, recursive merge, repetition, and splitting operators are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-001-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\+|\*|//&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-001-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Boolean-and-Alternative-Operators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Boolean-and-Alternative-Operators.md ===</p>
+<h1>FEATURE: Boolean and Alternative Operators</h1>
+<p>Boolean, negation, defined-or, and defined-or assignment semantics are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-002-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;//|and|or|not&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-002-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Complex-Assignments.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Complex-Assignments.md ===</p>
+<h1>FEATURE: Complex Assignments</h1>
+<p>Complex assignments handle generated and deeply nested paths.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-004-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\|=|//=&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC path-004-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Conditionals-and-Exception-Flow.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Conditionals-and-Exception-Flow.md ===</p>
+<h1>FEATURE: Conditionals and Exception Flow</h1>
+<p>Conditional branches, try/catch handling, and optional evaluation are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-003-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;if |try |catch|\?&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-003-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Destructuring-Alternatives.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Destructuring-Alternatives.md ===</p>
+<h1>FEATURE: Destructuring Alternatives</h1>
+<p>Destructuring patterns and <code>?//</code> alternatives are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-004-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\?//| as \$&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC func-004-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Filter-Grammar.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Filter-Grammar.md ===</p>
+<h1>FEATURE: Filter Grammar</h1>
+<p>The parser implements jq expression grammar, precedence, composition, indexing, construction, and optional operators.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-003-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\[|\{|\||\?&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC parse-003-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Function-Definitions.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Function-Definitions.md ===</p>
+<h1>FEATURE: Function Definitions</h1>
+<p>Function definitions provide lexical scope, redefinition, and recursion.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC function-definitions-scoped-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;def &quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC function-definitions-scoped-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Generator-Core.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Generator-Core.md ===</p>
+<h1>FEATURE: Generator Core</h1>
+<p>Filters evaluate as ordered streams with multiplicity, backtracking, and empty results.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-001-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;,|empty|range\(&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC core-001-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Labels-and-Breaks.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Labels-and-Breaks.md ===</p>
+<h1>FEATURE: Labels and Breaks</h1>
+<p>Lexically scoped labels and break control are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-004-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;label |break &quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-004-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Literals-and-Strings.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Literals-and-Strings.md ===</p>
+<h1>FEATURE: Literals and Strings</h1>
+<p>JSON literals, escaped strings, formatted strings, and interpolation are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-002-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;\(@|\(\\|\{|\[&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC parse-002-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Path-Discovery.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Path-Discovery.md ===</p>
+<h1>FEATURE: Path Discovery</h1>
+<p>Path discovery and projections support exact and generated path expressions.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-001-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;path\(&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC path-001-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Recursive-Generators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Recursive-Generators.md ===</p>
+<h1>FEATURE: Recursive Generators</h1>
+<p>Recursive generator filters preserve termination and stream ordering.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC recursive-generators-scoped-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;foreach|recurse&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC recursive-generators-scoped-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Regular-Expressions.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Regular-Expressions.md ===</p>
+<h1>FEATURE: Regular Expressions</h1>
+<p>Regex matching, captures, scanning, splitting, and substitution use Python standard-library regular expressions.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC regex-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;test\(|match\(|capture\(|scan\(|sub\(&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC regex-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Scoped-Conformance.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Scoped-Conformance.md ===</p>
+<h1>FEATURE: Scoped Conformance Verification</h1>
+<p>Construct-specific conformance verification executes selected cases and requires a non-empty passing result.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC scoped-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;reduce&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC scoped-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Sorting-and-Grouping.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Sorting-and-Grouping.md ===</p>
+<h1>FEATURE: Sorting and Grouping</h1>
+<p>Sorting, grouping, uniqueness, and extrema use jq structural comparison.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-002-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;sort|group_by|unique|min|max&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC data-002-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-String-Manipulation.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-String-Manipulation.md ===</p>
+<h1>FEATURE: String Manipulation</h1>
+<p>String trimming, conversion, splitting, joining, case, and Unicode filters are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC text-001-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;split|join|ascii_downcase|ascii_upcase|trim&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC text-001-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Type-and-Numeric-Primitives.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Type-and-Numeric-Primitives.md ===</p>
+<h1>FEATURE: Type and Numeric Primitives</h1>
+<p>Type, length, numeric conversion, predicates, and mathematical primitive filters are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-004-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;type|length|tonumber|floor|ceil&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC value-004-conformance === END ARTIFACT ===</p>
+<p>Original FEATURE-Variable-Bindings.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Variable-Bindings.md ===</p>
+<h1>FEATURE: Variable Bindings</h1>
+<p>Lexical bindings, shadowing, and destructuring patterns are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC variable-bindings-scoped-conformance === import json import os import subprocess import sys</p>
+<p>SELECT = r&quot; as \$&quot;</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC variable-bindings-scoped-conformance === END ARTIFACT === &lt;/pblock&gt;</p></article>
+</main>
+</body>
+</html>

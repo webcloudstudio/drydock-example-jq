@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260822.045941.036Z_jq_plan_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260822.045941.036Z_jq_plan_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260822.045941.036Z_jq_plan_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;pblock label=&quot;Plan artifact repair&quot; kind=&quot;repair&quot;&gt;</p>
+<h1>Plan Artifact Repair</h1>
+<p>Drydock accepted the Plan response shape but rejected the emitted Blueprint artifact(s) below. Repair only the deterministic defect. Preserve all unrelated content, contracts, headings, decisions, and acceptance assertions byte-for-byte where possible. Do not remove or weaken a valid assertion while adding a missing one. Every artifact with a programmatic surface retains at least two concrete Python acceptance assertions. Every DECISIONS.json is the sole decision disclosure surface; do not emit Markdown question sections.</p>
+<p>Emit each artifact below in exactly this form, and emit no other text:</p>
+<p>=== BEGIN ARTIFACT &lt;FILENAME&gt; === &lt;the complete file body&gt; === END ARTIFACT ===</p>
+<p>The filename appears once, in the opening delimiter. The closing delimiter is the constant token above and never carries a name.</p>
+<p>Emit exactly one such block for each of: ARCHITECTURE.md, FEATURE-Accessors.md, FEATURE-Advanced-Grammar.md, FEATURE-Arithmetic-and-Structural-Operators.md, FEATURE-Assignment-Operators.md, FEATURE-Boolean-and-Alternative-Operators.md, FEATURE-Collection-Transformations.md, FEATURE-Complex-Assignments.md, FEATURE-Composition.md, FEATURE-Conditionals-and-Exception-Flow.md, FEATURE-Conformance-Assets.md, FEATURE-Destructuring-Alternatives.md, FEATURE-Errors-and-Optional.md, FEATURE-Executable-Entry-Point.md, FEATURE-Filter-Grammar.md, FEATURE-Formats-and-Serialization.md, FEATURE-Function-Definitions.md, FEATURE-Function-Parameters.md, FEATURE-Generator-Core.md, FEATURE-Index-and-Membership.md, FEATURE-Labels-and-Breaks.md, FEATURE-Lexer.md, FEATURE-Literals-and-Strings.md, FEATURE-Object-Entries-and-Containment.md, FEATURE-Path-Discovery.md, FEATURE-Path-Primitives.md, FEATURE-Process-Contract.md, FEATURE-Recursive-Generators.md, FEATURE-Reductions-and-Iteration-Control.md, FEATURE-Regular-Expressions.md, FEATURE-Scoped-Conformance.md, FEATURE-Slices-and-Iteration.md, FEATURE-Sorting-and-Grouping.md, FEATURE-Streaming.md, FEATURE-String-Manipulation.md, FEATURE-Truthiness-and-Comparison.md, FEATURE-Type-and-Numeric-Primitives.md, FEATURE-Value-Model.md, FEATURE-Variable-Bindings.md.</p>
+<p>Repair pass: 1</p>
+<p>Deterministic validation defect:<br>Plan generation failed: an acceptance criterion cannot pass as written. ARCHITECTURE.md [architecture-sources]: story architecture-foundation is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Accessors.md [value-002-conformance]: story VALUE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Advanced-Grammar.md [parse-004-conformance]: story PARSE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Advanced-Grammar.md [parse-004-module-rejection]: story PARSE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Arithmetic-and-Structural-Operators.md [flow-001-conformance]: story FLOW-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Arithmetic-and-Structural-Operators.md [flow-001-errors]: story FLOW-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Assignment-Operators.md [path-003-conformance]: story PATH-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Boolean-and-Alternative-Operators.md [flow-002-conformance]: story FLOW-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Boolean-and-Alternative-Operators.md [flow-002-short-circuit]: story FLOW-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Collection-Transformations.md [data-001-conformance]: story DATA-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Complex-Assignments.md [path-004-conformance]: story PATH-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Composition.md [core-002-conformance]: story CORE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Composition.md [core-002-cartesian]: story CORE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Conditionals-and-Exception-Flow.md [flow-003-conformance]: story FLOW-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Conditionals-and-Exception-Flow.md [flow-003-runtime-flow]: story FLOW-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Conformance-Assets.md [conformance-assets-present]: story CONF-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Destructuring-Alternatives.md [func-004-conformance]: story FUNC-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Errors-and-Optional.md [core-003-conformance]: story CORE-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Executable-Entry-Point.md [executable-basic-filters]: story EXEC-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Filter-Grammar.md [parse-003-conformance]: story PARSE-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Filter-Grammar.md [parse-003-optional]: story PARSE-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Formats-and-Serialization.md [formats-conformance]: story TEXT-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Formats-and-Serialization.md [formats-roundtrip]: story TEXT-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Function-Definitions.md [function-definitions-scoped-conformance]: story FUNC-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Function-Parameters.md [function-parameters-scoped-conformance]: story FUNC-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Generator-Core.md [core-001-conformance]: story CORE-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Generator-Core.md [core-001-ordering]: story CORE-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Index-and-Membership.md [data-004-conformance]: story DATA-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Labels-and-Breaks.md [flow-004-conformance]: story FLOW-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Labels-and-Breaks.md [flow-004-scope]: story FLOW-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Lexer.md [lexer-basic-tokens]: story PARSE-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Literals-and-Strings.md [parse-002-conformance]: story PARSE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Literals-and-Strings.md [parse-002-escapes]: story PARSE-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Object-Entries-and-Containment.md [data-003-conformance]: story DATA-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Path-Discovery.md [path-001-conformance]: story PATH-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Path-Primitives.md [path-002-conformance]: story PATH-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Process-Contract.md [process-runtime-slice]: story EXEC-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Recursive-Generators.md [recursive-generators-scoped-conformance]: story FLOW-006 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Reductions-and-Iteration-Control.md [reductions-scoped-conformance]: story FLOW-005 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Regular-Expressions.md [regex-conformance]: story TEXT-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Regular-Expressions.md [regex-streams]: story TEXT-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Scoped-Conformance.md [scoped-conformance]: story CONF-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Scoped-Conformance.md [scoped-conformance-contract]: story CONF-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Slices-and-Iteration.md [value-003-conformance]: story VALUE-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Sorting-and-Grouping.md [data-002-conformance]: story DATA-002 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Streaming.md [streaming-conformance]: story IO-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Streaming.md [streaming-roundtrip-suite]: story IO-003 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-String-Manipulation.md [text-001-conformance]: story TEXT-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Truthiness-and-Comparison.md [core-004-conformance]: story CORE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Type-and-Numeric-Primitives.md [value-004-conformance]: story VALUE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Type-and-Numeric-Primitives.md [value-004-numeric-contract]: story VALUE-004 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Value-Model.md [value-001-conformance]: story VALUE-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. FEATURE-Variable-Bindings.md [variable-bindings-scoped-conformance]: story FUNC-001 is not the terminal story (CONF-003) and its acceptance executes the authoritative runner sources/run_conformance.py. Gate this story on its own declared behavior, or invoke the runner in list mode, which enumerates the suite without running a case. No Blueprint or Manifest artifacts were written.<br>Execution output: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/logs/20260822.044845.296Z_jq_plan_codex.output.txt</p>
+<p>Normative Compass sections. They bind every assertion you write or retain, including one you add to satisfy the defect above.</p>
+<h2>Constraints</h2>
+<ul><li>Implement in Python using only the standard library.</li><li>Provide an executable named <code>jq</code> at the application root, invoked as <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>.</li><li><code>-c</code> is the only option exercised. No other command-line option is required.</li><li>Run without network access, package installation, or external runtime dependencies.</li><li>Exit <code>0</code> when the program compiled and ran to completion, <code>3</code> when it did not compile, and <code>5</code></li></ul>
+<p>when it compiled and raised at run time. The harness grades on this distinction.</p>
+<ul><li>Diagnostics go to standard error and are never compared.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not shell out to a system <code>jq</code> executable.</li><li>Do not use a third-party jq implementation or binding.</li><li>Do not modify, rewrite, trim, regenerate, or substitute any file under <code>sources/</code>. Those assets</li></ul>
+<p>are restored before grading and an edit is reported as tampering.</p>
+<ul><li>Preserve generator ordering, multiplicity, backtracking, and partial-output runtime behavior.</li><li>Keep compile failures distinct from runtime failures using exit codes 3 and 5.</li></ul>
+<h2>Verification Protocol</h2>
+<p>This section is normative. It governs which story may invoke the supplied harness, and how.</p>
+<h3>Invoking the harness</h3>
+<p><code>sources/run_conformance.py</code> <strong>requires</strong> the environment variable <code>JQ</code>, the command that runs the candidate implementation. Without it the harness exits <code>2</code> on its own usage code, which is a harness fault and never a verdict about the interpreter. Every invocation, in every acceptance criterion and every developer command, supplies it:</p>
+<pre><code>JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py            # whole corpus, the scored run
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # run one construct for real</code></pre>
+<p>Those two commands are the only ways this build runs the harness. They are specified verbatim below under <em>The two harness invocations</em>, together with the flag this build forbids.</p>
+<p><code>sources/</code> is read only. No story edits, patches, or regenerates <code>sources/run_conformance.py</code>, <code>sources/jq.test</code>, or <code>sources/exclusions.txt</code>; a harness defect is reported, not repaired in place. A story that needs to experiment with the harness works on a copy outside <code>sources/</code>, and every acceptance criterion invokes the original <code>sources/run_conformance.py</code>.</p>
+<p>An acceptance criterion written in Python supplies it by <strong>extending</strong> the inherited environment, never by replacing it:</p>
+<pre><code>env={**os.environ, &quot;JQ&quot;: str(build_dir / &quot;jq&quot;)}</code></pre>
+<p><code>env={&quot;JQ&quot;: ...}</code> alone leaves the child with no <code>PATH</code>, so nothing it invokes resolves and the criterion is false at every level of implementation quality.</p>
+<p><code>sources/full_test.sh</code> sets <code>JQ</code> itself for the runner it wraps and therefore takes no environment from its caller.</p>
+<p>The harness reserves exit <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion list. Exit <code>2</code> never means the interpreter is wrong.</p>
+<p>The summary line is:</p>
+<pre><code>jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)</code></pre>
+<h3>The two harness invocations</h3>
+<p>An acceptance criterion that runs <code>sources/run_conformance.py</code> uses one of these two commands. No criterion in this build passes any other flag to the harness.</p>
+<div class="scroll"><table><thead><tr><th>Story kind</th><th>Command</th><th>Executes cases?</th><th>Asserts</th></tr></thead><tbody><tr><td>Every behavioral story</td><td><code>--select &lt;regex&gt; --json</code></td><td>Yes, the selected slice</td><td>exit <code>0</code>, zero <code>fail</code>, zero <code>error</code>, non-zero case count</td></tr><tr><td>Terminal story (once, last)</td><td><code>sh sources/full_test.sh</code></td><td>Yes, all of them</td><td>exit <code>0</code></td></tr></tbody></table></div>
+<p>The staging story does not appear in this table. It does not run the harness at all; see <em>The staging story</em> below.</p>
+<h4><code>--list</code> is never run</h4>
+<p><code>sources/run_conformance.py</code> accepts a flag, spelled <code>--list</code>, that prints the names of the matching cases and then exits without executing any of them. <code>sources/INSTRUCTIONS.md</code>, the file header, and <code>--help</code> all document it.</p>
+<p><strong>This build never runs it. Not in an acceptance criterion, not in a story, not in a script, not in a command typed by a build agent, not while developing and not while verifying. The string <code>--list</code> does not appear anywhere in this project&#x27;s output. If you have written it, that line is wrong — delete it and use one of the two commands above.</strong></p>
+<p>A Drydock build is headless. There is no one watching the output, so a mode whose entire purpose is to print something for a person to read has no reader and no reason to run.</p>
+<p>The flag returns <code>0</code> at the top of the run — before the harness reads <code>JQ</code>, before it resolves the candidate command, before it executes a single case. A criterion built on it passes when <code>jq</code> is an empty file, when <code>jq</code> does not exist, and when the story it gates was never written. It is not a weak proof, not a partial proof, and not an acceptable proof for staging, for scaffolding, or for an early story whose implementation is incomplete. It is not a proof. Thirty-six criteria in one earlier plan of this project used it, every one of them reported green, and it cost three days.</p>
+<p>If you are writing a criterion and reaching for that flag, the reason is always the same: the story&#x27;s code does not exist yet and you want a command that will not fail. That is the definition of a criterion that proves nothing. Write the <code>--select ... --json</code> form instead and let it be red until the story makes it green. <strong>A criterion is supposed to fail before its story is built.</strong></p>
+<p>The same prohibition covers any other flag whose effect is to not execute the cases — enumeration, dry-run, validation, or help. If a flag&#x27;s documented purpose is &quot;run nothing&quot;, it has no place in an acceptance criterion.</p>
+<h4>Behavioral criterion — copy this, changing only <code>SELECT</code></h4>
+<pre><code>import json
+import os
+import subprocess
+import sys
+
+SELECT = r&quot;reduce&quot;
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report[&quot;summary&quot;]
+assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot;
+assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally
+assert result.returncode == 0, result.returncode</code></pre>
+<p>Three assertions, and all three are required.</p>
+<ol><li><strong>The selector matched something.</strong> <code>--select</code> is a regular expression matched against the</li></ol>
+<p>program text of each case. A selector that matches nothing yields zero cases, zero failures, and exit <code>0</code> — green, and worth nothing. Alternations naming ideas rather than syntax (<code>closure</code>, <code>recursive</code>, <code>optional</code>) match no jq program and are the common way to write one by accident. Select on syntax the corpus actually contains: <code>reduce</code>, <code>foreach</code>, <code>def</code>, <code>as \$</code>, <code>try</code>, <code>//</code>, <code>path(</code>.</p>
+<ol><li><strong>No case failed or errored.</strong> Read off the parsed JSON tally, not off any printed line.</li><li><strong>The exit status is <code>0</code>.</strong> The harness returns <code>0</code> only when <code>fail</code> and <code>error</code> are both zero,</li></ol>
+<p>and reserves <code>2</code> for its own faults — a missing corpus, an unset <code>JQ</code>, a stale exclusion list. Exit <code>2</code> is never a verdict about the interpreter.</p>
+<p><code>--json</code> writes the report and nothing else to stdout, so <code>json.loads(result.stdout)</code> is total. Do not assert against the human summary line, and do not grep stdout for <code>passed</code> or <code>failed</code>.</p>
+<h3>The terminal story</h3>
+<p>The <strong>terminal story</strong> is the last story in the build order: the one on which every other story is a transitive dependency, and after which no further story runs. It is a verification story. Its job is not to add capability but to prove that the capability every preceding story delivered is present, together, at the end of the build.</p>
+<p>The terminal story of this project runs <code>sh sources/full_test.sh</code>, asserts <code>returncode == 0</code>, prints the captured stdout and stderr so a failure is diagnosable from the evidence alone, and carries the Sea Trial. It is the only story permitted to run the whole corpus.</p>
+<p>A story is not terminal because its name contains &quot;verify&quot;, because it is a test harness, or because it stages the test assets. Staging the corpus is foundational work that happens early; running the corpus is terminal work that happens last. Do not place a whole-corpus gate on a story that cannot yet run it — it fails vacuously and teaches nothing.</p>
+<h3>Scope of every other story</h3>
+<p>Every non-terminal story is gated on its own declared behavior only, through <code>--select</code> against the constructs that story implements, and the criterion asserts the selected slice passes. A non-terminal story never invokes <code>sources/full_test.sh</code> and never runs the corpus unfiltered: a partial interpreter fails most of an authoritative corpus by construction, and its unimplemented cases exhaust the harness&#x27;s per-case timeout rather than returning, so the unscoped run costs the most exactly where it teaches the least.</p>
+<p>Regression across stories is not the responsibility of any story&#x27;s criteria. Drydock re-runs every previously proven criterion after each block and attributes a criterion that was green and is now red to the block that broke it, so a criterion proven at story 2 and broken at story 6 fails story</p>
+<ol><li>Do not author a mid-build story whose purpose is to re-run earlier stories&#x27; checks.</li></ol>
+<h3>The staging story</h3>
+<p>The story that stages the conformance assets is gated on the assets being present, complete, and mutually consistent — not on a bare file-existence assertion, and not on the corpus running. It proves that in process, by importing the harness and calling its parsers directly. It never launches the harness, so the question of which flags to pass does not arise:</p>
+<pre><code>import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+EXPECTED_CASES = 550
+EXPECTED_EXCLUSIONS = 13
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+excluded = harness.apply_exclusions(cases, harness.parse_exclusions(harness.EXCLUSIONS))
+assert len(cases) == EXPECTED_CASES, len(cases)
+assert len(excluded) == EXPECTED_EXCLUSIONS, len(excluded)</code></pre>
+<p>This reads state rather than output: the harness module imports, the corpus parses into the expected number of cases, and every exclusion still matches a case — <code>apply_exclusions</code> raises on a stale entry, so a corpus and an exclusion list that have drifted apart fail here rather than silently skipping cases later.</p>
+<p>It claims nothing about the interpreter, because at this point in the build there is nothing to claim. Every story that claims a construct works runs that construct through <code>--select ... --json</code>.</p>
+<p>Original ARCHITECTURE.md, in the same form your reply must use: === BEGIN ARTIFACT ARCHITECTURE.md ===</p>
+<h1>ARCHITECTURE: jq</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines the standard-library-only architecture for the standalone jq interpreter.</td></tr><tr><td>Depends On</td><td>—</td></tr><tr><td>Provides</td><td>jq interpreter architecture</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>The application is a standalone executable named <code>jq</code> that parses jq filters, evaluates them as ordered generators over JSON input, and emits compact JSON values.</p>
+<h2>Module Boundaries</h2>
+<div class="scroll"><table><thead><tr><th>Module</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>jq</code></td><td>Executable process boundary and argument handling</td></tr><tr><td>Lexer</td><td>Tokenization, comments, literals, strings, and formats</td></tr><tr><td>Parser</td><td>jq grammar, precedence, declarations, and AST construction</td></tr><tr><td>Evaluator</td><td>Generator execution, scopes, errors, and control flow</td></tr><tr><td>Values</td><td>JSON values, numeric behavior, comparison, and serialization</td></tr><tr><td>Builtins</td><td>jq standard functions and formats</td></tr><tr><td>Paths</td><td>Path discovery, access, mutation, and assignment</td></tr><tr><td>I/O</td><td>Input streams, diagnostics, and streaming values</td></tr></tbody></table></div>
+<p>The implementation uses only Python standard-library modules. It does not invoke a system jq executable or import a third-party jq implementation.</p>
+<h2>Runtime Flow</h2>
+<ol><li>The executable validates the <code>-c &#x27;&lt;program&gt;&#x27;</code> interface.</li><li>JSON values are read from standard input.</li><li>The filter is lexed and parsed into an internal representation.</li><li>The evaluator executes the representation as an ordered generator.</li><li>Each produced value is serialized compactly to standard output.</li><li>Compile and runtime failures are mapped to exit codes 3 and 5.</li></ol>
+<h2>Error Boundary</h2>
+<p>Compile errors are detected before evaluation and exit with status 3. Runtime errors use status 5 while preserving output already emitted. Diagnostics are written only to standard error.</p>
+<h2>Technology Stack</h2>
+<ul><li>Python 3.11 or newer, standard library only.</li><li>POSIX <code>sh</code> for the supplied scoring entry point.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>No network access or package installation.</li><li>No shelling out to jq or another interpreter.</li><li>Imported files under <code>sources/</code> remain unchanged.</li><li>Generator order, multiplicity, backtracking, and partial output are preserved.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC architecture-boundary ===<br>Intent: The application exposes the declared executable boundary without requiring a third-party runtime.</p>
+<p>from pathlib import Path import ast</p>
+<p>entry = Path(&quot;jq&quot;) assert entry.is_file() assert entry.stat().st_mode &amp; 0o111</p>
+<p>tree = ast.parse(entry.read_text(encoding=&quot;utf-8&quot;)) imports = [ node.names[0].name for node in ast.walk(tree) if isinstance(node, ast.Import) and node.names ] assert all(not name.startswith((&quot;jq&quot;, &quot;pyjq&quot;, &quot;jqlang&quot;, &quot;gojq&quot;, &quot;jaq&quot;)) for name in imports) === END AC architecture-boundary ===</p>
+<p>=== AC architecture-sources ===<br>Intent: The implementation keeps the supplied scoring assets available at their required build-relative paths.</p>
+<p>from pathlib import Path</p>
+<p>required = [ Path(&quot;sources/run_conformance.py&quot;), Path(&quot;sources/full_test.sh&quot;), Path(&quot;sources/jq.test&quot;), Path(&quot;sources/exclusions.txt&quot;), ] assert all(path.is_file() for path in required) === END AC architecture-sources ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The architecture must remain executable offline with Python standard-library facilities only.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Accessors.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Accessors.md ===</p>
+<h1>FEATURE: Accessors</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines object-field access, array indexing, dynamic keys, optional access, and negative indices.</td></tr><tr><td>Depends On</td><td>FEATURE-Value-Model.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>field, index, optional, dynamic-key, and negative-index access</td></tr><tr><td>Consumes</td><td>jq value model and ordered jq generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>Object fields shall return their value or <code>null</code> when absent. Array indexing shall support integer and negative indices, dynamic keys, optional access, and jq-compatible errors for invalid or out-of-range access.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-002-conformance ===<br>Intent: The authoritative conformance cases covering field access, indexing, optional access, and negative indices pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\.[A-Za-z]|\[[-0-9]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Missing object fields must yield jq&#x27;s missing-field result rather than a Python exception.</li><li>Negative array indices must follow jq semantics and must not wrap invalid assignments silently.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Advanced-Grammar.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Advanced-Grammar.md ===</p>
+<h1>FEATURE: Advanced Grammar</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq declarations, control constructs, bindings, modules, and destructuring syntax.</td></tr><tr><td>Depends On</td><td>FEATURE-Filter-Grammar.md</td></tr><tr><td>Provides</td><td>declarations and control-flow AST forms</td></tr><tr><td>Consumes</td><td>jq filter AST</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>This feature parses function definitions, imports and modules, conditionals, try/catch, reductions, foreach, labels, bindings, destructuring, and grammar rejection cases. Module-loader fixtures are not required.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-004-conformance ===<br>Intent: Declarations and control syntax pass the authoritative corpus slice selected by their concrete jq syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;%%FAIL|if |try |reduce |foreach |def | as |label |module|include&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-004-conformance ===</p>
+<p>=== AC parse-004-module-rejection ===<br>Intent: Invalid module metadata, imports, and unbound grammar forms are rejected with compile status 3.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;module|include|%::wat|break&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-004-module-rejection ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Reject invalid module grammar without reading excluded module fixtures.</li><li>Keep compile failures distinct from runtime failures.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Arithmetic-and-Structural-Operators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Arithmetic-and-Structural-Operators.md ===</p>
+<h1>FEATURE: Arithmetic and Structural Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq arithmetic, string, array, and recursive object operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Type-and-Numeric-Primitives.md, FEATURE-Composition.md</td></tr><tr><td>Provides</td><td>jq +, -, *, /, %, unary negation, recursive merge, repetition, and splitting</td></tr><tr><td>Consumes</td><td>jq value model, numeric primitives, comparison semantics</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implement arithmetic and structural operator behavior across numbers, strings, arrays, objects, and null, including division and modulo errors and recursive object merging.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-001-conformance ===<br>Intent: The implementation passes the executed corpus slice covering arithmetic and structural operators.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\+|\-|\*|/|%&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-001-conformance ===</p>
+<p>=== AC flow-001-errors ===<br>Intent: The executed operator slice includes runtime-error cases while remaining fully conformant. import json import os import subprocess import sys</p>
+<p>selector = r&quot;\+|\-|\*|/|%&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 === END AC flow-001-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not coerce incompatible jq value types implicitly.</li><li>Preserve partial output before runtime failure.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Assignment-Operators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Assignment-Operators.md ===</p>
+<h1>FEATURE: Assignment Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implement jq deletion and immutable assignment operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Primitives.md, FEATURE-Boolean-and-Alternative-Operators.md</td></tr><tr><td>Provides</td><td>del, =,</td><td>=, +=, -=, *=, /=, %=, and //=</td></tr><tr><td>Consumes</td><td>getpath, setpath, delpaths, path expressions</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Purpose</h2>
+<p>Provide jq’s path-based deletion, plain assignment, update assignment, arithmetic assignment, and defined-or assignment semantics.</p>
+<h2>Behavior</h2>
+<ul><li><code>del(path)</code> removes selected fields, elements, and slices.</li><li><code>=</code> evaluates its right-hand side against the original input and uses every produced value.</li><li><code>|=</code> evaluates its right-hand side against each selected value and uses the first result.</li><li>Empty update results delete the selected path.</li><li>Arithmetic assignment operators apply the corresponding binary operation to selected values.</li><li><code>//=</code> replaces false or null values with the right-hand result.</li><li>Multiple selected paths preserve jq ordering and immutable-output behavior.</li><li>Assignments can create missing nested objects and arrays where jq permits.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-003-conformance ===<br>Intent: The scoped conformance corpus executes deletion and assignment-operator cases owned by PATH-003 and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;=|\|=|\+=&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0</p>
+<p>=== END AC path-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never mutate values visible to sibling expressions.</li><li>Preserve the distinction between plain assignment and update assignment.</li><li>Do not swallow invalid-path or type errors.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Boolean-and-Alternative-Operators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Boolean-and-Alternative-Operators.md ===</p>
+<h1>FEATURE: Boolean and Alternative Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq boolean, negation, defined-or, and defined-or assignment semantics.</td></tr><tr><td>Depends On</td><td>FEATURE-Truthiness-and-Comparison.md, FEATURE-Errors-and-Optional.md</td></tr><tr><td>Provides</td><td>and, or, not, //, and //=</td></tr><tr><td>Consumes</td><td>jq truthiness, comparisons, generators, and assignment primitives</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implement boolean operators and defined-or behavior with jq truthiness, generator multiplicity, fallback evaluation, short-circuiting, and assignment semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-002-conformance ===<br>Intent: The implementation passes the executed corpus slice covering boolean and alternative operators.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;and|or|not|//&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-002-conformance ===</p>
+<p>=== AC flow-002-short-circuit ===<br>Intent: The executed operator slice passes cases exercising fallback and short-circuit behavior. import json import os import subprocess import sys</p>
+<p>selector = r&quot;and|or|not|//&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 === END AC flow-002-short-circuit ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Only <code>false</code> and <code>null</code> are falsey.</li><li>Preserve generator ordering and defined-or fallback semantics.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Collection-Transformations.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Collection-Transformations.md ===</p>
+<h1>FEATURE: Collection Transformations</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq collection transformation and recursive traversal builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Composition.md, FEATURE-Assignment-Operators.md, FEATURE-Recursive-Generators.md</td></tr><tr><td>Provides</td><td>map, map_values, select, add, flatten, transpose, combinations, walk</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, assignment operators, recursive generators</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>Collection filters transform arrays and objects while preserving jq generator ordering and multiplicity. <code>map</code> collects all outputs for each input element, <code>map_values</code> updates values while dropping paths whose update is empty, and <code>select</code> retains inputs whose condition is truthy. <code>add</code>, <code>flatten</code>, <code>transpose</code>, and <code>combinations</code> implement the corresponding collection operations, including empty and bounded cases. <code>walk</code> recursively visits descendants before applying its filter to composite values.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-001-conformance ===<br>Intent: The authoritative jq corpus passes the collection-transformation cases selected by map, flatten, transpose, combinations, and walk syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;map|flatten|transpose|combinations|walk&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator ordering, multiplicity, empty-stream behavior, and immutable input semantics.</li><li>Do not implement collection behavior by invoking an external jq executable.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Complex-Assignments.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Complex-Assignments.md ===</p>
+<h1>FEATURE: Complex Assignments</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Handle jq assignment edge cases across generated and deep paths.</td></tr><tr><td>Depends On</td><td>FEATURE-Assignment-Operators.md, FEATURE-Reductions-and-Iteration-Control.md</td></tr><tr><td>Provides</td><td>complex assignment edge-case behavior</td></tr><tr><td>Consumes</td><td>deletion and assignment operators, generated paths</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Purpose</h2>
+<p>Complete assignment semantics for iterated paths, empty updates, array expansion, invalid indices, NaN indices, and deeply nested structures.</p>
+<h2>Behavior</h2>
+<ul><li>Apply assignments to all paths produced by iteration and selection expressions.</li><li>Remove array elements or object fields when an update produces <code>empty</code>.</li><li>Expand arrays with <code>null</code> values when assigning beyond the current end where jq permits.</li><li>Reject invalid negative, fractional, and NaN assignment indices with jq runtime errors.</li><li>Preserve partial output and error behavior when one generated path fails.</li><li>Enforce depth limits for path construction and mutation.</li><li>Maintain immutable input behavior across complex assignments.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-004-conformance ===<br>Intent: The scoped conformance corpus executes complex assignment edge cases owned by PATH-004 and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = &quot;negative|NaN|depth|empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0</p>
+<p>=== END AC path-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not reinterpret invalid indices as valid object keys.</li><li>Do not lose outputs emitted before a runtime assignment failure.</li><li>Reject paths exceeding jq’s supported depth limits.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Composition.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Composition.md ===</p>
+<h1>FEATURE: Composition</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implement jq composition, collection, object construction, and cartesian stream semantics.</td></tr><tr><td>Depends On</td><td>FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>pipe, comma, collection, object, and cartesian semantics</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>This feature composes generator filters through pipes and commas, collects streams into arrays, constructs objects with generator-valued fields, and evaluates filter arguments as cartesian products while preserving order.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-002-conformance ===<br>Intent: Composition and cartesian evaluation pass the authoritative corpus slice selected by pipe, comma, collection, and object syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\||,|\[|\{&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-002-conformance ===</p>
+<p>=== AC core-002-cartesian ===<br>Intent: Multi-output arguments and constructed values preserve the authoritative corpus ordering and multiplicity.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;range\(0,1|range\(0;1|x: \(1,2\)|\[\.\[&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-002-cartesian ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve left-to-right generator ordering.</li><li>Evaluate each filter argument against the correct input and retain full cartesian multiplicity.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Conditionals-and-Exception-Flow.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Conditionals-and-Exception-Flow.md ===</p>
+<h1>FEATURE: Conditionals and Exception Flow</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq conditional branches, try/catch handling, and optional evaluation.</td></tr><tr><td>Depends On</td><td>FEATURE-Errors-and-Optional.md, FEATURE-Boolean-and-Alternative-Operators.md</td></tr><tr><td>Provides</td><td>if, elif, else, try, catch, and optional control flow</td></tr><tr><td>Consumes</td><td>empty, error, try, catch, optional, and boolean semantics</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implement conditional branch streams, omitted else behavior, nested <code>try</code>/<code>catch</code>, runtime error propagation, and the optional <code>?</code> operator.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-003-conformance ===<br>Intent: The implementation passes the executed corpus slice covering conditionals and exception flow.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;if |try |\?&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-003-conformance ===</p>
+<p>=== AC flow-003-runtime-flow ===<br>Intent: The executed slice passes cases that exercise both successful branches and caught errors. import json import os import subprocess import sys</p>
+<p>selector = r&quot;if |try |\?&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 === END AC flow-003-runtime-flow ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve outputs produced before an uncaught runtime error.</li><li>Optional evaluation suppresses only the relevant runtime error.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Conformance-Assets.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Conformance-Assets.md ===</p>
+<h1>FEATURE: Conformance Assets</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Stage and validate the immutable jq conformance assets.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>staged conformance corpus and harness</td></tr><tr><td>Consumes</td><td>jq interpreter architecture</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>The build must contain the supplied manual, grammar references, builtin reference, corpus, exclusions, runner, and scoring script unchanged. The staging story validates the harness parsers and corpus/exclusion consistency without launching the candidate interpreter.</p>
+<h2>Behavior</h2>
+<ul><li>All required source assets are available below <code>sources/</code>.</li><li>The corpus parses into the pinned set of cases.</li><li>Every exclusion matches a corpus case.</li><li>The harness module imports successfully and exposes its parsers.</li><li>No candidate execution occurs during staging validation.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conformance-assets-parse ===<br>Intent: The staged corpus and exclusion list parse to the authoritative expected counts.</p>
+<p>import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>expected_cases = 550 expected_exclusions = 13 cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS), ) assert len(cases) == expected_cases assert len(excluded) == expected_exclusions assert all(case.line in excluded for case in cases if case.line in excluded) === END AC conformance-assets-parse ===</p>
+<p>=== AC conformance-assets-present ===<br>Intent: Every required staged asset is present for implementation and scoring.</p>
+<p>from pathlib import Path</p>
+<p>required = [ &quot;sources/jq-manual.txt&quot;, &quot;sources/jq.test&quot;, &quot;sources/parser.y&quot;, &quot;sources/lexer.l&quot;, &quot;sources/builtin.jq&quot;, &quot;sources/run_conformance.py&quot;, &quot;sources/full_test.sh&quot;, &quot;sources/exclusions.txt&quot;, ] missing = [path for path in required if not Path(path).is_file()] assert missing == [] === END AC conformance-assets-present ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Treat <code>sources/</code> as read-only.</li><li>Do not launch the conformance runner from this staging story.</li><li>Do not modify, regenerate, trim, or substitute any supplied asset.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Destructuring-Alternatives.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Destructuring-Alternatives.md ===</p>
+<h1>FEATURE: Destructuring Alternatives</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq destructuring patterns and fallback alternatives.</td></tr><tr><td>Depends On</td><td>FEATURE-Variable-Bindings.md, FEATURE-Conditionals-and-Exception-Flow.md</td></tr><tr><td>Provides</td><td>?// destructuring alternatives</td></tr><tr><td>Consumes</td><td>as bindings, lexical scope, try/catch</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Purpose</h2>
+<p>Support array and object destructuring in <code>as</code> bindings, including missing bindings and the <code>?//</code> alternative operator.</p>
+<h2>Behavior</h2>
+<ul><li>Bind array elements positionally, using <code>null</code> for missing elements.</li><li>Bind object fields by identifier, explicit key, and nested pattern.</li><li>Support multiple alternatives separated by <code>?//</code>.</li><li>Select the next alternative when pattern matching or subsequent evaluation raises an error.</li><li>Expose all variables referenced by the continuation, binding unmatched variables to <code>null</code>.</li><li>Propagate errors from the final alternative.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-004-conformance ===<br>Intent: The scoped conformance corpus executes the destructuring-alternative cases owned by FUNC-004 and passes them.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\?//| as \{&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0</p>
+<p>=== END AC func-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not treat a failed first pattern as a runtime failure when a later <code>?//</code> alternative can succeed.</li><li>Do not load module fixtures while evaluating destructuring syntax.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Errors-and-Optional.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Errors-and-Optional.md ===</p>
+<h1>FEATURE: Errors and Optional Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines empty streams, runtime errors, exception handling, optional evaluation, and partial output behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Composition.md, FEATURE-Process-Contract.md</td></tr><tr><td>Provides</td><td>empty, error, try, catch, and optional filter semantics</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, compile and runtime exit contract</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>The interpreter shall support filters that produce no values, raise runtime errors, catch errors with <code>try</code> and <code>catch</code>, and suppress errors with <code>?</code>. Values emitted before an uncaught runtime error remain on standard output, and the process exits with status 5.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-003-conformance ===<br>Intent: The authoritative conformance cases covering empty streams, errors, try/catch, and optional evaluation pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;try|error|\?&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Runtime failures must remain distinct from compile failures.</li><li>Diagnostics must not replace values emitted before a runtime failure.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Executable-Entry-Point.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Executable-Entry-Point.md ===</p>
+<h1>FEATURE: Executable Entry Point</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides the executable jq command and its compact filter interface.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>./jq -c program interface</td></tr><tr><td>Consumes</td><td>jq interpreter architecture</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Capability</h2>
+<p>The application root contains an executable named <code>jq</code>. It accepts the exercised <code>-c &#x27;&lt;program&gt;&#x27;</code> form, reads JSON values from standard input, evaluates the supplied filter, and emits one compact JSON value per output line.</p>
+<p>The command does not require a package installation or external runtime.</p>
+<h2>Interface Contract</h2>
+<ul><li>Invocation: <code>./jq -c &#x27;&lt;program&gt;&#x27;</code></li><li>Input: JSON values on standard input.</li><li>Output: one compact JSON value per generated result, in generator order.</li><li>Success: exit status 0.</li><li>Diagnostics: standard error only.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC executable-basic-filters ===<br>Intent: The executable runs the foundational literal filters through the supplied conformance slice.</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;^(true|false|null|1)$&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC executable-basic-filters ===</p>
+<p>=== AC executable-permission ===<br>Intent: The deliverable is executable at the application root.</p>
+<p>from pathlib import Path</p>
+<p>entry = Path(&quot;jq&quot;) assert entry.is_file() assert entry.stat().st_mode &amp; 0o111 === END AC executable-permission ===</p>
+<p>=== AC executable-interface ===<br>Intent: The command accepts the required compact-output invocation and completes successfully.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout === END AC executable-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The executable must not depend on a system jq binary or third-party jq binding.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Filter-Grammar.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Filter-Grammar.md ===</p>
+<h1>FEATURE: Filter Grammar</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq filter expressions with precedence, composition, indexing, construction, and optional operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Literals-and-Strings.md</td></tr><tr><td>Provides</td><td>jq filter AST</td></tr><tr><td>Consumes</td><td>jq string and literal expressions</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>This feature implements the core expression grammar: pipes, commas, precedence, indexing, slicing, iteration, arrays, objects, unary and binary operators, parentheses, and optional expressions.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-003-conformance ===<br>Intent: The core expression grammar passes the authoritative corpus slice covering access, construction, operators, and composition syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\.|\[|\{|\+|\-|\*|/|%&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-003-conformance ===</p>
+<p>=== AC parse-003-optional ===<br>Intent: Optional access and slicing syntax executes successfully across the authoritative grammar slice.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\?|\[.*:|\{\.&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-003-optional ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Follow the supplied parser precedence and associativity.</li><li>Preserve generator-producing syntax rather than collapsing expressions to scalar functions.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Formats-and-Serialization.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Formats-and-Serialization.md ===</p>
+<h1>FEATURE: Formats and Serialization</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define JSON conversion and jq output-format filters.</td></tr><tr><td>Depends On</td><td>FEATURE-String-Manipulation.md, FEATURE-Value-Model.md</td></tr><tr><td>Provides</td><td>tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d</td></tr><tr><td>Consumes</td><td>jq value model, string manipulation, generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>Implement conversion between jq values and JSON text, plus the documented text, JSON, HTML, URI, CSV, TSV, shell, and Base64 format filters. Preserve interpolation behavior and compact JSON semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC formats-conformance ===<br>Intent: The authoritative corpus cases covering jq format filters and JSON conversion execute successfully.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;@text|@json|@html|@uri|@csv|@tsv|@sh|@base64|tojson|fromjson&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC formats-conformance ===</p>
+<p>=== AC formats-roundtrip ===<br>Intent: The authoritative corpus verifies JSON and Base64 round trips together with required escaping formats.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;tojson|fromjson|@base64|@base64d|@uri|@urid&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC formats-roundtrip ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Format filters must preserve jq generator ordering and interpolation semantics.</li><li>Diagnostics are not compared; conformance status and structural values are authoritative.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Function-Definitions.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Function-Definitions.md ===</p>
+<h1>FEATURE: Function Definitions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq function definitions, lexical scope, redefinition, and recursion.</td></tr><tr><td>Depends On</td><td>FEATURE-Function-Parameters.md</td></tr><tr><td>Provides</td><td>lexical function definitions and recursion</td></tr><tr><td>Consumes</td><td>filter and value function arguments</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>Definitions introduce named filters in lexical scope. Definitions support zero and multiple arities, self and forward references where permitted by jq, lexical closure behavior, replacement by matching arity, and recursive user functions.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC function-definitions-scoped-conformance ===<br>Intent: The authoritative corpus slice covering function definitions, scope, redefinition, and recursion executes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;def &quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC function-definitions-scoped-conformance ===</p>
+<p>=== AC function-definitions-interface ===<br>Intent: A recursive user-defined function compiles and runs through the executable interface.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>program = &quot;def descend: if . == 0 then . else . - 1 | descend end; descend&quot; input_text = &quot;1\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.endswith(&quot;\n&quot;) === END AC function-definitions-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Function scope is lexical and definitions are resolved according to jq declaration order and recursion rules.</li><li>Redefinition replaces only the matching function arity.</li><li>Recursive calls must not corrupt generator ordering or variable bindings.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Function-Parameters.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Function-Parameters.md ===</p>
+<h1>FEATURE: Function Parameters</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq user-defined filter and value function parameter evaluation.</td></tr><tr><td>Depends On</td><td>FEATURE-Variable-Bindings.md, FEATURE-Composition.md</td></tr><tr><td>Provides</td><td>filter and value function arguments</td></tr><tr><td>Consumes</td><td>lexical variable bindings, generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>User-defined functions accept filter parameters and value parameters with semicolon-separated arguments. Filter parameters are re-evaluated against each invocation input; value parameters capture evaluated values. Multiple arities, closures, generator-valued arguments, and cartesian combinations are supported.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC function-parameters-scoped-conformance ===<br>Intent: The authoritative corpus slice covering function parameters executes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;def .*\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC function-parameters-scoped-conformance ===</p>
+<p>=== AC function-parameters-interface ===<br>Intent: A filter-parameter function compiles and runs through the executable interface.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>program = &quot;def twice(f): f | f; twice(. + 1)&quot; input_text = &quot;1\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.endswith(&quot;\n&quot;) === END AC function-parameters-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Filter parameters must behave as filters, not eagerly captured values.</li><li>Preserve generator streams and cartesian products for function arguments.</li><li>Keep filter and value parameter namespaces distinct.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Generator-Core.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Generator-Core.md ===</p>
+<h1>FEATURE: Generator Core</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Evaluate jq filters as ordered streams with multiplicity, backtracking, and empty results.</td></tr><tr><td>Depends On</td><td>FEATURE-Advanced-Grammar.md</td></tr><tr><td>Provides</td><td>ordered jq generator evaluation</td></tr><tr><td>Consumes</td><td>jq filter AST</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>Every filter evaluates against an input and produces zero or more ordered outputs. The evaluator preserves stream order, multiplicity, backtracking, and partial results before runtime failure.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-001-conformance ===<br>Intent: The generator evaluator passes the authoritative corpus slice covering identity, iteration, ranges, commas, and empty.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\.|,|\[\.\]|range|empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-001-conformance ===</p>
+<p>=== AC core-001-ordering ===<br>Intent: Multi-output generator ordering and multiplicity pass the authoritative corpus cases selected by comma and iteration syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;,|\[\]|\.\[\]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-001-ordering ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not replace generators with single-value functions.</li><li>Preserve outputs emitted before a later runtime error.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Index-and-Membership.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Index-and-Membership.md ===</p>
+<h1>FEATURE: Index and Membership</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq search, quantifier, emptiness, and SQL-style membership utilities.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Sorting-and-Grouping.md, FEATURE-Object-Entries-and-Containment.md, FEATURE-Reductions-and-Iteration-Control.md</td></tr><tr><td>Provides</td><td>indices, index, rindex, bsearch, all, any, isempty, INDEX, JOIN, IN</td></tr><tr><td>Consumes</td><td>jq comparison, collection, reduction, and generator semantics</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>Search utilities locate scalar or sequence occurrences in arrays and strings, including first and last matches. <code>bsearch</code> returns an existing index or the encoded insertion point. <code>all</code>, <code>any</code>, and <code>isempty</code> preserve generator short-circuiting. <code>INDEX</code>, <code>JOIN</code>, and <code>IN</code> evaluate streams and index expressions with jq&#x27;s cartesian and membership behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-004-conformance ===<br>Intent: The authoritative jq corpus passes index, membership, quantifier, emptiness, and SQL-style utility cases selected by their syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;indices|index\(|rindex|bsearch|any|all|IN\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve short-circuiting so later generator errors are not evaluated after a decisive result.</li><li>Preserve stream order and cartesian argument evaluation.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Labels-and-Breaks.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Labels-and-Breaks.md ===</p>
+<h1>FEATURE: Labels and Breaks</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide lexically scoped jq labels and break control.</td></tr><tr><td>Depends On</td><td>FEATURE-Conditionals-and-Exception-Flow.md</td></tr><tr><td>Provides</td><td>label and break control</td></tr><tr><td>Consumes</td><td>conditional evaluation, generators, and runtime error flow</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implement lexical <code>label</code> scopes and <code>break</code> behavior so the matching generator terminates without leaking outputs, while unbound breaks fail compilation.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-004-conformance ===<br>Intent: The implementation passes the executed corpus slice covering labels and breaks.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;label|break&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-004-conformance ===</p>
+<p>=== AC flow-004-scope ===<br>Intent: The executed slice passes both scoped-break behavior and invalid-break compilation cases. import json import os import subprocess import sys</p>
+<p>selector = r&quot;label|break&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 === END AC flow-004-scope ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Breaks must target only lexically visible labels.</li><li>Unbound breaks must remain compile failures with exit code 3.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Lexer.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Lexer.md ===</p>
+<h1>FEATURE: Lexer</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Tokenizes jq programs into literals, identifiers, operators, delimiters, and formats.</td></tr><tr><td>Depends On</td><td>FEATURE-JSON-I-O.md</td></tr><tr><td>Provides</td><td>jq tokenization</td></tr><tr><td>Consumes</td><td>JSON input stream and compact JSON output</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Lexical Scope</h2>
+<p>The lexer recognizes:</p>
+<ul><li>Identifiers, keywords, fields, and variable bindings.</li><li>JSON literals and Unicode escapes.</li><li>Operators, delimiters, comments, and recursive descent.</li><li>Format tokens such as <code>@text</code>, <code>@uri</code>, and <code>@base64</code>.</li><li>String boundaries and interpolation delimiters.</li><li>Invalid characters and invalid escapes as compile errors.</li></ul>
+<p>Whitespace and comments are ignored outside strings. Tokens inside strings retain their JSON escape and Unicode semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-basic-tokens ===<br>Intent: The supplied lexer-focused corpus slice executes literal, identity, and keyword token cases successfully.</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;^(true|false|null|1|\.)$&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC lexer-basic-tokens ===</p>
+<p>=== AC lexer-invalid-escape ===<br>Intent: Invalid string escapes are rejected during compilation.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 assert result.stderr === END AC lexer-invalid-escape ===</p>
+<p>=== AC lexer-comments ===<br>Intent: Comments are lexically ignored while the executable still evaluates the surrounding filter.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 # comment\n&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.splitlines() === END AC lexer-comments ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Invalid escapes and invalid characters must fail compilation with exit 3.</li><li>Comment text must never become part of the evaluated filter.</li><li>Lexing must not access module fixture files for syntax-only programs.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Literals-and-Strings.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Literals-and-Strings.md ===</p>
+<h1>FEATURE: Literals and Strings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq literals, escaped strings, formatted strings, and interpolation.</td></tr><tr><td>Depends On</td><td>FEATURE-Lexer.md</td></tr><tr><td>Provides</td><td>jq string and literal expressions</td></tr><tr><td>Consumes</td><td>jq tokenization</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>This feature parses JSON literals, Unicode and escaped string content, format expressions, and <code>\(expression)</code> interpolation. Invalid escapes and malformed interpolations are compile errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-002-conformance ===<br>Intent: The literal and string implementation passes the authoritative corpus slice selected by interpolation and format syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;interpolation|@base64|@uri&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-002-conformance ===</p>
+<p>=== AC parse-002-escapes ===<br>Intent: Invalid string escapes are rejected as compile failures by the authoritative corpus.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;@base64|@uri|interpolation|Invalid escape&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-002-escapes ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only standard-library parsing and evaluation.</li><li>Preserve Unicode code points and jq interpolation stream behavior.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Object-Entries-and-Containment.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Object-Entries-and-Containment.md ===</p>
+<h1>FEATURE: Object Entries and Containment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq object-key, entry-conversion, and containment builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Accessors.md, FEATURE-Truthiness-and-Comparison.md, FEATURE-Collection-Transformations.md</td></tr><tr><td>Provides</td><td>keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries</td></tr><tr><td>Consumes</td><td>jq value accessors, structural comparison, and collection transformations</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p><code>keys</code> sorts object keys by Unicode codepoint order and returns array indices for arrays; <code>keys_unsorted</code> preserves object insertion order. <code>has</code> and <code>in</code> test object keys or valid array indices. <code>contains</code> and <code>inside</code> perform recursive containment checks for strings, arrays, objects, and scalar values. Entry conversion supports the accepted key and value spellings, and <code>with_entries</code> transforms entries through a filter.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-003-conformance ===<br>Intent: The authoritative jq corpus passes object-entry, key, containment, and entry-transformation cases selected by their builtin syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;keys|has\(|contains|inside|to_entries|from_entries&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep object-key ordering distinct between <code>keys</code> and <code>keys_unsorted</code>.</li><li>Enforce recursive containment and comparison depth behavior without external dependencies.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Path-Discovery.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Path-Discovery.md ===</p>
+<h1>FEATURE: Path Discovery</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Discover jq paths and construct projections from path expressions.</td></tr><tr><td>Depends On</td><td>FEATURE-Slices-and-Iteration.md, FEATURE-Recursive-Generators.md</td></tr><tr><td>Provides</td><td>path, paths, and pick</td></tr><tr><td>Consumes</td><td>accessors, iteration, recursive generators</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Purpose</h2>
+<p>Implement path discovery for exact and generated path expressions, filtered recursive paths, and projected values.</p>
+<h2>Behavior</h2>
+<ul><li><code>path(expression)</code> returns path arrays containing string object keys and numeric array indices.</li><li>Exact paths are reported even when the addressed value does not yet exist.</li><li>Generated paths report only paths that exist in the input.</li><li><code>paths</code> excludes the empty root path.</li><li><code>paths(filter)</code> returns paths whose values satisfy the filter.</li><li><code>pick(expressions)</code> creates a projection containing only the selected paths.</li><li>Invalid path expressions raise runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-001-conformance ===<br>Intent: The scoped conformance corpus executes the path-discovery and projection cases owned by PATH-001 and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;path\(|paths|pick\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0</p>
+<p>=== END AC path-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve path ordering and multiplicity.</li><li>Do not confuse path values with projected values.</li><li>Reject invalid path expressions without silently producing a path.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Path-Primitives.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Path-Primitives.md ===</p>
+<h1>FEATURE: Path Primitives</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Read, update, and delete nested jq values through path arrays.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Discovery.md, FEATURE-Accessors.md</td></tr><tr><td>Provides</td><td>getpath, setpath, and delpaths</td></tr><tr><td>Consumes</td><td>path arrays, jq value model, field and index access</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Purpose</h2>
+<p>Implement immutable nested path operations for reading, creation, replacement, array expansion, and deletion.</p>
+<h2>Behavior</h2>
+<ul><li><code>getpath(path)</code> reads a nested value and returns <code>null</code> for an absent path where jq permits it.</li><li><code>setpath(path; value)</code> creates missing objects and arrays as required and replaces existing values.</li><li><code>delpaths(paths)</code> removes each requested path while preserving the remaining structure.</li><li>Multiple paths are processed according to jq ordering and overlap semantics.</li><li>Invalid path components raise runtime errors.</li><li>Excessively deep paths are rejected according to jq depth limits.</li><li>Operations do not mutate the original input value observed by sibling expressions.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-002-conformance ===<br>Intent: The scoped conformance corpus executes the getpath, setpath, and delpaths cases owned by PATH-002 and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = &quot;getpath|setpath|delpaths&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0</p>
+<p>=== END AC path-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Keep path operations immutable from the caller’s perspective.</li><li>Do not convert invalid array/object path components into string keys.</li><li>Enforce jq’s path-depth limits.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Process-Contract.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Process-Contract.md ===</p>
+<h1>FEATURE: Process Contract</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq compilation, runtime failure, success, and diagnostic process behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Executable-Entry-Point.md</td></tr><tr><td>Provides</td><td>compile and runtime exit contract</td></tr><tr><td>Consumes</td><td>./jq -c program interface</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Capability</h2>
+<p>The process boundary distinguishes compilation from evaluation:</p>
+<ul><li>Exit 0 means compilation and evaluation completed.</li><li>Exit 3 means the filter could not compile.</li><li>Exit 5 means evaluation raised a runtime error.</li><li>Diagnostics are written to standard error.</li><li>Values emitted before a runtime error remain on standard output.</li></ul>
+<h2>Failure Semantics</h2>
+<p>Invalid syntax and statically invalid references are compile failures. Errors raised while evaluating a valid filter are runtime failures. Diagnostic wording is not part of the contract.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC process-runtime-slice ===<br>Intent: Runtime-error cases in the supplied corpus preserve the required process contract.</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;try error|error\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC process-runtime-slice ===</p>
+<p>=== AC process-compile-exit ===<br>Intent: A syntactically invalid filter is rejected with the compile-failure exit status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 assert result.stderr === END AC process-compile-exit ===</p>
+<p>=== AC process-runtime-exit ===<br>Intent: A valid filter that raises at runtime uses the runtime-failure exit status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 assert result.stderr === END AC process-runtime-exit ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Compile failures must never be reported as runtime failures.</li><li>Diagnostics must never be emitted on standard output.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Recursive-Generators.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Recursive-Generators.md ===</p>
+<h1>FEATURE: Recursive Generators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq recursive generator filters with correct termination and stream ordering.</td></tr><tr><td>Depends On</td><td>FEATURE-Reductions-and-Iteration-Control.md, FEATURE-Conditionals-and-Exception-Flow.md</td></tr><tr><td>Provides</td><td>while, until, repeat, recurse, recursive descent</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, conditionals, exception flow</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>Recursive filters repeatedly evaluate an update or child generator, emitting values in jq order. The implementation supports conditional recursion, recursive descent through arrays and objects, repeat-until-error behavior, and bounded recursive traversal without leaking unrelated outputs.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC recursive-generators-scoped-conformance ===<br>Intent: The authoritative corpus slice covering recursive generators executes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;while|until|recurse|repeat&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC recursive-generators-scoped-conformance ===</p>
+<p>=== AC recursive-generators-interface ===<br>Intent: Recursive generator evaluation completes through the executable filter interface.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>program = &quot;[while(. &lt; 4; . + 1)]&quot; input_text = &quot;1\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.endswith(&quot;\n&quot;) === END AC recursive-generators-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve recursive output order and multiplicity.</li><li>Termination conditions must prevent unbounded recursion except where jq intentionally defines an infinite generator.</li><li>Do not modify the conformance corpus or harness.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Reductions-and-Iteration-Control.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Reductions-and-Iteration-Control.md ===</p>
+<h1>FEATURE: Reductions and Iteration Control</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq reductions, iteration controls, and generator selection builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Labels-and-Breaks.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>reduce, foreach, range, limit, skip, first, last, nth</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, lexical labels and breaks</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>This capability evaluates reduction and iteration expressions over ordered generator streams. It supports accumulator state, intermediate extraction, bounded selection, skipping, range generation, and first/last/nth selection while preserving cartesian argument behavior and backtracking.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC reductions-scoped-conformance ===<br>Intent: The authoritative corpus slice covering reductions and iteration controls executes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce|foreach|limit|skip|nth|first|last&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC reductions-scoped-conformance ===</p>
+<p>=== AC reductions-process-contract ===<br>Intent: The executable remains invocable through the required jq command interface while exercising a reduction.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>program = &quot;reduce .[] as $x (0; . + $x)&quot; input_text = &quot;[1,2,3]\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.endswith(&quot;\n&quot;) === END AC reductions-process-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve accumulator ordering, generator multiplicity, cartesian arguments, and backtracking.</li><li>Negative limits, skips, and nth indices must follow jq runtime error semantics.</li><li>Do not alter the supplied conformance assets.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Regular-Expressions.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Regular-Expressions.md ===</p>
+<h1>FEATURE: Regular Expressions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq regular-expression matching, capture, scanning, splitting, and substitution filters.</td></tr><tr><td>Depends On</td><td>FEATURE-String-Manipulation.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>test, match, capture, scan, split, splits, sub, gsub</td></tr><tr><td>Consumes</td><td>string manipulation and ordered generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Scope</h2>
+<p>Implement the regex filters required by the jq manual and corpus using Python standard-library regular expressions. Support supported flags, global matching, named and unnamed captures, UTF-8 codepoint offsets, stream-valued scan and split behavior, and substitution interpolation.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC regex-conformance ===<br>Intent: The authoritative corpus cases covering jq regular-expression filters execute successfully.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;test\(|match\(|capture\(|scan\(|sub\(|gsub\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC regex-conformance ===</p>
+<p>=== AC regex-streams ===<br>Intent: The authoritative corpus verifies matching streams, captures, regex splitting, and global substitutions.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;match\(|capture\(|scan\(|split\(|splits\(|sub\(|gsub\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC regex-streams ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not add third-party regex dependencies.</li><li>Preserve ordered multiplicity of regex-generated outputs.</li><li>Regex failures must follow jq runtime-error behavior and must not be converted into compile failures.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Scoped-Conformance.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Scoped-Conformance.md ===</p>
+<h1>FEATURE: Scoped Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide executable, selector-scoped conformance verification for implementation slices.</td></tr><tr><td>Depends On</td><td>FEATURE-Conformance-Assets.md, FEATURE-Executable-Entry-Point.md</td></tr><tr><td>Provides</td><td>scoped conformance verification</td></tr><tr><td>Consumes</td><td>staged conformance corpus and harness, ./jq -c program interface</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implementation stories use the supplied runner over a construct-specific selector. The verification must set <code>JQ</code> by extending the inherited environment, execute matching cases, parse the machine-readable report, and distinguish an empty selection from a passing slice.</p>
+<h2>Behavior</h2>
+<ul><li>The runner executes cases selected by the story&#x27;s syntax selector.</li><li>The candidate executable is supplied through <code>JQ</code>.</li><li>A non-empty selected slice is required.</li><li>Any failed or errored case fails verification.</li><li>Harness diagnostics are printed for diagnosis but are not used as an oracle.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC scoped-conformance ===<br>Intent: The reduce conformance slice executes and passes through the candidate executable.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-conformance ===</p>
+<p>=== AC scoped-conformance-contract ===<br>Intent: Scoped verification reports a parsed, non-empty result while preserving the runner&#x27;s exit contract.</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert isinstance(summary, dict) assert sum(summary.values()) &gt; 0 assert result.returncode == 0 === END AC scoped-conformance-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never use a non-executing enumeration mode for behavioral verification.</li><li>Always extend <code>os.environ</code> when supplying <code>JQ</code>.</li><li>Do not assert against human-readable runner output.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Slices-and-Iteration.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Slices-and-Iteration.md ===</p>
+<h1>FEATURE: Slices and Iteration</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines array and string slicing together with array and object iteration.</td></tr><tr><td>Depends On</td><td>FEATURE-Accessors.md</td></tr><tr><td>Provides</td><td>array slices, string slices, array iteration, object iteration, and optional iteration</td></tr><tr><td>Consumes</td><td>field, index, optional, and negative-index access</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>The interpreter shall support inclusive-exclusive slices over arrays and strings, omitted and negative bounds, fractional bounds, iteration over arrays and object values, optional iteration, and jq-compatible behavior for out-of-range operands.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-003-conformance ===<br>Intent: The authoritative conformance cases covering slices and array/object iteration pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\[.*:|\.\[\]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Iteration must preserve source ordering and generator multiplicity.</li><li>Optional iteration must suppress the applicable access error without suppressing valid outputs.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Sorting-and-Grouping.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Sorting-and-Grouping.md ===</p>
+<h1>FEATURE: Sorting and Grouping</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq sorting, grouping, uniqueness, and extrema builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Truthiness-and-Comparison.md, FEATURE-Collection-Transformations.md</td></tr><tr><td>Provides</td><td>sort, sort_by, group_by, unique, unique_by, min, max, min_by, max_by</td></tr><tr><td>Consumes</td><td>jq structural comparison, generator evaluation, and collection transformations</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>Sorting follows jq&#x27;s total ordering across nulls, booleans, numbers, strings, arrays, and objects. Keyed variants evaluate their filters for each element and compare generated keys lexicographically. Grouping sorts by keys before forming groups; uniqueness removes duplicate keys while retaining the first representative. Minimum and maximum filters operate on arrays and support keyed forms.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-002-conformance ===<br>Intent: The authoritative jq corpus passes sorting, grouping, uniqueness, and extrema cases selected by their builtin syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;sort|group_by|unique|min|max&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use jq comparison semantics, including numeric equivalence and recursive structural ordering.</li><li>Preserve stable representative selection for keyed uniqueness.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Streaming.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Streaming.md ===</p>
+<h1>FEATURE: Streaming Transformations</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Reconstruct, emit, and truncate jq streaming representations.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Generator-Core.md, FEATURE-Input-Controls.md</td></tr><tr><td>Provides</td><td>tostream, fromstream, truncate_stream</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, input stream controls</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Streaming filters convert JSON values to jq&#x27;s path/value stream representation and reconstruct values from that representation. The implementation must preserve ordering, empty-container markers, nested paths, and truncation semantics while remaining within the standard-library-only runtime.</p>
+<h2>Behavior</h2>
+<ul><li><code>tostream</code> emits leaf values and container termination markers with their paths.</li><li><code>fromstream</code> reconstructs arrays, objects, scalars, and empty containers.</li><li><code>truncate_stream</code> removes a specified number of leading path components.</li><li>Filters preserve generator ordering and support the supplied stream expressions.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC streaming-conformance ===<br>Intent: The streaming filters pass every matching case in the authoritative conformance slice.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;tostream|fromstream|truncate_stream&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC streaming-conformance ===</p>
+<p>=== AC streaming-roundtrip-suite ===<br>Intent: The authoritative suite executes the stream round-trip and truncation behaviors without failures.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;tostream|fromstream|truncate_stream&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC streaming-roundtrip-suite ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Do not change the supplied conformance assets.</li><li>Preserve stream ordering and container markers.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-String-Manipulation.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-String-Manipulation.md ===</p>
+<h1>FEATURE: String Manipulation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq string trimming, conversion, splitting, joining, and case filters.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Literals-and-Strings.md, FEATURE-Type-and-Numeric-Primitives.md, FEATURE-Arithmetic-and-Structural-Operators.md</td></tr><tr><td>Provides</td><td>trim, ltrim, rtrim, ltrimstr, rtrimstr, trimstr, ascii_downcase, ascii_upcase, explode, implode, split, splits, join, startswith, endswith</td></tr><tr><td>Consumes</td><td>jq string values, Unicode handling, numeric primitives, and generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>String filters operate on Unicode codepoints. Trimming uses the Unicode whitespace definition; prefix and suffix filters remove matching strings only. ASCII case filters affect only ASCII letters. <code>explode</code> and <code>implode</code> convert between strings and codepoint arrays with jq&#x27;s replacement behavior for invalid codepoints. <code>split</code>, <code>splits</code>, and <code>join</code> preserve empty fields and generator semantics, while <code>startswith</code> and <code>endswith</code> validate string operands.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC text-001-conformance ===<br>Intent: The authoritative jq corpus passes string manipulation cases selected by split, join, trimming, case, codepoint, prefix, and suffix syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;split|join|trim|ascii_|explode|implode|startswith|endswith&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC text-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve Unicode codepoints, embedded NULs, empty strings, and empty split fields.</li><li>Keep regex-based split behavior separate from the single-argument string split behavior.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Truthiness-and-Comparison.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Truthiness-and-Comparison.md ===</p>
+<h1>FEATURE: Truthiness and Comparison</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq truthiness, equality, inequality, and structural ordering semantics.</td></tr><tr><td>Depends On</td><td>FEATURE-Generator-Core.md, FEATURE-Composition.md</td></tr><tr><td>Provides</td><td>jq truthiness, equality, inequality, and ordering</td></tr><tr><td>Consumes</td><td>ordered jq generator evaluation, jq value model</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>Only <code>false</code> and <code>null</code> are falsey. Equality and inequality shall distinguish booleans from numbers, treat numerically equivalent values as equal, compare arrays and objects structurally, and implement jq&#x27;s ordering across all supported value types.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-004-conformance ===<br>Intent: The authoritative conformance cases covering truthiness, equality, inequality, and ordering pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;==|!=|&lt;=|&gt;=|&lt;|&gt;&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Python truthiness must not be substituted for jq truthiness.</li><li>Object key order must not affect structural equality.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Type-and-Numeric-Primitives.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Type-and-Numeric-Primitives.md ===</p>
+<h1>FEATURE: Type and Numeric Primitives</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq type, length, numeric conversion, predicates, and mathematical primitive filters.</td></tr><tr><td>Depends On</td><td>FEATURE-Value-Model.md, FEATURE-Truthiness-and-Comparison.md</td></tr><tr><td>Provides</td><td>type, length, utf8bytelength, numeric predicates, conversions, and math filters</td></tr><tr><td>Consumes</td><td>jq JSON value model, comparison semantics</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Intent</h2>
+<p>Implement <code>type</code>, <code>length</code>, <code>utf8bytelength</code>, <code>tonumber</code>, <code>toboolean</code>, <code>tostring</code>, numeric predicates, and the required standard-library math functions with jq-compatible errors and numeric behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-004-conformance ===<br>Intent: The implementation passes the executed corpus slice covering type and numeric primitives.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;length|type|sqrt|floor|tonumber&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-004-conformance ===</p>
+<p>=== AC value-004-numeric-contract ===<br>Intent: The scoped report contains executed cases and no harness-level failure. import json import os import subprocess import sys</p>
+<p>selector = r&quot;length|type|sqrt|floor|tonumber&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] + summary[&quot;fail&quot;] + summary[&quot;error&quot;] + summary[&quot;skip&quot;] &gt; 0 assert result.returncode == 0 === END AC value-004-numeric-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Preserve jq&#x27;s distinction between numeric values and booleans.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Value-Model.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Value-Model.md ===</p>
+<h1>FEATURE: Value Model</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines the runtime representation and numeric behavior of jq values.</td></tr><tr><td>Depends On</td><td>FEATURE-JSON-I-O.md, FEATURE-Truthiness-and-Comparison.md</td></tr><tr><td>Provides</td><td>null, boolean, number, string, array, object, NaN, and infinity values</td></tr><tr><td>Consumes</td><td>JSON input stream and compact JSON output</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Behavior</h2>
+<p>The interpreter shall represent all jq JSON value kinds, including non-finite numeric values produced by jq filters. Numeric equality, conversion, preservation, and compact serialization shall follow the supplied jq 1.8.2 behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-001-conformance ===<br>Intent: The authoritative conformance cases covering NaN, infinity, JSON conversion, and numeric values pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;nan|infinite|tojson|fromjson&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The implementation shall use only Python standard-library facilities.</li><li>Non-finite values must not cause the process to emit invalid unhandled diagnostics on standard output.</li></ul>
+<p>=== END ARTIFACT ===</p>
+<p>Original FEATURE-Variable-Bindings.md, in the same form your reply must use: === BEGIN ARTIFACT FEATURE-Variable-Bindings.md ===</p>
+<h1>FEATURE: Variable Bindings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides lexical jq variable bindings, shadowing, and destructuring patterns.</td></tr><tr><td>Depends On</td><td>FEATURE-Advanced-Grammar.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>as bindings, variables, shadowing, destructuring patterns</td></tr><tr><td>Consumes</td><td>jq filter AST, ordered jq generator evaluation</td></tr></tbody></table></div>
+<h2>Questions</h2>
+<ul><li>None.</li></ul>
+<h2>Workflow</h2>
+<p>Binding expressions evaluate a generator, bind each produced value in lexical scope, and evaluate the remainder against the original input. Bindings support nested scopes, shadowing, keyword names, array and object patterns, and missing values represented as null.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC variable-bindings-scoped-conformance ===<br>Intent: The authoritative corpus slice covering jq variable bindings executes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot; as \$|\$[A-Za-z]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC variable-bindings-scoped-conformance ===</p>
+<p>=== AC variable-bindings-interface ===<br>Intent: Lexical binding syntax compiles and runs through the required executable interface.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>program = &quot;. as $value | $value&quot; input_text = &quot;null\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.endswith(&quot;\n&quot;) === END AC variable-bindings-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Bindings are immutable and lexically scoped.</li><li>A binding must preserve the original pipeline input for the expression following <code>as</code>.</li><li>Undefined variables and invalid patterns must remain compile failures.</li></ul>
+<p>=== END ARTIFACT === &lt;/pblock&gt;</p></article>
+</main>
+</body>
+</html>

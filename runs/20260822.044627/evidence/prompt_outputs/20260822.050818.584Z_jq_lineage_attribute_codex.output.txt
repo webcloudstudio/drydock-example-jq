@@ -1,0 +1,132 @@
+<requirement name="test-input-output-contract" stories="EXEC-003">
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+</requirement>
+<requirement name="lexical-scanning" stories="PARSE-001">
+# The input line starts with a 0xFEFF (byte order mark) codepoint
+</requirement>
+<requirement name="literals-strings-interpolation" stories="PARSE-002">
+# We test escapes by matching them against Unicode codepoints
+</requirement>
+<requirement name="core-filter-grammar" stories="PARSE-003">
+# Field access, piping
+</requirement>
+<requirement name="advanced-filter-grammar" stories="PARSE-004">
+# module system
+</requirement>
+<requirement name="stream-evaluation" stories="CORE-001">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="composition-cartesian-evaluation" stories="CORE-002">
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+</requirement>
+<requirement name="errors-and-optional-evaluation" stories="CORE-003">
+# Try/catch and general `?` operator
+</requirement>
+<requirement name="truthiness-comparison" stories="CORE-004">
+# And some in/equality tests
+</requirement>
+<requirement name="value-model-numeric-edge-cases" stories="VALUE-001">
+# Basic numbers tests: integers, powers of two
+</requirement>
+<requirement name="field-index-access" stories="VALUE-002">
+# Negative array indices
+</requirement>
+<requirement name="slices-and-iteration" stories="VALUE-003">
+# Slices
+</requirement>
+<requirement name="type-length-math-primitives" stories="VALUE-004">
+# abs, fabs, length
+</requirement>
+<requirement name="arithmetic-structural-operators" stories="FLOW-001">
+# Builtin functions
+</requirement>
+<requirement name="boolean-alternative-operators" stories="FLOW-002">
+# containment operator
+</requirement>
+<requirement name="conditionals-exception-flow" stories="FLOW-003">
+# Conditionals
+</requirement>
+<requirement name="labels-and-breaks" stories="FLOW-004">
+[label $out | foreach .[] as $item ([3, null]; if .[0] < 1 then break $out else [.[0] -1, $item] end; .[1])]
+</requirement>
+<requirement name="reductions-iteration-control" stories="FLOW-005">
+[foreach .[] as $x (0; . + $x) as $x | $x]
+</requirement>
+<requirement name="recursive-generators" stories="FLOW-006">
+# test recursion
+</requirement>
+<requirement name="variable-bindings" stories="FUNC-001">
+# Variables
+</requirement>
+<requirement name="function-parameters" stories="FUNC-002">
+def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0])
+</requirement>
+<requirement name="function-definitions-scope" stories="FUNC-003">
+# test multiple function arities and redefinition
+</requirement>
+<requirement name="destructuring-alternatives" stories="FUNC-004">
+# Destructuring with alternation
+</requirement>
+<requirement name="path-discovery-projection" stories="PATH-001">
+# Paths
+</requirement>
+<requirement name="path-access-mutation" stories="PATH-002">
+["foo",1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+</requirement>
+<requirement name="deletion-assignment" stories="PATH-003">
+#
+# Assignment
+#
+.message = "goodbye"
+</requirement>
+<requirement name="complex-assignment-edge-cases" stories="PATH-004">
+# #1358, getpath/1 should work in path expressions
+</requirement>
+<requirement name="collection-transformations" stories="DATA-001">
+# Collection transformations
+</requirement>
+<requirement name="sorting-grouping-extrema" stories="DATA-002">
+sort
+[42,[2,5,3,11],10,{"a":42,"b":2},{"a":42},true,2,[2,6],"hello",null,[2,5,6],{"a":[],"b":1},"abc","ab",[3,10],{},false,"abcd",null]
+</requirement>
+<requirement name="object-entries-containment" stories="DATA-003">
+to_entries
+{"a": 1, "b": 2}
+[{"key":"a", "value":1}, {"key":"b", "value":2}]
+</requirement>
+<requirement name="index-membership-search" stories="DATA-004">
+# check that dead code removal occurs after builtin it generation
+</requirement>
+<requirement name="string-manipulation" stories="TEXT-001">
+# string operations
+</requirement>
+<requirement name="formats-serialization" stories="TEXT-002">
+[.[]|tojson|fromjson]
+["foo", 1, ["a", 1, "b", 2, {"foo":"bar"}]]
+["foo",1,["a",1,"b",2,{"foo":"bar"}]]
+</requirement>
+<requirement name="regular-expression-filters" stories="TEXT-003">
+# string operations
+</requirement>
+<requirement name="date-time-filters" stories="TEXT-004">
+# module system
+</requirement>
+<requirement name="input-stream-controls" stories="IO-001">
+# calling input/0, or debug/0 in a test doesn't crash jq
+</requirement>
+<requirement name="diagnostics-stderr-filters" stories="IO-002">
+debug
+1
+1
+</requirement>
+<requirement name="streaming-transformations" stories="IO-003">
+# Multiple outputs, iteration
+</requirement>
+<requirement name="full-conformance-verification" stories="CONF-001,CONF-002,CONF-003">
+# Tests are groups of three lines: program, input, expected output
+</requirement>
+<unattached story="architecture-foundation"/>
+<unattached story="EXEC-001"/>
+<unattached story="EXEC-002"/>

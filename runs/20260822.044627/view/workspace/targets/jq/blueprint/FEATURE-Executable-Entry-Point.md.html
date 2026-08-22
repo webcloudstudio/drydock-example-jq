@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Executable-Entry-Point.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Executable-Entry-Point.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Executable-Entry-Point.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Executable Entry Point</h1>
+<p>The application provides the executable <code>./jq -c &#x27;&lt;program&gt;&#x27;</code> interface.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC executable-permission === from pathlib import Path entry = Path(&quot;jq&quot;) assert entry.is_file() assert entry.stat().st_mode &amp; 0o111 === END AC executable-permission ===</p></article>
+</main>
+</body>
+</html>

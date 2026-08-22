@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Process-Contract.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Process-Contract.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Process-Contract.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Process Contract</h1>
+<p>Compilation, runtime failure, success, diagnostics, and partial output follow the required exit contract.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC process-compile-exit === import subprocess result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True) print(result.stdout, result.stderr) assert result.returncode == 3 assert result.stderr === END AC process-compile-exit ===</p></article>
+</main>
+</body>
+</html>

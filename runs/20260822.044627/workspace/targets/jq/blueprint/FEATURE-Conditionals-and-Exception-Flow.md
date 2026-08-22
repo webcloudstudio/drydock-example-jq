@@ -1,0 +1,28 @@
+# FEATURE: Conditionals and Exception Flow
+
+Conditional branches, try/catch handling, and optional evaluation are supported.
+
+## Programmatic Acceptance
+
+=== AC flow-003-conformance ===
+import json
+import os
+import subprocess
+import sys
+
+SELECT = r"if |try |catch|\?"
+
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", SELECT, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0, f"selector matched no case: {SELECT}"
+assert tally["fail"] == 0 and tally["error"] == 0, tally
+assert result.returncode == 0, result.returncode
+=== END AC flow-003-conformance ===

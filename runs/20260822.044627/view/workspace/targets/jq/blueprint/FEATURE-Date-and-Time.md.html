@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Date-and-Time.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Date-and-Time.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Date-and-Time.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Date and Time</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq date parsing, formatting, and UTC time conversion filters.</td></tr><tr><td>Depends On</td><td>FEATURE-Type-and-Numeric-Primitives.md, FEATURE-String-Manipulation.md</td></tr><tr><td>Provides</td><td>strptime, strftime, strflocaltime, gmtime, localtime, mktime, fromdate, todate</td></tr><tr><td>Consumes</td><td>jq string and numeric primitives</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement ISO-8601 date conversion and the low-level date filters exercised by the corpus. UTC behavior is normative for <code>fromdate</code>, <code>todate</code>, <code>gmtime</code>, <code>strptime</code>, <code>strftime</code>, and <code>mktime</code>; provide the documented local-time variants where exercised.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC date-conformance ===<br>Intent: The authoritative corpus cases covering jq date and time filters execute successfully.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;date|strftime|strptime|gmtime|mktime&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC date-utc-and-errors ===<br>Intent: The authoritative corpus verifies UTC conversion, broken-down time handling, formatting, and invalid-input runtime behavior.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;fromdate|todate|gmtime|localtime|mktime|strptime|strftime|strflocaltime&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC date-utc-and-errors ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Date behavior must use standard-library facilities only.</li><li>UTC conversion must not depend on the machine&#x27;s local timezone.</li><li>Invalid date inputs remain runtime errors with exit status 5 when uncaught.</li></ul></article>
+</main>
+</body>
+</html>

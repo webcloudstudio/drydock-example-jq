@@ -1,0 +1,142 @@
+<requirement name="python-interpreter-architecture" stories="architecture-foundation">
+The implementation language is Python, fixed by this Target's `TECHNOLOGY_STACK.md` and governed by `stack/python.md`.
+</requirement>
+<requirement name="jq-executable-interface" stories="EXEC-001">
+The interface contract
+</requirement>
+<requirement name="process-exit-diagnostics" stories="EXEC-002">
+Exit codes follow jq's own, and the distinction is load-bearing because the harness grades on it:
+</requirement>
+<requirement name="json-stream-io" stories="EXEC-003">
+It writes each value the program produces to **stdout** as one compact JSON value per line, and exits `0`.
+</requirement>
+<requirement name="lexical-scanning" stories="PARSE-001">
+Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST.
+</requirement>
+<requirement name="literals-strings-interpolation" stories="PARSE-002">
+Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.
+</requirement>
+<requirement name="filter-grammar" stories="PARSE-003">
+jq is a small language with a large semantic core.
+</requirement>
+<requirement name="advanced-grammar-rejection" stories="PARSE-004">
+The module *grammar* cases are **not** excluded and must pass.
+</requirement>
+<requirement name="generator-evaluation" stories="CORE-001,CORE-002">
+Almost every filter is a **generator**:
+it takes one input and produces a stream of zero, one, or many outputs, and downstream
+filters run once per upstream output.
+</requirement>
+<requirement name="runtime-errors-and-optional" stories="CORE-003">
+A case may legitimately emit several values and then raise; the harness compares the values
+produced before the raise, so exit `5` is not by itself a failure.
+</requirement>
+<requirement name="truthiness-comparison" stories="CORE-004">
+`reduce`, `foreach`, `limit`, `first`,
+`label`/`break`, and the `?//` destructuring alternative are all defined in terms of it.
+</requirement>
+<requirement name="value-model-numbers" stories="VALUE-001">
+Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals,
+and the `have_decnum` builtin — return `false` from it and the corpus takes its
+non-decNumber branch, which native floats satisfy.
+</requirement>
+<requirement name="value-accessors" stories="VALUE-002">
+field access, iteration, arithmetic, comparison, and
+`empty`.
+</requirement>
+<requirement name="slices-and-iteration" stories="VALUE-003">
+Get the core correctly before reaching for coverage.
+</requirement>
+<requirement name="type-and-numeric-primitives" stories="VALUE-004">
+Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,
+</requirement>
+<requirement name="conformance-assets" stories="CONF-001">
+These four files are the exam. They are hash-verified against the import and restored
+before grading, so a modification is reported as tampering rather than honoured:
+</requirement>
+<requirement name="arithmetic-structural-operators" stories="FLOW-001">
+Every later feature is expressed in terms of this.
+</requirement>
+<requirement name="boolean-alternative-operators" stories="FLOW-002">
+`//`,
+`reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`,
+`recurse`.
+</requirement>
+<requirement name="conditionals-exception-flow" stories="FLOW-003">
+Control flow. `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`,
+</requirement>
+<requirement name="labels-breaks" stories="FLOW-004">
+`label`/`break`
+</requirement>
+<requirement name="reductions-iteration-control" stories="FLOW-005">
+`reduce`, `foreach`, `limit`, `first`, `last`, `until`, `while`,
+</requirement>
+<requirement name="recursive-generators" stories="FLOW-006">
+`recurse`.
+</requirement>
+<requirement name="variable-bindings" stories="FUNC-001">
+Functions, variables, and destructuring.
+</requirement>
+<requirement name="function-parameters" stories="FUNC-002">
+`def` with arity and closures,
+</requirement>
+<requirement name="function-definitions" stories="FUNC-003">
+`def` with arity and closures, `as`
+bindings,
+</requirement>
+<requirement name="destructuring-alternatives" stories="FUNC-004">
+object and array patterns, and the `?//` alternative operator.
+</requirement>
+<requirement name="path-discovery" stories="PATH-001">
+Paths and assignment. `path(f)`, getpath, setpath, delpaths, del,
+</requirement>
+<requirement name="path-primitives" stories="PATH-002">
+`path(f)`, `getpath`, `setpath`, `delpaths`, `del`,
+</requirement>
+<requirement name="assignment-operators" stories="PATH-003">
+and then `=`, `|=`, `+=`, and friends.
+</requirement>
+<requirement name="complex-assignments" stories="PATH-004">
+Assignment is defined over path expressions, so this
+cannot precede step 2.
+</requirement>
+<requirement name="collection-transformations" stories="DATA-001">
+Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,
+</requirement>
+<requirement name="sorting-grouping-extrema" stories="DATA-002">
+`sort_by`/`group_by`/`unique_by`,
+</requirement>
+<requirement name="object-entries-containment" stories="DATA-003">
+objects,
+</requirement>
+<requirement name="index-membership-search" stories="DATA-004">
+`in`,
+</requirement>
+<requirement name="string-manipulation" stories="TEXT-001">
+strings,
+</requirement>
+<requirement name="formats-serialization" stories="TEXT-002">
+`@base64`/`@uri`/`@csv`/`@tsv`/`@sh`
+formats,
+</requirement>
+<requirement name="regular-expressions" stories="TEXT-003">
+the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+</requirement>
+<requirement name="date-time-filters" stories="TEXT-004">
+the date functions,
+</requirement>
+<requirement name="input-controls" stories="IO-001">
+`input`/`inputs`,
+</requirement>
+<requirement name="diagnostics-stderr" stories="IO-002">
+`$__loc__`, `debug`.
+</requirement>
+<requirement name="streaming-transformations" stories="IO-003">
+`tostream`,
+</requirement>
+<requirement name="scoped-conformance" stories="CONF-002">
+Every other story runs its own slice, and the slice executes cases.
+</requirement>
+<requirement name="full-conformance" stories="CONF-003">
+Definition of Done
+</requirement>
