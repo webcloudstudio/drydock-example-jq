@@ -1,0 +1,56 @@
+=== BEGIN ARTIFACT FEATURE-CLI-Conformance.md ===
+# FEATURE: CLI Conformance
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Prove complete jq conformance through the supplied scoring harness. |
+| Depends On  | FEATURE-CLI-Executable.md, FEATURE-CLI-Harness.md |
+| Provides    | complete conformance proof |
+| Consumes    | executable jq, staged conformance harness |
+
+## Questions
+
+- None.
+
+## Purpose
+
+This terminal verification capability establishes that the completed standalone `jq` executable satisfies every non-excluded case in the supplied jq 1.8.2 conformance corpus.
+
+## Verification
+
+The supplied `sources/full_test.sh` command is the sole complete-suite acceptance entry point. It must run from the application root and remain unmodified. Its exit status is the release verdict.
+
+## Programmatic Acceptance
+
+Requires: executable=sh; scope=test
+
+Requires: executable=python3; scope=test
+
+=== AC complete-conformance ===
+Intent: The completed interpreter passes the authoritative full jq conformance suite.
+Suite: full
+
+import subprocess
+
+result = subprocess.run(
+    ["sh", "sources/full_test.sh"],
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr)
+assert result.returncode == 0
+=== END AC complete-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Run the supplied complete suite only after all implementation and harness stories are complete.
+- Do not modify, filter, skip, or reinterpret any file under `sources/`.
+- Treat the scoring command's exit status as the acceptance verdict.
+- Preserve the declared module-loader exclusions and require every other corpus case to pass.
+=== END ARTIFACT ===

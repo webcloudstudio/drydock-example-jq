@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CLI-Conformance.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CLI-Conformance.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CLI-Conformance.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: CLI Conformance</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Prove complete jq conformance through the supplied scoring harness.</td></tr><tr><td>Depends On</td><td>FEATURE-CLI-Executable.md, FEATURE-CLI-Harness.md</td></tr><tr><td>Provides</td><td>complete conformance proof</td></tr><tr><td>Consumes</td><td>executable jq, staged conformance harness</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>This terminal verification capability establishes that the completed standalone <code>jq</code> executable satisfies every non-excluded case in the supplied jq 1.8.2 conformance corpus.</p>
+<h2>Verification</h2>
+<p>The supplied <code>sources/full_test.sh</code> command is the sole complete-suite acceptance entry point. It must run from the application root and remain unmodified. Its exit status is the release verdict.</p>
+<h2>Programmatic Acceptance</h2>
+<p>Requires: executable=sh; scope=test</p>
+<p>Requires: executable=python3; scope=test</p>
+<p>=== AC complete-conformance ===<br>Intent: The completed interpreter passes the authoritative full jq conformance suite.<br>Suite: full</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr) assert result.returncode == 0 === END AC complete-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Run the supplied complete suite only after all implementation and harness stories are complete.</li><li>Do not modify, filter, skip, or reinterpret any file under <code>sources/</code>.</li><li>Treat the scoring command&#x27;s exit status as the acceptance verdict.</li><li>Preserve the declared module-loader exclusions and require every other corpus case to pass.</li></ul></article>
+</main>
+</body>
+</html>

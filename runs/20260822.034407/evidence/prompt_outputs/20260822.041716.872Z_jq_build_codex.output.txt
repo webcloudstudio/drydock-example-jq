@@ -1,0 +1,21 @@
+<reusable-compact filename="lexer.l">
+Recognize jq keywords, identifiers, namespaced symbols, `.field`, `$binding`, numbers, strings, interpolation `\(...)`, `@format` tokens, operators, delimiters, comments, whitespace, and invalid characters. Track source locations and reject malformed escapes or unmatched delimiters as compile failures.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+jq filters use JSON literals, generators, pipelines, commas, interpolation, comments, bindings, operators, and builtins. Strings preserve JSON escape semantics; `#` comments run to newline with backslash continuation. Lexical and syntax errors must be rejected before evaluation.
+</reusable-compact>
+
+AC_BROKEN: lexer-conformance
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/lexer.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented and verified jq lexical analysis, including comments, literals, identifiers, bindings, fields, operators, formats, interpolation, locations, and malformed escape rejection. Added compile-failure regression tests. All 13 project tests and both direct acceptance status checks pass.
+
+BLOCKERS:
+- `lexer-conformance` is malformed: its staged regex selector `r"\\(|...` raises Python `re.error` before the harness emits JSON.

@@ -1,0 +1,36 @@
+<requirement name="preserve-upstream-corpus" stories="cli-002,cli-003">
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+</requirement>
+<requirement name="audit-exclusions" stories="cli-002">
+Where a case cannot run under this kit's harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file.
+</requirement>
+<requirement name="reject-unmatched-exclusions" stories="cli-002">
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+</requirement>
+<requirement name="exclude-module-loading" stories="cli-002">
+Only the loader cases are excluded.
+</requirement>
+<requirement name="score-module-grammar" stories="frontend-002,cli-003">
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include "a" (.+1); 0`, `include "a" []; 0`, `include "\ "; 0`, `include "\(a)"; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+</requirement>
+<requirement name="exclude-modulemeta" stories="cli-002">
+`modulemeta` reports a module's declared dependencies and definitions. Its three cases take the module name "c" as input and read tests/modules/c/c.jq from the search path, so they fail for the same reason as the loader cases above.
+</requirement>
+<unattached story="architecture"/>
+<unattached story="frontend-001"/>
+<unattached story="frontend-003"/>
+<unattached story="core-001"/>
+<unattached story="core-002"/>
+<unattached story="core-003"/>
+<unattached story="paths-001"/>
+<unattached story="paths-002"/>
+<unattached story="paths-003"/>
+<unattached story="control-001"/>
+<unattached story="control-002"/>
+<unattached story="control-003"/>
+<unattached story="functions-001"/>
+<unattached story="functions-002"/>
+<unattached story="builtins-001"/>
+<unattached story="builtins-002"/>
+<unattached story="builtins-003"/>
+<unattached story="cli-001"/>

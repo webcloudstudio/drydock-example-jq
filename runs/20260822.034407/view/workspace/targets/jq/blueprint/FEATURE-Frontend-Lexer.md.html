@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Frontend-Lexer.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Frontend-Lexer.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Frontend-Lexer.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Lexer</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Lexical analysis for jq source programs.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>jq lexer</td></tr><tr><td>Consumes</td><td>interpreter architecture</td></tr></tbody></table></div>
+<h2>Capability</h2>
+<p>The lexer recognizes jq keywords, identifiers, fields, variable bindings, numeric literals, strings and escapes, interpolation delimiters, format tokens, operators, delimiters, comments, and invalid characters. It preserves source locations needed for diagnostics and reports malformed lexical input as a compile failure.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-invalid-escape ===<br>Intent: The lexer rejects a malformed string escape with compile exit status 3.</p>
+<p>import os import subprocess</p>
+<p>program = &#x27;&quot;u\\vw&quot;&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 === END AC lexer-invalid-escape ===</p>
+<p>=== AC lexer-module-syntax ===<br>Intent: The lexer and front end reject malformed module syntax at compile time.</p>
+<p>import os import subprocess</p>
+<p>program = &#x27;module []; 0&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 === END AC lexer-module-syntax ===</p>
+<p>=== AC lexer-conformance ===<br>Intent: Executed conformance cases exercising lexical syntax pass without failures or errors.</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;\\(|@(?:text|json|html|uri|urid|csv|tsv|sh|base64|base64d)|#&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC lexer-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve Unicode source text and JSON escape semantics.</li><li>Treat comments and whitespace according to <code>sources/lexer.l</code>.</li><li>Reject invalid characters and malformed escapes with exit code <code>3</code>.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Core-Generator.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Core-Generator.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Core-Generator.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Generator Evaluation Core</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Ordered stream evaluation for jq filters.</td></tr><tr><td>Depends On</td><td>FEATURE-Frontend-Interpolation.md, ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>generator evaluator, identity, empty, pipeline, comma</td></tr><tr><td>Consumes</td><td>jq AST</td></tr></tbody></table></div>
+<h2>Capability</h2>
+<p>The evaluator represents each filter as an ordered generator. Identity emits its input, <code>empty</code> emits no values, comma concatenates left and right streams, and pipelines evaluate the right filter once for every left-hand output. The implementation preserves ordering, multiplicity, cartesian behavior, backtracking, and outputs emitted before a runtime error.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC generator-identity ===<br>Intent: Identity evaluates successfully over JSON input.</p>
+<p>import os import subprocess</p>
+<p>source = &quot;.&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, source], input=&#x27;{&quot;value&quot;: 1}\n&#x27;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 === END AC generator-identity ===</p>
+<p>=== AC generator-empty-and-comma ===<br>Intent: Empty and comma generator syntax execute successfully.</p>
+<p>import os import subprocess</p>
+<p>source = &quot;1, empty, 2&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, source], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 === END AC generator-empty-and-comma ===</p>
+<p>=== AC generator-conformance ===<br>Intent: Executed conformance cases exercising generator ordering and pipelines pass without failures or errors.</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;(^\.($|[^a-zA-Z])|empty|,|\|)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC generator-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve exact generator ordering and multiplicity.</li><li>Do not collapse streams into single values.</li><li>Preserve partial stdout output when a later computation raises a runtime error.</li></ul></article>
+</main>
+</body>
+</html>

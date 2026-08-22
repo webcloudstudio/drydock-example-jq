@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE_compact.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE_compact.md">Raw file</a></div></header>
+<article class="doc"><p>&lt;!-- Compacted from ARCHITECTURE.md sha256=4f66ab67409074d13b7837b0c8eefec7ec2ab64ffdf9e91b66dc67b5df6d4247 on 2026-08-22 by drydock build agent --&gt;</p>
+<p>Standalone Python 3.11+ jq interpreter using standard library only. Executable <code>jq</code> accepts <code>-c &#x27;&lt;program&gt;&#x27;</code>, reads JSON lines from stdin, evaluates ordered generator streams, and emits compact JSON lines.</p>
+<p>Boundaries: lexer/source locations; parser/AST; evaluator/generator control flow; paths/updates; builtins; CLI and exit handling. Preserve ordering, multiplicity, cartesian pipelines, backtracking, and partial output before runtime errors.</p>
+<p>Exit codes: 0 success, 3 compile failure, 5 runtime failure. No system jq, third-party runtime, network, or source-asset modifications. Required source assets remain read-only.</p></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/cli.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/cli.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/cli.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Executable boundary: arguments, JSON lines, output, and exit status.&quot;&quot;&quot;
+
+import argparse
+import json
+import sys
+from collections.abc import Iterable
+from typing import Any, TextIO
+
+from .errors import COMPILE_ERROR, RUNTIME_ERROR, CompileError, RuntimeErrorJq
+from .evaluator import evaluate
+from .parser import parse
+
+
+def _read_inputs(stream: TextIO) -&gt; Iterable[Any]:
+    for line in stream:
+        if line.strip():
+            try:
+                yield json.loads(line)
+            except json.JSONDecodeError as error:
+                raise RuntimeErrorJq(&quot;invalid JSON input&quot;) from error
+
+
+def run(arguments: list[str], stdin: TextIO, stdout: TextIO, stderr: TextIO) -&gt; int:
+    &quot;&quot;&quot;Run one CLI invocation and return the documented process status.&quot;&quot;&quot;
+
+    parser = argparse.ArgumentParser(prog=&quot;jq&quot;, add_help=False)
+    parser.add_argument(&quot;-c&quot;, action=&quot;store_true&quot;)
+    parser.add_argument(&quot;program&quot;, nargs=&quot;?&quot;)
+    options = parser.parse_args(arguments)
+    if not options.c or options.program is None:
+        stderr.write(&quot;usage: jq -c PROGRAM\n&quot;)
+        return COMPILE_ERROR
+    try:
+        program = parse(options.program)
+    except CompileError as error:
+        stderr.write(f&quot;compile error: {error}\n&quot;)
+        return COMPILE_ERROR
+    try:
+        for input_value in _read_inputs(stdin):
+            for output_value in evaluate(program, input_value):
+                stdout.write(json.dumps(output_value, separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot;)
+    except RuntimeErrorJq as error:
+        stderr.write(f&quot;runtime error: {error}\n&quot;)
+        return RUNTIME_ERROR
+    return 0
+
+
+def main() -&gt; None:
+    raise SystemExit(run(sys.argv[1:], sys.stdin, sys.stdout, sys.stderr))
+</pre></article>
+</main>
+</body>
+</html>

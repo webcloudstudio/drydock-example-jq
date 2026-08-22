@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Paths-Mutation.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Paths-Mutation.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Paths-Mutation.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Paths Mutation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements immutable jq path updates and deletion operations.</td></tr><tr><td>Depends On</td><td>FEATURE-Paths-Access.md</td></tr><tr><td>Provides</td><td>setpath, delpaths, del</td></tr><tr><td>Consumes</td><td>path, paths, getpath</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This feature implements nested path creation and replacement, deletion of object fields and array elements or ranges, invalid-path handling, and protection against excessive path depth.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-mutation-conformance ===<br>Intent: The interpreter passes the authoritative corpus cases covering setpath, delpaths, and del mutation semantics.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;\b(?:setpath|delpaths|del)\s*\(|(?:^|[^\w])del\s*\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-mutation-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Updates must be immutable and must not mutate unrelated branches.</li><li>Deletion of missing paths must follow jq semantics.</li><li>Invalid paths and excessive depth must produce runtime errors rather than silent corruption.</li></ul></article>
+</main>
+</body>
+</html>

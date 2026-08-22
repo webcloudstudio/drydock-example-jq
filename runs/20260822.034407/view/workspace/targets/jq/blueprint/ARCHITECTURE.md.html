@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/ARCHITECTURE.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE.md">Raw file</a></div></header>
+<article class="doc"><h1>ARCHITECTURE: jq Interpreter</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Architecture for a standalone Python standard-library jq interpreter.</td></tr><tr><td>Depends On</td><td>COMPASS.md, TECHNOLOGY_STACK.md</td></tr><tr><td>Provides</td><td>interpreter architecture, CLI boundary, evaluator boundaries</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>System Boundaries</h2>
+<p>The interpreter is a standalone executable named <code>jq</code>. It accepts <code>-c &#x27;&lt;program&gt;&#x27;</code>, reads JSON values from standard input, evaluates the jq program as an ordered generator, and emits compact JSON values one per line.</p>
+<p>The implementation is organized into:</p>
+<ul><li>lexical analysis and source locations;</li><li>parsing and AST construction;</li><li>generator evaluation and runtime control flow;</li><li>immutable JSON values, paths, assignments, and builtins;</li><li>CLI argument, input, output, and exit-code handling.</li></ul>
+<p>The supplied files under <code>sources/</code> are read-only conformance and language references. They are never modified by the implementation.</p>
+<h2>Evaluation Model</h2>
+<p>Every filter evaluates against one input value and produces an ordered stream of zero or more values. Pipelines feed each output into the next filter, while comma expressions concatenate streams. Evaluation must preserve multiplicity, cartesian behavior, backtracking, and values emitted before a runtime error.</p>
+<p>Compile failures return exit <code>3</code>. Runtime failures return exit <code>5</code>. Successful completion returns exit <code>0</code>.</p>
+<h2>Technology Stack</h2>
+<p>Python 3.11 or newer and its standard library are used for the interpreter. POSIX <code>sh</code> is used only by the supplied scoring entry point. No third-party runtime dependency, network access, package installation, system jq process, or jq binding is permitted.</p>
+<p>Numbers use Python floating-point arithmetic while retaining original literal spellings where required for serialization. <code>have_decnum</code> reports false.</p>
+<h2>Module Ownership</h2>
+<div class="scroll"><table><thead><tr><th>Boundary</th><th>Owner</th><th>Responsibility</th></tr></thead><tbody><tr><td>Lexer</td><td>frontend lexer module</td><td>Tokens, strings, comments, locations, invalid characters</td></tr><tr><td>Parser</td><td>frontend parser module</td><td>Grammar, precedence, AST, compile diagnostics</td></tr><tr><td>Evaluator</td><td>core evaluator module</td><td>Streams, filters, environments, runtime control</td></tr><tr><td>Paths and updates</td><td>path subsystem</td><td>Discovery, access, mutation, deletion, assignments</td></tr><tr><td>Builtins</td><td>builtin subsystem</td><td>Standard jq functions and formats</td></tr><tr><td>CLI</td><td>executable entry point</td><td>Arguments, JSON input/output, exit status</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC architecture-contract ===<br>Intent: The architecture contract exposes the required interpreter boundary and exit-code constants.</p>
+<p>from pathlib import Path</p>
+<p>compass = Path(&quot;COMPASS.md&quot;).read_text(encoding=&quot;utf-8&quot;) assert &quot;standalone interpreter&quot; in compass assert &quot;exit <code>3</code>&quot; in compass assert &quot;exit <code>5</code>&quot; in compass === END AC architecture-contract ===</p>
+<p>=== AC architecture-assets ===<br>Intent: The architecture preserves the complete, mutually consistent, read-only language and conformance asset boundary.</p>
+<p>import sys from pathlib import Path</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>required = [ Path(&quot;sources/jq-manual.txt&quot;), Path(&quot;sources/jq.test&quot;), Path(&quot;sources/lexer.l&quot;), Path(&quot;sources/parser.y&quot;), ] for asset in required: assert asset.read_text(encoding=&quot;utf-8&quot;)</p>
+<p>cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS) ) assert len(cases) == 550 assert len(excluded) == 13 === END AC architecture-assets ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library functionality.</li><li>Do not shell out to a system jq executable.</li><li>Do not modify files under <code>sources/</code>.</li><li>Preserve generator ordering, multiplicity, backtracking, and partial runtime output.</li></ul></article>
+</main>
+</body>
+</html>

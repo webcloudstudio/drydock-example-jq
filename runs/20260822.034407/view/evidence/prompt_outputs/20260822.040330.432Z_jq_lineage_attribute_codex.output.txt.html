@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.040330.432Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.040330.432Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.040330.432Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;preserve-upstream-corpus&quot; stories=&quot;cli-002,cli-003&quot;&gt;
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;audit-exclusions&quot; stories=&quot;cli-002&quot;&gt;
+Where a case cannot run under this kit&#x27;s harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-unmatched-exclusions&quot; stories=&quot;cli-002&quot;&gt;
+An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;exclude-module-loading&quot; stories=&quot;cli-002&quot;&gt;
+Only the loader cases are excluded.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;score-module-grammar&quot; stories=&quot;frontend-002,cli-003&quot;&gt;
+The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`, `include &quot;\(a)&quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;exclude-modulemeta&quot; stories=&quot;cli-002&quot;&gt;
+`modulemeta` reports a module&#x27;s declared dependencies and definitions. Its three cases take the module name &quot;c&quot; as input and read tests/modules/c/c.jq from the search path, so they fail for the same reason as the loader cases above.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;frontend-001&quot;/&gt;
+&lt;unattached story=&quot;frontend-003&quot;/&gt;
+&lt;unattached story=&quot;core-001&quot;/&gt;
+&lt;unattached story=&quot;core-002&quot;/&gt;
+&lt;unattached story=&quot;core-003&quot;/&gt;
+&lt;unattached story=&quot;paths-001&quot;/&gt;
+&lt;unattached story=&quot;paths-002&quot;/&gt;
+&lt;unattached story=&quot;paths-003&quot;/&gt;
+&lt;unattached story=&quot;control-001&quot;/&gt;
+&lt;unattached story=&quot;control-002&quot;/&gt;
+&lt;unattached story=&quot;control-003&quot;/&gt;
+&lt;unattached story=&quot;functions-001&quot;/&gt;
+&lt;unattached story=&quot;functions-002&quot;/&gt;
+&lt;unattached story=&quot;builtins-001&quot;/&gt;
+&lt;unattached story=&quot;builtins-002&quot;/&gt;
+&lt;unattached story=&quot;builtins-003&quot;/&gt;
+&lt;unattached story=&quot;cli-001&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CLI-Harness.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CLI-Harness.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CLI-Harness.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: CLI Harness</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Stages and validates the supplied jq conformance assets without modifying or executing the candidate.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>staged conformance corpus, exclusions, runner, scoring entry point</td></tr><tr><td>Consumes</td><td>interpreter architecture</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Stage every supplied source asset byte-for-byte under <code>sources/</code>, preserving the authoritative corpus, exclusions, runner, scoring script, manual, grammar, lexer, and builtin reference. Validate corpus parsing and exclusion consistency by importing the harness directly; this story does not execute the candidate interpreter.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC cli-harness-assets ===<br>Intent: The staged conformance corpus parses completely and all declared exclusions match corpus cases.<br>Requires: executable=python3; scope=test</p>
+<p>import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>expected_cases = 550 expected_exclusions = 13 cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS), ) assert len(cases) == expected_cases assert len(excluded) == expected_exclusions</p>
+<p>=== END AC cli-harness-assets ===</p>
+<p>=== AC cli-harness-parser ===<br>Intent: The staged runner exposes the required corpus and exclusion parser interfaces.<br>Requires: executable=python3; scope=test</p>
+<p>import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) exclusions = harness.parse_exclusions(harness.EXCLUSIONS) excluded = harness.apply_exclusions(cases, exclusions) assert cases assert exclusions assert excluded assert all(case.program for case in cases)</p>
+<p>=== END AC cli-harness-parser ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve all supplied files byte-for-byte under <code>sources/</code>.</li><li>Do not invoke the candidate interpreter in this staging story.</li><li>Do not invoke list, dry-run, or whole-suite harness modes from any other non-terminal story.</li></ul></article>
+</main>
+</body>
+</html>

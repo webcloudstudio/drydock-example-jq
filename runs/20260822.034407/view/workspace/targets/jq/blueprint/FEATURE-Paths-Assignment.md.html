@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Paths-Assignment.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Paths Assignment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements jq plain, update, arithmetic, and defined-or assignments.</td></tr><tr><td>Depends On</td><td>FEATURE-Paths-Mutation.md</td></tr><tr><td>Provides</td><td>=,</td><td>=, +=, -=, *=, /=, %=, //=</td></tr><tr><td>Consumes</td><td>path mutation and deletion</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This feature implements generator-based left-hand-side path selection, plain and update assignments, arithmetic assignment operators, defined-or assignment, immutable results, deletion on empty updates, and correct right-hand-side evaluation.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC paths-assignment-conformance ===<br>Intent: The interpreter passes the authoritative corpus cases covering jq assignment operators and generator-produced path updates.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;(?:^|[^\w])(?:\|=|\+=|-=|\*=|/=|%=|//=|=)(?:$|[^\w])&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC paths-assignment-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Assignment results must be immutable snapshots.</li><li>Plain assignment must use the original input for RHS evaluation.</li><li>Update assignment must use the selected path value and only the first RHS output.</li><li>Empty update streams must delete the selected path.</li></ul></article>
+</main>
+</body>
+</html>

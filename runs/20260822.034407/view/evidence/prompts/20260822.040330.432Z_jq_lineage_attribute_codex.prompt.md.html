@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260822.040330.432Z_jq_lineage_attribute_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260822.040330.432Z_jq_lineage_attribute_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260822.040330.432Z_jq_lineage_attribute_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>Attribute Stories to Source Requirements</h1>
+<p>You are the lineage attribution agent. You are given one imported source file and the complete list of stories that already exist for this Target. Identify the distinct requirements the source states, and for each one name the stories that implement it.</p>
+<p>This is a matching task against a closed set. Every story you may name is listed in <code>&lt;stories&gt;</code>. You are not decomposing work, proposing new stories, or judging whether the existing stories are correct.</p>
+<h2>Method</h2>
+<ol><li>Read the source and identify each distinct requirement it states. A requirement is a thing the</li></ol>
+<p>system must do, at whatever granularity the author wrote it. One sentence may state one requirement that several stories implement — for example &quot;add a table and show it on screen&quot; is one requirement implemented by a schema story, a route story, and a view story. Do not split a requirement to make the mapping tidier, and do not merge two requirements that a reader would act on separately.</p>
+<ol><li>Give each requirement a short kebab-case name that describes it. The name is an identifier, not</li></ol>
+<p>a summary: <code>mark-book-read</code>, not <code>the-reader-can-mark-a-book-as-read</code>.</p>
+<ol><li>For each requirement, list every story that implements any part of it. A story may implement</li></ol>
+<p>more than one requirement; a requirement may need more than one story.</p>
+<ol><li>List any story that implements no requirement in the source as <code>&lt;unattached&gt;</code>. This is expected</li></ol>
+<p>and correct for foundational work — application scaffolding, configuration, shared UI framing, test harnesses — that the author never asked for by name. Do not force such a story onto an unrelated requirement.</p>
+<h2>Rules</h2>
+<ul><li>Use only story ids that appear in <code>&lt;stories&gt;</code>. Never invent one.</li><li>Every story must appear exactly once, either inside a <code>stories</code> attribute or as <code>&lt;unattached&gt;</code>.</li><li>Quote the requirement text verbatim from the source in the tag body. Do not paraphrase it.</li><li>Emit nothing but the tags below. No preamble, no commentary, no explanation.</li></ul>
+<h2>Output</h2>
+<pre><code>&lt;requirement name=&quot;add-remove-books&quot; stories=&quot;add-book,remove-book,database&quot;&gt;
+The reader can add a book with a title and author, view the books in the order added, and remove a book.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reject-empty-fields&quot; stories=&quot;validate-book&quot;&gt;
+An empty title or author is rejected with a clear error message.
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture&quot;/&gt;
+&lt;unattached story=&quot;ui-general&quot;/&gt;</code></pre>
+<h1>Attribution job</h1>
+<p>&lt;source name=&quot;exclusions.txt&quot;&gt;</p>
+<h1>exclusions.txt — corpus cases this kit cannot run, and why.</h1>
+<p>#</p>
+<h1>The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case</h1>
+<h1>cannot run under this kit&#x27;s harness, it is named here instead, so every skip is visible,</h1>
+<h1>reasoned, and auditable against the upstream file. This file is a scoring asset: it is</h1>
+<h1>hash-verified against the import and restored before grading.</h1>
+<p>#</p>
+<h1>One verbatim program line per entry. An entry that matches no case in the corpus is a hard</h1>
+<h1>error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run</h1>
+<h1>if the corpus pin ever moved.</h1>
+<p>#</p>
+<h1>Nothing is excluded for being hard. The module-loader cases below are excluded because the</h1>
+<h1>kit physically cannot deliver their inputs, not because the semantics are difficult.</h1>
+<h1>--------------------------------------------------------------------------------------------</h1>
+<h1>Module loading from disk.</h1>
+<p>#</p>
+<h1>These cases resolve <code>import</code> and <code>include</code> against a module search path supplied by jq&#x27;s -L</h1>
+<h1>flag, reading roughly twenty fixture files spread across nested directories upstream</h1>
+<h1>(tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit&#x27;s declared sources into the</h1>
+<h1>application flattened by basename, so that directory tree cannot be carried, and the interface</h1>
+<h1>this kit fixes exercises no flag but -c.</h1>
+<p>#</p>
+<h1>Only the loader cases are excluded. The module <em>grammar</em> cases — <code>module (.+1); 0</code>,</h1>
+<h1><code>module []; 0</code>, <code>include &quot;a&quot; (.+1); 0</code>, <code>include &quot;a&quot; []; 0</code>, <code>include &quot;\ &quot;; 0</code>,</h1>
+<h1><code>include &quot;\(a)&quot;; 0</code>, and <code>%::wat</code> — remain in the scored set: they are parse errors that a</h1>
+<h1>correct front end rejects without ever touching the filesystem.</h1>
+<h1>--------------------------------------------------------------------------------------------</h1>
+<p>import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a] import &quot;c&quot; as foo; [foo::a, foo::c] include &quot;c&quot;; [a, c] import &quot;data&quot; as $e; import &quot;data&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(&quot;;&quot;) import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f include &quot;shadow1&quot;; e include &quot;shadow1&quot;; include &quot;shadow2&quot;; e import &quot;shadow1&quot; as f; import &quot;shadow2&quot; as f; import &quot;shadow1&quot; as e; [e::e, f::e] import &quot;syntaxerror&quot; as e; . import &quot;test_bind_order&quot; as check; check::check</p>
+<h1><code>modulemeta</code> reports a module&#x27;s declared dependencies and definitions. Its three cases take</h1>
+<h1>the module name &quot;c&quot; as input and read tests/modules/c/c.jq from the search path, so they fail</h1>
+<h1>for the same reason as the loader cases above.</h1>
+<p>modulemeta modulemeta | .deps | length modulemeta | .defs | length &lt;/source&gt;</p>
+<p>&lt;stories&gt; &lt;story id=&quot;architecture&quot; implements=&quot;ARCHITECTURE.md&quot;&gt;Define the standalone jq interpreter architecture and module boundaries.&lt;/story&gt; &lt;story id=&quot;frontend-001&quot; implements=&quot;FEATURE-Frontend-Lexer.md&quot;&gt;Implement jq lexical analysis.&lt;/story&gt; &lt;story id=&quot;frontend-002&quot; implements=&quot;FEATURE-Frontend-Parser.md&quot;&gt;Implement jq parsing and AST construction.&lt;/story&gt; &lt;story id=&quot;frontend-003&quot; implements=&quot;FEATURE-Frontend-Interpolation.md&quot;&gt;Implement jq string interpolation and format syntax.&lt;/story&gt; &lt;story id=&quot;cli-002&quot; implements=&quot;FEATURE-CLI-Harness.md&quot;&gt;Stage and validate the supplied conformance harness assets.&lt;/story&gt; &lt;story id=&quot;core-001&quot; implements=&quot;FEATURE-Core-Generator.md&quot;&gt;Implement stream-based filter evaluation.&lt;/story&gt; &lt;story id=&quot;core-002&quot; implements=&quot;FEATURE-Core-Values.md&quot;&gt;Implement jq values, indexing, iteration, slicing, and construction.&lt;/story&gt; &lt;story id=&quot;core-003&quot; implements=&quot;FEATURE-Core-Operators.md&quot;&gt;Implement jq operators and comparisons.&lt;/story&gt; &lt;story id=&quot;paths-001&quot; implements=&quot;FEATURE-Paths-Access.md&quot;&gt;Implement jq path discovery and path access.&lt;/story&gt; &lt;story id=&quot;paths-002&quot; implements=&quot;FEATURE-Paths-Mutation.md&quot;&gt;Implement jq path mutation and deletion.&lt;/story&gt; &lt;story id=&quot;paths-003&quot; implements=&quot;FEATURE-Paths-Assignment.md&quot;&gt;Implement jq assignment operators.&lt;/story&gt; &lt;story id=&quot;control-001&quot; implements=&quot;FEATURE-Control-Errors.md&quot;&gt;Implement jq conditionals, errors, try/catch, labels, and breaks.&lt;/story&gt; &lt;story id=&quot;control-002&quot; implements=&quot;FEATURE-Control-Reduce.md&quot;&gt;Implement jq reduction and iteration constructs.&lt;/story&gt; &lt;story id=&quot;control-003&quot; implements=&quot;FEATURE-Control-Recursion.md&quot;&gt;Implement jq recursion and recursive descent.&lt;/story&gt; &lt;story id=&quot;functions-001&quot; implements=&quot;FEATURE-Functions-Bindings.md&quot;&gt;Implement jq variables and destructuring.&lt;/story&gt; &lt;story id=&quot;functions-002&quot; implements=&quot;FEATURE-Functions-Definitions.md&quot;&gt;Implement jq user-defined functions.&lt;/story&gt; &lt;story id=&quot;builtins-001&quot; implements=&quot;FEATURE-Builtins-Core.md&quot;&gt;Implement core jq type, collection, and string builtins.&lt;/story&gt; &lt;story id=&quot;builtins-002&quot; implements=&quot;FEATURE-Builtins-Regex.md&quot;&gt;Implement jq regular-expression builtins.&lt;/story&gt; &lt;story id=&quot;builtins-003&quot; implements=&quot;FEATURE-Builtins-Extended.md&quot;&gt;Implement jq serialization, formats, dates, math, and streaming builtins.&lt;/story&gt; &lt;story id=&quot;cli-001&quot; implements=&quot;FEATURE-CLI-Executable.md&quot;&gt;Implement the executable jq command-line interface.&lt;/story&gt; &lt;story id=&quot;cli-003&quot; implements=&quot;FEATURE-CLI-Conformance.md&quot;&gt;Prove complete jq conformance.&lt;/story&gt; &lt;/stories&gt;</p></article>
+</main>
+</body>
+</html>

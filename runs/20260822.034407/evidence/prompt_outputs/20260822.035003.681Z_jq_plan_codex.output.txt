@@ -1,0 +1,394 @@
+=== BEGIN ARTIFACT FEATURE-Builtins-Core.md ===
+# FEATURE: Builtins Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq's core type, collection, ordering, containment, string, and Unicode builtins. |
+| Depends On  | FEATURE-Functions-Definitions.md, FEATURE-Paths-Access.md, FEATURE-Control-Recursion.md |
+| Provides    | type and collection builtins, sorting, grouping, uniqueness, containment, indexing helpers, string operations, Unicode helpers |
+| Consumes    | user-defined functions, variables, paths, control flow |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement the core builtins described by `sources/builtin.jq` and `sources/jq-manual.txt`, including type predicates, collection transforms, sorting and grouping, containment, indexing, string manipulation, Unicode conversion, and related helpers. Preserve generator multiplicity and jq ordering.
+
+## Programmatic Acceptance
+
+=== AC builtins-core-collections ===
+Intent: The authoritative corpus slice covering core collection, type, ordering, containment, and indexing builtins passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"type|keys|sort|group_by|unique|contains|inside|indices|index|rindex|flatten|transpose|to_entries|from_entries|map_values"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-core-collections ===
+
+=== AC builtins-core-strings ===
+Intent: The authoritative corpus slice covering string, trimming, joining, and Unicode builtins passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"join|split|trim|startswith|endswith|explode|implode|ascii_|reverse"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-core-strings ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Implement only standard-library functionality; do not add third-party jq bindings.
+- Preserve jq generator ordering, multiplicity, structural comparison, and Unicode codepoint semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Regex.md ===
+# FEATURE: Builtins Regex
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq regular-expression matching, capture, splitting, and substitution builtins. |
+| Depends On  | FEATURE-Builtins-Core.md, FEATURE-Functions-Definitions.md |
+| Provides    | test, match, capture, scan, split, splits, sub, gsub |
+| Consumes    | user-defined functions, strings, generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement jq regular-expression builtins using Python's standard-library `re` module and a compatibility translation layer. Support jq flags, named captures, global match streams, regex splitting, substitutions, interpolation-driven replacement filters, and specified runtime errors.
+
+## Programmatic Acceptance
+
+=== AC builtins-regex-matching ===
+Intent: The authoritative corpus slice covering test, match, capture, and scan passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"test\(|match\(|capture\(|scan\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-regex-matching ===
+
+=== AC builtins-regex-replacement ===
+Intent: The authoritative corpus slice covering regex splitting and substitution passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"split\(|splits\(|sub\(|gsub\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-regex-replacement ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library regular expressions and compatibility translation.
+- Preserve UTF-8 codepoint offsets, named-capture behavior, global stream ordering, and runtime error propagation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Builtins-Extended.md ===
+# FEATURE: Builtins Extended
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq serialization, formats, dates, mathematics, SQL-style, environment, and streaming builtins. |
+| Depends On  | FEATURE-Builtins-Regex.md, FEATURE-Builtins-Core.md |
+| Provides    | JSON conversion, @ formats, dates, math, SQL-style operators, streaming utilities |
+| Consumes    | regex builtins, collection builtins, generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement the remaining standard-library jq builtins required by the manual and corpus: JSON serialization and parsing, format encoders, date and time functions, mathematical functions, SQL-style operators, environment access, debugging-compatible I/O, and stream conversion utilities.
+
+## Programmatic Acceptance
+
+=== AC builtins-extended-serialization-formats ===
+Intent: The authoritative corpus slice covering JSON conversion, format encoders, and related serialization behavior passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"tojson|fromjson|@text|@json|@html|@uri|@urid|@csv|@tsv|@sh|@base64|@base64d"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-extended-serialization-formats ===
+
+=== AC builtins-extended-time-math-streaming ===
+Intent: The authoritative corpus slice covering dates, mathematics, SQL-style operators, and streaming utilities passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"fromdate|todate|strptime|strftime|mktime|gmtime|floor|sqrt|atan|cos|sin|pow|log|INDEX|JOIN|IN\(|tostream|fromstream|truncate_stream|env|debug"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+
+=== END AC builtins-extended-time-math-streaming ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Keep runtime dependencies limited to Python's standard library.
+- Date behavior is UTC-based where jq specifies UTC; nondeterministic clock output is not used as an acceptance oracle.
+- Preserve compact JSON semantics, format escaping, stream ordering, and partial runtime output.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CLI-Executable.md ===
+# FEATURE: CLI Executable
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides the executable jq command interface and its stdin, stdout, and exit-code contract. |
+| Depends On  | FEATURE-Builtins-Extended.md |
+| Provides    | executable jq, -c program interface, JSON stdin/stdout protocol, exit codes 0/3/5 |
+| Consumes    | complete evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Deliver an executable named `jq` at the application root. It accepts `-c` and one jq program, reads JSON values from standard input, emits every generated result as one compact JSON value per line, writes diagnostics only to standard error, and distinguishes successful completion, compilation failure, and runtime failure with exit codes 0, 3, and 5.
+
+## Programmatic Acceptance
+
+=== AC cli-executable-stream ===
+Intent: The executable reads supplied JSON input and emits the same generated values as compact JSON lines.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+input_value = {"items": [1, 2, 3]}
+source = json.dumps(input_value, separators=(",", ":")) + "\n"
+result = subprocess.run(
+    ["./jq", "-c", ".items[]"],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = input_value["items"]
+assert actual == expected
+
+=== END AC cli-executable-stream ===
+
+=== AC cli-executable-exit-codes ===
+Intent: The executable distinguishes compile failures from runtime failures.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+compile_result = subprocess.run(
+    ["./jq", "-c", "{"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+runtime_result = subprocess.run(
+    ["./jq", "-c", "1 / 0"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert compile_result.returncode == 3
+assert runtime_result.returncode == 5
+
+=== END AC cli-executable-exit-codes ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The only required command-line option is `-c`.
+- Do not shell out to a system jq executable.
+- Diagnostics must not be emitted as ordinary JSON results on stdout.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CLI-Harness.md ===
+# FEATURE: CLI Harness
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Stages and validates the supplied jq conformance assets without modifying or executing the candidate. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | staged conformance corpus, exclusions, runner, scoring entry point |
+| Consumes    | interpreter architecture |
+
+## Questions
+
+- None.
+
+## Intent
+
+Stage every supplied source asset byte-for-byte under `sources/`, preserving the authoritative corpus, exclusions, runner, scoring script, manual, grammar, lexer, and builtin reference. Validate corpus parsing and exclusion consistency by importing the harness directly; this story does not execute the candidate interpreter.
+
+## Programmatic Acceptance
+
+=== AC cli-harness-assets ===
+Intent: The staged conformance corpus parses completely and all declared exclusions match corpus cases.
+Requires: executable=python3; scope=test
+
+import sys
+
+sys.path.insert(0, "sources")
+import run_conformance as harness
+
+expected_cases = 550
+expected_exclusions = 13
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding="utf-8"))
+excluded = harness.apply_exclusions(
+    cases,
+    harness.parse_exclusions(harness.EXCLUSIONS),
+)
+assert len(cases) == expected_cases
+assert len(excluded) == expected_exclusions
+
+=== END AC cli-harness-assets ===
+
+=== AC cli-harness-parser ===
+Intent: The staged runner exposes the required corpus and exclusion parser interfaces.
+Requires: executable=python3; scope=test
+
+import sys
+
+sys.path.insert(0, "sources")
+import run_conformance as harness
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding="utf-8"))
+exclusions = harness.parse_exclusions(harness.EXCLUSIONS)
+excluded = harness.apply_exclusions(cases, exclusions)
+assert cases
+assert exclusions
+assert excluded
+assert all(case.program for case in cases)
+
+=== END AC cli-harness-parser ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve all supplied files byte-for-byte under `sources/`.
+- Do not invoke the candidate interpreter in this staging story.
+- Do not invoke list, dry-run, or whole-suite harness modes from any other non-terminal story.
+=== END ARTIFACT ===

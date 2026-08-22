@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Frontend-Parser.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Parser</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Grammar, precedence, and AST construction for jq programs.</td></tr><tr><td>Depends On</td><td>FEATURE-Frontend-Lexer.md, ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>jq parser, jq AST</td></tr><tr><td>Consumes</td><td>jq lexer</td></tr></tbody></table></div>
+<h2>Capability</h2>
+<p>The parser implements jq expressions, filters, function and module declarations, bindings, patterns, indexing, construction, operators, conditionals, error forms, and generator syntax. It applies the precedence and associativity defined by <code>sources/parser.y</code>, constructs an AST, and rejects syntactically invalid programs with compile exit status <code>3</code>.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parser-invalid-programs ===<br>Intent: The parser rejects malformed object and expression syntax with compile exit status 3.</p>
+<p>import os import subprocess</p>
+<p>programs = [&quot;{&quot;, &quot;}&quot;, &quot;break $out&quot;] for program in programs: result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 3 === END AC parser-invalid-programs ===</p>
+<p>=== AC parser-precedence ===<br>Intent: The parser accepts operator precedence and grouping syntax.</p>
+<p>import os import subprocess</p>
+<p>program = &quot;1 + 2 * 2 + 10 / 2&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, env={**os.environ}, ) assert result.returncode == 0 === END AC parser-precedence ===</p>
+<p>=== AC parser-conformance ===<br>Intent: Executed conformance cases exercising parser constructs pass without failures or errors.</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;^(module |include |def |if |try |reduce |foreach |.*\?//)&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parser-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Follow <code>sources/parser.y</code> for precedence, associativity, and syntax.</li><li>Keep compile errors distinct from runtime errors.</li><li>Do not access module files for grammar-only rejection cases.</li></ul></article>
+</main>
+</body>
+</html>

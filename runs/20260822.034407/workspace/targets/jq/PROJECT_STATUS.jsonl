@@ -1,0 +1,7 @@
+{"label": "INITIALIZED", "result": "pass", "at": "2026-08-22T03:44:08.453+00:00", "detail": "", "command": "drydock init jq", "attempts": 1}
+{"label": "IMPORTED", "result": "pass", "at": "2026-08-22T03:44:11.709+00:00", "detail": "", "command": "drydock import jq", "attempts": 1}
+{"label": "ANALYZED", "result": "pass", "at": "2026-08-22T03:45:25.264+00:00", "detail": "", "command": "drydock analyze jq", "attempts": 1}
+{"label": "PLAN CREATED", "result": "pass", "at": "2026-08-22T04:06:15.974+00:00", "detail": "", "command": "drydock plan jq", "attempts": 1}
+{"label": "BUILDING", "result": "pass", "at": "2026-08-22T04:06:29.232+00:00", "detail": "", "command": "drydock build jq", "attempts": 1}
+{"label": "BUILT", "result": "fail", "at": "2026-08-22T04:18:38.967+00:00", "detail": "1 step(s) failed", "command": "drydock build jq", "attempts": 1}
+{"state": "BUILT", "result": "fail", "at": "2026-08-22T04:18:38.967+00:00", "attempts": 1}

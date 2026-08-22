@@ -1,0 +1,11 @@
+2026-08-22T04:06:53.382936Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0 seconds
+Output:
+Failed to create parent directories for /mnt/C/Users/barlo/projects/drydock/uat/jq/runs/20260822.034407/build/jq/jq_interpreter/ast.py
+
+2026-08-22T04:08:03.273630Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.1 seconds
+Output:
+Failed to write file /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.034407/build/jq
+
+2026-08-22T04:09:01.627252Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc "rm -f jq_interpreter/__pycache__/*.pyc tests/__pycache__/*.pyc && rmdir jq_interpreter/__pycache__ tests/__pycache__ 2>/dev/null || true && find . -path './sources' -prune -o -type f -print | sort"`: CreateProcess { message: "Rejected(\"`/bin/bash -lc \\\"rm -f jq_interpreter/__pycache__/*.pyc tests/__pycache__/*.pyc && rmdir jq_interpreter/__pycache__ tests/__pycache__ 2>/dev/null || true && find . -path './sources' -prune -o -type f -print | sort\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }

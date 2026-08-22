@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_architecture.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_architecture.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_architecture.py">Raw file</a></div></header>
+<article class="doc"><pre>import io
+import unittest
+
+from jq_interpreter.ast import Comma, Identity, Literal, Pipeline
+from jq_interpreter.cli import run
+from jq_interpreter.errors import COMPILE_ERROR, RUNTIME_ERROR
+from jq_interpreter.parser import parse
+from jq_interpreter.lexer import tokenize
+from jq_interpreter.errors import CompileError
+
+
+class ArchitectureTests(unittest.TestCase):
+    def test_lexer_recognizes_jq_surface_and_locations(self) -&gt; None:
+        tokens = tokenize(&#x27;def f($x): .foo |= $x // 1; # comment\n&#x27;)
+        self.assertEqual([token.kind for token in tokens], [
+            &quot;DEF&quot;, &quot;IDENT&quot;, &quot;LPAREN&quot;, &quot;BINDING&quot;, &quot;RPAREN&quot;, &quot;COLON&quot;, &quot;FIELD&quot;,
+            &quot;SETPIPE&quot;, &quot;BINDING&quot;, &quot;DEFINEDOR&quot;, &quot;NUMBER&quot;, &quot;SEMICOLON&quot;, &quot;EOF&quot;,
+        ])
+        self.assertEqual(tokens[0].location.line, 1)
+        self.assertEqual(tokens[-1].location.line, 2)
+
+    def test_lexer_validates_unicode_and_rejects_bad_escapes(self) -&gt; None:
+        self.assertEqual(tokenize(&#x27;&quot;\\u03bc&quot;&#x27;)[0].value, &#x27;&quot;\\u03bc&quot;&#x27;)
+        with self.assertRaises(CompileError):
+            tokenize(&#x27;&quot;u\\vw&quot;&#x27;)
+        with self.assertRaises(CompileError):
+            tokenize(&quot;@&quot;)
+
+    def test_lexer_comment_continuation_hides_next_line(self) -&gt; None:
+        tokens = tokenize(&quot;1 # hidden \\\n+2\n3&quot;)
+        self.assertEqual([token.value for token in tokens], [&quot;1&quot;, &quot;3&quot;, &quot;&quot;])
+
+    def test_lexer_balances_nested_and_multiple_interpolations(self) -&gt; None:
+        tokens = tokenize(&#x27;&quot;\\(1 + (2 * 3)) / \\(.x)&quot;&#x27;)
+        self.assertEqual(
+            [token.kind for token in tokens],
+            [
+                &quot;QQSTRING_START&quot;, &quot;QQSTRING_INTERP_START&quot;, &quot;NUMBER&quot;, &quot;PLUS&quot;,
+                &quot;LPAREN&quot;, &quot;NUMBER&quot;, &quot;MULT&quot;, &quot;NUMBER&quot;, &quot;RPAREN&quot;,
+                &quot;QQSTRING_INTERP_END&quot;, &quot;QQSTRING_TEXT&quot;, &quot;QQSTRING_INTERP_START&quot;,
+                &quot;FIELD&quot;, &quot;QQSTRING_INTERP_END&quot;, &quot;QQSTRING_END&quot;, &quot;EOF&quot;,
+            ],
+        )
+
+    def test_lexer_does_not_treat_escaped_backslash_as_interpolation(self) -&gt; None:
+        tokens = tokenize(&#x27;&quot;\\\\(&quot;&#x27;)
+        self.assertEqual([token.kind for token in tokens], [&quot;STRING&quot;, &quot;EOF&quot;])
+
+    def test_lexer_accepts_upstream_numeric_spellings(self) -&gt; None:
+        tokens = tokenize(&quot;01 2.  .5 1e-3&quot;)
+        self.assertEqual([token.kind for token in tokens], [&quot;NUMBER&quot;] * 4 + [&quot;EOF&quot;])
+        self.assertEqual([token.value for token in tokens[:-1]], [&quot;01&quot;, &quot;2.&quot;, &quot;.5&quot;, &quot;1e-3&quot;])
+
+    def test_lexer_rejects_bad_escape_in_interpolated_string(self) -&gt; None:
+        with self.assertRaises(CompileError):
+            tokenize(&#x27;&quot;prefix \\(1) \\v&quot;&#x27;)
+
+    def test_parser_exposes_ast_boundaries(self) -&gt; None:
+        self.assertIsInstance(parse(&quot;.&quot;), Identity)
+        self.assertIsInstance(parse(&quot;1, 2&quot;), Comma)
+        self.assertIsInstance(parse(&quot;. | 1&quot;), Pipeline)
+        self.assertIsInstance(parse(&#x27;&quot;x&quot;&#x27;), Literal)
+
+    def test_cli_emits_compact_ordered_values(self) -&gt; None:
+        output = io.StringIO()
+        status = run([&quot;-c&quot;, &quot;., 1&quot;], io.StringIO(&quot;{\&quot;a\&quot;: 2}\n&quot;), output, io.StringIO())
+        self.assertEqual(status, 0)
+        self.assertEqual(output.getvalue(), &#x27;{&quot;a&quot;:2}\n1\n&#x27;)
+
+    def test_cli_distinguishes_compile_failure(self) -&gt; None:
+        self.assertEqual(run([&quot;-c&quot;, &quot;!&quot;], io.StringIO(), io.StringIO(), io.StringIO()), COMPILE_ERROR)
+
+    def test_cli_rejects_malformed_string_escape_at_compile_time(self) -&gt; None:
+        self.assertEqual(
+            run([&quot;-c&quot;, &#x27;&quot;u\\vw&quot;&#x27;], io.StringIO(&quot;null\n&quot;), io.StringIO(), io.StringIO()),
+            COMPILE_ERROR,
+        )
+
+    def test_cli_rejects_malformed_module_metadata_at_compile_time(self) -&gt; None:
+        self.assertEqual(
+            run([&quot;-c&quot;, &quot;module []; 0&quot;], io.StringIO(&quot;null\n&quot;), io.StringIO(), io.StringIO()),
+            COMPILE_ERROR,
+        )
+
+    def test_cli_distinguishes_runtime_input_failure(self) -&gt; None:
+        self.assertEqual(run([&quot;-c&quot;, &quot;.&quot;], io.StringIO(&quot;not-json\n&quot;), io.StringIO(), io.StringIO()), RUNTIME_ERROR)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

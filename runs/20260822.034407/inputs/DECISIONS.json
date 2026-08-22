@@ -1,0 +1,62 @@
+[
+  {
+    "id": "Q-001",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Numeric representation",
+    "description": "Choose the standard-library representation for jq numbers while preserving the corpus-required distinction between literal preservation and arithmetic conversion.",
+    "options": [
+      {
+        "value": "float",
+        "label": "IEEE754 float"
+      },
+      {
+        "value": "decimal",
+        "label": "Decimal-backed numbers"
+      }
+    ],
+    "system_choice": "Use Python float for arithmetic and comparisons, retain original numeric spellings where required for serialization, and expose have_decnum as false so the corpus selects its supported non-decnum behavior."
+  },
+  {
+    "id": "Q-002",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "FEATURE-Builtins-Regex.md",
+    "story": "builtins-002",
+    "status": "recommended",
+    "archived": false,
+    "title": "Regex implementation",
+    "description": "Choose the standard-library regex strategy for jq regular-expression builtins because the target cannot install Oniguruma or another third-party binding.",
+    "options": [
+      {
+        "value": "python-re",
+        "label": "Python re"
+      },
+      {
+        "value": "custom",
+        "label": "Custom engine"
+      }
+    ],
+    "system_choice": "Use Python re with a compatibility translation layer for jq-supported flags and named captures."
+  },
+  {
+    "id": "acceptance-architecture-contract-tooling",
+    "type": "text",
+    "severity": "blocking",
+    "origin": "build",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "open",
+    "archived": false,
+    "title": "Authorize architecture-contract test tooling",
+    "description": "Authorize executable=COMPASS.md for test scope. Planned installation: provision executable COMPASS.md outside Drydock. Affected acceptance check: ARCHITECTURE.md#architecture-contract (The architecture contract exposes the required interpreter boundary and exit-code constants.).",
+    "options": [],
+    "system_choice": "not authorized"
+  }
+]

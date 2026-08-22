@@ -1,0 +1,52 @@
+<requirement name="filter-evaluation" stories="core-001">
+A jq program is a "filter": it takes an input, and produces an output.
+</requirement>
+<requirement name="values-indexing-and-construction" stories="core-002">
+jq supports the same set of datatypes as JSON - numbers, strings, booleans, arrays, objects (which in JSON-speak are hashes with only string keys), and "null".
+</requirement>
+<requirement name="operators-and-comparisons" stories="core-003">
+Some jq operators (for instance, `+`) do different things depending on the type of their arguments (arrays, numbers, etc.).
+</requirement>
+<requirement name="path-access" stories="paths-001">
+Outputs array representations of the given path expression in `.`.
+</requirement>
+<requirement name="path-mutation-and-deletion" stories="paths-002">
+The builtin function `del` removes a key and its corresponding value from an object.
+</requirement>
+<requirement name="assignment" stories="paths-003">
+All the assignment operators in jq have path expressions on the left-hand side (LHS).
+</requirement>
+<requirement name="conditionals-and-error-control" stories="control-001">
+jq supports conditionals, errors, try/catch, labels, and breaks.
+</requirement>
+<requirement name="reduction-and-iteration" stories="control-002">
+The `reduce` syntax allows you to combine all of the results of an expression by accumulating them into a single answer.
+</requirement>
+<requirement name="recursion" stories="control-003">
+The `recurse(f)` function allows you to search through a recursive structure, and extract interesting data from all levels.
+</requirement>
+<requirement name="variables-and-destructuring" stories="functions-001">
+jq lets you define variables using `expression as $variable`.
+</requirement>
+<requirement name="user-defined-functions" stories="frontend-002,functions-002">
+You can give a filter a name using "def" syntax:
+</requirement>
+<requirement name="lexical-comments" stories="frontend-001">
+You can write comments in your jq filters using `#`.
+</requirement>
+<requirement name="interpolation-and-formatting" stories="frontend-003,builtins-003">
+Inside a string, you can put an expression inside parens after a backslash. Whatever the expression returns will be interpolated into the string.
+</requirement>
+<requirement name="core-builtins" stories="builtins-001">
+There are a lot of builtin filters for extracting a particular field of an object, or converting a number to a string, or various other standard tasks.
+</requirement>
+<requirement name="regular-expression-builtins" stories="builtins-002">
+jq uses the [Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE), as do PHP, TextMate, Sublime Text, etc, so the description here will focus on jq specifics.
+</requirement>
+<requirement name="extended-builtins" stories="builtins-003">
+The `tojson` and `fromjson` builtins dump values as JSON texts or parse JSON texts into values, respectively.
+</requirement>
+<unattached story="architecture"/>
+<unattached story="cli-001"/>
+<unattached story="cli-002"/>
+<unattached story="cli-003"/>

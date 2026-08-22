@@ -1,0 +1,18 @@
+<reusable-compact filename="ARCHITECTURE.md">
+Standalone Python 3.11+ jq interpreter using standard library only. Executable `jq` accepts `-c '<program>'`, reads JSON lines from stdin, evaluates ordered generator streams, and emits compact JSON lines.
+
+Boundaries: lexer/source locations; parser/AST; evaluator/generator control flow; paths/updates; builtins; CLI and exit handling. Preserve ordering, multiplicity, cartesian pipelines, backtracking, and partial output before runtime errors.
+
+Exit codes: 0 success, 3 compile failure, 5 runtime failure. No system jq, third-party runtime, network, or source-asset modifications. Required source assets remain read-only.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- COMPASS.md
+
+SUMMARY:
+Added the missing build-root architecture compass with the required standalone-interpreter and exit-code contract. Architecture contract, asset consistency checks, four project tests, and CLI smoke test pass.
+
+BLOCKERS:
+- None

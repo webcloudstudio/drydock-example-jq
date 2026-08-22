@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/evaluator.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/evaluator.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/evaluator.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Ordered generator evaluation boundary.&quot;&quot;&quot;
+
+from collections.abc import Iterator
+from typing import Any
+
+from .ast import Comma, Filter, Identity, Literal, Pipeline
+from .errors import RuntimeErrorJq
+
+
+def evaluate(program: Filter, input_value: Any) -&gt; Iterator[Any]:
+    &quot;&quot;&quot;Yield every output in jq order, preserving stream multiplicity.&quot;&quot;&quot;
+
+    if isinstance(program, Identity):
+        yield input_value
+    elif isinstance(program, Literal):
+        yield program.value
+    elif isinstance(program, Comma):
+        yield from evaluate(program.left, input_value)
+        yield from evaluate(program.right, input_value)
+    elif isinstance(program, Pipeline):
+        for intermediate in evaluate(program.left, input_value):
+            yield from evaluate(program.right, intermediate)
+    else:
+        raise RuntimeErrorJq(&quot;unknown filter&quot;)
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Core-Values.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Core-Values.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Core-Values.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Core Values</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements jq values, indexing, iteration, slicing, and construction.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Core-Generator.md</td></tr><tr><td>Provides</td><td>literals, field access, indexing, iteration, slices, arrays, objects</td></tr><tr><td>Consumes</td><td>generator evaluator, jq AST</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This feature evaluates JSON literals and constructs, identity, field access, array and object indexing, optional access, iteration, negative indices, slices, and generator-preserving array and object construction.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-values-conformance ===<br>Intent: The interpreter passes the authoritative corpus cases covering values, indexing, iteration, slicing, and construction.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys from pathlib import Path</p>
+<p>assert Path(&quot;jq&quot;).is_file()</p>
+<p>selector = r&quot;\.foo|\.|\.\[|\.\[\]|\[[^]]*\]|^\{&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-values-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator ordering and multiplicity.</li><li>Preserve immutable JSON values and compact JSON-compatible semantics.</li></ul></article>
+</main>
+</body>
+</html>

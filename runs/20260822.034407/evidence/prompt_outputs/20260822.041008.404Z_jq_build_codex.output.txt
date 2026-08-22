@@ -1,0 +1,21 @@
+<reusable-compact filename="lexer.l">
+Lexer contract: recognize jq keywords, identifiers/namespaces, `.field`, `$binding`, numbers, JSON strings and escapes, `\(...)` interpolation delimiters, `@format` tokens, operators, delimiters, whitespace, and `#` comments with backslash-newline continuation. Track source locations and reject malformed escapes or invalid characters at compile time.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Lexer-relevant syntax includes JSON literals, identifiers, field access, bindings, operators, comments, string interpolation `\(expression)`, format tokens such as `@json` and `@uri`, module directives, and Unicode-preserving string escapes. Invalid lexical syntax must produce compile status 3.
+</reusable-compact>
+
+AC_BROKEN: lexer-conformance
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/lexer.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented jq lexical tokenization, strict escape validation, comments, operators, bindings, fields, formats, interpolation markers, and source locations. Focused tests pass. The two negative acceptance checks return status 3.
+
+BLOCKERS:
+- The declared lexer-conformance selector `r"\\(|...` is invalid Python regex syntax, so the harness aborts before producing JSON results.

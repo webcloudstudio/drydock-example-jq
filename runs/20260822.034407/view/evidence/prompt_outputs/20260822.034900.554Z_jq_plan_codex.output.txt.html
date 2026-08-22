@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.034900.554Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.034900.554Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.034900.554Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Control-Errors.md ===
+# FEATURE: Control Flow Errors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq conditionals, runtime errors, exception handling, labels, and breaks. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Paths-Assignment.md |
+| Provides    | conditionals, error, halt, halt_error, try/catch, optional suppression, labels, break |
+| Consumes    | generator evaluator, assignment operators |
+
+## Questions
+
+- None.
+
+## Behavior
+
+This feature implements `if`, `then`, `elif`, `else`, and `end` with jq truthiness: only `false` and `null` select the false branch. Runtime errors carry values, may be caught by `try ... catch`, and preserve outputs emitted before an uncaught error. The optional operator suppresses errors. Labels establish lexical break targets, and `halt`/`halt_error` terminate evaluation with their specified status behavior. Compile failures remain distinct from runtime failures.
+
+## Programmatic Acceptance
+
+=== AC control-errors-suite ===
+Intent: Execute the conformance cases covering conditionals, errors, try/catch, and optional suppression.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;if .*then|try |catch |error|halt|\\?&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-errors-suite ===
+
+=== AC control-label-suite ===
+Intent: Execute the conformance cases covering lexical labels and break control flow.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;label |break &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-label-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must exit 3 and runtime failures must exit 5.
+- Diagnostics go to stderr and are not used as behavioral output.
+- Runtime errors must not discard values emitted before the error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Reduce.md ===
+# FEATURE: Control Flow Reduction
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq reducers, stream extractors, bounded generators, and iterative control constructs. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Control-Errors.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth, while, until, repeat |
+| Consumes    | generator evaluator, runtime errors, labels |
+
+## Questions
+
+- None.
+
+## Behavior
+
+Reducers consume generator outputs in order and update an accumulator. `foreach` exposes intermediate extraction results. `limit`, `skip`, `first`, `last`, and `nth` preserve generator ordering and short-circuit where specified. `while`, `until`, and `repeat` repeatedly evaluate filters without losing stream multiplicity, and propagate or suppress termination errors according to jq semantics.
+
+## Programmatic Acceptance
+
+=== AC control-reduce-suite ===
+Intent: Execute the conformance cases covering reduce and foreach accumulation and extraction.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;reduce |foreach &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-reduce-suite ===
+
+=== AC control-iteration-suite ===
+Intent: Execute the conformance cases covering bounded extraction and iterative generators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;limit\\(|skip\\(|first\\(|last\\(|nth\\(|while\\(|until\\(|repeat\\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-iteration-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve accumulator and extraction ordering.
+- Negative limits, skips, and nth indices must raise jq runtime errors where specified.
+- Short-circuiting constructs must not evaluate unnecessary generator outputs.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Control-Recursion.md ===
+# FEATURE: Control Flow Recursion
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements recursive filters, recursive descent, and ordered structural traversal. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Control-Reduce.md |
+| Provides    | recurse, recursive descent |
+| Consumes    | generator evaluator, control flow |
+
+## Questions
+
+- None.
+
+## Behavior
+
+`recurse` emits the current value followed by recursively generated descendants. Its filter and condition variants preserve depth-first jq ordering. `..` is equivalent to the zero-argument recursive traversal and handles arrays and objects through optional iteration. Recursive generator evaluation must preserve multiplicity and avoid changing the observable order of outputs.
+
+## Programmatic Acceptance
+
+=== AC control-recursion-suite ===
+Intent: Execute the conformance cases covering recurse variants and recursive descent.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;recurse|\\.\\.&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-recursion-suite ===
+
+=== AC control-recursion-order-suite ===
+Intent: Execute recursive traversal cases that assert ordered descendant generation.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\\[\\.\\.|\\.\\. \\|&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC control-recursion-order-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Recursive traversal must emit the root before descendants.
+- Preserve depth-first ordering and generator multiplicity.
+- Do not follow non-iterable scalar values as children.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Functions-Bindings.md ===
+# FEATURE: Functions Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq lexical variable bindings, destructuring patterns, and destructuring alternatives. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Control-Recursion.md |
+| Provides    | lexical variables, bindings, array/object patterns, ?// destructuring |
+| Consumes    | jq AST, generator evaluator, control flow |
+
+## Questions
+
+- None.
+
+## Behavior
+
+`as` binds each generated value lexically while preserving the original input for the continuation. Bindings are immutable and scoped to the remainder of their expression. Array and object patterns bind matching fields and use `null` for absent array positions or fields as jq specifies. `?//` tries destructuring alternatives with backtracking and exposes the resulting bindings to the continuation.
+
+## Programmatic Acceptance
+
+=== AC functions-bindings-suite ===
+Intent: Execute conformance cases covering lexical bindings, variable scope, and array/object destructuring.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot; as \\$|\\. as \\[|\\. as \\{&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC functions-bindings-suite ===
+
+=== AC functions-alternation-suite ===
+Intent: Execute conformance cases covering destructuring alternative backtracking.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\\?//&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC functions-alternation-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Variable scope must not leak outside its lexical expression.
+- Each generated binding value must run the continuation with the original input.
+- Failed destructuring alternatives must backtrack without leaking partial bindings.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Functions-Definitions.md ===
+# FEATURE: Functions Definitions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq user-defined functions, parameters, lexical function scope, and recursive calls. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Functions-Bindings.md |
+| Provides    | def declarations, filter arguments, value arguments, recursion, function scope |
+| Consumes    | variables and destructuring, jq AST, generator evaluator |
+
+## Questions
+
+- None.
+
+## Behavior
+
+`def` declares functions by name and arity. Regular parameters receive filters, binding parameters receive values, and arguments may generate multiple outputs. Definitions are lexically scoped, later definitions replace earlier definitions for subsequent references, and functions may recurse. Calls preserve generator backtracking through arguments and function bodies.
+
+## Programmatic Acceptance
+
+=== AC functions-definitions-suite ===
+Intent: Execute conformance cases covering user-defined functions, arity, parameters, scope, and redefinition.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;def &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC functions-definitions-suite ===
+
+=== AC functions-recursion-suite ===
+Intent: Execute conformance cases covering recursive user-defined functions and generator backtracking through calls.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;def .*fac|def .*recurse|def .*\\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC functions-recursion-suite ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function arity and parameter kinds must be enforced at compile time.
+- Function arguments remain filters unless declared as value bindings.
+- Recursive calls must preserve generator ordering and lexical scope.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

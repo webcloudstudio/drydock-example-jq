@@ -1,0 +1,23 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status
+
+  Target          /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.034407/workspace/targets/jq
+  Name            drydock jq Uat Kit
+  Description     Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46
+                  excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
+  Phase           Implement
+  State           Failed: programmatic acceptance failed: lexer-conformance
+  Metadata        building · running
+  Sources         9 imported · 21 authored blueprint files
+  Analysis        Ready · 20 stories · 0 questions · 0 blockers
+  Review          1 open blocking decision · 0 questionnaires
+  Blueprint       ✓  0 errors · 0 warnings
+  Plan            19 pending · 1 blocked/questions · 1 closed/failed
+  Frontier        (none)
+  Workflow        5 steps
+                  Initialize         complete at 2026-08-22T03:44:08.453+00:00
+                  Import             complete at 2026-08-22T03:44:11.709+00:00
+                  Analyze            complete at 2026-08-22T03:45:25.264+00:00
+                  Plan               complete at 2026-08-22T04:06:15.974+00:00
+                  Build              failed at 2026-08-22T04:18:38.967+00:00
+  Next step       drydock run quarterdeck jq

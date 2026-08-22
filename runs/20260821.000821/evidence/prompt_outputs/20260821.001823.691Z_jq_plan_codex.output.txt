@@ -1,1 +1,0 @@
-The reported defect is inconsistent with the supplied artifacts: every listed acceptance invokes `sources/run_conformance.py` with `--select ... --json`, exactly as required by the normative protocol. Using `--list` would violate that protocol.
