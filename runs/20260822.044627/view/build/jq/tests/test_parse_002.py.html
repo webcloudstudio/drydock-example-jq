@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_parse_002.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_parse_002.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_parse_002.py">Raw file</a></div></header>
+<article class="doc"><pre>import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from jq_interpreter.errors import CompileError
+from jq_interpreter.parser import parse
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def test_unicode_json_escapes_are_decoded() -&gt; None:
+    result = run(r&#x27;&quot;Aa\r\n\t\b\f\u03bc&quot;&#x27;, None)
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == &quot;Aa\r\n\t\b\fμ&quot;
+
+
+def test_interpolation_uses_filter_output() -&gt; None:
+    result = run(r&#x27;&quot;inter\(&quot;pol&quot; + &quot;ation&quot;)&quot;&#x27;, None)
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == &quot;interpolation&quot;
+
+
+@pytest.mark.parametrize(
+    (&quot;program&quot;, &quot;value&quot;, &quot;expected&quot;),
+    [
+        (&quot;@uri&quot;, &quot;μ&quot;, &quot;%CE%BC&quot;),
+        (&quot;@base64&quot;, &quot;foóbar\n&quot;, &quot;Zm/Ds2Jhcgo=&quot;),
+        (&#x27;@html &quot;&lt;b&gt;\\(.)&lt;/b&gt;&quot;&#x27;, &quot;&lt;script&gt;hax&lt;/script&gt;&quot;, &quot;&lt;b&gt;&amp;lt;script&amp;gt;hax&amp;lt;/script&amp;gt;&lt;/b&gt;&quot;),
+    ],
+)
+def test_format_literals(program: str, value: object, expected: str) -&gt; None:
+    result = run(program, value)
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == expected
+
+
+def test_invalid_escape_is_compile_failure() -&gt; None:
+    with pytest.raises(CompileError):
+        parse(r&#x27;&quot;u\vw&quot;&#x27;)
+
+</pre></article>
+</main>
+</body>
+</html>

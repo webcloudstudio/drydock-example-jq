@@ -1,0 +1,15 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Implemented `unique` parsing/evaluation with jq-style sorting and deduplication. Focused `unique` cases pass; all 32 project tests pass. Declared PARSE-003 and PARSE-004 conformance checks still fail due broader evaluator/parser gaps.
+
+BLOCKERS:
+- Remaining failures include generator semantics, builtins, destructuring, assignments, and control syntax.
+
+FAILURE_SUMMARY: Scoped conformance criteria remain failing.
+
+FAILURE_DETAIL: The existing interpreter passes local tests and focused unique cases, but the required PARSE-003 and PARSE-004 corpus selections still report many failures. Further evaluator and parser implementation is required.

@@ -1,0 +1,12 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+plan verify: jq
+  73 acceptance criteria in 44 files: every one can run
+  ⚠  43 criteria: captures a program's output and prints none of it; print its pass/fail counts before asserting so repair can see progress
+       FEATURE-Accessors.md [value-002-conformance], FEATURE-Accessors.md [value-002-access-contract], FEATURE-Arithmetic-Operators.md [flow-001-conformance], FEATURE-Assignment-Operators.md [path-003-conformance], FEATURE-Boolean-and-Alternative-Operators.md [flow-002-conformance], and 38 more
+  ⚠  FEATURE-Date-and-Time.md [text-004-conformance]: expects '1970-01-01T00:00:00Z', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-conformance]: expects '"x"', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-conformance]: expects '&lt;x&gt;', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-conformance]: expects 'a%20b', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGQgYg==', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGk=', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-Output-Formats.md [text-002-interface]: expects 'hello%20world', a value re-typed rather than derived from the input or read back from the system

@@ -1,10 +1,22 @@
 {
   "prepassed": [
     "architecture-conformance-start",
+    "architecture-contract",
+    "architecture-runtime",
+    "compact-json-output",
+    "compile-exit-code",
+    "conf-001-assets",
     "conformance-assets",
     "exec-001-conformance",
     "exec-001-process",
     "exec-003-multiple-inputs",
-    "exec-003-unicode-and-compact"
+    "exec-003-unicode-and-compact",
+    "exec-entry-conformance",
+    "exec-is-runnable",
+    "lexer-conformance",
+    "lexer-rejects-invalid-source",
+    "multiple-input-values",
+    "partial-runtime-output",
+    "runtime-exit-code"
   ]
 }

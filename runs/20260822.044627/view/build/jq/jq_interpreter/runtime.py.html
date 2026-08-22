@@ -12,10 +12,18 @@
 <article class="doc"><pre>&quot;&quot;&quot;Runtime value and stream contracts.&quot;&quot;&quot;
 
 from collections.abc import Iterator
+from dataclasses import dataclass, field
 from typing import TypeAlias
 
 JsonValue: TypeAlias = None | bool | int | float | str | list[&quot;JsonValue&quot;] | dict[str, &quot;JsonValue&quot;]
 ValueStream: TypeAlias = Iterator[JsonValue]
+
+
+@dataclass
+class EvaluationContext:
+    &quot;&quot;&quot;Per-input state for lexical bindings and runtime options.&quot;&quot;&quot;
+
+    bindings: dict[str, JsonValue] = field(default_factory=dict)
 
 
 def identity_stream(value: JsonValue) -&gt; ValueStream:

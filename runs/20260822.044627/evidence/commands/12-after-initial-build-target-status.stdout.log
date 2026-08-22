@@ -6,39 +6,44 @@ Drydock status
   Description     Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46
                   excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
   Phase           Implement
-  State           Failed: programmatic acceptance failed: conformance-source-integrity
+  State           Failed: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
   Metadata        building · running
-  Sources         9 imported · 44 authored blueprint files
+  Sources         9 imported · 47 authored blueprint files
   Analysis        Ready · 42 stories · 0 questions · 0 blockers
-  Blueprint       ⚠  0 errors · 7 warnings
-    ⚠  Acceptance snippets: FEATURE-Date-and-Time.md [text-004-conformance]: expects '1970-01-01T00:00:00Z', a value re-
-       typed rather than derived from the input or read back from the system. This criterion is reported but does
-       not gate its story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects '"x"', a value re-typed rather
+  Blueprint       ⚠  0 errors · 9 warnings
+    ⚠  Acceptance snippets: FEATURE-CORE-001.md [core-001-conformance]: expects 'null\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-001.md [core-001-conformance]: expects '0\n1\n2\n', a value re-typed rather
        than derived from the input or read back from the system. This criterion is reported but does not gate its
        story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects '&lt;x&gt;', a value re-typed
-       rather than derived from the input or read back from the system. This criterion is reported but does not
-       gate its story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'a%20b', a value re-typed rather
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '1\n2\n3\n', a value re-typed rather
        than derived from the input or read back from the system. This criterion is reported but does not gate its
        story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGQgYg==', a value re-typed
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '[5,6]\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '{"a":1,"b":2}\n', a value re-typed
        rather than derived from the input or read back from the system. This criterion is reported but does not
        gate its story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGk=', a value re-typed rather
+    ⚠  Acceptance snippets: FEATURE-CORE-003.md [core-003-conformance]: expects '"x"\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects '0\n0\n1\n1\n', a value re-typed rather
        than derived from the input or read back from the system. This criterion is reported but does not gate its
        story; bind the value to a name and use that name on both sides to make it binding
-    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-interface]: expects 'hello%20world', a value re-typed
-       rather than derived from the input or read back from the system. This criterion is reported but does not
-       gate its story; bind the value to a name and use that name on both sides to make it binding
-  Plan            39 pending · 4 closed/implemented · 1 closed/failed
-  Frontier        parse-001: Implement jq lexical scanning.
-                  parse-002: Implement literals, escapes, and string interpolation.
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects 'true\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects 'false\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+  Plan            35 pending · 7 closed/implemented · 2 closed/failed
+  Frontier        (none)
   Workflow        5 steps
                   Initialize         complete at 2026-08-22T04:46:29.469+00:00
                   Import             complete at 2026-08-22T04:46:33.960+00:00
                   Analyze            complete at 2026-08-22T04:48:42.765+00:00
-                  Plan               complete at 2026-08-22T18:06:15.431+00:00
-                  Build              failed at 2026-08-22T18:16:59.812+00:00
+                  Plan               complete at 2026-08-22T19:46:51.359+00:00
+                  Build              failed at 2026-08-22T21:17:03.066+00:00
   Next step       drydock run quarterdeck jq

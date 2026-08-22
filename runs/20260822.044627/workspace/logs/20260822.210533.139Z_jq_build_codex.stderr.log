@@ -1,0 +1,15 @@
+2026-08-22T21:11:55.921741Z ERROR codex_core::tools::router: error=write_stdin failed: Unknown process id 12565
+2026-08-22T21:12:46.321436Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+    def if_expr(self):
+        self.take('if'); c=self.expr(0); self.take('then'); a=self.expr(0); b=Node('literal',('null',))
+        if self.p()=='else': self.take(); b=self.expr(0); self.take('end')
+        elif self.p()=='elif':
+            self.take('elif'); ec=self.expr(0); self.take('then'); ea=self.expr(0)
+            eb=Node('literal',('null',))
+            if self.p()=='else': self.take(); eb=self.expr(0); self.take('end')
+            elif self.p()=='elif':
+                self.take('elif'); eb=self.if_expr()
+            else: self.take('end')
+            b=Node('if',(ec,ea,eb))
+        else: self.take('end')
+        return Node('if',(c,a,b))

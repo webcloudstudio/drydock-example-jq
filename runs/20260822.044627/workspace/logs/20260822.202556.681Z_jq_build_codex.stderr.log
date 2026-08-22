@@ -1,0 +1,5 @@
+2026-08-22T20:28:45.200686Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+            self.take('('); init=self.expr(2); self.take(';'); upd=self.expr(2); ext=None
+2026-08-22T20:30:16.340456Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+        if t=='[':
+            self.take(); items=[]

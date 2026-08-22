@@ -9,17 +9,29 @@
 <body>
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/lexer.py">Raw file</a></div></header>
-<article class="doc"><pre>&quot;&quot;&quot;Lexical boundary for jq source text.&quot;&quot;&quot;
+<article class="doc"><pre>&quot;&quot;&quot;Lexical scanner for jq source text.&quot;&quot;&quot;
 
 from dataclasses import dataclass
 from enum import Enum, auto
+import re
 
 from .errors import CompileError
 
 
 class TokenKind(Enum):
-    IDENTITY = auto()
+    IDENTIFIER = auto()
+    NUMBER = auto()
+    STRING = auto()
+    FIELD = auto()
+    BINDING = auto()
+    FORMAT = auto()
+    KEYWORD = auto()
+    OPERATOR = auto()
+    DELIMITER = auto()
+    INTERPOLATION_START = auto()
+    INTERPOLATION_END = auto()
     END = auto()
+    IDENTITY = auto()
 
 
 @dataclass(frozen=True)
@@ -29,16 +41,145 @@ class Token:
     position: int
 
 
+_KEYWORDS = {&quot;as&quot;, &quot;def&quot;, &quot;module&quot;, &quot;import&quot;, &quot;include&quot;, &quot;if&quot;, &quot;then&quot;, &quot;else&quot;, &quot;elif&quot;, &quot;and&quot;, &quot;or&quot;, &quot;end&quot;, &quot;reduce&quot;, &quot;foreach&quot;, &quot;try&quot;, &quot;catch&quot;, &quot;label&quot;, &quot;break&quot;}
+_OPERATORS = (&quot;//=&quot;, &quot;?//&quot;, &quot;!=&quot;, &quot;==&quot;, &quot;|=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;, &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;..&quot;, &quot;//&quot;)
+_DELIMITERS = set(&quot;.?!=;,,:|+-*/%$&lt;&gt;{}[]()&quot;)
+_NUMBER = re.compile(r&quot;(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?&quot;)
+_NAME = re.compile(r&quot;[A-Za-z_][A-Za-z_0-9]*&quot;)
+_QUALIFIED_NAME = re.compile(r&quot;(?:[A-Za-z_][A-Za-z_0-9]*::)*[A-Za-z_][A-Za-z_0-9]*&quot;)
+
+
+def _error(source: str, position: int, message: str) -&gt; CompileError:
+    line = source.count(&quot;\n&quot;, 0, position) + 1
+    line_start = source.rfind(&quot;\n&quot;, 0, position) + 1
+    return CompileError(f&quot;{message} at line {line}, column {position - line_start + 1}&quot;)
+
+
+def _scan_string(source: str, start: int) -&gt; tuple[list[Token], int]:
+    tokens = [Token(TokenKind.STRING, &#x27;&quot;&#x27;, start)]
+    position = start + 1
+    text_start = position
+    while position &lt; len(source):
+        character = source[position]
+        if character == &quot;\\&quot;:
+            if position + 1 &gt;= len(source):
+                raise _error(source, position, &quot;unterminated string&quot;)
+            if source[position + 1] == &quot;(&quot;:
+                if text_start &lt; position:
+                    tokens.append(Token(TokenKind.STRING, source[text_start:position], text_start))
+                tokens.append(Token(TokenKind.INTERPOLATION_START, &quot;\\(&quot;, position))
+                expression_start = position + 2
+                cursor = expression_start
+                depth = 1
+                quoted_expression = False
+                escaped_expression = False
+                while cursor &lt; len(source):
+                    current = source[cursor]
+                    if quoted_expression:
+                        if escaped_expression:
+                            escaped_expression = False
+                        elif current == &quot;\\&quot;:
+                            escaped_expression = True
+                        elif current == &#x27;&quot;&#x27;:
+                            quoted_expression = False
+                    elif current == &#x27;&quot;&#x27;:
+                        quoted_expression = True
+                    elif current == &quot;(&quot;:
+                        depth += 1
+                    elif current == &quot;)&quot;:
+                        depth -= 1
+                        if depth == 0:
+                            inner = tokenize(source[expression_start:cursor])
+                            tokens.extend(inner[:-1])
+                            tokens.append(Token(TokenKind.INTERPOLATION_END, &quot;)&quot;, cursor))
+                            position = cursor + 1
+                            text_start = position
+                            break
+                    cursor += 1
+                else:
+                    raise _error(source, position, &quot;unterminated interpolation&quot;)
+                continue
+            if source[position + 1] == &quot;u&quot;:
+                escape = source[position + 2:position + 6]
+                if len(escape) != 4 or not re.fullmatch(r&quot;[0-9A-Fa-f]{4}&quot;, escape):
+                    raise _error(source, position, &quot;invalid unicode escape&quot;)
+                position += 6
+            else:
+                if source[position + 1] not in &#x27;&quot;\\/bfnrt&#x27;:
+                    raise _error(source, position, &quot;invalid escape&quot;)
+                position += 2
+            continue
+        if character == &#x27;&quot;&#x27;:
+            if text_start &lt; position:
+                tokens.append(Token(TokenKind.STRING, source[text_start:position], text_start))
+            tokens.append(Token(TokenKind.STRING, &#x27;&quot;&#x27;, position))
+            return tokens, position + 1
+        if ord(character) &lt; 0x20:
+            raise _error(source, position, &quot;control character in string&quot;)
+        position += 1
+    raise _error(source, start, &quot;unterminated string&quot;)
+
+
 def tokenize(source: str) -&gt; list[Token]:
-    &quot;&quot;&quot;Tokenize the foundation syntax, preserving source positions.&quot;&quot;&quot;
+    &quot;&quot;&quot;Tokenize jq source, retaining offsets and rejecting lexical errors.&quot;&quot;&quot;
     tokens: list[Token] = []
-    for position, character in enumerate(source):
+    position = 0
+    while position &lt; len(source):
+        character = source[position]
         if character.isspace():
+            position += 1
             continue
-        if character == &quot;.&quot;:
-            tokens.append(Token(TokenKind.IDENTITY, character, position))
+        if character == &quot;#&quot;:
+            newline = source.find(&quot;\n&quot;, position)
+            position = len(source) if newline &lt; 0 else newline + 1
             continue
-        raise CompileError(f&quot;unexpected character at position {position}&quot;)
+        if character == &#x27;&quot;&#x27;:
+            string_tokens, position = _scan_string(source, position)
+            tokens.extend(string_tokens)
+            continue
+        number = _NUMBER.match(source, position)
+        if number:
+            tokens.append(Token(TokenKind.NUMBER, number.group(), position))
+            position = number.end()
+            continue
+        if character == &quot;.&quot; and position + 1 &lt; len(source) and source[position + 1].isalpha():
+            name = _NAME.match(source, position + 1)
+            assert name is not None
+            tokens.append(Token(TokenKind.FIELD, source[position:name.end()], position))
+            position = name.end()
+            continue
+        if character == &quot;$&quot;:
+            name = _QUALIFIED_NAME.match(source, position + 1)
+            if not name:
+                raise _error(source, position, &quot;invalid binding&quot;)
+            tokens.append(Token(TokenKind.BINDING, source[position:name.end()], position))
+            position = name.end()
+            continue
+        if character == &quot;@&quot;:
+            name = _NAME.match(source, position + 1)
+            if not name:
+                raise _error(source, position, &quot;invalid format&quot;)
+            tokens.append(Token(TokenKind.FORMAT, source[position:name.end()], position))
+            position = name.end()
+            continue
+        qualified = _QUALIFIED_NAME.match(source, position)
+        if qualified:
+            text = qualified.group()
+            kind = TokenKind.KEYWORD if text in _KEYWORDS else TokenKind.IDENTIFIER
+            tokens.append(Token(kind, text, position))
+            position = qualified.end()
+            continue
+        operator = next((value for value in _OPERATORS if source.startswith(value, position)), None)
+        if operator:
+            tokens.append(Token(TokenKind.OPERATOR, operator, position))
+            position += len(operator)
+            continue
+        if character in _DELIMITERS:
+            kind = TokenKind.IDENTITY if character == &quot;.&quot; else TokenKind.DELIMITER
+            tokens.append(Token(kind, character, position))
+            position += 1
+            continue
+        raise _error(source, position, &quot;unexpected character&quot;)
     tokens.append(Token(TokenKind.END, &quot;&quot;, len(source)))
     return tokens
 </pre></article>

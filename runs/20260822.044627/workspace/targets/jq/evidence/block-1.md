@@ -3,66 +3,58 @@
 - block type: block
 - date: 2026-08-22
 - resulting state: closed/verified
-- story points (combined assembled cost): 10201
-- execution id: 20260822.180626.371Z-122a84e1
+- story points (combined assembled cost): 10461
+- execution id: 20260822.194717.195Z-0948cafd
 
 ## Stories built
-- Define the standalone interpreter architecture and module boundaries. (architecture) [story]
-
-## Reusable compacts
-- ARCHITECTURE_compact.md
+- Define the standalone jq interpreter architecture and module boundaries. (architecture-foundation) [story]
 
 ## Stacked context
 - compass: COMPASS.md (SP 3420)
-- implements: ARCHITECTURE.md (SP 1018)
-- stack: common.md (SP 1807)
+- implements: ARCHITECTURE.md (SP 1078)
+- context: TECHNOLOGY_STACK.md (SP 200)
 - stack: python.md (SP 3892)
+- stack: common.md (SP 1807)
 
 ## Build directory changes
-- jq
 - jq_interpreter/__init__.py
-- jq_interpreter/ast.py
-- jq_interpreter/builtins.py
-- jq_interpreter/cli.py
+- jq_interpreter/architecture.py
 - jq_interpreter/diagnostics.py
-- jq_interpreter/errors.py
-- jq_interpreter/evaluator.py
-- jq_interpreter/interpreter.py
-- jq_interpreter/lexer.py
-- jq_interpreter/parser.py
-- jq_interpreter/paths.py
 - jq_interpreter/runtime.py
 - tests/test_architecture.py
 
-## Build summary
-<reusable-compact filename="ARCHITECTURE.md">
-- Executable: `./jq -c '<program>'`; compact JSON lines on stdout.
-- Exit codes: `0` success, `3` compile failure, `5` runtime failure; diagnostics on stderr.
-- Standard-library Python only; no external jq, dependencies, networking, or persistence.
-- Modules: CLI, lexer, parser/AST, evaluator streams, runtime values, builtins, paths/assignment, diagnostics.
-- Preserve generator ordering, multiplicity, backtracking, immutable transformations, and partial output.
-</reusable-compact>
+## Pre-build acceptance observation
+- GREEN (prepassed): architecture-runtime (ARCHITECTURE.md)
+  intent: The declared runtime stack is available using only Python standard-library modules.
+  return code: 0
+- GREEN (prepassed): architecture-contract (ARCHITECTURE.md)
+  intent: The staged conformance runner exposes the process exit-code contract required by the architecture.
+  return code: 0
 
+## Post-build programmatic acceptance
+- PASS: architecture-runtime (ARCHITECTURE.md)
+  intent: The declared runtime stack is available using only Python standard-library modules.
+  target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3
+  provisioning: not required
+  return code: 0
+- PASS: architecture-contract (ARCHITECTURE.md)
+  intent: The staged conformance runner exposes the process exit-code contract required by the architecture.
+  target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3
+  provisioning: not required
+  return code: 0
+
+## Build summary
 RESULT: SUCCESS
 
 FILES CHANGED:
-- jq
-- jq_interpreter/__init__.py
-- jq_interpreter/ast.py
-- jq_interpreter/builtins.py
-- jq_interpreter/cli.py
+- jq_interpreter/architecture.py
 - jq_interpreter/diagnostics.py
-- jq_interpreter/errors.py
-- jq_interpreter/evaluator.py
-- jq_interpreter/interpreter.py
-- jq_interpreter/lexer.py
-- jq_interpreter/parser.py
-- jq_interpreter/paths.py
 - jq_interpreter/runtime.py
+- jq_interpreter/__init__.py
 - tests/test_architecture.py
 
 SUMMARY:
-Established the standalone Python interpreter architecture, executable boundary, module contracts, exit-code handling, streaming identity behavior, immutable path reads, and foundational tests. All 5 tests pass. No staged conformance suite was run because this architecture specification declares no programmatic acceptance.
+Established explicit module boundaries, evaluation context isolation, and centralized exit-code contracts. All 15 tests and both declared acceptance checks pass. `sources/` was not modified.
 
 BLOCKERS:
 - None

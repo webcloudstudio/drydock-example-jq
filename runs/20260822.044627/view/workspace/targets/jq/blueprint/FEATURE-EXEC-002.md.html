@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EXEC-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EXEC-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EXEC-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Process Exit and Diagnostics</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Separates compile failures, runtime failures, successful completion, and diagnostics.</td></tr><tr><td>Depends On</td><td>FEATURE-EXEC-001.md</td></tr><tr><td>Provides</td><td>compile exit 3, runtime exit 5, success exit 0, stderr diagnostics</td></tr><tr><td>Consumes</td><td>./jq -c &#x27;&lt;program&gt;&#x27;</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement the process contract required by the conformance harness. Invalid jq syntax exits <code>3</code>; a compiled program that raises at runtime exits <code>5</code>; successful execution exits <code>0</code>. Diagnostics go to standard error, while values emitted before a runtime failure remain on standard output.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC compile-exit-code ===<br>Intent: A syntactically invalid jq program returns the compile-failure status.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [f&quot;{os.getcwd()}/jq&quot;, &quot;-c&quot;, &quot;{&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC compile-exit-code ===</p>
+<p>=== AC runtime-exit-code ===<br>Intent: A compiled jq program that raises returns the runtime-failure status.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [f&quot;{os.getcwd()}/jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC runtime-exit-code ===</p>
+<p>=== AC partial-runtime-output ===<br>Intent: Values emitted before a runtime error remain available on stdout.</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [f&quot;{os.getcwd()}/jq&quot;, &quot;-c&quot;, &quot;1, error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 5 assert result.stdout.splitlines()[:1] == [&quot;1&quot;] === END AC partial-runtime-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never collapse compile and runtime failures into one status.</li><li>Diagnostics must not be written to standard output.</li><li>Preserve output produced before a runtime failure.</li></ul></article>
+</main>
+</body>
+</html>

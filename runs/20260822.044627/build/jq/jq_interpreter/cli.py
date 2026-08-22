@@ -8,13 +8,11 @@ from collections.abc import Iterator
 
 from .diagnostics import report_compile_error, report_runtime_error
 from .errors import CompileError, RuntimeError
-from .interpreter import Interpreter, parse_input
+from .interpreter import Interpreter, parse_inputs
 
 
 def _inputs() -> Iterator[object]:
-    for line in sys.stdin:
-        if line.strip():
-            yield parse_input(line)
+    yield from parse_inputs(sys.stdin.read())
 
 
 def _json_output(value: object) -> object:
@@ -43,7 +41,10 @@ def main(argv: list[str] | None = None) -> int:
         return report_compile_error(error)
     try:
         for output in interpreter.run(_inputs()):
-            print(json.dumps(_json_output(output), separators=(",", ":"), ensure_ascii=False))
+            print(
+                json.dumps(_json_output(output), separators=(",", ":"), ensure_ascii=False),
+                flush=True,
+            )
     except (RuntimeError, ValueError, TypeError, json.JSONDecodeError) as error:
         return report_runtime_error(RuntimeError(str(error)))
     return 0

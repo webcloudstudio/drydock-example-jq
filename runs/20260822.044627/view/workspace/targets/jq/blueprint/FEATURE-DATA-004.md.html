@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-DATA-004.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-DATA-004.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-DATA-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Index and Membership Utilities</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq index-search, binary-search, quantifier, and SQL-style membership utilities.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-DATA-003.md</td></tr><tr><td>Provides</td><td>indices, index, rindex, bsearch, all, any, isempty, IN</td></tr><tr><td>Consumes</td><td>collection transformations, comparison and generator evaluation</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement substring and subarray occurrence searches, first and last index lookup, binary search insertion results, stream-aware <code>all</code> and <code>any</code>, emptiness detection, and SQL-style <code>IN</code> variants. Preserve short-circuiting and Cartesian generator behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-004-conformance ===<br>Intent: The index, membership, quantifier, and emptiness slice executes matching corpus cases and passes all selected cases.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;indices|index\(|rindex|bsearch|any|all|IN\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li><code>all</code> and <code>any</code> must short-circuit without consuming unnecessary generator outputs.</li><li>Index utilities must preserve jq&#x27;s behavior for overlapping matches, empty matches, and insertion points.</li></ul></article>
+</main>
+</body>
+</html>

@@ -10,11 +10,11 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/ERRORS.md</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../workspace/targets/jq/ERRORS.md">Raw file</a></div></header>
 <article class="doc"><h1>BIG ERRORS — action required</h1>
-<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-22T18:16:58+00:00</li><li>Execution ID: 20260822.181613.175Z-5ac5befb</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: conformance-source-integrity</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-4.md</li></ul>
+<ul><li>Command: <code>build</code></li><li>Phase: build step</li><li>State: Failed</li><li>Timestamp: 2026-08-22T21:17:01+00:00</li><li>Execution ID: 20260822.210533.139Z-e0792409</li><li>Challenge Execution ID: -</li><li>Classification: programmatic acceptance failed: parse-003-conformance, parse-004-conformance</li><li>Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-8.md</li></ul>
 <h2>Diagnostic</h2>
-<p>Block &quot;Block 4 · Foundational&quot; [block-4] failed its acceptance criteria. Story &quot;Stage and validate immutable conformance assets.&quot; [conf-001] does not meet its own acceptance criteria:</p>
-<ul><li>AC conformance-source-integrity — The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory.</li></ul>
-<p>assertion: assert run_conformance.CORPUS == sources / &quot;jq.test&quot; → AssertionError raised at: conformance-source-integrity.py:10 process exit code: 1 values at failure: sources = PosixPath(&#x27;sources&#x27;) check stderr: Traceback (most recent call last): File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt; assert run_conformance.CORPUS == sources / &quot;jq.test&quot; … (2 more lines truncated)</p>
+<p>Block &quot;Block 8 · Service&quot; [block-8] failed its acceptance criteria. Story &quot;Implement jq filter expression grammar.&quot; [PARSE-003] does not meet its own acceptance criteria:</p>
+<ul><li>AC parse-003-conformance — The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.</li></ul>
+<p>assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError cases: pass=210 fail=245 error=0 skip=9 total=464 from=summary raised at: parse-003-conformance.py:18 process exit code: 1 values at failure: summary = {&#x27;pass&#x27;: 210, &#x27;fail&#x27;: 245, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 9} observed output: &quot;line&quot;: 2633, … (46 more lines truncated)</p>
 <h2>Recovery</h2>
 <p>Run: drydock build jq to continue the build. This story resumes where it left off and is retried against the checks it failed.</p></article>
 </main>

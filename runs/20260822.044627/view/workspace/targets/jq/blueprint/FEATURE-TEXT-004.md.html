@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-TEXT-004.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-TEXT-004.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-TEXT-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Date and Time Filters</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide UTC date parsing, formatting, and low-level time conversion filters.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-TEXT-003.md</td></tr><tr><td>Provides</td><td>fromdate, todate, strptime, strftime, strflocaltime, gmtime, localtime, mktime</td></tr><tr><td>Consumes</td><td>jq strings and numbers</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement the documented date and time filters with Python&#x27;s standard-library <code>datetime</code> and <code>time</code> facilities. ISO-8601 convenience filters operate in UTC; low-level conversions preserve jq&#x27;s broken-down time-array shape and accept the supplied format strings.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC text-004-date-conformance ===<br>Intent: The authoritative corpus cases covering date and time filters execute and pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;date|strftime|strptime|strflocaltime|gmtime|localtime|mktime&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC text-004-date-conformance ===</p>
+<p>=== AC text-004-utc ===<br>Intent: The selected corpus exercises both ISO convenience filters and low-level UTC conversions.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;fromdate|todate|strptime|strftime|gmtime|mktime&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC text-004-utc ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Date operations must use standard-library facilities and must not depend on the local timezone for UTC filters.</li><li>Do not introduce wall-clock-dependent acceptance expectations.</li></ul></article>
+</main>
+</body>
+</html>

@@ -14,6 +14,11 @@ class Identity(Filter):
 
 
 @dataclass(frozen=True)
+class Iterate(Filter):
+    """The ``.[]`` filter, yielding array or object members in order."""
+
+
+@dataclass(frozen=True)
 class Literal(Filter):
     """A JSON literal filter."""
 
@@ -48,3 +53,28 @@ class Limit(Filter):
 
     count: int
     expression: Filter
+
+@dataclass(frozen=True)
+class Pipe(Filter):
+    left: Filter
+    right: Filter
+
+@dataclass(frozen=True)
+class StringTemplate(Filter):
+    parts: tuple[str | Filter, ...]
+
+@dataclass(frozen=True)
+class Format(Filter):
+    name: str
+    template: StringTemplate | None = None
+
+@dataclass(frozen=True)
+class Add(Filter):
+    left: Filter
+    right: Filter
+
+@dataclass(frozen=True)
+class Node(Filter):
+    """General expression node used by the complete source parser."""
+    operation: str
+    arguments: tuple[object, ...] = ()

@@ -1,0 +1,15 @@
+Implemented EXEC-001 entry point hardening.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- [jq](/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq)
+
+SUMMARY:
+- Directly executable `jq` launcher confirmed.
+- Project tests: 15 passed.
+- Primitive conformance slice: 5 passed, 0 failed, 0 errored.
+- Staged source assets unchanged.
+
+BLOCKERS:
+- None

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/superseded/20260822.193318/11-after-initial-build-build-status.stdout.log</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/superseded/20260822.193318/11-after-initial-build-build-status.stdout.log</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../evidence/commands/superseded/20260822.193318/11-after-initial-build-build-status.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Next: drydock build jq
+
+Blueprint: jq
+Target: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq
+Rows: &lt;state&gt; &lt;type&gt;  &lt;Name&gt;  [&lt;id&gt;]   — pass [&lt;id&gt;] to --step
+
+Block: Build Block 1 · Foundational  [block-1]   — 0/1 stories done
+  [built]   story  Define the standalone interpreter architecture and module boundaries.  [architecture]  &lt;- verify
+
+Block: Build Block 2 · Service  [block-2]   — 0/2 stories done
+  [built]   story  Implement the executable jq entry point.  [exec-001]  &lt;- verify
+  [built]   story  Implement jq process exit and diagnostic behavior.  [exec-002]  &lt;- verify
+
+Block: Build Block 3 · Service  [block-3]   — 0/1 stories done
+  [built]   story  Implement JSON input, Unicode, numeric, and compact output handling.  [exec-003]  &lt;- verify
+
+Block: Build Block 4 · Foundational  [block-4]   — 0/1 stories done
+  [FAILED]  story  Stage and validate immutable conformance assets.  [conf-001]  &lt;- resume (repairs in place)
+
+Block: Build Block 5 · Service  [block-5]   — 0/2 stories done
+  [pending] story  Implement jq lexical scanning.  [parse-001]
+  [pending] story  Implement literals, escapes, and string interpolation.  [parse-002]
+
+Block: Build Block 6 · Service  [block-6]   — 0/2 stories done
+  [pending] story  Implement the jq filter expression grammar.  [parse-003]
+  [pending] story  Implement declarations and control syntax parsing.  [parse-004]
+
+Block: Build Block 7 · Service  [block-7]   — 0/1 stories done
+  [pending] story  Implement stream-valued filter evaluation.  [core-001]
+
+Block: Build Block 8 · Service  [block-8]   — 0/1 stories done
+  [pending] story  Implement composition and Cartesian evaluation.  [core-002]
+
+Block: Build Block 9 · Service  [block-9]   — 0/1 stories done
+  [pending] story  Implement empty, runtime errors, optional evaluation, and try.  [core-003]
+
+Block: Build Block 10 · Service  [block-10]   — 0/1 stories done
+  [pending] story  Implement jq truthiness, equality, and ordering.  [core-004]
+
+Block: Build Block 11 · Service  [block-11]   — 0/1 stories done
+  [pending] story  Implement the jq value model and special numbers.  [value-001]
+
+Block: Build Block 12 · Service  [block-12]   — 0/1 stories done
+  [pending] story  Implement field and index access.  [value-002]
+
+Block: Build Block 13 · Service  [block-13]   — 0/1 stories done
+  [pending] story  Implement slices and collection iteration.  [value-003]
+
+Block: Build Block 14 · Service  [block-14]   — 0/1 stories done
+  [pending] story  Implement type, length, numeric predicates, and math primitives.  [value-004]
+
+Block: Build Block 15 · Service  [block-15]   — 0/1 stories done
+  [pending] story  Implement arithmetic and structural operators.  [flow-001]
+
+Block: Build Block 16 · Service  [block-16]   — 0/1 stories done
+  [pending] story  Implement boolean and alternative operators.  [flow-002]
+
+Block: Build Block 17 · Service  [block-17]   — 0/1 stories done
+  [pending] story  Implement conditionals and exception flow.  [flow-003]
+
+Block: Build Block 18 · Service  [block-18]   — 0/1 stories done
+  [pending] story  Implement lexical labels and breaks.  [flow-004]
+
+Block: Build Block 19 · Service  [block-19]   — 0/1 stories done
+  [pending] story  Implement reductions and iteration controls.  [flow-005]
+
+Block: Build Block 20 · Service  [block-20]   — 0/1 stories done
+  [pending] story  Implement recursive generators.  [flow-006]
+
+Block: Build Block 21 · Service  [block-21]   — 0/1 stories done
+  [pending] story  Implement lexical variable bindings.  [func-001]
+
+Block: Build Block 22 · Service  [block-22]   — 0/1 stories done
+  [pending] story  Implement filter and value function parameters.  [func-002]
+
+Block: Build Block 23 · Service  [block-23]   — 0/1 stories done
+  [pending] story  Implement function definitions, scope, and recursion.  [func-003]
+
+Block: Build Block 24 · Service  [block-24]   — 0/1 stories done
+  [pending] story  Implement destructuring patterns and alternatives.  [func-004]
+
+Block: Build Block 25 · Service  [block-25]   — 0/1 stories done
+  [pending] story  Implement path discovery and projection.  [path-001]
+
+Block: Build Block 26 · Service  [block-26]   — 0/1 stories done
+  [pending] story  Implement path access and mutation primitives.  [path-002]
+
+Block: Build Block 27 · Service  [block-27]   — 0/1 stories done
+  [pending] story  Implement deletion and assignment operators.  [path-003]
+
+Block: Build Block 28 · Service  [block-28]   — 0/1 stories done
+  [pending] story  Implement complex assignment edge cases.  [path-004]
+
+Block: Build Block 29 · Service  [block-29]   — 0/1 stories done
+  [pending] story  Implement collection transformation builtins.  [data-001]
+
+Block: Build Block 30 · Service  [block-30]   — 0/1 stories done
+  [pending] story  Implement sorting, grouping, and extrema builtins.  [data-002]
+
+Block: Build Block 31 · Service  [block-31]   — 0/1 stories done
+  [pending] story  Implement object-entry and containment builtins.  [data-003]
+
+Block: Build Block 32 · Service  [block-32]   — 0/1 stories done
+  [pending] story  Implement index and membership utilities.  [data-004]
+
+Block: Build Block 33 · Service  [block-33]   — 0/1 stories done
+  [pending] story  Implement string manipulation builtins.  [text-001]
+
+Block: Build Block 34 · Service  [block-34]   — 0/1 stories done
+  [pending] story  Implement JSON and output format filters.  [text-002]
+
+Block: Build Block 35 · Service  [block-35]   — 0/1 stories done
+  [pending] story  Implement regular-expression filters.  [text-003]
+
+Block: Build Block 36 · Service  [block-36]   — 0/1 stories done
+  [pending] story  Implement date and time filters.  [text-004]
+
+Block: Build Block 37 · Service  [block-37]   — 0/1 stories done
+  [pending] story  Implement input stream controls.  [io-001]
+
+Block: Build Block 38 · Service  [block-38]   — 0/1 stories done
+  [pending] story  Implement diagnostics and stderr output filters.  [io-002]
+
+Block: Build Block 39 · Service  [block-39]   — 0/1 stories done
+  [pending] story  Implement streaming transformations.  [io-003]
+
+Block: Build Block 40 · Service  [block-40]   — 0/1 stories done
+  [pending] story  Provide scoped conformance verification for implementation slices.  [conf-002]
+
+Block: Build Block 41 · Feature  [block-41]   — 0/1 stories done
+  [pending] story  Pass the complete jq conformance corpus.  [conf-003]
+
+Steps: 44 total — 0 done, 4 built (await verify), 0 in review, 39 pending, 0 blocked by questions, 1 failed (0% complete)
+Buildable now: block-4
+Failed (resume with drydock build, or --step &lt;id&gt;; --reset discards work instead): conf-001
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

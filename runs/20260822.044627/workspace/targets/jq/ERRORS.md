@@ -3,27 +3,26 @@
 - Command: `build`
 - Phase: build step
 - State: Failed
-- Timestamp: 2026-08-22T18:16:58+00:00
-- Execution ID: 20260822.181613.175Z-5ac5befb
+- Timestamp: 2026-08-22T21:17:01+00:00
+- Execution ID: 20260822.210533.139Z-e0792409
 - Challenge Execution ID: -
-- Classification: programmatic acceptance failed: conformance-source-integrity
-- Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-4.md
+- Classification: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+- Evidence / logs: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-8.md
 
 ## Diagnostic
 
-Block "Block 4 · Foundational" [block-4] failed its acceptance criteria.
-  Story "Stage and validate immutable conformance assets." [conf-001] does not meet its own acceptance criteria:
-    - AC conformance-source-integrity — The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory.
-        assertion: assert run_conformance.CORPUS == sources / "jq.test" → AssertionError
-        raised at: conformance-source-integrity.py:10
+Block "Block 8 · Service" [block-8] failed its acceptance criteria.
+  Story "Implement jq filter expression grammar." [PARSE-003] does not meet its own acceptance criteria:
+    - AC parse-003-conformance — The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+        assertion: assert summary["fail"] == 0 and summary["error"] == 0 → AssertionError
+        cases: pass=210 fail=245 error=0 skip=9 total=464 from=summary
+        raised at: parse-003-conformance.py:18
         process exit code: 1
         values at failure:
-          sources = PosixPath('sources')
-        check stderr:
-          Traceback (most recent call last):
-            File "conformance-source-integrity.py", line 10, in <module>
-              assert run_conformance.CORPUS == sources / "jq.test"
-… (2 more lines truncated)
+          summary = {'pass': 210, 'fail': 245, 'error': 0, 'skip': 9}
+        observed output:
+                "line": 2633,
+… (46 more lines truncated)
 
 ## Recovery
 

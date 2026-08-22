@@ -1,0 +1,21 @@
+Implemented EXEC-002 process behavior.
+
+- Compile failures exit `3`.
+- Runtime failures exit `5`.
+- Success exits `0`.
+- Diagnostics remain on stderr.
+- Partial output is flushed and preserved before runtime errors.
+
+All 16 unit tests and three acceptance checks pass.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/cli.py
+- tests/test_architecture.py
+
+SUMMARY:
+Added immediate output flushing and regression coverage for stderr-only runtime diagnostics.
+
+BLOCKERS:
+- None

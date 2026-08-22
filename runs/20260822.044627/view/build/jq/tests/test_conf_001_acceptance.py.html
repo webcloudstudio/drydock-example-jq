@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_conf_001_acceptance.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_conf_001_acceptance.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_conf_001_acceptance.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Acceptance coverage for conformance asset staging.&quot;&quot;&quot;
+
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+sys.path.insert(0, str(ROOT / &quot;sources&quot;))
+
+import run_conformance as harness
+
+
+class Conf001AcceptanceTests(unittest.TestCase):
+    def test_authoritative_corpus_and_exclusions(self) -&gt; None:
+        cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+        excluded = harness.apply_exclusions(
+            cases,
+            harness.parse_exclusions(harness.EXCLUSIONS),
+        )
+
+        self.assertEqual(len(cases), 550)
+        self.assertEqual(len(excluded), 13)
+        self.assertTrue(harness.CORPUS.is_file())
+        self.assertTrue(harness.EXCLUSIONS.is_file())
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

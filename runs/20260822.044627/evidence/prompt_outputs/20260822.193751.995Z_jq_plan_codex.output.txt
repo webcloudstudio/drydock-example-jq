@@ -1,0 +1,454 @@
+=== BEGIN ARTIFACT FEATURE-CORE-003.md ===
+# FEATURE: Core Runtime Errors and Optional Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines empty streams, runtime errors, optional evaluation, try/catch, and partial output behavior. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-002.md |
+| Provides    | empty, error, ?, try/catch, partial runtime output |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Runtime failures are distinct from compile failures. Filters may suppress errors with `?` or `try`, and values emitted before an uncaught runtime error remain observable.
+
+## Behavior
+
+- `empty` produces no values.
+- `error` raises a runtime error.
+- `EXP?` suppresses errors from `EXP`.
+- `try EXP catch HANDLER` evaluates `HANDLER` with the error value.
+- Uncaught runtime errors terminate with exit code 5 after preserving prior output.
+
+## Programmatic Acceptance
+
+=== AC core-003-scoped-conformance ===
+Intent: The authoritative corpus cases exercising try, error, and optional evaluation execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"try|error|\?"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-003-scoped-conformance ===
+
+=== AC core-003-runtime-slice ===
+Intent: Corpus cases containing explicit runtime errors are accepted with jq runtime semantics.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"error"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-003-runtime-slice ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Runtime errors must not be reported as compile failures.
+- Diagnostics must be written to stderr.
+
+=== BEGIN ARTIFACT FEATURE-CORE-004.md ===
+# FEATURE: jq Truthiness and Comparison Semantics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines jq truthiness, equality, inequality, and total ordering semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-003.md |
+| Provides    | truthiness, equality, inequality, comparison ordering |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Only `false` and `null` are falsey. Comparisons are structural, distinguish booleans from numbers, treat numerically equivalent values equally, and follow jq's total type ordering.
+
+## Behavior
+
+- Conditional truthiness recognizes only `false` and `null` as false.
+- Equality ignores object key order and equates numerically equivalent numbers.
+- Boolean and numeric values remain distinct.
+- `<`, `<=`, `>`, and `>=` use jq's ordering across all JSON value types.
+
+## Programmatic Acceptance
+
+=== AC core-004-comparison-conformance ===
+Intent: The authoritative corpus comparison cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"==|!=|<=|>=|<|>"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-004-comparison-conformance ===
+
+=== AC core-004-truthiness-slice ===
+Intent: The authoritative corpus truthiness and boolean-operator cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"if |and|or|not"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-004-truthiness-slice ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Python truthiness must not replace jq truthiness.
+- Boolean values must never compare equal to numeric values.
+
+=== BEGIN ARTIFACT FEATURE-VALUE-001.md ===
+# FEATURE: jq Value and Numeric Model
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines jq JSON values, special numeric values, literal-number handling, and serialization. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-004.md |
+| Provides    | null, boolean, number, string, array, object, NaN, infinity values |
+| Consumes    | JSON input reader |
+
+## Questions
+
+- None.
+
+## Intent
+
+The interpreter represents all jq value kinds, including NaN and infinity, while preserving the observable numeric behavior required by the corpus and serializing values as valid JSON output.
+
+## Behavior
+
+- JSON null, booleans, numbers, strings, arrays, and objects are supported.
+- `nan` and `infinite` are numeric jq values.
+- Numeric equality and arithmetic follow jq's numeric semantics.
+- JSON serialization handles special numeric values according to jq behavior.
+
+## Programmatic Acceptance
+
+=== AC value-001-numeric-conformance ===
+Intent: The authoritative corpus numeric, NaN, infinity, and JSON conversion cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"nan|infinite|tojson|fromjson"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-001-numeric-conformance ===
+
+=== AC value-001-type-slice ===
+Intent: The authoritative corpus cases covering jq value kinds and numeric predicates execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"type|isnan|isinfinite|isfinite|isnormal"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-001-type-slice ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The implementation must not invoke an external jq implementation.
+- Special numeric values must not cause invalid process output or uncontrolled termination.
+
+=== BEGIN ARTIFACT FEATURE-VALUE-002.md ===
+# FEATURE: jq Field and Index Access
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines object-field, array-index, string-key, optional, negative-index, and missing-value access. |
+| Depends On  | ARCHITECTURE.md, FEATURE-VALUE-001.md |
+| Provides    | field access, index access, optional access, negative indices, missing values |
+| Consumes    | ordered generator evaluator, jq value model |
+
+## Questions
+
+- None.
+
+## Intent
+
+Access expressions read objects, arrays, and supported indexed values with jq's null and error behavior. Optional access suppresses invalid-access errors.
+
+## Behavior
+
+- `.field` and quoted field access read object members.
+- Array indices support positive and negative integer positions.
+- Missing object members and out-of-range reads produce null where jq specifies.
+- Optional access suppresses access errors.
+- Invalid index types raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC value-002-access-conformance ===
+Intent: The authoritative corpus field and index access cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\.[A-Za-z]|\[[-0-9]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-002-access-conformance ===
+
+=== AC value-002-optional-slice ===
+Intent: The authoritative corpus optional and chained access cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\?"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-002-optional-slice ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Access behavior must preserve generator ordering and multiplicity.
+- Optional access must suppress only the access failure, not unrelated failures.
+
+=== BEGIN ARTIFACT FEATURE-VALUE-003.md ===
+# FEATURE: jq Slices and Collection Iteration
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines array and string slices plus iteration over arrays and objects. |
+| Depends On  | ARCHITECTURE.md, FEATURE-VALUE-002.md |
+| Provides    | array slices, string slices, array iteration, object iteration |
+| Consumes    | field and index access |
+
+## Questions
+
+- None.
+
+## Intent
+
+Slice and iteration expressions preserve jq's ordered generator model across arrays, objects, and strings, including fractional, negative, omitted, and out-of-range bounds.
+
+## Behavior
+
+- `.[]` emits array elements or object values in order.
+- `.[start:end]` slices arrays and strings.
+- Omitted, negative, fractional, NaN, and out-of-range bounds follow jq rules.
+- Optional iteration suppresses errors on non-iterable inputs.
+- Empty collections produce empty streams.
+
+## Programmatic Acceptance
+
+=== AC value-003-slice-conformance ===
+Intent: The authoritative corpus slice and iteration cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\[.*:|\.\[\]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-003-slice-conformance ===
+
+=== AC value-003-iteration-slice ===
+Intent: The authoritative corpus array and object iteration cases execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\.\[\]|\[\.\]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC value-003-iteration-slice ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Iteration must preserve output order and multiplicity.
+- Optional iteration must not turn valid empty streams into null outputs.
+
+=== END ARTIFACT ===

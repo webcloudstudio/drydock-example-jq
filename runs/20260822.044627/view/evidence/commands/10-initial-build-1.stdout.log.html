@@ -12,52 +12,108 @@
 <article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
 Build: jq
 scope: entire project
-frontier: architecture
+frontier: architecture-foundation
 
 LLM BUILD: Block 1 · Foundational [block-1]
-  stories: Define the standalone interpreter architecture and module boundaries. [architecture]
+  stories: Define the standalone jq interpreter architecture and module boundaries. [architecture-foundation]
   call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-built: architecture — closed/verified · execution 20260822.180626.371Z-122a84e1
+acceptance: call 1 · 2/2 AC passed
+built: architecture-foundation — closed/verified · execution 20260822.194717.195Z-0948cafd
 
-LLM BUILD: Block 2 · Service [block-2]
-  stories: Implement the executable jq entry point. [exec-001], Implement jq process exit and diagnostic behavior. [exec-002]
+LLM BUILD: Block 2 · Foundational [block-2]
+  stories: Implement the executable jq entry point. [EXEC-001]
   call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 5/5 AC passed
-built: exec-001 — closed/verified · execution 20260822.180815.255Z-f7eb80f1
+acceptance: call 1 · 2/2 AC passed
+built: EXEC-001 — closed/verified · execution 20260822.194909.871Z-c0f03947
 
 LLM BUILD: Block 3 · Service [block-3]
-  stories: Implement JSON input, Unicode, numeric, and compact output handling. [exec-003]
+  stories: Implement jq process exit and diagnostic behavior. [EXEC-002]
   call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
   Completed CODEX/gpt-5.6-luna (build)  rc=0
 acceptance: call 1 · 3/3 AC passed
-built: exec-003 — closed/verified · execution 20260822.181134.575Z-7a567b04
+built: EXEC-002 — closed/verified · execution 20260822.195011.791Z-7425cbae
 
-LLM BUILD: Block 4 · Foundational [block-4]
-  stories: Stage and validate immutable conformance assets. [conf-001]
+LLM BUILD: Block 4 · Service [block-4]
+  stories: Implement JSON input and compact output handling. [EXEC-003]
   call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 1 · 1/2 AC passed · failed: conformance-source-integrity
+acceptance: call 1 · 3/3 AC passed
+built: EXEC-003 — closed/verified · execution 20260822.195122.332Z-1d5baaf1
 
-LLM BUILD: Block 4 · Foundational [block-4]
-  stories: Stage and validate immutable conformance assets. [conf-001]
+LLM BUILD: Block 5 · Foundational [block-5]
+  stories: Stage and validate immutable conformance assets. [CONF-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 1/1 AC passed
+built: CONF-001 — closed/verified · execution 20260822.195319.493Z-08895953
+
+LLM BUILD: Block 6 · Service [block-6]
+  stories: Implement jq lexical scanning. [PARSE-001]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 3/3 AC passed
+built: PARSE-001 — closed/verified · execution 20260822.195437.799Z-9e8b87c7
+
+LLM BUILD: Block 7 · Service [block-7]
+  stories: Implement literals, strings, escapes, and interpolation. [PARSE-002]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 1/1 AC passed
+built: PARSE-002 — closed/verified · execution 20260822.195833.572Z-be3705d7
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 1 of up to 7 · initial build · codex/gpt-5.6-luna
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 0/2 AC passed · failed: parse-003-conformance (93/464 cases), parse-004-conformance (24/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
-  failing: conformance-source-integrity
+  failing: parse-003-conformance (93/464 cases), parse-004-conformance (24/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 2 · 1/2 AC passed · failed: conformance-source-integrity
+acceptance: call 2 · 0/2 AC passed · failed: parse-003-conformance (135/464 cases), parse-004-conformance (66/224 cases)
 
-LLM BUILD: Block 4 · Foundational [block-4]
-  stories: Stage and validate immutable conformance assets. [conf-001]
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
   call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
-  failing: conformance-source-integrity
+  failing: parse-003-conformance (135/464 cases), parse-004-conformance (66/224 cases)
   Completed CODEX/gpt-5.6-luna (build)  rc=0
-acceptance: call 3 · 1/2 AC passed · failed: conformance-source-integrity
-repair: stopped — deterministic acceptance score did not improve on 2 consecutive calls
-failed: conf-001 — closed/failed · execution 20260822.181613.175Z-5ac5befb
+acceptance: call 3 · 0/2 AC passed · failed: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
 
-result: 4 built, 1 failed, 0 unchanged
-elapsed: 10 minutes 34 seconds
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 4 of up to 7 · automatic repair 3 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 4 · 0/2 AC passed · failed: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 5 of up to 7 · automatic repair 4 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (150/464 cases), parse-004-conformance (71/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 5 · 0/2 AC passed · failed: parse-003-conformance (153/464 cases), parse-004-conformance (75/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 6 of up to 7 · automatic repair 5 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (153/464 cases), parse-004-conformance (75/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 6 · 0/2 AC passed · failed: parse-003-conformance (187/464 cases), parse-004-conformance (87/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 7 of up to 7 · automatic repair 6 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (187/464 cases), parse-004-conformance (87/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 7 · 0/2 AC passed · failed: parse-003-conformance (210/464 cases), parse-004-conformance (92/224 cases)
+failed: PARSE-003 — closed/failed · execution 20260822.210533.139Z-e0792409
+
+result: 7 built, 2 failed, 0 unchanged
+elapsed: 1 hour 29 minutes 49 seconds
 
 ========================================================================
 BUILD FAILED: jq  (1 step)
@@ -66,42 +122,39 @@ BUILD FAILED: jq  (1 step)
   Failure
     Provenance
       Target: jq
-      Block: Block 4 · Foundational [block-4]
-      Story: Stage and validate immutable conformance assets. [conf-001]
-    Cause: programmatic acceptance failed: conformance-source-integrity
+      Block: Block 8 · Service [block-8]
+      Story: Implement jq filter expression grammar. [PARSE-003]
+    Cause: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
     agent summary:
-      The corpus validation passes: 550 cases and 13 exclusions.
-      Local conformance asset tests pass. The source-integrity
-      acceptance check is impossible as written because the
-      supplied harness intentionally exposes absolute resolved
-      paths, while the criterion compares them to relative paths.
-    stopped early: 3 of 7 calls · deterministic acceptance score did not improve on 2 consecutive calls
-    acceptance: 1/2 passing · baseline 1/2 · unchanged
+      Fixed scalar indexing errors, optional access, range, common
+      builtins, interpolation, nested `elif`, and `try` parsing.
+      Project tests pass: 32 passed. Scoped conformance remains
+      failing: PARSE-003 191/408 passed; PARSE-004 92/211 passed.
+    acceptance: 0/1 passing · baseline 0/1 · unchanged
     Assertion
       Acceptance checks:
-      Acceptance: conformance-source-integrity
-      Intent: The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory.
-      Source: FEATURE-Conformance-Assets.md
-      Code: assert run_conformance.CORPUS == sources / &quot;jq.test&quot;
+      Acceptance: parse-003-conformance
+      Intent: The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+      Source: FEATURE-PARSE-003.md
+      Code: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
     Result
       Process exit code: 1
       Error: AssertionError
       Stderr:
-          File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt;
-            assert run_conformance.CORPUS == sources / &quot;jq.test&quot;
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File &quot;parse-003-conformance.py&quot;, line 18, in &lt;module&gt;
+            assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         AssertionError
     Recovery
       Run: drydock build jq
         to continue the build. This story resumes where it left off and is
         retried against the checks it failed.
     agent blockers:
-      - The acceptance criterion must compare `.resolve()` paths,
-      or the supplied harness contract must change. - Full pytest
-      collection also fails because `jq_interpreter` is not yet
-      present; that belongs to a later implementation block.
-    execution: 20260822.181613.175Z-5ac5befb
-    evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-4.md
+      - Broad evaluator functionality remains incomplete,
+      especially advanced builtins, assignments, function scoping,
+      and control semantics.
+    execution: 20260822.210533.139Z-e0792409
+    evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-8.md
 
   Next
     Run: drydock build jq
@@ -110,23 +163,21 @@ BUILD FAILED: jq  (1 step)
 ========================================================================
 
 ========================================================================
-POST-LLM FAILURE  ·  build  ·  programmatic acceptance failed: conformance-source-integrity
+POST-LLM FAILURE  ·  build  ·  programmatic acceptance failed: parse-003-conformance, parse-004-conformance
 ========================================================================
 
-  Block &quot;Block 4 · Foundational&quot; [block-4] failed its acceptance
-  criteria.
-    Story &quot;Stage and validate immutable conformance assets.&quot; [conf-001] does not meet its own acceptance criteria:
-      - AC conformance-source-integrity — The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory.
-          assertion: assert run_conformance.CORPUS == sources / &quot;jq.test&quot; → AssertionError
-          raised at: conformance-source-integrity.py:10
+  Block &quot;Block 8 · Service&quot; [block-8] failed its acceptance criteria.
+    Story &quot;Implement jq filter expression grammar.&quot; [PARSE-003] does not meet its own acceptance criteria:
+      - AC parse-003-conformance — The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+          assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError
+          cases: pass=210 fail=245 error=0 skip=9 total=464 from=summary
+          raised at: parse-003-conformance.py:18
           process exit code: 1
           values at failure:
-            sources = PosixPath(&#x27;sources&#x27;)
-          check stderr:
-            Traceback (most recent call last):
-              File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt;
-                assert run_conformance.CORPUS == sources / &quot;jq.test&quot;
-  … (2 more lines truncated)
+            summary = {&#x27;pass&#x27;: 210, &#x27;fail&#x27;: 245, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 9}
+          observed output:
+                  &quot;line&quot;: 2633,
+  … (46 more lines truncated)
 
   Recovery
     Run: drydock build jq

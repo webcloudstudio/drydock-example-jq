@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>import pytest
+
+from jq_interpreter.errors import CompileError
+from jq_interpreter.lexer import TokenKind, tokenize
+
+
+def test_scans_literals_keywords_and_operators_in_source_order() -&gt; None:
+    tokens = tokenize(&#x27;def f($x): .foo == 1; $x // null&#x27;)
+    assert [token.kind for token in tokens[:-1]] == [
+        TokenKind.KEYWORD, TokenKind.IDENTIFIER, TokenKind.DELIMITER,
+        TokenKind.BINDING, TokenKind.DELIMITER, TokenKind.DELIMITER,
+        TokenKind.FIELD, TokenKind.OPERATOR, TokenKind.NUMBER,
+        TokenKind.DELIMITER, TokenKind.BINDING, TokenKind.OPERATOR,
+        TokenKind.IDENTIFIER,
+    ]
+    assert [token.position for token in tokens[:3]] == [0, 4, 5]
+    assert tokens[-1].kind is TokenKind.END
+
+
+def test_scans_comments_and_json_string_escapes() -&gt; None:
+    tokens = tokenize(&#x27;1 # ignored\n &quot;a\\n#b&quot;&#x27;)
+    assert [token.text for token in tokens[:-1]] == [&quot;1&quot;, &#x27;&quot;&#x27;, r&quot;a\n#b&quot;, &#x27;&quot;&#x27;]
+
+
+def test_scans_formats_and_qualified_bindings() -&gt; None:
+    tokens = tokenize(&#x27;@json $module::value .field&#x27;)
+    assert [(token.kind, token.text) for token in tokens[:-1]] == [
+        (TokenKind.FORMAT, &quot;@json&quot;),
+        (TokenKind.BINDING, &quot;$module::value&quot;),
+        (TokenKind.FIELD, &quot;.field&quot;),
+    ]
+
+
+@pytest.mark.parametrize(&quot;source&quot;, [&#x27;&quot;bad\\q&quot;&#x27;, &#x27;&quot;unterminated&#x27;])
+def test_rejects_invalid_lexical_source(source: str) -&gt; None:
+    with pytest.raises(CompileError):
+        tokenize(source)
+</pre></article>
+</main>
+</body>
+</html>

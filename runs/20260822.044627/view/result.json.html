@@ -12,14 +12,14 @@
 <article class="doc"><pre>{
   &quot;acceptance_status&quot;: &quot;NOT_RUN&quot;,
   &quot;assertions&quot;: {
-    &quot;failed&quot;: 1,
+    &quot;failed&quot;: 2,
     &quot;harness_defects&quot;: 0,
-    &quot;passed&quot;: 9,
-    &quot;product_defects&quot;: 1,
+    &quot;passed&quot;: 15,
+    &quot;product_defects&quot;: 2,
     &quot;unverified&quot;: 0
   },
   &quot;attestations&quot;: [],
-  &quot;build_passes&quot;: 1,
+  &quot;build_passes&quot;: 2,
   &quot;commands&quot;: [
     {
       &quot;argv&quot;: [
@@ -84,28 +84,22 @@
         &quot;--override&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1506244,
+      &quot;elapsed_ms&quot;: 818711,
       &quot;label&quot;: &quot;04-plan&quot;,
       &quot;llm_executions&quot;: [
-        &quot;20260822.174114.211Z-0d7dae54&quot;,
-        &quot;20260822.174347.463Z-febd2896&quot;,
-        &quot;20260822.174505.320Z-470e3cb5&quot;,
-        &quot;20260822.174607.194Z-d59a6cf1&quot;,
-        &quot;20260822.174705.213Z-a9501ea7&quot;,
-        &quot;20260822.174801.303Z-20829a72&quot;,
-        &quot;20260822.174859.734Z-75bd8258&quot;,
-        &quot;20260822.174942.668Z-fbbb876c&quot;,
-        &quot;20260822.175038.027Z-8b028827&quot;,
-        &quot;20260822.175135.330Z-77107ede&quot;,
-        &quot;20260822.175221.438Z-9fcbc172&quot;,
-        &quot;20260822.175315.247Z-8984af80&quot;,
-        &quot;20260822.175428.329Z-8c80b662&quot;,
-        &quot;20260822.175536.761Z-2254961f&quot;,
-        &quot;20260822.175649.612Z-f7f4c206&quot;,
-        &quot;20260822.175747.734Z-b20b1e05&quot;,
-        &quot;20260822.175912.677Z-ba14d978&quot;,
-        &quot;20260822.180050.474Z-b2caf9e3&quot;,
-        &quot;20260822.180459.019Z-b7a102f8&quot;
+        &quot;20260822.193326.654Z-4c378e2e&quot;,
+        &quot;20260822.193551.973Z-f699debc&quot;,
+        &quot;20260822.193702.748Z-6e926a27&quot;,
+        &quot;20260822.193751.995Z-70720add&quot;,
+        &quot;20260822.193901.270Z-9b690f6b&quot;,
+        &quot;20260822.193947.219Z-36cd5277&quot;,
+        &quot;20260822.194033.977Z-20620d4e&quot;,
+        &quot;20260822.194125.678Z-a13e3b81&quot;,
+        &quot;20260822.194215.979Z-c84e6625&quot;,
+        &quot;20260822.194307.858Z-663247a0&quot;,
+        &quot;20260822.194410.932Z-b0d53f80&quot;,
+        &quot;20260822.194447.252Z-e8d7b3b6&quot;,
+        &quot;20260822.194545.022Z-1115d98e&quot;
       ],
       &quot;returncode&quot;: 0,
       &quot;stderr_path&quot;: &quot;evidence/commands/04-plan.stderr.log&quot;,
@@ -121,7 +115,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1906,
+      &quot;elapsed_ms&quot;: 6566,
       &quot;label&quot;: &quot;05-plan-verify&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -138,7 +132,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 744,
+      &quot;elapsed_ms&quot;: 1411,
       &quot;label&quot;: &quot;06-after-plan-build-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -154,7 +148,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1555,
+      &quot;elapsed_ms&quot;: 3380,
       &quot;label&quot;: &quot;07-after-plan-target-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -169,7 +163,7 @@
         &quot;status&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 474,
+      &quot;elapsed_ms&quot;: 1292,
       &quot;label&quot;: &quot;08-after-plan-workspace-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -186,7 +180,7 @@
         &quot;--ready&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 434,
+      &quot;elapsed_ms&quot;: 879,
       &quot;label&quot;: &quot;09-initial-ready&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -205,15 +199,23 @@
         &quot;6&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 637187,
+      &quot;elapsed_ms&quot;: 5393448,
       &quot;label&quot;: &quot;10-initial-build-1&quot;,
       &quot;llm_executions&quot;: [
-        &quot;20260822.180626.371Z-122a84e1&quot;,
-        &quot;20260822.180815.255Z-f7eb80f1&quot;,
-        &quot;20260822.181134.575Z-7a567b04&quot;,
-        &quot;20260822.181425.006Z-1c5cc8b9&quot;,
-        &quot;20260822.181529.735Z-dcc737fd&quot;,
-        &quot;20260822.181613.175Z-5ac5befb&quot;
+        &quot;20260822.194717.195Z-0948cafd&quot;,
+        &quot;20260822.194909.871Z-c0f03947&quot;,
+        &quot;20260822.195011.791Z-7425cbae&quot;,
+        &quot;20260822.195122.332Z-1d5baaf1&quot;,
+        &quot;20260822.195319.493Z-08895953&quot;,
+        &quot;20260822.195437.799Z-9e8b87c7&quot;,
+        &quot;20260822.195833.572Z-be3705d7&quot;,
+        &quot;20260822.200621.180Z-32a3e230&quot;,
+        &quot;20260822.201548.188Z-8d3e6716&quot;,
+        &quot;20260822.202556.681Z-3a0c6100&quot;,
+        &quot;20260822.203559.802Z-c267f35e&quot;,
+        &quot;20260822.204217.533Z-0c917fdf&quot;,
+        &quot;20260822.205352.047Z-99e6d523&quot;,
+        &quot;20260822.210533.139Z-e0792409&quot;
       ],
       &quot;returncode&quot;: 1,
       &quot;stderr_path&quot;: &quot;evidence/commands/10-initial-build-1.stderr.log&quot;,
@@ -229,7 +231,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1363,
+      &quot;elapsed_ms&quot;: 1996,
       &quot;label&quot;: &quot;11-after-initial-build-build-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -245,7 +247,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1363,
+      &quot;elapsed_ms&quot;: 2795,
       &quot;label&quot;: &quot;12-after-initial-build-target-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -260,7 +262,7 @@
         &quot;status&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 485,
+      &quot;elapsed_ms&quot;: 615,
       &quot;label&quot;: &quot;13-after-initial-build-workspace-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -271,17 +273,17 @@
   &quot;degraded&quot;: [
     &quot;initial-build-1 exited 1&quot;
   ],
-  &quot;elapsed_ms&quot;: 2172444,
+  &quot;elapsed_ms&quot;: 6282384,
   &quot;environment&quot;: {
     &quot;drydock_version&quot;: &quot;0.2.0&quot;,
     &quot;effort&quot;: &quot;&quot;,
-    &quot;finished_at&quot;: &quot;2026-08-22T18:17:25.463294Z&quot;,
-    &quot;git_commit&quot;: &quot;cb3bad876849baa12a9718b1d9347c6937befb96&quot;,
+    &quot;finished_at&quot;: &quot;2026-08-22T21:18:01.348067Z&quot;,
+    &quot;git_commit&quot;: &quot;b6180cf90d8f416e778a09e787101cfc5e91831d&quot;,
     &quot;model&quot;: &quot;gpt-5.6-luna&quot;,
     &quot;platform&quot;: &quot;Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35&quot;,
     &quot;provider&quot;: &quot;codex&quot;,
     &quot;python_version&quot;: &quot;3.12.13&quot;,
-    &quot;started_at&quot;: &quot;2026-08-22T17:41:12.962243Z&quot;
+    &quot;started_at&quot;: &quot;2026-08-22T19:33:18.845024Z&quot;
   },
   &quot;error&quot;: &quot;jq: stopped at initial-build-1: The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.&quot;,
   &quot;evidence_dir&quot;: &quot;evidence&quot;,
@@ -297,13 +299,13 @@
   &quot;status&quot;: &quot;failed&quot;,
   &quot;target&quot;: &quot;jq&quot;,
   &quot;usage&quot;: {
-    &quot;cached_input_tokens&quot;: 4110080,
-    &quot;calls&quot;: 100,
-    &quot;fresh_input_tokens&quot;: 4697258,
-    &quot;input_tokens&quot;: 8807338,
+    &quot;cached_input_tokens&quot;: 23992320,
+    &quot;calls&quot;: 127,
+    &quot;fresh_input_tokens&quot;: 7094356,
+    &quot;input_tokens&quot;: 31086676,
     &quot;invalid_records&quot;: 0,
-    &quot;llm_elapsed_ms&quot;: 5243491,
-    &quot;output_tokens&quot;: 251631
+    &quot;llm_elapsed_ms&quot;: 10037378,
+    &quot;output_tokens&quot;: 391481
   }
 }
 </pre></article>

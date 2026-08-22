@@ -3,68 +3,93 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines the modular standard-library Python architecture for the standalone jq interpreter. |
-| Depends On  | — |
-| Provides    | interpreter module boundaries, executable boundary |
+| Description | Standard-library Python architecture for a standalone jq interpreter. |
+| Depends On  | COMPASS.md, TECHNOLOGY_STACK.md |
+| Provides    | jq interpreter architecture, executable boundary, parser, evaluator, runtime |
 | Consumes    | — |
 
-## Intent
+## System Overview
 
-The interpreter is a standalone executable named `jq`. It accepts `./jq -c '<program>'`, reads JSON values from standard input, evaluates jq filters as ordered generators, and writes compact JSON values to standard output.
+The application is an executable named `jq` at the application root. It accepts `-c '<program>'`, reads JSON values from standard input, evaluates the jq program as an ordered generator, and writes compact JSON values one per line.
+
+The implementation is composed of:
+
+- CLI and process boundary.
+- Lexer and recursive-descent or precedence parser.
+- AST and compiled filter representation.
+- Generator evaluator with lexical environments.
+- jq value, numeric, accessor, assignment, builtin, and runtime-error layers.
+- Streaming JSON input and output serialization.
+
+All runtime code uses Python 3.11+ standard-library modules only. The implementation must not invoke, import, or bind to another jq implementation.
+
+## Module Boundaries
+
+| Module | Responsibility |
+|---|---|
+| `jq` | Executable entry point and command-line validation |
+| `jq_runtime.py` or equivalent | Input stream, evaluation context, errors, output serialization |
+| `jq_lexer.py` or equivalent | Tokens, comments, literals, strings, interpolation markers |
+| `jq_parser.py` or equivalent | AST construction, precedence, declarations, syntax validation |
+| `jq_eval.py` or equivalent | Ordered generator evaluation, environments, functions, control flow |
+| `jq_values.py` or equivalent | jq values, numeric handling, comparison, access, mutation |
+| `jq_builtins.py` or equivalent | Builtin filters and standard-library implementations |
+
+The concrete module filenames may vary, but responsibilities remain isolated at these boundaries.
+
+## Evaluation Model
+
+Every filter receives one input and yields an ordered stream of zero or more outputs. Pipes evaluate the right-hand filter once per left-hand output. Commas concatenate streams. Filter arguments remain generators, while value arguments are evaluated and bound as values. Runtime errors propagate through the stream and preserve outputs already emitted.
+
+Assignments operate immutably over paths and return replacement values rather than mutating shared input objects.
+
+## Process Contract
+
+- Compile success and complete execution exit `0`.
+- Compile or static failure exit `3`.
+- Runtime failure exit `5`.
+- Diagnostics are written to standard error.
+- Output is compact JSON, one generated value per line.
+- Partial output before a runtime failure is preserved.
 
 ## Technology Stack
 
-- Python 3.11 or newer, using only the standard library.
-- POSIX `sh` for the supplied scoring entry point.
-- No third-party runtime dependency, network access, package installation, jq binding, or shell-out to another jq executable.
-
-## Modules and Boundaries
-
-| Boundary | Responsibility |
+| Technology | Application |
 |---|---|
-| `jq` executable | Parse command-line arguments, read standard input, invoke the interpreter, serialize outputs, and map failures to exit codes. |
-| Lexer | Tokenize jq literals, identifiers, fields, bindings, keywords, operators, delimiters, comments, formats, and interpolated strings. |
-| Parser | Produce an AST or equivalent intermediate representation, enforce precedence and static validity, and reject invalid programs. |
-| Evaluator | Execute filters as ordered streams, preserving multiplicity, backtracking, Cartesian products, and partial output. |
-| Runtime values | Represent JSON values, literal-aware numbers, NaN, infinities, arrays, objects, and immutable transformations. |
-| Builtins | Implement jq primitives and standard-library filters over the evaluator's stream model. |
-| Paths and assignment | Discover paths and apply immutable reads, writes, updates, and deletions. |
-| Diagnostics | Keep compile failures, runtime failures, stderr output, and successful completion distinct. |
+| Python | Interpreter, parser, evaluator, builtins, CLI |
+| POSIX sh | Supplied conformance entry point |
 
-The executable boundary must not depend on a system jq command or an external implementation. Parser and evaluator interfaces remain internal to the Python implementation; the only public interface is the executable process contract.
+Only Python standard-library facilities are permitted at runtime.
 
-## Runtime Contracts
+## Source and Test Asset Boundary
 
-- Compile failure exits `3`.
-- Runtime failure exits `5`.
-- Successful completion exits `0`.
-- Diagnostics are written to stderr.
-- Each produced value is serialized as one compact JSON value per line.
-- Values emitted before a runtime failure remain on stdout.
-- Generator ordering and multiplicity are observable and must be preserved.
-
-## Module Ownership
-
-| Concern | Owning boundary | Allowed dependencies |
-|---|---|---|
-| Process and CLI | executable boundary | parser, evaluator, serializer, diagnostics |
-| Syntax | lexer and parser | standard-library text handling, AST definitions |
-| Evaluation | evaluator | AST, runtime values, builtins, paths |
-| Persistence/configuration | none | jq has no persistent store or application configuration |
-| File store | none | module loading is excluded by the fixed interface |
-| External services | none | network and external runtimes are forbidden |
-
-## Numeric Decision
-
-Use a literal-aware standard-library numeric model. Preserve source/input number spelling where jq semantics require it, perform arithmetic using standard-library numeric operations, and support special floating-point values without adding dependencies.
-
-## Source Role Context
-
-The implementation uses the staged lexer, parser, manual, builtin reference, corpus, and conformance harness as read-only context. The staged harness remains external to the implementation and is never modified.
+The supplied files under `sources/` are immutable inputs. The implementation reads them when required but does not modify them. The conformance runner is external to the interpreter and remains the authority for corpus comparison.
 
 ## Programmatic Acceptance
 
-- None. This specification defines architecture and boundaries; executable behavior is verified by the implementing feature specifications and the terminal conformance story.
+=== AC architecture-runtime ===
+Intent: The declared runtime stack is available using only Python standard-library modules.
+
+import importlib
+
+modules = ["json", "decimal", "math", "re", "datetime", "time", "base64", "unicodedata", "itertools", "functools", "dataclasses", "argparse", "sys"]
+for module in modules:
+    assert importlib.import_module(module) is not None
+=== END AC architecture-runtime ===
+
+=== AC architecture-contract ===
+Intent: The staged conformance runner exposes the process exit-code contract required by the architecture.
+
+import sys
+sys.path.insert(0, "sources")
+import run_conformance as harness
+
+assert harness.EXIT_COMPILE_ERROR == 3
+assert harness.EXIT_RUNTIME_ERROR == 5
+assert harness.PASS == "pass"
+assert harness.FAIL == "fail"
+assert harness.ERROR == "error"
+=== END AC architecture-contract ===
 
 ## User Acceptance
 
@@ -72,8 +97,7 @@ The implementation uses the staged lexer, parser, manual, builtin reference, cor
 
 ## Guardrails
 
-- Do not add third-party dependencies.
+- Do not shell out to a system `jq`.
+- Do not use a third-party jq implementation or binding.
 - Do not modify files under `sources/`.
-- Do not shell out to a system jq executable.
-- Do not collapse generator streams into single return values.
-- Do not conflate compile exit `3` with runtime exit `5`.
+- Preserve generator ordering, multiplicity, backtracking, and partial runtime output.

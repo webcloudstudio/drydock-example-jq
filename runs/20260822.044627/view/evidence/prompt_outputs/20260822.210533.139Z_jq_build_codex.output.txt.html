@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.210533.139Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.210533.139Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.210533.139Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Fixed scalar indexing errors, optional access, range, common builtins, interpolation, nested `elif`, and `try` parsing. Project tests pass: 32 passed. Scoped conformance remains failing: PARSE-003 191/408 passed; PARSE-004 92/211 passed.
+
+BLOCKERS:
+- Broad evaluator functionality remains incomplete, especially advanced builtins, assignments, function scoping, and control semantics.
+
+FAILURE_SUMMARY: Scoped conformance criteria still fail.
+
+FAILURE_DETAIL: Both authoritative checks ran successfully but reported substantial failing corpus cases. Further general evaluator and parser implementation is required before rerunning this build step.</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,247 @@
+=== BEGIN ARTIFACT FEATURE-CONF-002.md ===
+# FEATURE: Scoped Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides executable, machine-readable scoped conformance verification. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CONF-001.md |
+| Provides    | scoped conformance execution with JQ candidate binding |
+| Consumes    | ./jq, sources/run_conformance.py |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Scoped verification invokes the supplied runner against a construct selector, extends the inherited environment with the candidate executable through `JQ`, parses the runner's JSON report, and requires every selected case to pass without errors.
+
+## Programmatic Acceptance
+
+=== AC conf-002-scoped-run ===
+Intent: The scoped verification assets expose the candidate binding and machine-readable selector contracts.
+Suite: scoped
+
+from pathlib import Path
+
+runner = Path("sources/run_conformance.py")
+assert runner.is_file()
+source = runner.read_text(encoding="utf-8")
+assert "JQ" in source and "--select" in source and "--json" in source
+=== END AC conf-002-scoped-run ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Scoped verification must execute selected cases and must never use enumeration, dry-run, or unscoped execution as its product verdict.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-001.md ===
+# FEATURE: Stream-Valued Filter Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Evaluate jq filters as ordered streams supporting empty, iteration, and range. |
+| Depends On  | ARCHITECTURE.md, FEATURE-PARSE-004.md |
+| Provides    | ordered generator evaluator |
+| Consumes    | expression AST |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement the evaluator foundation in which every filter consumes one input and yields an ordered stream of zero or more values. Support identity, literals, empty, array and object iteration, recursive stream propagation, range generation, and preservation of output order and multiplicity.
+
+## Programmatic Acceptance
+
+=== AC core-001-conformance ===
+Intent: The executable evaluates identity, empty, range, and generator ordering as ordered streams.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+
+def run(program, input_text="null\n"):
+    return subprocess.run(
+        ["./jq", "-c", program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+    )
+
+identity = run(".")
+assert identity.returncode == 0 and identity.stdout == "null\n"
+assert run("empty").returncode == 0 and run("empty").stdout == ""
+assert run("range(3)").stdout == "0\n1\n2\n"
+=== END AC core-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never collapse a generator to a single value.
+- Preserve backtracking, multiplicity, and partial stream order.
+- Avoid external runtimes and third-party jq implementations.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-002.md ===
+# FEATURE: jq Composition and Cartesian Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Evaluate jq composition, collections, arguments, objects, and binary combinations. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-001.md |
+| Provides    | pipe, comma, argument, array, object, and binary composition |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement composition over stream-valued filters: pipe outputs into downstream filters, concatenate comma streams, evaluate filter arguments against the correct input, collect arrays, construct objects, and produce Cartesian combinations for multi-output operands and arguments. Preserve jq's documented evaluation order.
+
+## Programmatic Acceptance
+
+=== AC core-002-conformance ===
+Intent: The executable evaluates pipes, commas, arrays, objects, and composed operators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+
+def run(program, input_text="null\n"):
+    return subprocess.run(
+        ["./jq", "-c", program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+    )
+
+assert run("[1,2,3] | .[]").returncode == 0
+assert run("[1,2,3] | .[]").stdout == "1\n2\n3\n"
+assert run("[. + 1, . + 2]", "4\n").stdout == "[5,6]\n"
+assert run("{a: 1, b: 2}").stdout == '{"a":1,"b":2}\n'
+=== END AC core-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Pipe and comma ordering is observable and must remain stable.
+- Multi-output operands must produce all required Cartesian combinations.
+- Collection and object construction must not mutate their input values.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-003.md ===
+# FEATURE: Generator Errors and Optional Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define empty streams, runtime errors, optional evaluation, try/catch, and partial output behavior. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-002.md |
+| Provides    | empty, error, optional operator, try/catch, partial runtime output |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+Implement jq runtime error propagation and suppression semantics. `empty` must produce no values. `error` must raise a runtime error, `?` must suppress errors, and `try ... catch ...` must route the error value through its handler. Values emitted before an uncaught runtime error must remain on stdout.
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+Intent: The executable evaluates optional errors and try/catch while preserving runtime failure distinction.
+Suite: scoped
+
+import subprocess
+
+def run(program, input_text="null\n"):
+    return subprocess.run(
+        ["./jq", "-c", program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+    )
+
+optional = run('error("x")?')
+assert optional.returncode == 0 and optional.stdout == ""
+caught = run('try error("x") catch .')
+assert caught.returncode == 0 and caught.stdout == '"x"\n'
+uncaught = run('error("x")')
+assert uncaught.returncode == 5
+=== END AC core-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering and values emitted before a runtime failure.
+- Do not treat runtime failures as compile failures.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-CORE-004.md ===
+# FEATURE: Truthiness and Comparison Semantics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq truthiness, equality, inequality, and total value ordering. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-003.md |
+| Provides    | truthiness, equality, inequality, comparison ordering |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+Implement jq's value semantics for conditionals and comparisons. Only `false` and `null` are falsey. Equality must distinguish booleans from numbers while treating numerically equivalent values as equal. Ordering must follow jq's type order and recursively compare arrays and objects.
+
+## Programmatic Acceptance
+
+=== AC core-004-conformance ===
+Intent: The executable evaluates jq truthiness, equality, inequality, and ordering semantics.
+Suite: scoped
+
+import subprocess
+
+def run(program, input_text="null\n"):
+    return subprocess.run(
+        ["./jq", "-c", program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+    )
+
+assert run("false, null, 0, 1 | if . then 1 else 0 end").stdout == "0\n0\n1\n1\n"
+assert run("1 == 1.0").stdout == "true\n"
+assert run("true == 1").stdout == "false\n"
+assert run("[1,2] < [1,3]").stdout == "true\n"
+=== END AC core-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Only `false` and `null` are falsey.
+- Structural comparisons must be independent of object key insertion order.
+=== END ARTIFACT ===

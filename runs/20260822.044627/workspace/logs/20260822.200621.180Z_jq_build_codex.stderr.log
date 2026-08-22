@@ -1,0 +1,4 @@
+2026-08-22T20:07:41.937478Z ERROR codex_core::tools::router: error=apply_patch verification failed: invalid patch: multiple operations target /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py
+2026-08-22T20:09:36.428580Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if op == "literal":
+        text=a[0]; yield {"true":True,"false":False,"null":None,"nan":float("nan"),"infinite":float("inf"),"-infinite":float("-inf"),"-nan":float("nan")}.get(text, json.loads(text))

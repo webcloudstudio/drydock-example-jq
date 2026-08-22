@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-PARSE-004.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-PARSE-004.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-PARSE-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Declarations and Control Syntax</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq declarations, bindings, control constructs, and module grammar.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-PARSE-003.md</td></tr><tr><td>Provides</td><td>declarations, conditionals, try/catch, reductions, foreach, labels, bindings, modules grammar</td></tr><tr><td>Consumes</td><td>expression AST</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement parsing for <code>def</code>, function parameters, <code>as</code> bindings, destructuring patterns, <code>if</code>/<code>elif</code>/<code>else</code>, <code>try</code>/<code>catch</code>, <code>reduce</code>, <code>foreach</code>, <code>label</code>/<code>break</code>, and module directives. Module syntax must be validated sufficiently to reject invalid metadata, interpolation in import paths, invalid escapes, and unsupported tokens without loading module files.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-004-conformance ===<br>Intent: The executable passes every selected corpus case covering declarations, control syntax, bindings, reductions, labels, and required compile failures.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;%%FAIL|if |try |reduce |foreach |def | as |label |module|include&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC parse-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Compile failures must exit 3 and runtime failures must remain distinct.</li><li>Do not resolve imports or read excluded module fixtures in this story.</li><li>Preserve lexical scope and syntax needed by later evaluator stories.</li></ul></article>
+</main>
+</body>
+</html>

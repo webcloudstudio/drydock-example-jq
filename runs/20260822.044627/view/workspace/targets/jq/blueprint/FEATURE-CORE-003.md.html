@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-CORE-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-CORE-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-CORE-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Generator Errors and Optional Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define empty streams, runtime errors, optional evaluation, try/catch, and partial output behavior.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CORE-002.md</td></tr><tr><td>Provides</td><td>empty, error, optional operator, try/catch, partial runtime output</td></tr><tr><td>Consumes</td><td>ordered generator evaluator</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-003-conformance ===<br>Intent: The executable evaluates optional errors and try/catch while preserving runtime failure distinction.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>def run(program, input_text=&quot;null\n&quot;): return subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, )</p>
+<p>optional = run(&#x27;error(&quot;x&quot;)?&#x27;) assert optional.returncode == 0 and optional.stdout == &quot;&quot; caught = run(&#x27;try error(&quot;x&quot;) catch .&#x27;) assert caught.returncode == 0 and caught.stdout == &#x27;&quot;x&quot;\n&#x27; uncaught = run(&#x27;error(&quot;x&quot;)&#x27;) assert uncaught.returncode == 5 === END AC core-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator ordering and values emitted before a runtime failure.</li><li>Do not treat runtime failures as compile failures.</li></ul></article>
+</main>
+</body>
+</html>

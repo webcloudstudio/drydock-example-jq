@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-IO-002.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-IO-002.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-IO-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Diagnostics and Standard Error Output</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq diagnostic filters and controlled standard-error behavior.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-IO-001.md, FEATURE-EXEC-002.md</td></tr><tr><td>Provides</td><td>debug, stderr, halt_error</td></tr><tr><td>Consumes</td><td>process exit and diagnostic contract</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement <code>debug</code> and <code>stderr</code> as side-effecting filters that preserve the required value stream, and implement <code>halt_error</code> with its documented stderr emission and exit behavior. Keep diagnostic output separate from JSON values written to stdout.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC io-002-diagnostics-conformance ===<br>Intent: The authoritative corpus cases covering debug, stderr, and halt_error execute and pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;debug|stderr|halt_error&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC io-002-diagnostics-conformance ===</p>
+<p>=== AC io-002-channels ===<br>Intent: The selected corpus exercises diagnostic filters while the conformance runner observes the declared process contract.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;debug|stderr|halt_error&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC io-002-channels ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Diagnostics must never be emitted as JSON values on stdout.</li><li>Do not assert diagnostic message wording; preserve only the documented channels and exit semantics.</li></ul></article>
+</main>
+</body>
+</html>

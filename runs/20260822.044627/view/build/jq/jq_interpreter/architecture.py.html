@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/architecture.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/architecture.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/architecture.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Stable ownership map for the standalone interpreter.
+
+This module contains only architectural metadata and process-level constants.
+Feature implementations belong in the modules named by ``MODULE_BOUNDARIES``.
+&quot;&quot;&quot;
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class ModuleBoundary:
+    &quot;&quot;&quot;Name and responsibility of one interpreter subsystem.&quot;&quot;&quot;
+
+    module: str
+    responsibility: str
+
+
+MODULE_BOUNDARIES: tuple[ModuleBoundary, ...] = (
+    ModuleBoundary(&quot;jq&quot;, &quot;executable entry point and command-line validation&quot;),
+    ModuleBoundary(&quot;jq_interpreter.lexer&quot;, &quot;source text to positioned tokens&quot;),
+    ModuleBoundary(&quot;jq_interpreter.parser&quot;, &quot;tokens to immutable filter AST&quot;),
+    ModuleBoundary(&quot;jq_interpreter.ast&quot;, &quot;immutable syntax and compiled filter nodes&quot;),
+    ModuleBoundary(&quot;jq_interpreter.evaluator&quot;, &quot;ordered generator evaluation and control flow&quot;),
+    ModuleBoundary(&quot;jq_interpreter.runtime&quot;, &quot;JSON values, streams, and evaluation context&quot;),
+    ModuleBoundary(&quot;jq_interpreter.paths&quot;, &quot;immutable path reads and updates&quot;),
+    ModuleBoundary(&quot;jq_interpreter.builtins&quot;, &quot;jq standard-library filter implementations&quot;),
+    ModuleBoundary(&quot;jq_interpreter.diagnostics&quot;, &quot;diagnostics and process exit policy&quot;),
+)
+
+COMPILE_EXIT = 3
+RUNTIME_EXIT = 5
+</pre></article>
+</main>
+</body>
+</html>

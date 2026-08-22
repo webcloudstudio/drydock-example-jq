@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-DATA-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-DATA-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-DATA-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Object Entry and Containment Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq object-key, entry-conversion, and containment builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-DATA-002.md</td></tr><tr><td>Provides</td><td>keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries</td></tr><tr><td>Consumes</td><td>jq value model, comparison and ordering</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement key enumeration for arrays and objects, membership predicates, recursive containment and inverse containment, object-to-entry and entry-to-object conversion, and <code>with_entries</code> transformations. Preserve jq&#x27;s key ordering and handling of supported key aliases.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-003-conformance ===<br>Intent: The object-entry, key, membership, and containment slice executes matching corpus cases and passes all selected cases.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;keys|has\(|contains|inside|to_entries|from_entries&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li><code>keys</code> must use Unicode codepoint ordering; <code>keys_unsorted</code> must preserve insertion-oriented ordering.</li><li>Containment must recurse structurally and must not confuse booleans with numbers.</li></ul></article>
+</main>
+</body>
+</html>

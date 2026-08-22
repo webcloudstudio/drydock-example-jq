@@ -1,0 +1,15 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/ast.py
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Expanded AST, parser, and evaluator support. Project tests pass: 32 passed. Declared conformance checks did not complete within the available execution window.
+
+BLOCKERS:
+- Scoped conformance selectors hang before producing a JSON report; parser/evaluator coverage remains incomplete.
+
+FAILURE_SUMMARY: Scoped conformance checks did not complete.
+FAILURE_DETAIL: The local test suite is green, but both required acceptance invocations failed to return a report, so the build cannot be claimed complete. Further debugging is required for hanging corpus cases and broader declaration/control semantics.

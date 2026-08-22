@@ -1,0 +1,34 @@
+<reusable-compact filename="full_test.sh">
+Executable `./jq` must exist and be executable. Runs the full corpus via `JQ="$PWD/jq" exec python3 sources/run_conformance.py`; exits nonzero on interface or conformance failure.
+</reusable-compact>
+
+<reusable-compact filename="exclusions.txt">
+Contains 13 verbatim corpus program lines excluded due to unavailable module-loader fixtures. Exclusions must match corpus programs exactly; stale entries are errors.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Normative jq language specification: filters, generators, operators, builtins, variables, functions, paths, assignments, regex, dates, I/O, streaming, and modules.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Defines jq grammar, precedence, literals, filters, functions, imports, modules, variables, destructuring, assignments, reductions, conditionals, errors, and object/array construction. Compile failures must map to exit code 3.
+</reusable-compact>
+
+<reusable-compact filename="lexer.l">
+Defines jq lexical tokens, comments, operators, identifiers, fields, bindings, literals, strings/interpolation, formats, and delimiter state handling.
+</reusable-compact>
+
+<reusable-compact filename="builtin.jq">
+Defines jq standard-library functions including collection, path, string, regex, generator, reduction, assignment, date, streaming, SQL-style, and type-selection builtins.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- tests/test_conf_001_acceptance.py
+
+SUMMARY:
+Staged assets validated in process: 550 corpus cases and 13 exclusions. Full local test suite passes: 21 tests.
+
+BLOCKERS:
+- None

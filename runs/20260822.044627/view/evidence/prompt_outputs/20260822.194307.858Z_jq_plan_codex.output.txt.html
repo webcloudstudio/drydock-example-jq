@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.194307.858Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.194307.858Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.194307.858Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-TEXT-002.md ===
+# FEATURE: JSON and Output Format Filters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide JSON conversion and jq output-format filters with standard-library escaping semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-TEXT-001.md, FEATURE-VALUE-001.md |
+| Provides    | tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d |
+| Consumes    | jq value model, string manipulation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement conversion filters and format filters using only Python standard-library facilities. Preserve interpolation behavior, compact JSON conversion, Unicode handling, escaping rules, and generator ordering. Support HTML, URI, shell, CSV, TSV, Base64, and inverse Base64 formats described by the manual.
+
+## Programmatic Acceptance
+
+=== AC text-002-scoped-conformance ===
+Intent: The authoritative corpus cases covering JSON conversion and output formats execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;@text|@json|@html|@uri|@urid|@csv|@tsv|@sh|@base64|@base64d|tojson|fromjson|tostring&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-002-scoped-conformance ===
+
+=== AC text-002-formats ===
+Intent: The corpus exercises the declared format families rather than an empty selector.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;@html|@uri|@base64|@csv|@tsv|@sh&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-002-formats ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not shell out to jq or use third-party formatting libraries.
+- Preserve stdout JSON-lines behavior and send diagnostics only to stderr.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-TEXT-003.md ===
+# FEATURE: Regular-Expression Filters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq regular-expression matching, capture, scanning, splitting, and substitution filters. |
+| Depends On  | ARCHITECTURE.md, FEATURE-TEXT-002.md |
+| Provides    | test, match, capture, scan, split, splits, sub, gsub |
+| Consumes    | jq strings, generator evaluator |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement the regex filters with Python&#x27;s standard-library `re` module. Map the required jq flags, preserve Unicode codepoint offsets, emit named and unnamed capture structures, support global streams, and implement regex splitting and substitution with interpolation-aware replacement values.
+
+## Programmatic Acceptance
+
+=== AC text-003-regex-conformance ===
+Intent: The authoritative corpus cases covering regular-expression filters execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;test\(|match\(|capture\(|scan\(|sub\(|gsub\(|splits\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-003-regex-conformance ===
+
+=== AC text-003-captures ===
+Intent: The selected corpus includes matching, named capture, and replacement behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;match\(|capture\(|sub\(|gsub\(&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-003-captures ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only the Python standard library for regular expressions.
+- Preserve generator multiplicity and output ordering for global matches and replacement streams.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-TEXT-004.md ===
+# FEATURE: Date and Time Filters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide UTC date parsing, formatting, and low-level time conversion filters. |
+| Depends On  | ARCHITECTURE.md, FEATURE-TEXT-003.md |
+| Provides    | fromdate, todate, strptime, strftime, strflocaltime, gmtime, localtime, mktime |
+| Consumes    | jq strings and numbers |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement the documented date and time filters with Python&#x27;s standard-library `datetime` and `time` facilities. ISO-8601 convenience filters operate in UTC; low-level conversions preserve jq&#x27;s broken-down time-array shape and accept the supplied format strings.
+
+## Programmatic Acceptance
+
+=== AC text-004-date-conformance ===
+Intent: The authoritative corpus cases covering date and time filters execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;date|strftime|strptime|strflocaltime|gmtime|localtime|mktime&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-004-date-conformance ===
+
+=== AC text-004-utc ===
+Intent: The selected corpus exercises both ISO convenience filters and low-level UTC conversions.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;fromdate|todate|strptime|strftime|gmtime|mktime&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC text-004-utc ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Date operations must use standard-library facilities and must not depend on the local timezone for UTC filters.
+- Do not introduce wall-clock-dependent acceptance expectations.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-IO-001.md ===
+# FEATURE: Input Stream Controls
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq input stream controls over the fixed standard-input interface. |
+| Depends On  | ARCHITECTURE.md, FEATURE-TEXT-004.md |
+| Provides    | input, inputs, input_filename, input_line_number |
+| Consumes    | JSON stdin reader |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Expose the remaining JSON values from the process input stream through `input` and `inputs`, while preserving the already-selected current input and generator ordering. Provide the fixed-interface filename and line-number primitives required by the corpus.
+
+## Programmatic Acceptance
+
+=== AC io-001-input-conformance ===
+Intent: The authoritative corpus cases covering input stream controls execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;input|inputs|input_filename|input_line_number&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC io-001-input-conformance ===
+
+=== AC io-001-streams ===
+Intent: The selected corpus includes both single-next-input and remaining-input stream behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\binput\b|\binputs\b&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC io-001-streams ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Read only the fixed standard input stream; do not add command-line input modes.
+- Preserve the distinction between the current input and remaining inputs.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-IO-002.md ===
+# FEATURE: Diagnostics and Standard Error Output
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq diagnostic filters and controlled standard-error behavior. |
+| Depends On  | ARCHITECTURE.md, FEATURE-IO-001.md, FEATURE-EXEC-002.md |
+| Provides    | debug, stderr, halt_error |
+| Consumes     | process exit and diagnostic contract |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement `debug` and `stderr` as side-effecting filters that preserve the required value stream, and implement `halt_error` with its documented stderr emission and exit behavior. Keep diagnostic output separate from JSON values written to stdout.
+
+## Programmatic Acceptance
+
+=== AC io-002-diagnostics-conformance ===
+Intent: The authoritative corpus cases covering debug, stderr, and halt_error execute and pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;debug|stderr|halt_error&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC io-002-diagnostics-conformance ===
+
+=== AC io-002-channels ===
+Intent: The selected corpus exercises diagnostic filters while the conformance runner observes the declared process contract.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;debug|stderr|halt_error&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC io-002-channels ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics must never be emitted as JSON values on stdout.
+- Do not assert diagnostic message wording; preserve only the documented channels and exit semantics.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

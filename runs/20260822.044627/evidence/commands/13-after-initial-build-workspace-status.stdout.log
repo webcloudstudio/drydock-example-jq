@@ -3,10 +3,10 @@ Drydock status — workspace
 
 Target: jq
    Phase:     Implement
-   State:     Failed: programmatic acceptance failed: conformance-source-integrity
-   Detail:    9 imported · 44 authored · metadata building
+   State:     Failed: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+   Detail:    9 imported · 47 authored · metadata building
    Analysis:  Ready · 42 stories · 0 questions · 0 blockers
-   Plan:      39 pending · 4 closed/implemented · 1 closed/failed
+   Plan:      35 pending · 7 closed/implemented · 2 closed/failed
    Next Step: drydock run quarterdeck jq
    8-22:      ✅  drydock build status jq
    8-22:      ❌  drydock build jq --override --repair-attempts 6

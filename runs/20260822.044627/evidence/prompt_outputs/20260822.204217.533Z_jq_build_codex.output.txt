@@ -1,0 +1,15 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Improved bindings, generator-preserving objects, function parameters, callable assignment paths, dynamic keys, and `break` parsing. Local tests pass: 32 passed. Scoped conformance checks still fail, primarily due to function-definition scoping and broader evaluator gaps.
+
+BLOCKERS:
+- PARSE-003 and PARSE-004 conformance criteria remain failing.
+- Function lexical scoping and several evaluator/builtin behaviors require further implementation.
+
+FAILURE_SUMMARY: Scoped conformance remains incomplete
+FAILURE_DETAIL: Local tests pass, but authoritative PARSE-003/PARSE-004 corpus selections still report failures; continue with function scoping and evaluator coverage.

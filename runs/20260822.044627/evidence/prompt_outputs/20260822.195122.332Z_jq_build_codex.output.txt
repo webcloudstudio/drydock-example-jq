@@ -1,0 +1,15 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/interpreter.py
+- jq_interpreter/cli.py
+- jq_interpreter/ast.py
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+- tests/test_json_io.py
+
+SUMMARY:
+Implemented whitespace-separated JSON stream input, compact ordered JSON output, and `.[]` generator support. All 20 tests and declared acceptance checks pass.
+
+BLOCKERS:
+- None

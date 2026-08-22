@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-FUNC-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-FUNC-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-FUNC-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Function Definitions and Recursion</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq function declarations, lexical function scope, and recursion.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FUNC-002.md</td></tr><tr><td>Provides</td><td>def declarations, lexical function scope, redefinition, recursion, forward/self references</td></tr><tr><td>Consumes</td><td>function parameters, lexical variable bindings</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Function definitions introduce named filters into lexical scope and support recursive evaluation.</p>
+<ul><li><code>def name: FILTER;</code> defines a zero-arity function.</li><li>Parameterized definitions support filter and value parameters.</li><li>Definitions are resolved lexically and may refer to themselves recursively.</li><li>Redefinition replaces only the matching arity for subsequent references.</li><li>Function calls preserve generator ordering, closures, and backtracking.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-003-conformance ===<br>Intent: The executable passes the authoritative conformance cases exercising function definitions, scope, redefinition, and recursion.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;def &quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC func-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Recursive and redefined functions resolve according to jq&#x27;s lexical scoping rules.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not resolve function names through mutable global state.</li><li>Preserve self-reference, recursion, and generator backtracking.</li></ul></article>
+</main>
+</body>
+</html>

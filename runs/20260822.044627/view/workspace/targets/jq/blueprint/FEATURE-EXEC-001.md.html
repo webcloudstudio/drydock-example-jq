@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-EXEC-001.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-EXEC-001.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-EXEC-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Executable jq Entry Point</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides the executable jq command and exercised compact-filter interface.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>./jq -c &#x27;&lt;program&gt;&#x27;</td></tr><tr><td>Consumes</td><td>executable boundary</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Provide an executable named <code>jq</code> at the application root. The command accepts the exercised <code>-c</code> option and a jq filter program, then evaluates that program against JSON supplied on standard input.</p>
+<h2>Interface</h2>
+<pre><code>./jq -c &#x27;&lt;program&gt;&#x27;
+stdin: JSON value(s)
+stdout: one compact JSON value per generated output line</code></pre>
+<p>The executable must be runnable directly and must not require package installation or external runtime dependencies.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC exec-entry-conformance ===<br>Intent: The executable entry point passes the corpus slice containing the primitive interface programs.</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;^(true|false|null|1)$&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC exec-entry-conformance ===</p>
+<p>=== AC exec-is-runnable ===<br>Intent: The deliverable is directly executable at the application root.</p>
+<p>import os import stat</p>
+<p>mode = os.stat(&quot;jq&quot;).st_mode assert stat.S_ISREG(mode) assert mode &amp; stat.S_IXUSR === END AC exec-is-runnable ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The executable is named exactly <code>jq</code>.</li><li><code>-c</code> is the only required command-line option.</li><li>Do not add a wrapper around another jq executable.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,268 @@
+=== BEGIN ARTIFACT FEATURE-CORE-003.md ===
+# FEATURE: Generator Errors and Optional Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define empty streams, runtime errors, optional evaluation, try/catch, and partial output behavior. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-002.md |
+| Provides    | empty, error, optional operator, try/catch, partial runtime output |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+Implement jq runtime error propagation and suppression semantics. `empty` must produce no values. `error` must raise a runtime error, `?` must suppress errors, and `try ... catch ...` must route the error value through its handler. Values emitted before an uncaught runtime error must remain on stdout.
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+Intent: The authoritative corpus cases exercising errors, optional evaluation, and try/catch execute successfully.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"try|error|\?"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC core-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering and values emitted before a runtime failure.
+- Do not treat runtime failures as compile failures.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-CORE-004.md ===
+# FEATURE: Truthiness and Comparison Semantics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq truthiness, equality, inequality, and total value ordering. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CORE-003.md |
+| Provides    | truthiness, equality, inequality, comparison ordering |
+| Consumes    | ordered generator evaluator |
+
+## Questions
+
+- None.
+
+Implement jq's value semantics for conditionals and comparisons. Only `false` and `null` are falsey. Equality must distinguish booleans from numbers while treating numerically equivalent values as equal. Ordering must follow jq's type order and recursively compare arrays and objects.
+
+## Programmatic Acceptance
+
+=== AC core-004-conformance ===
+Intent: The authoritative corpus cases exercising truthiness and comparison semantics execute successfully.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"==|!=|<=|>=|<|>"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC core-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Only `false` and `null` are falsey.
+- Structural comparisons must be independent of object key insertion order.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-VALUE-001.md ===
+# FEATURE: jq Values and Numeric Model
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20220822 V1 |
+| Description | Define jq's JSON value kinds, special numeric values, and numeric serialization behavior. |
+| Depends On  | FEATURE-CORE-004.md |
+| Provides    | null, boolean, number, string, array, object, NaN, infinity values |
+| Consumes    | JSON input reader |
+
+## Questions
+
+- None.
+
+Represent jq values using Python standard-library facilities. Support JSON null, booleans, numbers, strings, arrays, and objects, together with `nan` and infinity values produced by jq filters. Preserve numeric behavior and serialization required by the corpus, including conversion through `tojson` and `fromjson`.
+
+## Programmatic Acceptance
+
+=== AC value-001-conformance ===
+Intent: The authoritative corpus cases exercising jq values and special numeric behavior execute successfully.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"nan|infinite|tojson|fromjson"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC value-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Do not introduce a third-party jq value implementation or external runtime.
+- Serialize non-finite values according to jq behavior rather than emitting invalid JSON tokens.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-VALUE-002.md ===
+# FEATURE: Field and Index Access
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20220822 V1 |
+| Description | Define object field access, array and string indexing, optional access, and missing-value behavior. |
+| Depends On  | FEATURE-VALUE-001.md |
+| Provides    | field access, index access, optional access, negative indices, missing values |
+| Consumes    | ordered generator evaluator, jq value model |
+
+## Questions
+
+- None.
+
+Implement field and index access for objects, arrays, and strings. Support identifier fields, quoted keys, numeric indices, negative indices, optional access, missing fields, and the documented access errors for invalid value/index combinations.
+
+## Programmatic Acceptance
+
+=== AC value-002-conformance ===
+Intent: The authoritative corpus cases exercising field and index access execute successfully.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"\.[A-Za-z]|\[[-0-9]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC value-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Missing object fields produce `null`.
+- Optional access suppresses access errors without suppressing valid outputs.
+- Negative array indices follow jq's end-relative indexing semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-VALUE-003.md ===
+# FEATURE: Slices and Collection Iteration
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20220822 V1 |
+| Description | Define array and string slicing together with array and object value iteration. |
+| Depends On  | FEATURE-VALUE-002.md |
+| Provides    | array slices, string slices, array iteration, object iteration |
+| Consumes    | field and index access |
+
+## Questions
+
+- None.
+
+Implement `.[start:end]` slicing for arrays and strings, including omitted, negative, fractional, and out-of-range bounds. Implement `.[]` iteration over arrays and objects, preserving source order and generator multiplicity, with optional iteration suppressing invalid-input errors.
+
+## Programmatic Acceptance
+
+=== AC value-003-conformance ===
+Intent: The authoritative corpus cases exercising slices and collection iteration execute successfully.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"\[.*:|\.\[\]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report["summary"]
+assert sum(tally.values()) > 0
+assert tally["fail"] == 0 and tally["error"] == 0
+assert result.returncode == 0
+=== END AC value-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Iteration preserves ordering and emits one value per selected element.
+- Out-of-range slices produce valid empty or truncated results according to jq semantics.
+- Optional iteration suppresses invalid-input errors while retaining valid outputs.
+=== END ARTIFACT ===

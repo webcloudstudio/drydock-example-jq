@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-PATH-003.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-PATH-003.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-PATH-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Deletion and Assignment Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq deletion and assignment operators over path expressions.</td></tr><tr><td>Depends On</td><td>FEATURE-PATH-002.md</td></tr><tr><td>Provides</td><td>del, =,</td><td>=, +=, -=, *=, /=, %=, //=</td></tr><tr><td>Consumes</td><td>path discovery, getpath, setpath, delpaths</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s immutable deletion, plain assignment, update assignment, and arithmetic assignment semantics.</p>
+<h2>Behavior</h2>
+<ul><li><code>del</code> removes values selected by one or more path expressions.</li><li>Plain assignment evaluates the right-hand side against the original input and uses every produced value.</li><li>Update assignment evaluates the right-hand side against each selected value and uses the first result.</li><li>Arithmetic assignments apply the corresponding operator to selected values.</li><li>Defined-or assignment replaces false or null values with the right-hand result.</li><li>Multi-path assignments preserve jq&#x27;s output ordering and multiplicity.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-003-conformance ===<br>Intent: The authoritative corpus slice covering deletion and assignment operators executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;=|\|=|\+=&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC path-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Assignment must produce immutable values and must not leak mutations between outputs.</li><li>Preserve the distinction between <code>=</code> and <code>|=</code>.</li><li>Empty update streams delete the selected path.</li></ul></article>
+</main>
+</body>
+</html>

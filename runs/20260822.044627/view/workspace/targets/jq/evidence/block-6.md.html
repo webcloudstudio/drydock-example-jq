@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-6.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-6.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-6.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 6 · Service (block-6)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 25557</li><li>execution id: 20260822.195437.799Z-9e8b87c7</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement jq lexical scanning. (PARSE-001) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-PARSE-001.md (SP 615)</li><li>context: lexer.l (SP 1137)</li><li>context: parser.y (SP 5596)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>tests/conftest.py</li><li>tests/test_lexer.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): lexer-conformance (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: The lexer and front end pass the corpus slice containing primitive literals and identity syntax. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 7, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<ul><li>GREEN (prepassed): lexer-rejects-invalid-source (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: An invalid lexical character is rejected with the compile-failure status. return code: 0</p>
+<ul><li>RED: lexer-comments (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: Comments do not alter evaluation of the surrounding jq program. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;./jq&#x27;, &#x27;-c&#x27;, &#x27;1 # comment\n&#x27;], returncode=3, stdout=&#x27;&#x27;, stderr=&#x27;jq: compile error: unsupported program in foundational parser\n&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;lexer-comments.py&quot;, line 10, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: lexer-conformance (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: The lexer and front end pass the corpus slice containing primitive literals and identity syntax. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 7, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<ul><li>PASS: lexer-rejects-invalid-source (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: An invalid lexical character is rejected with the compile-failure status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: lexer-comments (FEATURE-PARSE-001.md)</li></ul>
+<p>intent: Comments do not alter evaluation of the surrounding jq program. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>tests/test_lexer.py</li><li>tests/conftest.py</li></ul>
+<p>SUMMARY: Implemented jq lexical scanning for literals, identifiers, fields, bindings, keywords, operators, delimiters, comments, formats, strings, and interpolation. Added parser integration and tests.</p>
+<p>Verification: 26 tests passed; lexer conformance 7 passed, 0 failed, 0 errored. Invalid source exits 3; comments evaluate correctly.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

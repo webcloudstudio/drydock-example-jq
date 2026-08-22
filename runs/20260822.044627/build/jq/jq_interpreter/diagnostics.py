@@ -4,9 +4,7 @@ import sys
 from typing import TextIO
 
 from .errors import CompileError, RuntimeError
-
-COMPILE_EXIT = 3
-RUNTIME_EXIT = 5
+from .architecture import COMPILE_EXIT, RUNTIME_EXIT
 
 
 def report_compile_error(error: CompileError, stream: TextIO = sys.stderr) -> int:

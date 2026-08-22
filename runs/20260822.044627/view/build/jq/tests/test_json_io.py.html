@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_json_io.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_json_io.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_json_io.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Acceptance coverage for JSON stream input and compact output.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+EXECUTABLE = ROOT / &quot;jq&quot;
+
+
+def run_jq(program: str, input_text: str) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(EXECUTABLE), &quot;-c&quot;, program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def test_multiple_input_values_are_processed_in_order() -&gt; None:
+    inputs = &quot;1\n2\n3\n&quot;
+    result = run_jq(&quot;.&quot;, inputs)
+    assert result.returncode == 0
+    assert result.stdout.splitlines() == inputs.splitlines()
+
+
+def test_generator_outputs_preserve_order_and_multiplicity() -&gt; None:
+    result = run_jq(&quot;.[]&quot;, &quot;[1,2,3]\n&quot;)
+    assert result.returncode == 0
+    assert result.stdout.splitlines() == [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]
+
+
+def test_objects_are_compact_single_line_json() -&gt; None:
+    input_text = &#x27;{&quot;a&quot;: 1, &quot;b&quot;: [2, 3]}\n&#x27;
+    result = run_jq(&quot;.&quot;, input_text)
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == json.loads(input_text)
+    assert len(result.stdout.splitlines()) == 1
+
+
+def test_multiline_and_unicode_json_values_are_decoded() -&gt; None:
+    result = run_jq(&quot;.&quot;, &#x27;{\n  &quot;answer&quot;: &quot;μ&quot;\n}\n[1, 2]\n&#x27;)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [
+        {&quot;answer&quot;: &quot;μ&quot;},
+        [1, 2],
+    ]
+</pre></article>
+</main>
+</body>
+</html>

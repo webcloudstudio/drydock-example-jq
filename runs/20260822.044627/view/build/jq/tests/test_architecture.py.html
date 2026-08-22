@@ -17,7 +17,9 @@ import sys
 import unittest
 from pathlib import Path
 
-from jq_interpreter import CompileError, Interpreter
+from jq_interpreter import CompileError, Interpreter, MODULE_BOUNDARIES
+from jq_interpreter.architecture import COMPILE_EXIT, RUNTIME_EXIT
+from jq_interpreter.runtime import EvaluationContext
 from jq_interpreter.paths import Path as JsonPath, get_path
 
 ROOT = Path(__file__).parents[1]
@@ -25,6 +27,26 @@ EXECUTABLE = ROOT / &quot;jq&quot;
 
 
 class ArchitectureTests(unittest.TestCase):
+    def test_module_boundaries_name_each_foundational_subsystem(self) -&gt; None:
+        modules = {boundary.module for boundary in MODULE_BOUNDARIES}
+        self.assertTrue({
+            &quot;jq&quot;,
+            &quot;jq_interpreter.lexer&quot;,
+            &quot;jq_interpreter.parser&quot;,
+            &quot;jq_interpreter.evaluator&quot;,
+            &quot;jq_interpreter.runtime&quot;,
+            &quot;jq_interpreter.builtins&quot;,
+        } &lt;= modules)
+
+    def test_each_input_gets_isolated_evaluation_context(self) -&gt; None:
+        first = EvaluationContext()
+        second = EvaluationContext()
+        first.bindings[&quot;answer&quot;] = 42
+        self.assertEqual(second.bindings, {})
+
+    def test_diagnostics_use_declared_process_exit_contract(self) -&gt; None:
+        self.assertEqual((COMPILE_EXIT, RUNTIME_EXIT), (3, 5))
+
     def test_special_numeric_literals_are_emitted_as_json_null(self) -&gt; None:
         result = subprocess.run(
             [sys.executable, str(EXECUTABLE), &quot;-c&quot;, &quot;nan, infinite&quot;],
@@ -104,6 +126,18 @@ class ArchitectureTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 5)
         self.assertEqual(result.stdout.splitlines(), [&quot;1&quot;])
+        self.assertNotEqual(result.stderr, &quot;&quot;)
+
+    def test_runtime_diagnostic_is_not_written_to_stdout(self) -&gt; None:
+        result = subprocess.run(
+            [sys.executable, str(EXECUTABLE), &quot;-c&quot;, &quot;error&quot;],
+            input=&quot;null\n&quot;,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 5)
+        self.assertEqual(result.stdout, &quot;&quot;)
         self.assertNotEqual(result.stderr, &quot;&quot;)
 
 

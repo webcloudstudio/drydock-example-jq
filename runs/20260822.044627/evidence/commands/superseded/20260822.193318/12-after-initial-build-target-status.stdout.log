@@ -1,0 +1,44 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status
+
+  Target          /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq
+  Name            drydock jq Uat Kit
+  Description     Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46
+                  excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
+  Phase           Implement
+  State           Failed: programmatic acceptance failed: conformance-source-integrity
+  Metadata        building · running
+  Sources         9 imported · 44 authored blueprint files
+  Analysis        Ready · 42 stories · 0 questions · 0 blockers
+  Blueprint       ⚠  0 errors · 7 warnings
+    ⚠  Acceptance snippets: FEATURE-Date-and-Time.md [text-004-conformance]: expects '1970-01-01T00:00:00Z', a value re-
+       typed rather than derived from the input or read back from the system. This criterion is reported but does
+       not gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects '"x"', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects '&lt;x&gt;', a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'a%20b', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGQgYg==', a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects 'aGk=', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-interface]: expects 'hello%20world', a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+  Plan            39 pending · 4 closed/implemented · 1 closed/failed
+  Frontier        parse-001: Implement jq lexical scanning.
+                  parse-002: Implement literals, escapes, and string interpolation.
+  Workflow        5 steps
+                  Initialize         complete at 2026-08-22T04:46:29.469+00:00
+                  Import             complete at 2026-08-22T04:46:33.960+00:00
+                  Analyze            complete at 2026-08-22T04:48:42.765+00:00
+                  Plan               complete at 2026-08-22T18:06:15.431+00:00
+                  Build              failed at 2026-08-22T18:16:59.812+00:00
+  Next step       drydock run quarterdeck jq
