@@ -1,11 +1,11 @@
 # STOP
 
-- stage: plan-repair
-- declared: 2026-08-22T05:16:29Z
+- stage: initial-build-1
+- declared: 2026-08-22T18:17:01Z
 
 ## Reason
 
-acceptance criteria still cannot run after one repair pass
+The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.
 
 ## Clearing
 

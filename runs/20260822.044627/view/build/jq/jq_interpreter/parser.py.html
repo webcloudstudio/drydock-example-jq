@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/parser.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/parser.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/parser.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Parser boundary: source tokens become an immutable intermediate form.&quot;&quot;&quot;
+
+import json
+import re
+
+from .ast import Array, Comma, Filter, Identity, Limit, Literal, Raise
+from .errors import CompileError
+from .lexer import TokenKind, tokenize
+
+
+def parse(source: str) -&gt; Filter:
+    &quot;&quot;&quot;Compile source into a filter or raise :class:`CompileError`.&quot;&quot;&quot;
+    text = source.strip()
+    if not text:
+        raise CompileError(&quot;empty program&quot;)
+    if text == &quot;.&quot;:
+        return Identity()
+    if text == &quot;error&quot;:
+        return Raise()
+    if text.startswith(&quot;[&quot;) and text.endswith(&quot;]&quot;):
+        return Array(parse(text[1:-1]))
+    if text.startswith(&quot;limit(&quot;) and text.endswith(&quot;)&quot;):
+        body = text[6:-1]
+        separator = _top_level_separator(body, &quot;;&quot;)
+        if separator is not None:
+            count_text, expression = body[:separator], body[separator + 1 :]
+            if count_text.strip().isdigit():
+                return Limit(int(count_text.strip()), parse(expression))
+    comma = _top_level_comma(text)
+    if comma is not None:
+        return Comma(parse(text[:comma]), parse(text[comma + 1 :]))
+    if text in {&quot;nan&quot;, &quot;infinite&quot;, &quot;-infinite&quot;, &quot;-nan&quot;}:
+        return Literal({&quot;nan&quot;: float(&quot;nan&quot;), &quot;infinite&quot;: float(&quot;inf&quot;),
+                        &quot;-infinite&quot;: float(&quot;-inf&quot;), &quot;-nan&quot;: float(&quot;nan&quot;)}[text])
+    if re.fullmatch(r&quot;(?:-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?)|true|false|null|\&quot;(?:[^\&quot;\\]|\\.)*\&quot;&quot;, text):
+        try:
+            return Literal(json.loads(text))
+        except json.JSONDecodeError as error:
+            raise CompileError(f&quot;invalid literal: {error.msg}&quot;) from error
+    raise CompileError(&quot;unsupported program in foundational parser&quot;)
+
+
+def _top_level_comma(text: str) -&gt; int | None:
+    return _top_level_separator(text, &quot;,&quot;)
+
+
+def _top_level_separator(text: str, separator: str) -&gt; int | None:
+    depth = 0
+    quoted = False
+    escaped = False
+    for position, character in enumerate(text):
+        if quoted:
+            if escaped:
+                escaped = False
+            elif character == &quot;\\&quot;:
+                escaped = True
+            elif character == &#x27;&quot;&#x27;:
+                quoted = False
+        elif character == &#x27;&quot;&#x27;:
+            quoted = True
+        elif character in &quot;[{(&quot;:
+            depth += 1
+        elif character in &quot;]})&quot;:
+            depth -= 1
+        elif character == separator and depth == 0:
+            return position
+    if quoted or depth != 0:
+        raise CompileError(&quot;incomplete program&quot;)
+    return None
+</pre></article>
+</main>
+</body>
+</html>

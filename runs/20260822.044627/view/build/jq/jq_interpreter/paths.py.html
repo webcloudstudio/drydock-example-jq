@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/paths.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/paths.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/paths.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Immutable path discovery and update boundary.&quot;&quot;&quot;
+
+from dataclasses import dataclass
+
+from .runtime import JsonValue
+
+
+@dataclass(frozen=True)
+class Path:
+    &quot;&quot;&quot;A path into a JSON value, represented as immutable components.&quot;&quot;&quot;
+
+    components: tuple[str | int, ...] = ()
+
+
+def get_path(value: JsonValue, path: Path) -&gt; JsonValue:
+    &quot;&quot;&quot;Read a path without mutating the input value.&quot;&quot;&quot;
+    current = value
+    for component in path.components:
+        current = current[component]  # type: ignore[index]
+    return current
+</pre></article>
+</main>
+</body>
+</html>

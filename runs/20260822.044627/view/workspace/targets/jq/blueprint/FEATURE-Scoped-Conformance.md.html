@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Scoped Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide executing, machine-readable conformance gates for implementation slices.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Conformance-Assets.md, FEATURE-Streaming.md</td></tr><tr><td>Provides</td><td>executing scoped conformance gates</td></tr><tr><td>Consumes</td><td>./jq -c program execution, staged conformance runner</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Each implementation story uses the supplied runner with a selector matching its owned syntax. The candidate command is supplied through the inherited <code>JQ</code> environment variable. The gate executes selected cases, parses the JSON report, requires a non-empty selection, requires zero failures and errors, and checks the runner exit status.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC scoped-conformance ===<br>Intent: The scoped runner executes a non-empty reduce slice and reports no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;reduce&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-conformance ===</p>
+<p>=== AC scoped-environment ===<br>Intent: The scoped runner receives the candidate through JQ while retaining the inherited execution environment.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;true&quot; environment = {**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;} result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env=environment, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) assert report[&quot;summary&quot;][&quot;pass&quot;] &gt; 0 assert report[&quot;summary&quot;][&quot;fail&quot;] == 0 assert report[&quot;summary&quot;][&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-environment ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Scoped gates must execute cases; enumeration-only or dry-run modes are not acceptance.</li><li>Every runner invocation must extend the inherited environment and set <code>JQ</code>.</li><li>Scoped checks must use machine-readable state and must not assert on summary text.</li></ul></article>
+</main>
+</body>
+</html>

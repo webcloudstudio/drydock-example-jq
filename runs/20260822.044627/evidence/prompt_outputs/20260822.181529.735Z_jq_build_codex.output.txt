@@ -1,0 +1,40 @@
+<reusable-compact filename="exclusions.txt">
+Defines 13 verbatim jq program lines excluded from scoring because they require unavailable module-loader fixtures. Staged file must remain unchanged; stale entries are harness errors.
+</reusable-compact>
+
+<reusable-compact filename="full_test.sh">
+Executable scoring entry point. Requires executable `./jq`, sets `JQ="$PWD/jq"`, and runs `python3 sources/run_conformance.py`. Exit status is the conformance verdict.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Normative jq language contract: filters are ordered generators; JSON values stream one per line; supports literals, paths, composition, variables, functions, reducers, assignments, builtins, regex, dates, modules, and streaming. CLI scope is `./jq -c '<program>'`.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Authoritative jq grammar and parser behavior. Defines precedence, literals, paths, generators, assignments, functions, variables, destructuring, reducers, conditionals, imports, modules, and compile-error handling.
+</reusable-compact>
+
+<reusable-compact filename="lexer.l">
+Authoritative jq lexer. Recognizes keywords, operators, literals, fields, bindings, strings/interpolation, formats, comments, nested delimiters, and invalid characters; emits parser tokens with source locations.
+</reusable-compact>
+
+<reusable-compact filename="builtin.jq">
+Defines jq standard-library filters including collection, traversal, paths, assignment helpers, recursion, reducers, regex, strings, dates, streaming, SQL-style operations, and type predicates. Generator ordering and backtracking are contractual.
+</reusable-compact>
+
+AC_BROKEN: conformance-source-integrity
+
+RESULT: FAILED
+
+FILES CHANGED:
+- tests/test_conformance_assets.py
+
+SUMMARY:
+Updated the local regression test to compare canonical absolute paths. All 12 project tests and the conformance-assets acceptance logic pass. The declared source-integrity assertion remains impossible because the supplied harness exposes absolute `CORPUS`/`EXCLUSIONS` paths while the criterion compares them to relative paths.
+
+BLOCKERS:
+- The staged `run_conformance.py` is read-only and cannot be changed to satisfy the contradictory relative-path assertion.
+
+FAILURE_SUMMARY: Declared source-integrity criterion compares absolute and relative paths.
+
+FAILURE_DETAIL: The harness command succeeds and exposes `/.../sources/jq.test`; the criterion expects `sources/jq.test`. The criterion must resolve its expected paths or the harness contract must change before rerunning.

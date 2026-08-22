@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/cli.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/cli.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/cli.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Executable boundary for ``jq -c &#x27;&lt;program&gt;&#x27;``.&quot;&quot;&quot;
+
+import argparse
+import json
+import math
+import sys
+from collections.abc import Iterator
+
+from .diagnostics import report_compile_error, report_runtime_error
+from .errors import CompileError, RuntimeError
+from .interpreter import Interpreter, parse_input
+
+
+def _inputs() -&gt; Iterator[object]:
+    for line in sys.stdin:
+        if line.strip():
+            yield parse_input(line)
+
+
+def _json_output(value: object) -&gt; object:
+    &quot;&quot;&quot;Convert jq&#x27;s non-finite numbers to its JSON output representation.
+
+    jq represents NaN and infinities as ``null`` when emitting JSON.  Doing this
+    recursively also covers values nested in arrays and objects.
+    &quot;&quot;&quot;
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, list):
+        return [_json_output(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _json_output(item) for key, item in value.items()}
+    return value
+
+
+def main(argv: list[str] | None = None) -&gt; int:
+    arguments = argparse.ArgumentParser(prog=&quot;jq&quot;)
+    arguments.add_argument(&quot;-c&quot;, action=&quot;store_true&quot;)
+    arguments.add_argument(&quot;program&quot;)
+    options = arguments.parse_args(argv)
+    try:
+        interpreter = Interpreter(options.program)
+    except CompileError as error:
+        return report_compile_error(error)
+    try:
+        for output in interpreter.run(_inputs()):
+            print(json.dumps(_json_output(output), separators=(&quot;,&quot;, &quot;:&quot;), ensure_ascii=False))
+    except (RuntimeError, ValueError, TypeError, json.JSONDecodeError) as error:
+        return report_runtime_error(RuntimeError(str(error)))
+    return 0
+</pre></article>
+</main>
+</body>
+</html>

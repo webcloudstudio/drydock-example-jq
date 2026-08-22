@@ -18,18 +18,39 @@ Drydock status
                   excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
   Phase           Implement
   State           44 pending
-  Metadata        planned · approved
+  Metadata        building · approved
   Sources         9 imported · 44 authored blueprint files
   Analysis        Ready · 42 stories · 0 questions · 0 blockers
-  Blueprint       ✓  0 errors · 0 warnings
+  Blueprint       ⚠  0 errors · 7 warnings
+    ⚠  Acceptance snippets: FEATURE-Date-and-Time.md [text-004-conformance]: expects &#x27;1970-01-01T00:00:00Z&#x27;, a value re-
+       typed rather than derived from the input or read back from the system. This criterion is reported but does
+       not gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects &#x27;&quot;x&quot;&#x27;, a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects &#x27;&amp;lt;x&amp;gt;&#x27;, a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects &#x27;a%20b&#x27;, a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects &#x27;aGQgYg==&#x27;, a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-conformance]: expects &#x27;aGk=&#x27;, a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-Output-Formats.md [text-002-interface]: expects &#x27;hello%20world&#x27;, a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
   Plan            44 pending
-  Frontier        architecture: Define the standalone jq interpreter architecture and boundaries.
+  Frontier        architecture: Define the standalone interpreter architecture and module boundaries.
   Workflow        4 steps
                   Initialize         complete at 2026-08-22T04:46:29.469+00:00
                   Import             complete at 2026-08-22T04:46:33.960+00:00
                   Analyze            complete at 2026-08-22T04:48:42.765+00:00
-                  Plan               complete at 2026-08-22T15:51:47.706+00:00
-  Next step       drydock build jq  (frontier: Define the standalone jq interpreter architecture and boundaries.)
+                  Plan               complete at 2026-08-22T18:06:15.431+00:00
+  Next step       drydock build jq  (frontier: Define the standalone interpreter architecture and module boundaries.)
 </pre></article>
 </main>
 </body>

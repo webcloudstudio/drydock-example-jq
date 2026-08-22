@@ -12,14 +12,14 @@
 <article class="doc"><pre>{
   &quot;acceptance_status&quot;: &quot;NOT_RUN&quot;,
   &quot;assertions&quot;: {
-    &quot;failed&quot;: 0,
+    &quot;failed&quot;: 1,
     &quot;harness_defects&quot;: 0,
-    &quot;passed&quot;: 0,
-    &quot;product_defects&quot;: 0,
+    &quot;passed&quot;: 9,
+    &quot;product_defects&quot;: 1,
     &quot;unverified&quot;: 0
   },
   &quot;attestations&quot;: [],
-  &quot;build_passes&quot;: 0,
+  &quot;build_passes&quot;: 1,
   &quot;commands&quot;: [
     {
       &quot;argv&quot;: [
@@ -84,25 +84,28 @@
         &quot;--override&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 1207246,
+      &quot;elapsed_ms&quot;: 1506244,
       &quot;label&quot;: &quot;04-plan&quot;,
       &quot;llm_executions&quot;: [
-        &quot;20260822.153150.857Z-54e35b6a&quot;,
-        &quot;20260822.153440.635Z-ac024b42&quot;,
-        &quot;20260822.153558.781Z-e1291086&quot;,
-        &quot;20260822.153700.423Z-b0408716&quot;,
-        &quot;20260822.153810.005Z-d7d86cea&quot;,
-        &quot;20260822.153912.038Z-847b3504&quot;,
-        &quot;20260822.154021.224Z-c2526a86&quot;,
-        &quot;20260822.154116.344Z-f4b6dee5&quot;,
-        &quot;20260822.154213.081Z-9dd38fb8&quot;,
-        &quot;20260822.154306.451Z-662f17f8&quot;,
-        &quot;20260822.154354.406Z-311c9497&quot;,
-        &quot;20260822.154443.505Z-b10dfc03&quot;,
-        &quot;20260822.154546.282Z-2ecb1d88&quot;,
-        &quot;20260822.154824.413Z-9aa56b72&quot;,
-        &quot;20260822.154924.253Z-0a268ef5&quot;,
-        &quot;20260822.155032.418Z-ec341145&quot;
+        &quot;20260822.174114.211Z-0d7dae54&quot;,
+        &quot;20260822.174347.463Z-febd2896&quot;,
+        &quot;20260822.174505.320Z-470e3cb5&quot;,
+        &quot;20260822.174607.194Z-d59a6cf1&quot;,
+        &quot;20260822.174705.213Z-a9501ea7&quot;,
+        &quot;20260822.174801.303Z-20829a72&quot;,
+        &quot;20260822.174859.734Z-75bd8258&quot;,
+        &quot;20260822.174942.668Z-fbbb876c&quot;,
+        &quot;20260822.175038.027Z-8b028827&quot;,
+        &quot;20260822.175135.330Z-77107ede&quot;,
+        &quot;20260822.175221.438Z-9fcbc172&quot;,
+        &quot;20260822.175315.247Z-8984af80&quot;,
+        &quot;20260822.175428.329Z-8c80b662&quot;,
+        &quot;20260822.175536.761Z-2254961f&quot;,
+        &quot;20260822.175649.612Z-f7f4c206&quot;,
+        &quot;20260822.175747.734Z-b20b1e05&quot;,
+        &quot;20260822.175912.677Z-ba14d978&quot;,
+        &quot;20260822.180050.474Z-b2caf9e3&quot;,
+        &quot;20260822.180459.019Z-b7a102f8&quot;
       ],
       &quot;returncode&quot;: 0,
       &quot;stderr_path&quot;: &quot;evidence/commands/04-plan.stderr.log&quot;,
@@ -118,7 +121,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 3918,
+      &quot;elapsed_ms&quot;: 1906,
       &quot;label&quot;: &quot;05-plan-verify&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -135,7 +138,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 828,
+      &quot;elapsed_ms&quot;: 744,
       &quot;label&quot;: &quot;06-after-plan-build-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -151,7 +154,7 @@
         &quot;jq&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 3818,
+      &quot;elapsed_ms&quot;: 1555,
       &quot;label&quot;: &quot;07-after-plan-target-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
@@ -166,28 +169,121 @@
         &quot;status&quot;
       ],
       &quot;cwd&quot;: &quot;workspace&quot;,
-      &quot;elapsed_ms&quot;: 820,
+      &quot;elapsed_ms&quot;: 474,
       &quot;label&quot;: &quot;08-after-plan-workspace-status&quot;,
       &quot;llm_executions&quot;: [],
       &quot;returncode&quot;: 0,
       &quot;stderr_path&quot;: &quot;evidence/commands/08-after-plan-workspace-status.stderr.log&quot;,
       &quot;stdout_path&quot;: &quot;evidence/commands/08-after-plan-workspace-status.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;,
+        &quot;--ready&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 434,
+      &quot;label&quot;: &quot;09-initial-ready&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/09-initial-ready.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/09-initial-ready.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;6&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 637187,
+      &quot;label&quot;: &quot;10-initial-build-1&quot;,
+      &quot;llm_executions&quot;: [
+        &quot;20260822.180626.371Z-122a84e1&quot;,
+        &quot;20260822.180815.255Z-f7eb80f1&quot;,
+        &quot;20260822.181134.575Z-7a567b04&quot;,
+        &quot;20260822.181425.006Z-1c5cc8b9&quot;,
+        &quot;20260822.181529.735Z-dcc737fd&quot;,
+        &quot;20260822.181613.175Z-5ac5befb&quot;
+      ],
+      &quot;returncode&quot;: 1,
+      &quot;stderr_path&quot;: &quot;evidence/commands/10-initial-build-1.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/10-initial-build-1.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1363,
+      &quot;label&quot;: &quot;11-after-initial-build-build-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/11-after-initial-build-build-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/11-after-initial-build-build-status.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 1363,
+      &quot;label&quot;: &quot;12-after-initial-build-target-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/12-after-initial-build-target-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/12-after-initial-build-target-status.stdout.log&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3&quot;,
+        &quot;-m&quot;,
+        &quot;drydock&quot;,
+        &quot;status&quot;
+      ],
+      &quot;cwd&quot;: &quot;workspace&quot;,
+      &quot;elapsed_ms&quot;: 485,
+      &quot;label&quot;: &quot;13-after-initial-build-workspace-status&quot;,
+      &quot;llm_executions&quot;: [],
+      &quot;returncode&quot;: 0,
+      &quot;stderr_path&quot;: &quot;evidence/commands/13-after-initial-build-workspace-status.stderr.log&quot;,
+      &quot;stdout_path&quot;: &quot;evidence/commands/13-after-initial-build-workspace-status.stdout.log&quot;
     }
   ],
-  &quot;degraded&quot;: [],
-  &quot;elapsed_ms&quot;: 1246458,
+  &quot;degraded&quot;: [
+    &quot;initial-build-1 exited 1&quot;
+  ],
+  &quot;elapsed_ms&quot;: 2172444,
   &quot;environment&quot;: {
     &quot;drydock_version&quot;: &quot;0.2.0&quot;,
     &quot;effort&quot;: &quot;&quot;,
-    &quot;finished_at&quot;: &quot;2026-08-22T15:52:30.863156Z&quot;,
-    &quot;git_commit&quot;: &quot;c94bdbad36ec1cd3a7d4c70a10475d3f161f7477&quot;,
+    &quot;finished_at&quot;: &quot;2026-08-22T18:17:25.463294Z&quot;,
+    &quot;git_commit&quot;: &quot;cb3bad876849baa12a9718b1d9347c6937befb96&quot;,
     &quot;model&quot;: &quot;gpt-5.6-luna&quot;,
     &quot;platform&quot;: &quot;Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35&quot;,
     &quot;provider&quot;: &quot;codex&quot;,
     &quot;python_version&quot;: &quot;3.12.13&quot;,
-    &quot;started_at&quot;: &quot;2026-08-22T15:31:44.294681Z&quot;
+    &quot;started_at&quot;: &quot;2026-08-22T17:41:12.962243Z&quot;
   },
-  &quot;error&quot;: &quot;jq: stopped at plan-repair: acceptance criteria still cannot run after one repair pass&quot;,
+  &quot;error&quot;: &quot;jq: stopped at initial-build-1: The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.&quot;,
   &quot;evidence_dir&quot;: &quot;evidence&quot;,
   &quot;execution_status&quot;: &quot;ERROR&quot;,
   &quot;expected_verdict&quot;: &quot;PASSED&quot;,
@@ -201,13 +297,13 @@
   &quot;status&quot;: &quot;failed&quot;,
   &quot;target&quot;: &quot;jq&quot;,
   &quot;usage&quot;: {
-    &quot;cached_input_tokens&quot;: 823040,
-    &quot;calls&quot;: 74,
-    &quot;fresh_input_tokens&quot;: 3077984,
-    &quot;input_tokens&quot;: 3901024,
+    &quot;cached_input_tokens&quot;: 4110080,
+    &quot;calls&quot;: 100,
+    &quot;fresh_input_tokens&quot;: 4697258,
+    &quot;input_tokens&quot;: 8807338,
     &quot;invalid_records&quot;: 0,
-    &quot;llm_elapsed_ms&quot;: 3152846,
-    &quot;output_tokens&quot;: 158251
+    &quot;llm_elapsed_ms&quot;: 5243491,
+    &quot;output_tokens&quot;: 251631
   }
 }
 </pre></article>

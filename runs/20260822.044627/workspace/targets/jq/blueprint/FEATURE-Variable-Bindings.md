@@ -3,30 +3,29 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Provides lexical jq value bindings with scoped lifetime and shadowing. |
-| Depends On  | ARCHITECTURE.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Composition-And-Cartesian-Evaluation.md |
-| Provides    | as bindings, nested scope, shadowing, keyword identifiers, binding lifetime |
-| Consumes    | parsed patterns, generator evaluation, lexical environments |
+| Description | Provides lexical jq value bindings and destructuring scope foundations. |
+| Depends On  | FEATURE-Recursive-Generators.md |
+| Provides    | as bindings, lexical scope, shadowing, keyword identifiers |
+| Consumes    | recursive generator evaluation |
 
 ## Workflow
 
-Implement `expression as $name | continuation` with lexical scope. Bind each output independently, preserve the original input for the continuation, support nested shadowing and keyword-shaped names, and maintain bindings correctly across generator backtracking and destructuring contexts.
+The evaluator binds each output of a left-hand filter to a lexical variable for the following expression. Bindings support nested scopes, shadowing, keyword-shaped names, structural lifetime, and generator backtracking without mutation.
 
 ## Programmatic Acceptance
 
-=== AC func-001-conformance ===
-Intent: The authoritative corpus slice exercising lexical variable bindings executes and passes.
+=== AC variable-bindings-scoped ===
+Intent: Variable-binding corpus cases execute and pass.
 Suite: scoped
-Requires: executable=python3; scope=test
 
 import json
 import os
 import subprocess
 import sys
 
-select = r" as \$|\$[A-Za-z]"
+selector = r" as \$|\$[A-Za-z]"
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
     capture_output=True,
     text=True,
     env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
@@ -39,22 +38,33 @@ assert sum(summary.values()) > 0
 assert summary["fail"] == 0
 assert summary["error"] == 0
 assert result.returncode == 0
-=== END AC func-001-conformance ===
+=== END AC variable-bindings-scoped ===
 
-=== AC func-001-interface ===
-Intent: A binding preserves its value while the pipeline continues with the original input.
+=== AC binding-syntax-scoped ===
+Intent: Binding and destructuring syntax cases execute and pass.
+Suite: scoped
+
+import json
+import os
 import subprocess
+import sys
 
-program = ".bar as $x | .foo + $x"
-payload = '{"foo":10,"bar":200}\n'
+selector = r"\bas\s+\$|\bas\s+\{|\bas\s+\["
 result = subprocess.run(
-    ["./jq", "-c", program],
-    input=payload,
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
     capture_output=True,
     text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-assert result.returncode in (0, 5)
-=== END AC func-001-interface ===
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC binding-syntax-scoped ===
 
 ## User Acceptance
 
@@ -63,5 +73,5 @@ assert result.returncode in (0, 5)
 ## Guardrails
 
 - Bindings are immutable and lexically scoped.
-- Do not leak inner shadowed bindings outside their scope.
-- Preserve binding values independently for every generator branch.
+- Shadowing must not alter the value visible outside its scope.
+- Every generator output must receive its corresponding binding.

@@ -1,0 +1,39 @@
+<reusable-compact filename="exclusions.txt">
+Lists 13 verbatim module-loader programs excluded from scoring. Entries must match corpus program lines exactly; stale entries are harness errors. Module grammar failures remain scored.
+</reusable-compact>
+
+<reusable-compact filename="full_test.sh">
+Requires executable ./jq, sets JQ to it, and runs the complete conformance corpus via sources/run_conformance.py. Exit status is the scoring verdict.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Defines jq grammar for filters, operators, functions, modules, patterns, assignments, reductions, iteration, conditionals, errors, and interpolation. Compile failures must remain distinct from runtime failures.
+</reusable-compact>
+
+<reusable-compact filename="lexer.l">
+Tokenizes jq syntax, literals, identifiers, fields, bindings, operators, comments, strings, interpolation, formats, and delimiters. Invalid syntax must reach compile-error handling.
+</reusable-compact>
+
+<reusable-compact filename="builtin.jq">
+Defines jq standard-library filters for generators, reductions, paths, transformations, strings, regex, dates, streaming, assignments, SQL-style operations, and type utilities.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Normative jq 1.8.2 language contract: filters are ordered generators; JSON values flow through composition, collection, builtins, variables, functions, errors, assignments, regex, dates, modules, and streaming.
+</reusable-compact>
+
+AC_BROKEN: conformance-source-integrity
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- tests/test_conformance_assets.py
+
+SUMMARY:
+Staged assets validated in process: 550 corpus cases and 13 exclusions. All 12 project tests pass. No conformance harness was launched, as required for this staging story.
+
+BLOCKERS:
+- The supplied source-integrity criterion compares absolute harness paths with relative `Path("sources/...")` values and cannot pass without modifying the immutable harness.
+
+FAILURE_SUMMARY: Source-integrity acceptance criterion has an absolute-versus-relative path mismatch.
+FAILURE_DETAIL: The harness imports and required files exist, but `Path(__file__).resolve().parent` makes CORPUS and EXCLUSIONS absolute while the criterion expects relative paths. The criterion must be corrected upstream.

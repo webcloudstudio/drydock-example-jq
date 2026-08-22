@@ -3,21 +3,19 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines jq array, string, and object iteration plus slicing and bounds behavior. |
-| Depends On  | ARCHITECTURE.md, FEATURE-Field-And-Index-Access.md, FEATURE-Generator-Core.md |
-| Provides    | array and string slices, array/object iteration, fractional bounds, negative bounds, out-of-range behavior |
-| Consumes    | field and index access, ordered generators, jq values |
+| Description | Defines array and string slicing plus array and object iteration semantics. |
+| Depends On  | FEATURE-Accessors.md |
+| Provides    | array/string slices, array/object iteration, fractional bounds |
+| Consumes    | field and index access |
 
-## Scope and Behavior
+## Semantics
 
-`.[start:end]` returns a slice of an array or string. Bounds may be omitted, negative, fractional, out of range, or represented by expressions. jq's documented truncation and clamping rules determine the resulting slice.
-
-`.[]` emits each array element or object value as an ordered generator. Optional iteration suppresses invalid-type errors. Empty arrays and objects produce no values. Iteration and slices preserve Unicode codepoint behavior for strings and do not alter the original value.
+Array and string slices use inclusive-start and exclusive-end bounds, support omitted and negative bounds, and clamp out-of-range values. Fractional bounds are handled according to jq's numeric rules. Iteration over arrays and objects yields values in the required order, while optional iteration suppresses invalid-container errors.
 
 ## Programmatic Acceptance
 
 === AC value-003-conformance ===
-Intent: The conformance corpus cases exercising slices and iteration execute and pass.
+Intent: The authoritative corpus slice cases execute without failures.
 Suite: scoped
 Requires: executable=python3; scope=test
 
@@ -26,9 +24,9 @@ import os
 import subprocess
 import sys
 
-select = r"\[.*:|\.\[\]"
+selector = r"\[.*:|\.\[\]"
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
     capture_output=True,
     text=True,
     env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
@@ -38,35 +36,30 @@ print(result.stderr, file=sys.stderr)
 report = json.loads(result.stdout)
 summary = report["summary"]
 assert sum(summary.values()) > 0
-assert summary["fail"] == 0 and summary["error"] == 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
 assert result.returncode == 0
 === END AC value-003-conformance ===
 
-=== AC value-003-iteration ===
-Intent: Iteration emits ordered array and object values, while optional iteration handles invalid input.
+=== AC value-003-iteration-contract ===
+Intent: Array iteration and slicing preserve output order and bounds.
+Requires: executable=python3; scope=test
+
 import json
 import subprocess
 
-source = '{"a":[1,2],"obj":{"x":3,"y":4},"bad":5}\n'
-program = "[.a[], .obj[], (.bad[]?)]"
-result = subprocess.run(["./jq", "-c", program], input=source, capture_output=True, text=True)
+payload = '["a","b","c","d"]\n'
+result = subprocess.run(
+    ["./jq", "-c", ".[], .[1:3]"],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
 assert result.returncode == 0
-assert json.loads(result.stdout) == [1, 2, 3, 4]
-=== END AC value-003-iteration ===
-
-=== AC value-003-slices ===
-Intent: Array and string slices honor the supplied bounds and return values derived from those inputs.
-import json
-import subprocess
-
-array_value = [0, 1, 2, 3, 4]
-string_value = "abcdef"
-source = json.dumps([array_value, string_value], separators=(",", ":")) + "\n"
-program = "[.[0][1:-1], .[1][1:4]]"
-result = subprocess.run(["./jq", "-c", program], input=source, capture_output=True, text=True)
-assert result.returncode == 0
-assert json.loads(result.stdout) == [[1, 2, 3], "bcd"]
-=== END AC value-003-slices ===
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = ["a", "b", "c", "d", ["b", "c"]]
+assert actual == expected
+=== END AC value-003-iteration-contract ===
 
 ## User Acceptance
 
@@ -74,6 +67,6 @@ assert json.loads(result.stdout) == [[1, 2, 3], "bcd"]
 
 ## Guardrails
 
-- Preserve generator order and multiplicity during iteration.
-- Slice operations must not mutate the source array or string.
-- Out-of-range slicing is bounded behavior; it must not become an indexing error.
+- Iteration preserves generator order and multiplicity.
+- Slices must not mutate the source value.
+- Out-of-range slices return the jq-compatible empty or clamped result rather than failing unexpectedly.

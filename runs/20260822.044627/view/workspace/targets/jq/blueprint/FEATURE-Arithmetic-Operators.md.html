@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Arithmetic-Operators.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Arithmetic-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Arithmetic-Operators.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Arithmetic Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq arithmetic, structural combination, repetition, splitting, and negation operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Type-and-Numeric-Builtins.md</td></tr><tr><td>Provides</td><td>plus, minus, multiply, divide, modulo, negation, recursive object merge, string repetition and splitting</td></tr><tr><td>Consumes</td><td>type and numeric builtins, jq generator evaluation</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Arithmetic operators apply jq&#x27;s type-directed operations while preserving generator Cartesian products, immutable values, and runtime error behavior.</p>
+<h2>Behavior</h2>
+<ul><li>Numeric operators perform arithmetic with jq-compatible numeric handling.</li><li><code>+</code> combines numbers, arrays, strings, objects, and null as specified.</li><li><code>-</code> subtracts numbers or removes matching array elements.</li><li><code>*</code> supports numeric multiplication, string repetition, and recursive object merge.</li><li><code>/</code> supports numeric division and string splitting.</li><li><code>%</code> performs numeric remainder.</li><li>Unary negation applies only to numbers.</li><li>Division, remainder, invalid combinations, and excessive string repetition raise runtime errors with exit status 5 when uncaught.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-001-conformance ===<br>Intent: Numeric and structural arithmetic operators produce jq-compatible results.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1+2, 7-3, 4*5, 7/2, 7%4, -6, [1,2]+[3], \&quot;ab\&quot;*2, \&quot;a,b\&quot;/\&quot;,\&quot;&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [3, 4, 20, 3.5, 3, -6, [1, 2, 3], &quot;abab&quot;, [&quot;a&quot;, &quot;b&quot;]] assert actual == expected === END AC flow-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Operators must preserve output order and multiplicity.</li><li>Values remain immutable; assignment semantics are outside this capability.</li><li>Do not implement structural operations through implicit Python type coercion.</li></ul></article>
+</main>
+</body>
+</html>

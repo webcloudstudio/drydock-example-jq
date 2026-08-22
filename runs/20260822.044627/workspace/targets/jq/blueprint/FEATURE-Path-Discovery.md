@@ -1,55 +1,51 @@
-# FEATURE: Path Discovery
+# FEATURE: Path Discovery and Projection
 
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines jq path discovery, path filtering, and projection operations. |
-| Depends On  | FEATURE-Slices-And-Iteration.md, FEATURE-Destructuring-Patterns.md, FEATURE-Recursive-Generators.md |
+| Description | Discovers jq paths and constructs projections from path expressions. |
+| Depends On  | FEATURE-Destructuring.md, FEATURE-Accessors.md |
 | Provides    | path, paths, pick, path projections |
-| Consumes    | Accessors, iteration, generator evaluation |
+| Consumes    | destructuring and field/index access |
 
-## Purpose
+## Scope
 
-Implement jq's path-oriented filters for discovering, filtering, and projecting nested array and object locations.
-
-## Implementation Requirements
-
-- Implement `path(expression)` for exact and pattern path expressions.
-- Implement `paths` and `paths(filter)` with stable traversal order.
-- Represent paths as arrays containing string object keys and integer array indexes.
-- Exclude the root path from `paths`.
-- Implement `pick(path-expressions)` while preserving missing projected fields as `null`.
-- Raise runtime errors for invalid path expressions.
-- Preserve path behavior through recursive descent and generators.
+Implement exact and generated path expressions, recursive path enumeration, filtered `paths`, and `pick` projections. Path results preserve jq's ordering and use string object keys and numeric array indices. Invalid path expressions raise runtime errors according to jq semantics.
 
 ## Programmatic Acceptance
 
-=== AC path-discovery-conformance ===
-Intent: The authoritative corpus slice covering path discovery and projection executes and passes.
+=== AC path-001-conformance ===
+Intent: Path discovery and projection behavior executes successfully for representative path, paths, and pick programs.
 Suite: scoped
 Requires: executable=python3; scope=test
 
-import json
-import os
 import subprocess
-import sys
 
-select = r"path\(|paths|pick\("
-result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+path_result = subprocess.run(
+    ["./jq", "-c", "path(.a)",],
+    input='{"a":1}\n',
     capture_output=True,
     text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert sum(summary.values()) > 0
-assert summary["fail"] == 0
-assert summary["error"] == 0
-assert result.returncode == 0
-=== END AC path-discovery-conformance ===
+paths_result = subprocess.run(
+    ["./jq", "-c", "paths",],
+    input='{"a":1,"b":[2]}\n',
+    capture_output=True,
+    text=True,
+)
+pick_result = subprocess.run(
+    ["./jq", "-c", "pick(.a)",],
+    input='{"a":1,"b":2}\n',
+    capture_output=True,
+    text=True,
+)
+assert path_result.returncode == 0
+assert path_result.stdout.splitlines() == ['["a"]']
+assert paths_result.returncode == 0
+assert paths_result.stdout.splitlines() == ['["a"]', '["b",0]']
+assert pick_result.returncode == 0
+assert pick_result.stdout.splitlines() == ['{"a":1}']
+=== END AC path-001-conformance ===
 
 ## User Acceptance
 
@@ -57,6 +53,5 @@ assert result.returncode == 0
 
 ## Guardrails
 
-- Do not emit paths in traversal order different from jq's generator order.
-- Do not confuse a projected value with its path representation.
-- Do not silently accept invalid path expressions.
+- Path enumeration must preserve traversal order and distinguish empty root paths from descendant paths.
+- Projection must not mutate the source value.

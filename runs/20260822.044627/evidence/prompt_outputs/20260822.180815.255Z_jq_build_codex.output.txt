@@ -1,0 +1,18 @@
+<reusable-compact filename="run_conformance.py">
+Run `JQ=./jq python3 sources/run_conformance.py`; candidate must emit JSON lines and use exit 3 for compile errors, 5 for runtime errors. Harness reports structural output matches and supports scoped execution via `--select REGEX --json`; exit 2 indicates harness faults.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/ast.py
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+- jq_interpreter/interpreter.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented literals, comma generators, runtime errors, arrays, limits, BOM-tolerant input, diagnostics, and exit-code behavior. All 7 project tests and declared process acceptance checks pass. Identity conformance slice passes 2/2.
+
+BLOCKERS:
+- None

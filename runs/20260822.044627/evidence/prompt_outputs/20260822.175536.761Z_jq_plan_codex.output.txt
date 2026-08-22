@@ -1,0 +1,388 @@
+=== BEGIN ARTIFACT FEATURE-Function-Definitions.md ===
+# FEATURE: Function Definitions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq function definitions, lexical scope, redefinition, and recursion. |
+| Depends On  | FEATURE-Function-Parameters.md |
+| Provides    | def, function redefinition, recursion, forward and self references |
+| Consumes    | function parameter evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The interpreter compiles `def` declarations into lexically scoped callable definitions. Definitions support recursive self-reference, arity-specific redefinition, forward references permitted by jq semantics, and closure behavior across nested definitions.
+
+## Programmatic Acceptance
+
+=== AC function-definitions-scoped ===
+Intent: Function-definition corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def "
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-definitions-scoped ===
+
+=== AC function-recursion-scoped ===
+Intent: Recursive user-function cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*:.*\b(if|f\b|g\b)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-recursion-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function identity includes name and arity.
+- Redefinition must affect only references permitted by jq lexical scope.
+- Recursive calls must terminate or propagate runtime errors according to the filter semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Function-Parameters.md ===
+# FEATURE: Function Parameters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq filter and value function parameter evaluation. |
+| Depends On  | FEATURE-Variable-Bindings.md |
+| Provides    | filter parameters, value parameters, multiple arities, Cartesian arguments |
+| Consumes    | lexical variable bindings |
+
+## Questions
+
+- None.
+
+## Workflow
+
+User-defined functions accept filter parameters and value parameters with jq arity rules. Filter arguments remain executable generators, value arguments are evaluated and bound, and multiple argument streams produce the required cartesian combinations.
+
+## Programmatic Acceptance
+
+=== AC function-parameters-scoped ===
+Intent: Function-parameter corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-parameters-scoped ===
+
+=== AC cartesian-function-scoped ===
+Intent: Multi-argument and generator-valued function cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*\([^)]*;[^)]*\)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC cartesian-function-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Distinguish filter parameters from value parameters.
+- Preserve argument stream ordering and cartesian multiplicity.
+- Resolve parameters according to lexical scope and declared arity.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: Generator Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Evaluate jq filters as ordered streams of zero or more values. |
+| Depends On  | FEATURE-Declaration-Parser.md |
+| Provides    | ordered generator evaluation, empty, iteration, range |
+| Consumes    | AST for filter expressions |
+
+## Questions
+
+- None.
+
+Every filter shall evaluate against an input value as an ordered generator. The evaluator shall preserve zero, one, and multiple outputs, backtracking, identity, array/object iteration, recursive descent support, `range`, and `empty`. Output order and multiplicity are semantic requirements.
+
+## Programmatic Acceptance
+
+=== AC core-001-generators ===
+Intent: The corpus slice covering identity, iteration, empty, and range generators executes and passes.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\.|,|\[\.\]|range|empty"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-001-generators ===
+
+=== AC core-001-ordering ===
+Intent: Generator cases whose correctness depends on output order and multiplicity execute and pass.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\.|,|range|empty|while|recurse"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC core-001-ordering ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Treat generators and backtracking as the evaluation model, not an optimization.
+- Preserve partial output before a later runtime failure.
+- Do not shell out to another jq implementation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Index-and-Membership.md ===
+# FEATURE: Index and Membership
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq index lookup, binary search, quantifier, emptiness, and SQL-style membership utilities. |
+| Depends On  | FEATURE-Object-and-Containment-Builtins.md, FEATURE-Truthiness-and-Comparison.md |
+| Provides    | indices, index, rindex, bsearch, all, any, isempty, IN |
+| Consumes    | collection and comparison builtins, ordered generators |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements string and array occurrence searches, insertion-point binary search, generator-aware quantifiers, emptiness checks, and SQL-style `IN` functions.
+
+## Behavior
+
+- `indices` returns all matching string or array positions.
+- `index` and `rindex` return the first and last matching positions.
+- `bsearch` returns an index or jq's negative insertion-point encoding.
+- `all` and `any` preserve short-circuit behavior over generated values.
+- `isempty` distinguishes empty streams from streams that produce values.
+- `IN` supports source and comparison generator forms.
+
+## Programmatic Acceptance
+
+=== AC data-004-conformance ===
+Intent: The index, membership, quantifier, emptiness, and SQL-style membership corpus slice executes and passes without failures or errors.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"indices|index\(|rindex|bsearch|any|all|isempty|IN\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve match positions in jq codepoint/index semantics.
+- Do not evaluate generator operands beyond required short-circuit points.
+- Do not modify files under `sources/`.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Input-Streams.md ===
+# FEATURE: Input Streams
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq controls for consuming additional JSON input values. |
+| Depends On  | FEATURE-Date-and-Time.md, FEATURE-Json-IO.md |
+| Provides    | input, inputs, input_filename, input_line_number |
+| Consumes    | executable JSON input boundary |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement `input` and `inputs` over the fixed stdin interface, preserving the distinction between the initially filtered value and remaining values. Provide the available filename and line-number metadata without adding unsupported command-line options.
+
+## Programmatic Acceptance
+
+=== AC io-001-conformance ===
+Intent: The corpus cases covering input-stream controls pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"input|inputs"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC io-001-conformance ===
+
+=== AC io-001-execution ===
+Intent: The input-stream selector executes a non-empty corpus slice through jq.
+import json
+import os
+import subprocess
+import sys
+
+selector = r"input|inputs"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+assert sum(report["summary"].values()) > 0
+assert report["summary"]["fail"] == 0
+assert report["summary"]["error"] == 0
+assert result.returncode == 0
+=== END AC io-001-execution ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not add command-line options beyond the fixed `-c` interface.
+- Preserve input ordering and stream multiplicity.
+- Use only the supplied stdin boundary and standard-library runtime.
+=== END ARTIFACT ===

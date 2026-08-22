@@ -1,61 +1,87 @@
-# FEATURE: Process Contract
+# FEATURE: jq Process Contract
 
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines jq compilation, runtime failure, success, and diagnostic process behavior. |
-| Depends On  | FEATURE-Executable-Entry-Point.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Errors-And-Optional-Evaluation.md |
+| Description | Defines jq compilation, runtime failure, success, partial-output, and diagnostic process behavior. |
+| Depends On  | FEATURE-Executable-Entry-Point.md |
 | Provides    | compile exit 3, runtime exit 5, success exit 0, stderr diagnostics |
-| Consumes    | executable jq, parser, evaluator |
+| Consumes    | ./jq -c program execution |
 
-## Intent
+## Compile and Runtime Outcomes
 
-The process distinguishes compilation failures from runtime failures:
+| Condition | Exit |
+|---|---:|
+| Program compiles and finishes | `0` |
+| Program is rejected during compilation | `3` |
+| Program compiles and raises during evaluation | `5` |
 
-- Exit `0` means compilation and execution completed.
-- Exit `3` means the filter was rejected before execution.
-- Exit `5` means execution raised a runtime error.
-- Diagnostics are written to standard error.
-- Values produced before a runtime error remain on standard output.
+A compile failure must not be reported as a runtime failure. A runtime failure may occur after values have already been emitted; those values remain observable on stdout. Diagnostics go to stderr and are not part of the value stream.
 
 ## Programmatic Acceptance
 
-=== AC compile-exit-status ===
-Intent: Invalid jq syntax is rejected with compile exit status 3.
+=== AC exec-002-compile-runtime ===
+Intent: The executable distinguishes compile failures, runtime failures, and successful completion.
+Suite: scoped
+Requires: executable=python3; scope=test
 
 import subprocess
 
-result = subprocess.run(
-    ["./jq", "-c", "{"],
+compile_result = subprocess.run(
+    ["./jq", "-c", "{",],
     input="null\n",
     capture_output=True,
     text=True,
 )
-print(result.stdout)
-print(result.stderr, file=__import__("sys").stderr)
-assert result.returncode == 3
-=== END AC compile-exit-status ===
-
-=== AC runtime-exit-status ===
-Intent: A compiled filter that raises at runtime exits 5 and keeps diagnostics off stdout.
-
-import subprocess
-
-result = subprocess.run(
+runtime_result = subprocess.run(
     ["./jq", "-c", "error"],
     input="null\n",
     capture_output=True,
     text=True,
 )
-print(result.stdout)
-print(result.stderr, file=__import__("sys").stderr)
-assert result.returncode == 5
-assert result.stderr != ""
-assert result.stdout == ""
-=== END AC runtime-exit-status ===
+success_result = subprocess.run(
+    ["./jq", "-c", "."],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert compile_result.returncode == 3
+assert runtime_result.returncode == 5
+assert success_result.returncode == 0
+assert compile_result.stderr != ""
+assert runtime_result.stderr != ""
+=== END AC exec-002-compile-runtime ===
 
-=== AC partial-runtime-output ===
-Intent: Values emitted before a runtime error remain available on stdout.
+=== AC exec-002-statuses ===
+Intent: The executable exposes distinct compile, runtime, and successful completion statuses.
+
+import subprocess
+
+compile_result = subprocess.run(
+    ["./jq", "-c", "{",],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+runtime_result = subprocess.run(
+    ["./jq", "-c", "error"],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+success_result = subprocess.run(
+    ["./jq", "-c", "."],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert compile_result.returncode == 3
+assert runtime_result.returncode == 5
+assert success_result.returncode == 0
+=== END AC exec-002-statuses ===
+
+=== AC exec-002-partial-output ===
+Intent: A runtime failure preserves values emitted before the failure and keeps diagnostics off standard output.
 
 import subprocess
 
@@ -69,7 +95,8 @@ print(result.stdout)
 print(result.stderr, file=__import__("sys").stderr)
 assert result.returncode == 5
 assert result.stdout.splitlines() == ["1"]
-=== END AC partial-runtime-output ===
+assert result.stderr != ""
+=== END AC exec-002-partial-output ===
 
 ## User Acceptance
 
@@ -77,6 +104,8 @@ assert result.stdout.splitlines() == ["1"]
 
 ## Guardrails
 
-- Compile failures must remain distinct from runtime failures.
-- Runtime diagnostics must never be emitted as JSON output.
-- Partial output before a runtime failure must not be discarded.
+- Compile failures exit `3`.
+- Runtime failures exit `5`.
+- Successful completion exits `0`.
+- Runtime output produced before failure is preserved.
+- Diagnostics are written to stderr only.

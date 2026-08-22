@@ -392,13 +392,14 @@ body {
   <div>
     <div class="target-line"><span class="label">Target:</span> jq</div>
     <ul class="header-meta">
-      <li>- Planned: 2026-08-22</li>
+      <li>- Building: 2026-08-22</li>
     </ul>
   </div>
   <img src="/logo.png" alt="Drydock" style="height:64px;display:block;">
 </div>
 
-<section class="state-panel"><strong>STATE: PLAN CREATED<span class="state-verdict state-fail">FAIL</span></strong><span>23 criteria cannot run</span><span class="state-when">2026-08-22 01:11 · attempt 2</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-current state-fail">PLAN CREATED</li><li class="state-step state-fail">PLAN REPAIRED</li><li class="state-step">BUILDING</li><li class="state-step">BUILT</li><li class="state-step">SCORE AC</li><li class="state-step">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li></ol></section>
+<section class="state-panel"><strong>STATE: BUILDING<span class="state-verdict state-pass">PASS</span></strong><span class="state-when">2026-08-22 14:06</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-current state-pass">BUILDING</li><li class="state-step">BUILT</li><li class="state-step">SCORE AC</li><li class="state-step">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li></ol></section>
+<section class="big-error-panel"><strong>Failed: programmatic acceptance failed: conformance-source-integrity</strong><span>Command: build. Open <b>BIG ERRORS</b> for recovery.</span></section>
 <nav class="chair-tabs" aria-label="Commanders Chair views">
   <button class="chair-tab active" type="button" data-chair-tab="overview">Overview</button>
   <button class="chair-tab" type="button" data-chair-tab="build">Build Report</button>
@@ -409,104 +410,104 @@ body {
 <main id="chair-overview" class="chair-pane">
 <section class="question-lead">
   <div class="question-status question-status-inline"><strong>Questionnaires:</strong> No open questionnaires</div>
-  <div class="next-step"><strong>Next Step:</strong> drydock build jq</div>
+  <div class="next-step"><strong>Next Step:</strong> drydock build jq  (43 steps remaining)</div>
 </section>
 
 <div class="stats">
-<div class="stat"><div class="stat-value">44</div><div class="stat-label">Stories</div></div>
-<div class="stat"><div class="stat-value">0</div><div class="stat-label">Features</div></div>
-<div class="stat"><div class="stat-value">0</div><div class="stat-label">Spikes</div></div>
-<div class="stat"><div class="stat-value">Approved</div><div class="stat-label">Plan State</div></div>
+<div class="stat"><div class="stat-value">0%</div><div class="stat-label">Complete</div></div>
+<div class="stat"><div class="stat-value">0</div><div class="stat-label">Verified</div></div>
+<div class="stat"><div class="stat-value">0</div><div class="stat-label">In Review</div></div>
+<div class="stat"><div class="stat-value">1</div><div class="stat-label">Failed</div></div>
 </div>
 
 <div class="details">
   <section id="stories" class="detail-section">
     <h2>Stories</h2>
     <div class="story-list">
-<div class="story-feature">Block 1 · Foundational</div>
-<div class="story-row"><span class="story-name">Define the standalone jq interpreter architecture and boundaries.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 2 · Foundational</div>
-<div class="story-row"><span class="story-name">Stage and validate immutable conformance assets.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 3 · Service</div>
-<div class="story-row"><span class="story-name">Implement the executable jq entry point.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 1 · Foundational</div>
+<div class="story-row"><span class="story-name">Define the standalone interpreter architecture and module boundaries.</span> <span class="badge badge-review">built</span></div>
+<div class="story-feature">Build Block 2 · Service</div>
+<div class="story-row"><span class="story-name">Implement the executable jq entry point.</span> <span class="badge badge-review">built</span></div>
+<div class="story-row"><span class="story-name">Implement jq process exit and diagnostic behavior.</span> <span class="badge badge-review">built</span></div>
+<div class="story-feature">Build Block 3 · Service</div>
+<div class="story-row"><span class="story-name">Implement JSON input, Unicode, numeric, and compact output handling.</span> <span class="badge badge-review">built</span></div>
+<div class="story-feature">Build Block 4 · Foundational</div>
+<div class="story-row"><span class="story-name">Stage and validate immutable conformance assets.</span> <span class="badge badge-failed">failed</span></div>
+<div class="story-feature">Build Block 5 · Service</div>
 <div class="story-row"><span class="story-name">Implement jq lexical scanning.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 4 · Service</div>
-<div class="story-row"><span class="story-name">Implement literals, escapes, formats, and interpolation parsing.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Implement literals, escapes, and string interpolation.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 6 · Service</div>
 <div class="story-row"><span class="story-name">Implement the jq filter expression grammar.</span> <span class="badge badge-pending">pending</span></div>
 <div class="story-row"><span class="story-name">Implement declarations and control syntax parsing.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 5 · Service</div>
-<div class="story-row"><span class="story-name">Implement the jq JSON value model and numeric edge cases.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 6 · Service</div>
-<div class="story-row"><span class="story-name">Implement JSON process input and compact output handling.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 7 · Service</div>
+<div class="story-feature">Build Block 7 · Service</div>
 <div class="story-row"><span class="story-name">Implement stream-valued filter evaluation.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 8 · Service</div>
-<div class="story-row"><span class="story-name">Implement composition and Cartesian generator evaluation.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 9 · Service</div>
-<div class="story-row"><span class="story-name">Implement empty results and runtime error flow.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 10 · Service</div>
-<div class="story-row"><span class="story-name">Implement jq compilation and runtime exit contracts.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 11 · Service</div>
+<div class="story-feature">Build Block 8 · Service</div>
+<div class="story-row"><span class="story-name">Implement composition and Cartesian evaluation.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 9 · Service</div>
+<div class="story-row"><span class="story-name">Implement empty, runtime errors, optional evaluation, and try.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 10 · Service</div>
 <div class="story-row"><span class="story-name">Implement jq truthiness, equality, and ordering.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 12 · Service</div>
+<div class="story-feature">Build Block 11 · Service</div>
+<div class="story-row"><span class="story-name">Implement the jq value model and special numbers.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 12 · Service</div>
 <div class="story-row"><span class="story-name">Implement field and index access.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 13 · Service</div>
+<div class="story-feature">Build Block 13 · Service</div>
 <div class="story-row"><span class="story-name">Implement slices and collection iteration.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 14 · Service</div>
-<div class="story-row"><span class="story-name">Implement type and numeric primitive builtins.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 15 · Service</div>
+<div class="story-feature">Build Block 14 · Service</div>
+<div class="story-row"><span class="story-name">Implement type, length, numeric predicates, and math primitives.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 15 · Service</div>
 <div class="story-row"><span class="story-name">Implement arithmetic and structural operators.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 16 · Service</div>
+<div class="story-feature">Build Block 16 · Service</div>
 <div class="story-row"><span class="story-name">Implement boolean and alternative operators.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 17 · Service</div>
+<div class="story-feature">Build Block 17 · Service</div>
 <div class="story-row"><span class="story-name">Implement conditionals and exception flow.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 18 · Service</div>
+<div class="story-feature">Build Block 18 · Service</div>
 <div class="story-row"><span class="story-name">Implement lexical labels and breaks.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 19 · Service</div>
-<div class="story-row"><span class="story-name">Implement lexical variable bindings.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 20 · Service</div>
+<div class="story-feature">Build Block 19 · Service</div>
 <div class="story-row"><span class="story-name">Implement reductions and iteration controls.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 21 · Service</div>
-<div class="story-row"><span class="story-name">Implement filter and value function parameters.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 22 · Service</div>
-<div class="story-row"><span class="story-name">Implement function definitions, scope, and recursion.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 23 · Service</div>
+<div class="story-feature">Build Block 20 · Service</div>
 <div class="story-row"><span class="story-name">Implement recursive generators.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 24 · Service</div>
+<div class="story-feature">Build Block 21 · Service</div>
+<div class="story-row"><span class="story-name">Implement lexical variable bindings.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 22 · Service</div>
+<div class="story-row"><span class="story-name">Implement filter and value function parameters.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 23 · Service</div>
+<div class="story-row"><span class="story-name">Implement function definitions, scope, and recursion.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 24 · Service</div>
 <div class="story-row"><span class="story-name">Implement destructuring patterns and alternatives.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 25 · Service</div>
+<div class="story-feature">Build Block 25 · Service</div>
 <div class="story-row"><span class="story-name">Implement path discovery and projection.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 26 · Service</div>
+<div class="story-feature">Build Block 26 · Service</div>
 <div class="story-row"><span class="story-name">Implement path access and mutation primitives.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 27 · Service</div>
+<div class="story-feature">Build Block 27 · Service</div>
 <div class="story-row"><span class="story-name">Implement deletion and assignment operators.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 28 · Service</div>
+<div class="story-feature">Build Block 28 · Service</div>
 <div class="story-row"><span class="story-name">Implement complex assignment edge cases.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 29 · Service</div>
+<div class="story-feature">Build Block 29 · Service</div>
 <div class="story-row"><span class="story-name">Implement collection transformation builtins.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 30 · Service</div>
-<div class="story-row"><span class="story-name">Implement sorting and grouping builtins.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 31 · Service</div>
+<div class="story-feature">Build Block 30 · Service</div>
+<div class="story-row"><span class="story-name">Implement sorting, grouping, and extrema builtins.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 31 · Service</div>
 <div class="story-row"><span class="story-name">Implement object-entry and containment builtins.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 32 · Service</div>
+<div class="story-feature">Build Block 32 · Service</div>
 <div class="story-row"><span class="story-name">Implement index and membership utilities.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 33 · Service</div>
+<div class="story-feature">Build Block 33 · Service</div>
 <div class="story-row"><span class="story-name">Implement string manipulation builtins.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 34 · Service</div>
+<div class="story-feature">Build Block 34 · Service</div>
 <div class="story-row"><span class="story-name">Implement JSON and output format filters.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 35 · Service</div>
+<div class="story-feature">Build Block 35 · Service</div>
 <div class="story-row"><span class="story-name">Implement regular-expression filters.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 36 · Service</div>
+<div class="story-feature">Build Block 36 · Service</div>
 <div class="story-row"><span class="story-name">Implement date and time filters.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 37 · Service</div>
+<div class="story-feature">Build Block 37 · Service</div>
 <div class="story-row"><span class="story-name">Implement input stream controls.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 38 · Service</div>
-<div class="story-row"><span class="story-name">Implement diagnostics and stderr filters.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 39 · Service</div>
+<div class="story-feature">Build Block 38 · Service</div>
+<div class="story-row"><span class="story-name">Implement diagnostics and stderr output filters.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 39 · Service</div>
 <div class="story-row"><span class="story-name">Implement streaming transformations.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 40 · Service</div>
-<div class="story-row"><span class="story-name">Provide scoped conformance verification.</span> <span class="badge badge-pending">pending</span></div>
-<div class="story-feature">Block 41 · Service</div>
+<div class="story-feature">Build Block 40 · Service</div>
+<div class="story-row"><span class="story-name">Provide scoped conformance verification for implementation slices.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-feature">Build Block 41 · Feature</div>
 <div class="story-row"><span class="story-name">Pass the complete jq conformance corpus.</span> <span class="badge badge-pending">pending</span></div>
 </div>
   </section>

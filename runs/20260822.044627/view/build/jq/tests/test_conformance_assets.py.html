@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_conformance_assets.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_conformance_assets.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_conformance_assets.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;In-process validation for the immutable conformance asset staging.&quot;&quot;&quot;
+
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+SOURCES = ROOT / &quot;sources&quot;
+sys.path.insert(0, str(SOURCES))
+
+import run_conformance as harness
+
+
+class ConformanceAssetTests(unittest.TestCase):
+    def test_pinned_corpus_and_exclusions_are_consistent(self) -&gt; None:
+        cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+        excluded = harness.apply_exclusions(
+            cases,
+            harness.parse_exclusions(harness.EXCLUSIONS),
+        )
+
+        self.assertEqual(len(cases), 550)
+        self.assertEqual(len(excluded), 13)
+
+    def test_harness_uses_staged_canonical_paths(self) -&gt; None:
+        self.assertTrue((SOURCES / &quot;jq.test&quot;).is_file())
+        self.assertTrue((SOURCES / &quot;exclusions.txt&quot;).is_file())
+        self.assertTrue((SOURCES / &quot;run_conformance.py&quot;).is_file())
+        self.assertEqual(harness.CORPUS, (SOURCES / &quot;jq.test&quot;).resolve())
+        self.assertEqual(harness.EXCLUSIONS, (SOURCES / &quot;exclusions.txt&quot;).resolve())
+
+    def test_all_imported_asset_files_are_nonempty(self) -&gt; None:
+        expected = {
+            &quot;builtin.jq&quot;,
+            &quot;exclusions.txt&quot;,
+            &quot;full_test.sh&quot;,
+            &quot;jq-manual.txt&quot;,
+            &quot;jq.test&quot;,
+            &quot;lexer.l&quot;,
+            &quot;parser.y&quot;,
+            &quot;run_conformance.py&quot;,
+        }
+        self.assertEqual(
+            {path.name for path in SOURCES.iterdir() if path.is_file()},
+            expected,
+        )
+        for name in expected:
+            self.assertGreater((SOURCES / name).stat().st_size, 0)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

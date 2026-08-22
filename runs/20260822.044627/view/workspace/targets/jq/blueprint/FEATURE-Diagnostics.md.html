@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Diagnostics.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Diagnostics.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Diagnostics.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Diagnostics</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq diagnostic, stderr, and halt-error filters.</td></tr><tr><td>Depends On</td><td>FEATURE-Input-Streams.md, FEATURE-Process-Contract.md</td></tr><tr><td>Provides</td><td>debug, stderr, halt_error</td></tr><tr><td>Consumes</td><td>process exit and diagnostic behavior</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement diagnostic filters that write to stderr, preserve stdout values, and terminate with the required status behavior. <code>debug</code> must retain the input stream, <code>stderr</code> must emit raw diagnostic data, and <code>halt_error</code> must stop processing with its requested exit code.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC io-002-conformance ===<br>Intent: Diagnostic filters preserve stdout values and write diagnostics to stderr.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>debug = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;debug&quot;], input=&#x27;&quot;value&quot;\n&#x27;, capture_output=True, text=True, ) assert debug.returncode == 0 assert debug.stdout.splitlines() == [&#x27;&quot;value&quot;&#x27;] assert debug.stderr</p>
+<p>stderr = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;stderr&quot;], input=&#x27;&quot;value&quot;\n&#x27;, capture_output=True, text=True, ) assert stderr.returncode == 0 assert stderr.stdout == &quot;&quot; assert stderr.stderr === END AC io-002-conformance ===</p>
+<p>=== AC io-002-execution ===<br>Intent: halt_error terminates execution with a runtime failure status. import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;halt_error(5)&quot;], input=&#x27;&quot;value&quot;\n&#x27;, capture_output=True, text=True, ) assert result.returncode == 5 assert result.stdout == &quot;&quot; === END AC io-002-execution ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Diagnostics must not be used as the output oracle.</li><li>Preserve stdout values emitted before runtime termination.</li><li>Keep diagnostic output on stderr and use only standard-library facilities.</li></ul></article>
+</main>
+</body>
+</html>

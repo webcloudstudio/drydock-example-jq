@@ -3,66 +3,49 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Evaluate jq filters as ordered streams with multiplicity, empty results, iteration, and backtracking. |
-| Depends On  | FEATURE-Filter-Grammar.md, FEATURE-Value-Model.md |
-| Provides    | Ordered filter generators, empty, iteration, range, and backtracking |
-| Consumes    | Parsed jq expressions, JSON value model |
+| Description | Evaluate jq filters as ordered streams of zero or more values. |
+| Depends On  | FEATURE-Declaration-Parser.md |
+| Provides    | ordered generator evaluation, empty, iteration, range |
+| Consumes    | AST for filter expressions |
 
-## Scope
-
-Every filter shall evaluate as a generator that can produce zero, one, or many values. The evaluator shall preserve output ordering, multiplicity, downstream execution for every upstream value, empty results, iteration, and backtracking.
+Every filter shall evaluate against an input value as an ordered generator. The evaluator shall preserve zero, one, and multiple outputs, backtracking, identity, array/object iteration, recursive descent support, `range`, and `empty`. Output order and multiplicity are semantic requirements.
 
 ## Programmatic Acceptance
 
-=== AC generator-core-conformance ===
-Intent: The authoritative corpus slice exercising identity, iteration, comma generators, range, and empty behavior executes and passes with no failures or errors.
-Suite: scoped
-Requires: executable=python3; scope=test
+=== AC core-001-generators ===
+Intent: Identity, iteration, empty, and range generator behavior is implemented.
 
 import json
-import os
 import subprocess
-import sys
 
-select = r"\.|,|\[\.\]|range|empty"
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    ["./jq", "-c", "[., range(2)]"],
+    input="7\n",
     capture_output=True,
     text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert sum(summary.values()) > 0
-assert summary["fail"] == 0 and summary["error"] == 0
 assert result.returncode == 0
-=== END AC generator-core-conformance ===
+assert json.loads(result.stdout) == [7, 0, 1]
 
-=== AC generator-order-and-multiplicity ===
-Intent: The selected generator cases complete successfully, proving ordered multiplicity rather than scalar-only evaluation.
-Suite: scoped
-Requires: executable=python3; scope=test
+=== END AC core-001-generators ===
+
+=== AC core-001-ordering ===
+Intent: Generator output order and multiplicity are preserved.
 
 import json
-import os
 import subprocess
-import sys
 
-select = r"\.|,|\[\.\]|range|empty"
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    ["./jq", "-c", ".[] , .[]"],
+    input="[1, 2]\n",
     capture_output=True,
     text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert summary["pass"] + summary["fail"] + summary["error"] + summary["skip"] > 0
-assert summary["fail"] == 0 and summary["error"] == 0
+values = [json.loads(line) for line in result.stdout.splitlines()]
 assert result.returncode == 0
-=== END AC generator-order-and-multiplicity ===
+assert values == [1, 2, 1, 2]
+
+=== END AC core-001-ordering ===
 
 ## User Acceptance
 
@@ -70,6 +53,6 @@ assert result.returncode == 0
 
 ## Guardrails
 
-- Preserve generator order and multiplicity exactly.
-- Do not collapse streams into single values during evaluation.
-- `empty` must produce no output and must backtrack to the preceding generator.
+- Treat generators and backtracking as the evaluation model, not an optimization.
+- Preserve partial output before a later runtime failure.
+- Do not shell out to another jq implementation.

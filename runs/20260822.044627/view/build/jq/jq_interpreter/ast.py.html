@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/ast.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/ast.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/ast.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Syntax tree types shared by the lexer, parser, and evaluator.&quot;&quot;&quot;
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Filter:
+    &quot;&quot;&quot;Base type for compiled jq filters.&quot;&quot;&quot;
+
+
+@dataclass(frozen=True)
+class Identity(Filter):
+    &quot;&quot;&quot;The ``.`` filter, yielding its input unchanged.&quot;&quot;&quot;
+
+
+@dataclass(frozen=True)
+class Literal(Filter):
+    &quot;&quot;&quot;A JSON literal filter.&quot;&quot;&quot;
+
+    value: object
+
+
+@dataclass(frozen=True)
+class Comma(Filter):
+    &quot;&quot;&quot;Concatenate the output streams of two filters.&quot;&quot;&quot;
+
+    left: Filter
+    right: Filter
+
+
+@dataclass(frozen=True)
+class Raise(Filter):
+    &quot;&quot;&quot;Raise a jq runtime error when evaluated.&quot;&quot;&quot;
+
+    message: str = &quot;error&quot;
+
+
+@dataclass(frozen=True)
+class Array(Filter):
+    &quot;&quot;&quot;Collect a filter&#x27;s generated values into an array.&quot;&quot;&quot;
+
+    expression: Filter
+
+
+@dataclass(frozen=True)
+class Limit(Filter):
+    &quot;&quot;&quot;Keep at most ``count`` values from a filter stream.&quot;&quot;&quot;
+
+    count: int
+    expression: Filter
+</pre></article>
+</main>
+</body>
+</html>

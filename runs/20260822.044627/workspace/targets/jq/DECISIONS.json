@@ -1,6 +1,6 @@
 [
   {
-    "id": "D-001",
+    "id": "Q-001",
     "type": "choice",
     "severity": "material",
     "origin": "plan",
@@ -9,17 +9,40 @@
     "status": "recommended",
     "archived": false,
     "title": "Interpreter implementation structure",
-    "description": "The interpreter must provide a full jq language implementation without third-party runtime dependencies. The selected structure determines how generator semantics, parsing, builtins, and CLI behavior are integrated.",
+    "description": "The project needs a standalone jq interpreter while the sources leave the internal module structure open.",
     "options": [
       {
-        "value": "single_script",
+        "value": "single-executable",
         "label": "Single executable script"
       },
       {
-        "value": "modular_python",
+        "value": "modular-python",
         "label": "Modular Python implementation"
       }
     ],
-    "system_choice": "modular_python"
+    "system_choice": "modular-python"
+  },
+  {
+    "id": "Q-002",
+    "type": "choice",
+    "severity": "material",
+    "origin": "plan",
+    "blueprint": "ARCHITECTURE.md",
+    "story": "architecture",
+    "status": "recommended",
+    "archived": false,
+    "title": "Numeric representation",
+    "description": "The corpus requires jq-compatible numeric behavior, including special values and large literals, while runtime dependencies are restricted to the standard library.",
+    "options": [
+      {
+        "value": "float-only",
+        "label": "Native floating point"
+      },
+      {
+        "value": "literal-aware-standard-library",
+        "label": "Literal-aware numeric model"
+      }
+    ],
+    "system_choice": "literal-aware-standard-library"
   }
 ]

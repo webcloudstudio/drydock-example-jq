@@ -1,14 +1,14 @@
 {
   "acceptance_status": "NOT_RUN",
   "assertions": {
-    "failed": 0,
+    "failed": 1,
     "harness_defects": 0,
-    "passed": 0,
-    "product_defects": 0,
+    "passed": 9,
+    "product_defects": 1,
     "unverified": 0
   },
   "attestations": [],
-  "build_passes": 0,
+  "build_passes": 1,
   "commands": [
     {
       "argv": [
@@ -73,25 +73,28 @@
         "--override"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1207246,
+      "elapsed_ms": 1506244,
       "label": "04-plan",
       "llm_executions": [
-        "20260822.153150.857Z-54e35b6a",
-        "20260822.153440.635Z-ac024b42",
-        "20260822.153558.781Z-e1291086",
-        "20260822.153700.423Z-b0408716",
-        "20260822.153810.005Z-d7d86cea",
-        "20260822.153912.038Z-847b3504",
-        "20260822.154021.224Z-c2526a86",
-        "20260822.154116.344Z-f4b6dee5",
-        "20260822.154213.081Z-9dd38fb8",
-        "20260822.154306.451Z-662f17f8",
-        "20260822.154354.406Z-311c9497",
-        "20260822.154443.505Z-b10dfc03",
-        "20260822.154546.282Z-2ecb1d88",
-        "20260822.154824.413Z-9aa56b72",
-        "20260822.154924.253Z-0a268ef5",
-        "20260822.155032.418Z-ec341145"
+        "20260822.174114.211Z-0d7dae54",
+        "20260822.174347.463Z-febd2896",
+        "20260822.174505.320Z-470e3cb5",
+        "20260822.174607.194Z-d59a6cf1",
+        "20260822.174705.213Z-a9501ea7",
+        "20260822.174801.303Z-20829a72",
+        "20260822.174859.734Z-75bd8258",
+        "20260822.174942.668Z-fbbb876c",
+        "20260822.175038.027Z-8b028827",
+        "20260822.175135.330Z-77107ede",
+        "20260822.175221.438Z-9fcbc172",
+        "20260822.175315.247Z-8984af80",
+        "20260822.175428.329Z-8c80b662",
+        "20260822.175536.761Z-2254961f",
+        "20260822.175649.612Z-f7f4c206",
+        "20260822.175747.734Z-b20b1e05",
+        "20260822.175912.677Z-ba14d978",
+        "20260822.180050.474Z-b2caf9e3",
+        "20260822.180459.019Z-b7a102f8"
       ],
       "returncode": 0,
       "stderr_path": "evidence/commands/04-plan.stderr.log",
@@ -107,7 +110,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 3918,
+      "elapsed_ms": 1906,
       "label": "05-plan-verify",
       "llm_executions": [],
       "returncode": 0,
@@ -124,7 +127,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 828,
+      "elapsed_ms": 744,
       "label": "06-after-plan-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -140,7 +143,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 3818,
+      "elapsed_ms": 1555,
       "label": "07-after-plan-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -155,28 +158,121 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 820,
+      "elapsed_ms": 474,
       "label": "08-after-plan-workspace-status",
       "llm_executions": [],
       "returncode": 0,
       "stderr_path": "evidence/commands/08-after-plan-workspace-status.stderr.log",
       "stdout_path": "evidence/commands/08-after-plan-workspace-status.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "status",
+        "jq",
+        "--ready"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 434,
+      "label": "09-initial-ready",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/09-initial-ready.stderr.log",
+      "stdout_path": "evidence/commands/09-initial-ready.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "6"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 637187,
+      "label": "10-initial-build-1",
+      "llm_executions": [
+        "20260822.180626.371Z-122a84e1",
+        "20260822.180815.255Z-f7eb80f1",
+        "20260822.181134.575Z-7a567b04",
+        "20260822.181425.006Z-1c5cc8b9",
+        "20260822.181529.735Z-dcc737fd",
+        "20260822.181613.175Z-5ac5befb"
+      ],
+      "returncode": 1,
+      "stderr_path": "evidence/commands/10-initial-build-1.stderr.log",
+      "stdout_path": "evidence/commands/10-initial-build-1.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1363,
+      "label": "11-after-initial-build-build-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/11-after-initial-build-build-status.stderr.log",
+      "stdout_path": "evidence/commands/11-after-initial-build-build-status.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "status",
+        "jq"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 1363,
+      "label": "12-after-initial-build-target-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/12-after-initial-build-target-status.stderr.log",
+      "stdout_path": "evidence/commands/12-after-initial-build-target-status.stdout.log"
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3",
+        "-m",
+        "drydock",
+        "status"
+      ],
+      "cwd": "workspace",
+      "elapsed_ms": 485,
+      "label": "13-after-initial-build-workspace-status",
+      "llm_executions": [],
+      "returncode": 0,
+      "stderr_path": "evidence/commands/13-after-initial-build-workspace-status.stderr.log",
+      "stdout_path": "evidence/commands/13-after-initial-build-workspace-status.stdout.log"
     }
   ],
-  "degraded": [],
-  "elapsed_ms": 1246458,
+  "degraded": [
+    "initial-build-1 exited 1"
+  ],
+  "elapsed_ms": 2172444,
   "environment": {
     "drydock_version": "0.2.0",
     "effort": "",
-    "finished_at": "2026-08-22T15:52:30.863156Z",
-    "git_commit": "c94bdbad36ec1cd3a7d4c70a10475d3f161f7477",
+    "finished_at": "2026-08-22T18:17:25.463294Z",
+    "git_commit": "cb3bad876849baa12a9718b1d9347c6937befb96",
     "model": "gpt-5.6-luna",
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "provider": "codex",
     "python_version": "3.12.13",
-    "started_at": "2026-08-22T15:31:44.294681Z"
+    "started_at": "2026-08-22T17:41:12.962243Z"
   },
-  "error": "jq: stopped at plan-repair: acceptance criteria still cannot run after one repair pass",
+  "error": "jq: stopped at initial-build-1: The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.",
   "evidence_dir": "evidence",
   "execution_status": "ERROR",
   "expected_verdict": "PASSED",
@@ -190,12 +286,12 @@
   "status": "failed",
   "target": "jq",
   "usage": {
-    "cached_input_tokens": 823040,
-    "calls": 74,
-    "fresh_input_tokens": 3077984,
-    "input_tokens": 3901024,
+    "cached_input_tokens": 4110080,
+    "calls": 100,
+    "fresh_input_tokens": 4697258,
+    "input_tokens": 8807338,
     "invalid_records": 0,
-    "llm_elapsed_ms": 3152846,
-    "output_tokens": 158251
+    "llm_elapsed_ms": 5243491,
+    "output_tokens": 251631
   }
 }

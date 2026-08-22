@@ -1,0 +1,20 @@
+<reusable-compact filename="jq.test">
+- Corpus cases are blank-line-separated groups: program, JSON input, expected output lines.
+- `%%FAIL` cases require compile exit code `3`; runtime cases accept exit `0` or `5` with matching partial output.
+- Outputs are compared structurally as JSON; numeric `1` and `1.0` are equivalent.
+- Preserve output ordering, multiplicity, Unicode, compact one-value-per-line serialization, and special numeric behavior.
+</reusable-compact>
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/cli.py
+- jq_interpreter/interpreter.py
+- jq_interpreter/parser.py
+- tests/test_architecture.py
+
+SUMMARY:
+Implemented special numeric handling, recursive non-finite JSON serialization, Unicode input/output, and ordered multi-input processing. Tests: 9 passed; scoped conformance: 7 passed, 0 failed, 0 errored.
+
+BLOCKERS:
+- None

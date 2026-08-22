@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-4.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-4.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-4.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 4 · Foundational (block-4)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/failed</li><li>story points (combined assembled cost): 66947</li><li>execution id: 20260822.181613.175Z-5ac5befb</li></ul>
+<h2>Stories built</h2>
+<ul><li>Stage and validate immutable conformance assets. (conf-001) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-Conformance-Assets.md#conformance-assets: executable=python3; scope=test; authorization=existing Target environment</li><li>FEATURE-Conformance-Assets.md#conformance-source-integrity: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-Conformance-Assets.md (SP 513)</li><li>context: run_conformance.py (SP 4354)</li><li>context: jq.test (SP 13058)</li><li>context: exclusions.txt (SP 654)</li><li>context: full_test.sh (SP 189)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: parser.y (SP 5596)</li><li>context: lexer.l (SP 1137)</li><li>context: builtin.jq (SP 2408)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: common_compact.md (SP 1179)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>tests/test_conformance_assets.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): conformance-assets (FEATURE-Conformance-Assets.md)</li></ul>
+<p>intent: The staged corpus and exclusions parse successfully and remain mutually consistent with the pinned authoritative assets. return code: 0</p>
+<ul><li>RED: conformance-source-integrity (FEATURE-Conformance-Assets.md)</li></ul>
+<p>intent: The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory. return code: 1 stderr: --- drydock: values at failure --- sources = PosixPath(&#x27;sources&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt; assert run_conformance.CORPUS == sources / &quot;jq.test&quot; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: conformance-assets (FEATURE-Conformance-Assets.md)</li></ul>
+<p>intent: The staged corpus and exclusions parse successfully and remain mutually consistent with the pinned authoritative assets. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>FAIL: conformance-source-integrity (FEATURE-Conformance-Assets.md)</li></ul>
+<p>intent: The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 1 stderr: --- drydock: values at failure --- sources = PosixPath(&#x27;sources&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt; assert run_conformance.CORPUS == sources / &quot;jq.test&quot; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Repair attempts</h2>
+<ul><li>attempt 0 (initial build): failed; 1/2 checks model=gpt-5.6-luna; execution 20260822.181425.006Z-1c5cc8b9; reason: programmatic acceptance failed: conformance-source-integrity</li><li>attempt 1 (repair 1): failed; 1/2 checks model=gpt-5.6-luna; execution 20260822.181529.735Z-dcc737fd; reason: programmatic acceptance failed: conformance-source-integrity</li><li>attempt 2 (repair 2): failed; 1/2 checks model=gpt-5.6-luna; execution 20260822.181613.175Z-5ac5befb; stopped: deterministic acceptance score did not improve on 2 consecutive calls; reason: programmatic acceptance failed: conformance-source-integrity</li></ul>
+<h2>Agent self-report (advisory)</h2>
+<p>The build agent declared a failure. This is advisory only; the programmatic acceptance above is the authority for this block&#x27;s outcome.</p>
+<ul><li>summary: Source-integrity criterion compares absolute and relative paths.</li><li>detail:</li></ul>
+<p><code>run_conformance.CORPUS</code> is <code>/.../sources/jq.test</code> because the immutable harness uses <code>Path(__file__).resolve()</code>, while the criterion expects <code>sources/jq.test</code>; modifying sources is forbidden.</p>
+<h2>Failure</h2>
+<ul><li>summary: programmatic acceptance failed: conformance-source-integrity</li><li>detail:</li></ul>
+<p>Block &quot;Block 4 · Foundational&quot; [block-4] failed its acceptance criteria. Story &quot;Stage and validate immutable conformance assets.&quot; [conf-001] does not meet its own acceptance criteria:</p>
+<ul><li>AC conformance-source-integrity — The staged harness exposes the required corpus and exclusion paths and can be imported from the build directory.</li></ul>
+<p>assertion: assert run_conformance.CORPUS == sources / &quot;jq.test&quot; → AssertionError raised at: conformance-source-integrity.py:10 process exit code: 1 values at failure: sources = PosixPath(&#x27;sources&#x27;) check stderr: Traceback (most recent call last): File &quot;conformance-source-integrity.py&quot;, line 10, in &lt;module&gt; assert run_conformance.CORPUS == sources / &quot;jq.test&quot; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Build summary</h2>
+<p>&lt;reusable-compact filename=&quot;exclusions.txt&quot;&gt; One verbatim jq program per exclusion; comments document reasons. Entries must match corpus programs exactly. Stale entries are harness errors. Excludes only module-loader cases. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;full_test.sh&quot;&gt; Executable scoring entry point. Requires executable ./jq, sets JQ to it, and runs the supplied harness over the full corpus. Exit status is the conformance verdict. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;parser.y&quot;&gt; Defines jq grammar, expressions, filters, functions, imports, variables, generators, assignments, conditionals, patterns, and compile-error behavior. Compile failures must remain distinct from runtime failures. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;lexer.l&quot;&gt; Defines jq tokens, operators, literals, identifiers, bindings, fields, strings/interpolation, comments, formats, and delimiter state validation. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;builtin.jq&quot;&gt; Defines jq standard-library filters for mapping, reduction, iteration, paths, assignment, strings, regex, dates, math, streaming, SQL-style operations, and type predicates. &lt;/reusable-compact&gt;</p>
+<p>&lt;reusable-compact filename=&quot;jq-manual.txt&quot;&gt;<br>Normative jq language contract: generator semantics, ordering, filtering, variables, functions, reductions, assignments, builtins, regex, modules, I/O, streaming, and numeric behavior. &lt;/reusable-compact&gt;</p>
+<p>AC_BROKEN: conformance-source-integrity</p>
+<p>RESULT: FAILED</p>
+<p>FILES CHANGED:</p>
+<ul><li>tests/test_conformance_assets.py</li></ul>
+<p>SUMMARY:<br>The corpus validation passes: 550 cases and 13 exclusions. Local conformance asset tests pass. The source-integrity acceptance check is impossible as written because the supplied harness intentionally exposes absolute resolved paths, while the criterion compares them to relative paths.</p>
+<p>BLOCKERS:</p>
+<ul><li>The acceptance criterion must compare <code>.resolve()</code> paths, or the supplied harness contract must change.</li><li>Full pytest collection also fails because <code>jq_interpreter</code> is not yet present; that belongs to a later implementation block.</li></ul>
+<p>FAILURE_SUMMARY: Source-integrity criterion compares absolute and relative paths.<br>FAILURE_DETAIL: <code>run_conformance.CORPUS</code> is <code>/.../sources/jq.test</code> because the immutable harness uses <code>Path(__file__).resolve()</code>, while the criterion expects <code>sources/jq.test</code>; modifying sources is forbidden.</p></article>
+</main>
+</body>
+</html>

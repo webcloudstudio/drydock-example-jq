@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/lexer.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/lexer.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/lexer.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Lexical boundary for jq source text.&quot;&quot;&quot;
+
+from dataclasses import dataclass
+from enum import Enum, auto
+
+from .errors import CompileError
+
+
+class TokenKind(Enum):
+    IDENTITY = auto()
+    END = auto()
+
+
+@dataclass(frozen=True)
+class Token:
+    kind: TokenKind
+    text: str
+    position: int
+
+
+def tokenize(source: str) -&gt; list[Token]:
+    &quot;&quot;&quot;Tokenize the foundation syntax, preserving source positions.&quot;&quot;&quot;
+    tokens: list[Token] = []
+    for position, character in enumerate(source):
+        if character.isspace():
+            continue
+        if character == &quot;.&quot;:
+            tokens.append(Token(TokenKind.IDENTITY, character, position))
+            continue
+        raise CompileError(f&quot;unexpected character at position {position}&quot;)
+    tokens.append(Token(TokenKind.END, &quot;&quot;, len(source)))
+    return tokens
+</pre></article>
+</main>
+</body>
+</html>

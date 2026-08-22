@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Json-IO.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Json-IO.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Json-IO.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: JSON Input and Output</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides ordered JSON input processing, Unicode handling, numeric values, and compact output serialization.</td></tr><tr><td>Depends On</td><td>FEATURE-Process-Contract.md</td></tr><tr><td>Provides</td><td>JSON stdin parsing, compact JSON serialization, ordered output stream</td></tr><tr><td>Consumes</td><td>./jq -c program execution</td></tr></tbody></table></div>
+<h2>Input Processing</h2>
+<p>Read the JSON values supplied by standard input in corpus order. Evaluate the filter independently against each input while preserving the global output order. Support Unicode escapes and characters, embedded control characters, large numeric literals, NaN, and infinities where required by jq semantics.</p>
+<h2>Output Processing</h2>
+<p>Serialize every generated jq value as one compact JSON value per line. Structural comparison, not object key spelling or whitespace, defines conformance, but serialization must remain valid JSON-compatible output for the harness. Preserve generator multiplicity and ordering.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC exec-003-conformance ===<br>Intent: JSON numeric values compile and execute successfully with compact output.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;nan, infinite&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 assert len(result.stdout.splitlines()) == 2 === END AC exec-003-conformance ===</p>
+<p>=== AC exec-003-multiple-inputs ===<br>Intent: Multiple newline-delimited JSON inputs produce outputs in input and generator order.</p>
+<p>import subprocess</p>
+<p>inputs = &quot;1\n2\n3\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=inputs, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 assert result.stdout.splitlines() == inputs.splitlines() === END AC exec-003-multiple-inputs ===</p>
+<p>=== AC exec-003-unicode-and-compact ===<br>Intent: Unicode input is decoded and emitted as one compact JSON value per line.</p>
+<p>import subprocess</p>
+<p>value = &#x27;&quot;\\u03bc&quot;&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=value + &quot;\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 lines = result.stdout.splitlines() assert len(lines) == 1 assert <strong>import</strong>(&quot;json&quot;).loads(lines[0]) == <strong>import</strong>(&quot;json&quot;).loads(value) === END AC exec-003-unicode-and-compact ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve input and output ordering.</li><li>Emit one output value per line.</li><li>Do not pretty-print output.</li><li>Preserve generator multiplicity.</li><li>Do not silently discard Unicode or special numeric values required by the corpus.</li></ul></article>
+</main>
+</body>
+</html>

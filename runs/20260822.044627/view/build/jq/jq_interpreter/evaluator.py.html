@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/evaluator.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/evaluator.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/evaluator.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Ordered generator evaluator boundary.&quot;&quot;&quot;
+
+from .ast import Array, Comma, Filter, Identity, Limit, Literal, Raise
+from .errors import RuntimeError
+from .runtime import JsonValue, ValueStream, identity_stream
+
+
+def evaluate(program: Filter, value: JsonValue) -&gt; ValueStream:
+    &quot;&quot;&quot;Evaluate one input as an ordered stream of output values.&quot;&quot;&quot;
+    if isinstance(program, Identity):
+        yield from identity_stream(value)
+        return
+    if isinstance(program, Literal):
+        yield program.value
+        return
+    if isinstance(program, Comma):
+        yield from evaluate(program.left, value)
+        yield from evaluate(program.right, value)
+        return
+    if isinstance(program, Raise):
+        raise RuntimeError(program.message)
+    if isinstance(program, Array):
+        yield list(evaluate(program.expression, value))
+        return
+    if isinstance(program, Limit):
+        outputs = iter(evaluate(program.expression, value))
+        for _ in range(program.count):
+            try:
+                yield next(outputs)
+            except StopIteration:
+                break
+        return
+    raise RuntimeError(&quot;unknown compiled filter&quot;)
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Output-Formats.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Output-Formats.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Output-Formats.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Output Formats</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide JSON conversion and jq output-format filters.</td></tr><tr><td>Depends On</td><td>FEATURE-String-Builtins.md, FEATURE-Json-IO.md</td></tr><tr><td>Provides</td><td>tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d</td></tr><tr><td>Consumes</td><td>string manipulation builtins, JSON serializer</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement conversion between jq values and JSON text, plus the required text, HTML, URI, CSV, TSV, shell, and base64 format filters. Preserve interpolation behavior and stream ordering.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC text-002-conformance ===<br>Intent: JSON conversion and output-format filters execute through the candidate executable.</p>
+<p>import subprocess</p>
+<p>program = &#x27;[&quot;x&quot;|@text, &quot;x&quot;|@json, &quot;&lt;x&gt;&quot;|@html, &quot;a b&quot;|@uri, &quot;a+b&quot;|@urid, [&quot;a&quot;,&quot;b&quot;]|@csv, [&quot;a&quot;,&quot;b&quot;]|@tsv, [&quot;a b&quot;]|@sh, &quot;hi&quot;|@base64, &quot;aGk=&quot;|@base64d, ({&quot;x&quot;:1}|tojson), (&quot;{\\&quot;x\\&quot;:1}&quot;|fromjson)]&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 values = <strong>import</strong>(&quot;json&quot;).loads(result.stdout) assert len(values) == 12 assert values[0] == &quot;x&quot; assert values[1] == &#x27;&quot;x&quot;&#x27; assert values[2] == &quot;&amp;lt;x&amp;gt;&quot; assert values[3] == &quot;a%20b&quot; assert values[8] == &quot;aGQgYg==&quot; or values[8] == &quot;aGk=&quot; === END AC text-002-conformance ===</p>
+<p>=== AC text-002-interface ===<br>Intent: The format-filter interface returns compact JSON output for a representative filter.</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &#x27;&quot;hello world&quot; | @uri&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 assert json.loads(result.stdout) == &quot;hello%20world&quot; === END AC text-002-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Preserve compact JSON values and one output per line.</li><li>Do not modify staged scoring assets.</li></ul></article>
+</main>
+</body>
+</html>

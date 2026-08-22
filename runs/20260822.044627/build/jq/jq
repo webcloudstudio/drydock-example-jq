@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+"""Standalone jq executable."""
+
+from jq_interpreter.cli import main
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

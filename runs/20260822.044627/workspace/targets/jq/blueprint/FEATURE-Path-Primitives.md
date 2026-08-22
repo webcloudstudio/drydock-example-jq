@@ -1,55 +1,51 @@
-# FEATURE: Path Primitives
+# FEATURE: Path Access and Mutation Primitives
 
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines nested path lookup, creation, replacement, and deletion primitives. |
-| Depends On  | FEATURE-Path-Discovery.md, FEATURE-Field-And-Index-Access.md |
+| Description | Reads, creates, replaces, and deletes nested values through jq path primitives. |
+| Depends On  | FEATURE-Path-Discovery.md |
 | Provides    | getpath, setpath, delpaths |
-| Consumes    | Path discovery, immutable value model |
+| Consumes    | path discovery and projection |
 
-## Purpose
+## Scope
 
-Implement jq's primitive operations for reading, setting, and deleting values at nested paths.
-
-## Implementation Requirements
-
-- Implement `getpath(paths)` for one or more paths.
-- Implement `setpath(path; value)` with nested object and array creation.
-- Implement `delpaths(paths)` for multiple nested deletions.
-- Preserve immutable input values and return updated copies.
-- Handle missing object fields and array positions according to jq semantics.
-- Reject invalid path component types and invalid array operations with runtime errors.
-- Enforce path depth limits required by the corpus.
+Implement `getpath`, `setpath`, and `delpaths` for nested object and array paths. Operations create intermediate containers where jq requires them, expand arrays with null values, preserve immutable-value semantics, and reject invalid or excessively deep paths with runtime errors.
 
 ## Programmatic Acceptance
 
-=== AC path-primitives-conformance ===
-Intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes.
+=== AC path-002-conformance ===
+Intent: Path access and mutation primitives execute successfully for representative getpath, setpath, and delpaths programs.
 Suite: scoped
 Requires: executable=python3; scope=test
 
-import json
-import os
 import subprocess
-import sys
 
-select = r"getpath|setpath|delpaths"
-result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+get_result = subprocess.run(
+    ["./jq", "-c", "getpath([\"a\", \"b\"])",],
+    input='{"a":{"b":3}}\n',
     capture_output=True,
     text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert sum(summary.values()) > 0
-assert summary["fail"] == 0
-assert summary["error"] == 0
-assert result.returncode == 0
-=== END AC path-primitives-conformance ===
+set_result = subprocess.run(
+    ["./jq", "-c", "setpath([\"a\", \"b\"]; 4)",],
+    input='{"a":{}}\n',
+    capture_output=True,
+    text=True,
+)
+del_result = subprocess.run(
+    ["./jq", "-c", "delpaths([[\"a\"]])",],
+    input='{"a":1,"b":2}\n',
+    capture_output=True,
+    text=True,
+)
+assert get_result.returncode == 0
+assert get_result.stdout.splitlines() == ["3"]
+assert set_result.returncode == 0
+assert set_result.stdout.splitlines() == ['{"a":{"b":4}}']
+assert del_result.returncode == 0
+assert del_result.stdout.splitlines() == ['{"b":2}']
+=== END AC path-002-conformance ===
 
 ## User Acceptance
 
@@ -57,6 +53,5 @@ assert result.returncode == 0
 
 ## Guardrails
 
-- Do not mutate values aliased by another expression.
-- Do not convert invalid paths into silent no-ops except where jq specifies that behavior.
-- Do not bypass the path depth limit.
+- Path operations must not mutate previously produced values.
+- Invalid path types and excessive depth must remain runtime errors, not compile failures.

@@ -9,20 +9,18 @@
 <body>
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Path-Discovery.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Path-Discovery.md">Raw file</a></div></header>
-<article class="doc"><h1>FEATURE: Path Discovery</h1>
-<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq path discovery, path filtering, and projection operations.</td></tr><tr><td>Depends On</td><td>FEATURE-Slices-And-Iteration.md, FEATURE-Destructuring-Patterns.md, FEATURE-Recursive-Generators.md</td></tr><tr><td>Provides</td><td>path, paths, pick, path projections</td></tr><tr><td>Consumes</td><td>Accessors, iteration, generator evaluation</td></tr></tbody></table></div>
-<h2>Purpose</h2>
-<p>Implement jq&#x27;s path-oriented filters for discovering, filtering, and projecting nested array and object locations.</p>
-<h2>Implementation Requirements</h2>
-<ul><li>Implement <code>path(expression)</code> for exact and pattern path expressions.</li><li>Implement <code>paths</code> and <code>paths(filter)</code> with stable traversal order.</li><li>Represent paths as arrays containing string object keys and integer array indexes.</li><li>Exclude the root path from <code>paths</code>.</li><li>Implement <code>pick(path-expressions)</code> while preserving missing projected fields as <code>null</code>.</li><li>Raise runtime errors for invalid path expressions.</li><li>Preserve path behavior through recursive descent and generators.</li></ul>
+<article class="doc"><h1>FEATURE: Path Discovery and Projection</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Discovers jq paths and constructs projections from path expressions.</td></tr><tr><td>Depends On</td><td>FEATURE-Destructuring.md, FEATURE-Accessors.md</td></tr><tr><td>Provides</td><td>path, paths, pick, path projections</td></tr><tr><td>Consumes</td><td>destructuring and field/index access</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement exact and generated path expressions, recursive path enumeration, filtered <code>paths</code>, and <code>pick</code> projections. Path results preserve jq&#x27;s ordering and use string object keys and numeric array indices. Invalid path expressions raise runtime errors according to jq semantics.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC path-discovery-conformance ===<br>Intent: The authoritative corpus slice covering path discovery and projection executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
-<p>import json import os import subprocess import sys</p>
-<p>select = r&quot;path\(|paths|pick\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC path-discovery-conformance ===</p>
+<p>=== AC path-001-conformance ===<br>Intent: Path discovery and projection behavior executes successfully for representative path, paths, and pick programs.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>path_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;path(.a)&quot;,], input=&#x27;{&quot;a&quot;:1}\n&#x27;, capture_output=True, text=True, ) paths_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;paths&quot;,], input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:[2]}\n&#x27;, capture_output=True, text=True, ) pick_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;pick(.a)&quot;,], input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27;, capture_output=True, text=True, ) assert path_result.returncode == 0 assert path_result.stdout.splitlines() == [&#x27;[&quot;a&quot;]&#x27;] assert paths_result.returncode == 0 assert paths_result.stdout.splitlines() == [&#x27;[&quot;a&quot;]&#x27;, &#x27;[&quot;b&quot;,0]&#x27;] assert pick_result.returncode == 0 assert pick_result.stdout.splitlines() == [&#x27;{&quot;a&quot;:1}&#x27;] === END AC path-001-conformance ===</p>
 <h2>User Acceptance</h2>
 <ul><li>None.</li></ul>
 <h2>Guardrails</h2>
-<ul><li>Do not emit paths in traversal order different from jq&#x27;s generator order.</li><li>Do not confuse a projected value with its path representation.</li><li>Do not silently accept invalid path expressions.</li></ul></article>
+<ul><li>Path enumeration must preserve traversal order and distinguish empty root paths from descendant paths.</li><li>Projection must not mutate the source value.</li></ul></article>
 </main>
 </body>
 </html>

@@ -1,0 +1,40 @@
+<reusable-compact filename="exclusions.txt">
+One verbatim jq program per exclusion; comments document reasons. Entries must match corpus programs exactly. Stale entries are harness errors. Excludes only module-loader cases.
+</reusable-compact>
+
+<reusable-compact filename="full_test.sh">
+Executable scoring entry point. Requires executable ./jq, sets JQ to it, and runs the supplied harness over the full corpus. Exit status is the conformance verdict.
+</reusable-compact>
+
+<reusable-compact filename="parser.y">
+Defines jq grammar, expressions, filters, functions, imports, variables, generators, assignments, conditionals, patterns, and compile-error behavior. Compile failures must remain distinct from runtime failures.
+</reusable-compact>
+
+<reusable-compact filename="lexer.l">
+Defines jq tokens, operators, literals, identifiers, bindings, fields, strings/interpolation, comments, formats, and delimiter state validation.
+</reusable-compact>
+
+<reusable-compact filename="builtin.jq">
+Defines jq standard-library filters for mapping, reduction, iteration, paths, assignment, strings, regex, dates, math, streaming, SQL-style operations, and type predicates.
+</reusable-compact>
+
+<reusable-compact filename="jq-manual.txt">
+Normative jq language contract: generator semantics, ordering, filtering, variables, functions, reductions, assignments, builtins, regex, modules, I/O, streaming, and numeric behavior.
+</reusable-compact>
+
+AC_BROKEN: conformance-source-integrity
+
+RESULT: FAILED
+
+FILES CHANGED:
+- tests/test_conformance_assets.py
+
+SUMMARY:
+The corpus validation passes: 550 cases and 13 exclusions. Local conformance asset tests pass. The source-integrity acceptance check is impossible as written because the supplied harness intentionally exposes absolute resolved paths, while the criterion compares them to relative paths.
+
+BLOCKERS:
+- The acceptance criterion must compare `.resolve()` paths, or the supplied harness contract must change.
+- Full pytest collection also fails because `jq_interpreter` is not yet present; that belongs to a later implementation block.
+
+FAILURE_SUMMARY: Source-integrity criterion compares absolute and relative paths.
+FAILURE_DETAIL: `run_conformance.CORPUS` is `/.../sources/jq.test` because the immutable harness uses `Path(__file__).resolve()`, while the criterion expects `sources/jq.test`; modifying sources is forbidden.

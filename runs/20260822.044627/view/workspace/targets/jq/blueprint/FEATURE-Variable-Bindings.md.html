@@ -10,19 +10,20 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Variable-Bindings.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Variable-Bindings.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Variable Bindings</h1>
-<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides lexical jq value bindings with scoped lifetime and shadowing.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Composition-And-Cartesian-Evaluation.md</td></tr><tr><td>Provides</td><td>as bindings, nested scope, shadowing, keyword identifiers, binding lifetime</td></tr><tr><td>Consumes</td><td>parsed patterns, generator evaluation, lexical environments</td></tr></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides lexical jq value bindings and destructuring scope foundations.</td></tr><tr><td>Depends On</td><td>FEATURE-Recursive-Generators.md</td></tr><tr><td>Provides</td><td>as bindings, lexical scope, shadowing, keyword identifiers</td></tr><tr><td>Consumes</td><td>recursive generator evaluation</td></tr></tbody></table></div>
 <h2>Workflow</h2>
-<p>Implement <code>expression as $name | continuation</code> with lexical scope. Bind each output independently, preserve the original input for the continuation, support nested shadowing and keyword-shaped names, and maintain bindings correctly across generator backtracking and destructuring contexts.</p>
+<p>The evaluator binds each output of a left-hand filter to a lexical variable for the following expression. Bindings support nested scopes, shadowing, keyword-shaped names, structural lifetime, and generator backtracking without mutation.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC func-001-conformance ===<br>Intent: The authoritative corpus slice exercising lexical variable bindings executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>=== AC variable-bindings-scoped ===<br>Intent: Variable-binding corpus cases execute and pass.<br>Suite: scoped</p>
 <p>import json import os import subprocess import sys</p>
-<p>select = r&quot; as \$|\$[A-Za-z]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC func-001-conformance ===</p>
-<p>=== AC func-001-interface ===<br>Intent: A binding preserves its value while the pipeline continues with the original input. import subprocess</p>
-<p>program = &quot;.bar as $x | .foo + $x&quot; payload = &#x27;{&quot;foo&quot;:10,&quot;bar&quot;:200}\n&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode in (0, 5) === END AC func-001-interface ===</p>
+<p>selector = r&quot; as \$|\$[A-Za-z]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC variable-bindings-scoped ===</p>
+<p>=== AC binding-syntax-scoped ===<br>Intent: Binding and destructuring syntax cases execute and pass.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;\bas\s+\$|\bas\s+\{|\bas\s+\[&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC binding-syntax-scoped ===</p>
 <h2>User Acceptance</h2>
 <ul><li>None.</li></ul>
 <h2>Guardrails</h2>
-<ul><li>Bindings are immutable and lexically scoped.</li><li>Do not leak inner shadowed bindings outside their scope.</li><li>Preserve binding values independently for every generator branch.</li></ul></article>
+<ul><li>Bindings are immutable and lexically scoped.</li><li>Shadowing must not alter the value visible outside its scope.</li><li>Every generator output must receive its corresponding binding.</li></ul></article>
 </main>
 </body>
 </html>

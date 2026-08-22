@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Collection-Transforms.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Collection-Transforms.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Collection-Transforms.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Collection Transforms</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq collection transformation builtins with generator-aware recursive behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Complex-Assignments.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>map, map_values, select, add, flatten, transpose, combinations, walk</td></tr><tr><td>Consumes</td><td>assignment operators, ordered generator evaluation</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>This feature implements collection transformation filters over arrays and objects. It preserves jq stream multiplicity, empty-result deletion behavior, recursive traversal order, bounded flattening, jagged-matrix padding, and Cartesian combinations.</p>
+<h2>Behavior</h2>
+<ul><li><code>map</code> collects all outputs produced for each input element.</li><li><code>map_values</code> updates each element or object value using the first produced result and removes values producing <code>empty</code>.</li><li><code>select</code> preserves the input only for truthy predicates.</li><li><code>add</code> reduces array or generated values using jq addition.</li><li><code>flatten</code> supports unlimited and bounded depth, rejecting negative depth.</li><li><code>transpose</code> pads jagged rows with <code>null</code>.</li><li><code>combinations</code> produces ordered Cartesian combinations.</li><li><code>walk</code> transforms children before their containing array or object.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC data-001-conformance ===<br>Intent: Collection transformation builtins preserve collection shape, ordering, and Cartesian behavior.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;map(. * 2), map_values(. + 1), select(length == 2), add, flatten(1), transpose, combinations&quot;], input=&#x27;[1,2]\n&#x27;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] assert actual[0] == [2, 4] assert actual[1] == [2, 3] === END AC data-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Preserve generator ordering and multiplicity.</li><li>Do not modify files under <code>sources/</code>.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/runtime.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/runtime.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/runtime.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Runtime value and stream contracts.&quot;&quot;&quot;
+
+from collections.abc import Iterator
+from typing import TypeAlias
+
+JsonValue: TypeAlias = None | bool | int | float | str | list[&quot;JsonValue&quot;] | dict[str, &quot;JsonValue&quot;]
+ValueStream: TypeAlias = Iterator[JsonValue]
+
+
+def identity_stream(value: JsonValue) -&gt; ValueStream:
+    &quot;&quot;&quot;Yield one value, retaining the stream contract used by the evaluator.&quot;&quot;&quot;
+    yield value
+</pre></article>
+</main>
+</body>
+</html>

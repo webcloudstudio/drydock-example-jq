@@ -10,17 +10,22 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Input-Streams.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Input-Streams.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Input Streams</h1>
-<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implement jq filters for consuming additional JSON inputs and input metadata.</td></tr><tr><td>Depends On</td><td>FEATURE-JSON-IO-Boundary.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>input, inputs, input_filename, input_line_number</td></tr><tr><td>Consumes</td><td>JSON process boundary, generator evaluator</td></tr></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq controls for consuming additional JSON input values.</td></tr><tr><td>Depends On</td><td>FEATURE-Date-and-Time.md, FEATURE-Json-IO.md</td></tr><tr><td>Provides</td><td>input, inputs, input_filename, input_line_number</td></tr><tr><td>Consumes</td><td>executable JSON input boundary</td></tr></tbody></table></div>
 <h2>Intent</h2>
-<p>Implement <code>input</code> and <code>inputs</code> over the fixed stdin stream, coordinating consumption with the initial input value. Provide the input filename and line-number filters supported by the fixed executable interface.</p>
+<p>Implement <code>input</code> and <code>inputs</code> over the fixed stdin interface, preserving the distinction between the initially filtered value and remaining values. Provide the available filename and line-number metadata without adding unsupported command-line options.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC io-001-conformance ===<br>Intent: The implementation passes the authoritative input-stream corpus slice.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
-<p>import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;input|inputs&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC io-001-conformance ===</p>
+<p>=== AC io-001-conformance ===<br>Intent: The input filter consumes the next JSON value from stdin.</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;input&quot;], input=&quot;1\n2\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert json.loads(result.stdout) == 2</p>
+<p>=== END AC io-001-conformance ===</p>
+<p>=== AC io-001-execution ===<br>Intent: The inputs filter emits all remaining JSON values in order.</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;inputs&quot;], input=&quot;1\n2\n3\n&quot;, capture_output=True, text=True, ) values = [json.loads(line) for line in result.stdout.splitlines()] assert result.returncode == 0 assert values == [2, 3]</p>
+<p>=== END AC io-001-execution ===</p>
 <h2>User Acceptance</h2>
 <ul><li>None.</li></ul>
 <h2>Guardrails</h2>
-<ul><li>Read inputs only from the process input stream.</li><li>Preserve input order and generator semantics.</li><li>Do not add unsupported command-line options or external input sources.</li></ul></article>
+<ul><li>Do not add command-line options beyond the fixed <code>-c</code> interface.</li><li>Preserve input ordering and stream multiplicity.</li><li>Use only the supplied stdin boundary and standard-library runtime.</li></ul></article>
 </main>
 </body>
 </html>

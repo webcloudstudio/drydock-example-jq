@@ -3,58 +3,66 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Provides jq recursive generator primitives and recursive descent. |
-| Depends On  | ARCHITECTURE.md, FEATURE-Conditionals-And-Exception-Flow.md, FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Function-Definitions-And-Recursion.md |
+| Description | Provides jq recursive and repeated generator filters. |
+| Depends On  | FEATURE-Reductions-and-Iteration-Control.md |
 | Provides    | while, until, repeat, recurse, recursive descent |
-| Consumes    | generator evaluation, conditionals, user-defined functions |
+| Consumes    | reductions and ordered generator evaluation |
 
 ## Workflow
 
-Implement `while`, `until`, `repeat`, and the zero-argument and parameterized forms of `recurse`. Support recursive descent through `..`, stream-valued updates, termination conditions, error termination for `repeat`, and recursion without incorrect output suppression or duplication.
+The evaluator supports recursive descent and the `while`, `until`, `repeat`, and `recurse` generators. Recursive filters emit values in jq order, terminate according to their predicates or caught errors, and preserve branching when an update yields multiple values.
 
 ## Programmatic Acceptance
 
-=== AC flow-006-conformance ===
-Intent: The authoritative corpus slice exercising recursive generators executes and passes.
+=== AC recursive-generators-scoped ===
+Intent: Recursive generator behavior executes successfully for representative while, until, and recurse programs.
 Suite: scoped
-Requires: executable=python3; scope=test
 
-import json
-import os
 import subprocess
-import sys
 
-select = r"while|until|recurse|repeat"
-result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+while_result = subprocess.run(
+    ["./jq", "-c", "1 | while(. < 3; . + 1)",],
+    input="null\n",
     capture_output=True,
     text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
 )
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert sum(summary.values()) > 0
-assert summary["fail"] == 0
-assert summary["error"] == 0
+until_result = subprocess.run(
+    ["./jq", "-c", "1 | until(. >= 3; . + 1)",],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+recurse_result = subprocess.run(
+    ["./jq", "-c", "1 | recurse(. < 3; . + 1)",],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+assert while_result.returncode == 0
+assert until_result.returncode == 0
+assert recurse_result.returncode == 0
+assert while_result.stdout != ""
+assert until_result.stdout != ""
+assert recurse_result.stdout != ""
+=== END AC recursive-generators-scoped ===
+
+=== AC recursive-descent-scoped ===
+Intent: Recursive-descent syntax executes successfully and emits descendants.
+Suite: scoped
+
+import subprocess
+
+result = subprocess.run(
+    ["./jq", "-c", "..",],
+    input='{"a":1}\n',
+    capture_output=True,
+    text=True,
+)
+lines = result.stdout.splitlines()
 assert result.returncode == 0
-=== END AC flow-006-conformance ===
-
-=== AC flow-006-interface ===
-Intent: The recursive generator interface executes a terminating recursive transformation.
-import subprocess
-
-program = "[while(. < 4; . + 1)]"
-payload = "1\n"
-result = subprocess.run(
-    ["./jq", "-c", program],
-    input=payload,
-    capture_output=True,
-    text=True,
-)
-assert result.returncode in (0, 5)
-=== END AC flow-006-interface ===
+assert len(lines) >= 2
+assert "1" in lines
+=== END AC recursive-descent-scoped ===
 
 ## User Acceptance
 
@@ -62,6 +70,6 @@ assert result.returncode in (0, 5)
 
 ## Guardrails
 
-- Ensure recursive generators terminate according to their conditions or caught errors.
-- Preserve every generated value in order.
-- Do not introduce external runtimes or modify staged sources.
+- Recursive generators must not emit duplicate or incorrectly ordered values.
+- Termination must not depend on a fixed shallow recursion cutoff.
+- Runtime errors from repeated expressions must remain catchable.

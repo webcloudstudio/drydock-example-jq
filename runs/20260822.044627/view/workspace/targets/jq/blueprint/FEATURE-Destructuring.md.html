@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Destructuring.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Destructuring.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Destructuring.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Destructuring Patterns and Alternatives</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Supports array and object destructuring bindings and the ?// alternative operator.</td></tr><tr><td>Depends On</td><td>FEATURE-Function-Definitions.md, FEATURE-Variable-Bindings.md</td></tr><tr><td>Provides</td><td>array/object patterns, missing bindings, ?// alternatives</td></tr><tr><td>Consumes</td><td>function definitions and lexical bindings</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Destructuring binds values from arrays and objects to lexical variables, supplying null for missing positions or fields. The <code>?//</code> operator selects fallback patterns when a prior pattern cannot match or its downstream evaluation raises an eligible error. Patterns support nested arrays, objects, shorthand bindings, explicit keys, and multiple alternatives.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-004-conformance ===<br>Intent: Destructuring bindings and alternatives execute successfully.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as {$x} | $x&quot;], input=&#x27;{&quot;x&quot;:1}\n&#x27;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.splitlines() == [&quot;1&quot;]</p>
+<p>alternative = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.a? // .b&quot;], input=&#x27;{&quot;b&quot;:2}\n&#x27;, capture_output=True, text=True, ) assert alternative.returncode == 0 assert alternative.stdout.splitlines() == [&quot;2&quot;] === END AC func-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Pattern alternatives must preserve generator ordering and lexical variable scope.</li><li>Module loading is not required for this capability.</li></ul></article>
+</main>
+</body>
+</html>

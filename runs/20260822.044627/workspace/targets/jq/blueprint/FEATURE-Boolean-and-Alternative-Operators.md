@@ -3,52 +3,43 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Implements jq Boolean operators, truthiness-aware alternatives, and defined-or assignment. |
-| Depends On  | FEATURE-Truthiness-And-Comparison.md, FEATURE-Arithmetic-And-Structural-Operators.md |
-| Provides    | and, or, not, //, //= |
-| Consumes    | jq truthiness, generator core, arithmetic operators |
+| Description | Define jq boolean, negation, defined-or, and defined-or assignment semantics. |
+| Depends On  | FEATURE-Arithmetic-Operators.md, FEATURE-Truthiness-and-Comparison.md |
+| Provides    | and, or, not, defined-or, defined-or assignment |
+| Consumes    | jq truthiness, comparison, and generator evaluation |
 
 ## Intent
 
-Implement strict Boolean operators and jq's value-selection alternative operators. Boolean operators produce Boolean values, while `//` selects non-null and non-false generator outputs.
+This capability implements jq's boolean and fallback operators with false/null truthiness, generator-aware output, and short-circuit behavior.
 
 ## Behavior
 
 - Only `false` and `null` are falsey.
-- `and`, `or`, and `not` produce Boolean results with generator-valued operands evaluated according to jq semantics.
-- `a // b` emits all non-false, non-null values from `a`; otherwise it evaluates `b`.
-- `//=` updates defined-or paths using jq assignment semantics.
-- Short-circuiting must prevent unnecessary error-producing branches where jq requires it.
+- `and` and `or` produce boolean results for each relevant generator combination.
+- `not` produces the inverse truth value.
+- `//` emits non-false/non-null left outputs, otherwise all right outputs.
+- `//=` updates defined-or paths while preserving immutable assignment behavior.
+- Boolean and alternative expressions preserve generator ordering and short-circuit errors where jq requires them.
 
 ## Programmatic Acceptance
 
 === AC flow-002-conformance ===
-Intent: The Boolean and alternative operator implementation passes representative declared Boolean and fallback behaviors.
-Suite: scoped
+Intent: Boolean, negation, and defined-or operators follow jq truthiness and fallback semantics.
 Requires: executable=python3; scope=test
 
 import json
-import os
 import subprocess
 
-jq = os.path.join(os.getcwd(), "jq")
-
-boolean = subprocess.run(
-    [jq, "-c", "true and (1 == 1)"],
+result = subprocess.run(
+    ["./jq", "-c", "(true and false), (true or false), (false|not), (null // 7), (3 // 7)"],
+    input="null\n",
     capture_output=True,
     text=True,
 )
-assert boolean.returncode == 0
-assert json.loads(boolean.stdout) is True
-
-alternative = subprocess.run(
-    [jq, "-c", "null // 7"],
-    capture_output=True,
-    text=True,
-)
-assert alternative.returncode == 0
-assert json.loads(alternative.stdout) == 7
-
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [False, True, True, 7, 3]
+assert actual == expected
 === END AC flow-002-conformance ===
 
 ## User Acceptance
@@ -57,6 +48,6 @@ assert json.loads(alternative.stdout) == 7
 
 ## Guardrails
 
-- Do not treat empty strings, arrays, or objects as falsey.
-- Preserve generator multiplicity and alternative fallback semantics.
-- Do not evaluate fallback branches when jq semantics select the left stream.
+- Do not use Python truthiness in place of jq truthiness.
+- `//` must not be reduced to ordinary boolean `or`.
+- Preserve generator multiplicity and fallback evaluation semantics.

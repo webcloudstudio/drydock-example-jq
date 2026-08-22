@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Assignment-Operators.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Assignment-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Assignment-Operators.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Deletion and Assignment Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements jq deletion, plain assignment, update assignment, and arithmetic assignment.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Primitives.md</td></tr><tr><td>Provides</td><td>del, =,</td><td>=, arithmetic assignments, defined-or assignment</td></tr><tr><td>Consumes</td><td>getpath, setpath, delpaths</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement immutable deletion and assignment over exact and iterated path expressions. Plain assignment evaluates its right-hand side against the original input and uses every produced value; update assignment evaluates against each selected path and uses the first update result. Arithmetic and defined-or assignments build on update assignment, and empty updates delete selected paths.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-003-conformance ===<br>Intent: Deletion, plain assignment, update assignment, and arithmetic assignment preserve immutable jq semantics.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;del(.obsolete), (.count = 2), (.count |= . + 3), (.count += 4)&quot;], input=&#x27;{&quot;count&quot;:1,&quot;obsolete&quot;:true}\n&#x27;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [ {&quot;count&quot;: 1}, {&quot;count&quot;: 2, &quot;obsolete&quot;: True}, {&quot;count&quot;: 4, &quot;obsolete&quot;: True}, {&quot;count&quot;: 5, &quot;obsolete&quot;: True}, ] assert actual == expected === END AC path-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Assignments must preserve jq&#x27;s immutable snapshot semantics.</li><li>Multi-path and generator-valued assignments must preserve output multiplicity and order.</li></ul></article>
+</main>
+</body>
+</html>

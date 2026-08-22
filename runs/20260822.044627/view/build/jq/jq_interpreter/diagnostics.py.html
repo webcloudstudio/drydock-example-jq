@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/diagnostics.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/diagnostics.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/diagnostics.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Process diagnostics and exit-code policy.&quot;&quot;&quot;
+
+import sys
+from typing import TextIO
+
+from .errors import CompileError, RuntimeError
+
+COMPILE_EXIT = 3
+RUNTIME_EXIT = 5
+
+
+def report_compile_error(error: CompileError, stream: TextIO = sys.stderr) -&gt; int:
+    print(f&quot;jq: compile error: {error}&quot;, file=stream)
+    return COMPILE_EXIT
+
+
+def report_runtime_error(error: RuntimeError, stream: TextIO = sys.stderr) -&gt; int:
+    print(f&quot;jq: runtime error: {error}&quot;, file=stream)
+    return RUNTIME_EXIT
+</pre></article>
+</main>
+</body>
+</html>

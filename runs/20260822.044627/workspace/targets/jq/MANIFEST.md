@@ -1,216 +1,237 @@
 # MANIFEST: jq
-updated:     2026-08-22T15:48:24+00:00
+updated:     2026-08-22T18:06:07+00:00
 state:       approved
 blocks:      41
 
-## story 1: Define the standalone jq interpreter architecture and boundaries.
-id: architecture
-summary: Define the standalone jq interpreter architecture and boundaries.
-type: foundational
+applied: ARCHITECTURE.md=cb3bad876849baa12a9718b1d9347c6937befb96,ARCHITECTURE_compact.md=cb3bad876849baa12a9718b1d9347c6937befb96,FEATURE-Executable-Entry-Point.md=cb3bad876849baa12a9718b1d9347c6937befb96,FEATURE-Json-IO.md=cb3bad876849baa12a9718b1d9347c6937befb96,FEATURE-Process-Contract.md=cb3bad876849baa12a9718b1d9347c6937befb96,common.md=cb3bad876849baa12a9718b1d9347c6937befb96,jq.test=cb3bad876849baa12a9718b1d9347c6937befb96,python.md=cb3bad876849baa12a9718b1d9347c6937befb96,run_conformance.py=cb3bad876849baa12a9718b1d9347c6937befb96
+applied_specs: |
+  ARCHITECTURE.md sha256=f0e07d8104b7c23be2772201e83dfaf382f4c295492da7b8ec72b2a914af633b commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-1 applied_at=2026-08-22T18:08:11+00:00 build_sha256=4c5836226ec9db82b9cdbbc04363950fdf3c40e60cfddda0e8895e3f0f736a9e
+  ARCHITECTURE_compact.md sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6 commit=- applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6
+  FEATURE-Executable-Entry-Point.md sha256=3ba06ca6b0767fcc60122f6041d47c42c5b62ef9af4f1ce50e54c70c62035056 commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-2 applied_at=2026-08-22T18:11:32+00:00 build_sha256=3cf647d038b2c37ee633761dcb42619cc49047fc213f2c458f836b2d9b39fc71
+  FEATURE-Json-IO.md sha256=b53fb24c9294612630c2043fe71a4ed7a4c57edebd64f3343cd3844019df54e0 commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=6add55349a875de1033db60ec668d4cdd214e75d0966df04cfaba467a0799526
+  FEATURE-Process-Contract.md sha256=b52f3427527125a46e8704b90ba4a2318c1c0d930818142fe7e7265034a00cbc commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-2 applied_at=2026-08-22T18:11:32+00:00 build_sha256=4d6818d551ca2e0c13a5f0b8f30b47fad0b6f3351f72979a6e88a9c33b7c890c
+  jq.test sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd commit=118e38bf183d07464e49eb85a2dfca6f6843c2f6 applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd
+  run_conformance.py sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492 commit=118e38bf183d07464e49eb85a2dfca6f6843c2f6 applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492
+
+## story 1: Define the standalone interpreter architecture and module boundaries.
+id:           architecture
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-1.md
+summary:      Define the standalone interpreter architecture and module boundaries.
+type:         foundational
+kind:         capability
+phase:        1
+block:        1
+implements:   ARCHITECTURE.md
+scope:        blueprint
+instructions: |
+  Establish the Python standard-library architecture, executable boundary, lexer/parser/evaluator
+  ownership, immutable value and path-operation boundaries, and diagnostic flow. Do not add
+  third-party dependencies or shell out to another jq implementation.
+stack:        common.md, python.md
+stack_mode:   builder
+size:         10206
+provides:     interpreter module boundaries, executable boundary
+acceptance:   yes
+state: closed/implemented
+
+## story 2: Implement the executable jq entry point.
+id: exec-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-2.md
+summary: Implement the executable jq entry point.
+type: service
 kind: capability
 phase: 1
-block: 1
-implements: ARCHITECTURE.md
-context: jq-manual.txt, parser.y, lexer.l, TECHNOLOGY_STACK.md
+block: 2
+implements: FEATURE-Executable-Entry-Point.md
+covers: EXEC-001
+context: run_conformance.py, ARCHITECTURE_compact.md
 stack: common.md, python.md
-stack_mode: builder
-size: 49747
-provides: interpreter architecture, executable boundary, generator evaluation model
+stack_mode: consumer
+size: 15949
+provides: ./jq -c program execution
+consumes: interpreter parser and evaluator
 instructions: |
-  Define the Python standard-library interpreter architecture, parser/evaluator boundaries,
-  immutable value handling, generator semantics, diagnostics, and executable process contract.
-  Establish module ownership so later stories extend the architecture without external runtimes.
+  Deliver an executable named jq at the application root. Accept the exercised -c program
+  interface, read JSON input from stdin, evaluate the filter, and emit each result as one compact
+  JSON value per line. Gate with the EXEC-001 selector from STORY_GUIDANCE.json, executing cases.
 acceptance: yes
-state: pending
-scope: both
+depends: architecture
+state: closed/implemented
+scope: target
 
-## story 2: Stage and validate immutable conformance assets.
+## story 3: Implement jq process exit and diagnostic behavior.
+id: exec-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-2.md
+summary: Implement jq process exit and diagnostic behavior.
+type: service
+kind: capability
+phase: 1
+block: 2
+implements: FEATURE-Process-Contract.md
+covers: EXEC-002
+context: run_conformance.py, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 16089
+provides: compile exit 3, runtime exit 5, success exit 0, stderr diagnostics
+consumes: ./jq -c program execution
+instructions: |
+  Keep compilation failures distinct from runtime failures and preserve partial stdout before a
+  runtime error. Send diagnostics only to stderr. Gate with the EXEC-002-related corpus slice using
+  the runner's executing scoped mode.
+acceptance: yes
+depends: exec-001
+state: closed/implemented
+scope: target
+
+## story 4: Implement JSON input, Unicode, numeric, and compact output handling.
+id: exec-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-3.md
+summary: Implement JSON input, Unicode, numeric, and compact output handling.
+type: service
+kind: capability
+phase: 1
+block: 3
+implements: FEATURE-Json-IO.md
+covers: EXEC-003
+context: jq.test, run_conformance.py, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 25329
+provides: JSON stdin parsing, compact JSON serialization, ordered output stream
+consumes: ./jq -c program execution
+instructions: |
+  Support multiple JSON input values, Unicode escapes and characters, special numeric values
+  required by the corpus, structural output ordering, and one output value per line. Gate the
+  EXEC-003-related executing corpus slice.
+acceptance: yes
+depends: exec-002
+state: closed/implemented
+scope: target
+
+## story 5: Stage and validate immutable conformance assets.
 id: conf-001
+finding: programmatic acceptance failed: conformance-source-integrity: AssertionError
+evidence: evidence/block-4.md
 summary: Stage and validate immutable conformance assets.
 type: foundational
 kind: test harness
 phase: 1
-block: 2
-implements: FEATURE-Conformance-Asset-Staging.md
+block: 4
+implements: FEATURE-Conformance-Assets.md
 covers: CONF-001
-context: run_conformance.py, full_test.sh, exclusions.txt, jq.test, jq-manual.txt, parser.y, lexer.l, builtin.jq, ARCHITECTURE_compact.md
+context: run_conformance.py, jq.test, exclusions.txt, full_test.sh, jq-manual.txt, parser.y, lexer.l, builtin.jq, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 70684
+size: 66799
 budget: over-target
-provides: staged sources/* assets, parsed corpus and exclusions
+provides: staged conformance corpus, exclusions, runner, scoring script
+consumes: none
 instructions: |
-  Stage all imported sources byte-for-byte into the build directory under sources/. Validate the
-  corpus and exclusions by importing run_conformance.parse_corpus and apply_exclusions directly.
-  Do not launch the harness and do not modify any supplied source asset.
+  Stage all required sources verbatim under sources/. Validate the runner's corpus parser and
+  exclusion application directly in Python, including complete and mutually consistent assets.
+  Do not modify any supplied source.
 acceptance: yes
-state: pending
+depends: architecture
+state: closed/failed
 scope: both
 
-## story 3: Implement the executable jq entry point.
-id: exec-001
-summary: Implement the executable jq entry point.
-type: service
-kind: capability
-phase: 2
-block: 3
-implements: FEATURE-Executable-Entry-Point.md
-covers: EXEC-001
-context: run_conformance.py, full_test.sh, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 15085
-provides: executable jq, -c filter invocation
-consumes: interpreter architecture, JSON input stream
-instructions: |
-  Create an executable named jq at the application root. Accept the exercised -c '<program>'
-  interface, read JSON values from stdin, evaluate the filter, and emit compact JSON values one
-  per line. Keep the executable self-contained within the standard-library implementation.
-acceptance: yes
-depends: architecture, conf-001
-state: pending
-scope: target
-
-## story 4: Implement jq lexical scanning.
+## story 6: Implement jq lexical scanning.
 id: parse-001
 summary: Implement jq lexical scanning.
 type: service
 kind: capability
 phase: 2
-block: 3
+block: 5
 implements: FEATURE-Lexer.md
 covers: PARSE-001
 context: lexer.l, parser.y, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 26587
-provides: jq tokens, comments, delimiters, identifiers, literals, bindings
-consumes: interpreter architecture
+size: 27870
+provides: jq tokenization
+consumes: interpreter executable boundary
 instructions: |
-  Implement a standard-library lexer matching the supplied tokenization rules, including keywords,
-  identifiers, fields, bindings, literals, comments, formats, delimiters, and interpolation states.
+  Implement lexical scanning for literals, identifiers, fields, bindings, keywords, operators,
+  delimiters, comments, formats, and interpolation markers according to sources/lexer.l. Gate
+  with the PARSE-001 executing selector.
 acceptance: yes
-depends: architecture, conf-001
+depends: exec-003
 state: pending
 scope: target
 
-## story 5: Implement literals, escapes, formats, and interpolation parsing.
+## story 7: Implement literals, escapes, and string interpolation.
 id: parse-002
-summary: Implement literals, escapes, formats, and interpolation parsing.
+summary: Implement literals, escapes, and string interpolation.
 type: service
 kind: capability
 phase: 2
-block: 4
-implements: FEATURE-Literals-And-Interpolation.md
+block: 5
+implements: FEATURE-Strings-and-Interpolation-Parser.md
 covers: PARSE-002
 context: lexer.l, parser.y, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 26410
-provides: JSON string escapes, Unicode literals, interpolation, format tokens
-consumes: lexer, interpreter architecture
+size: 27577
+provides: JSON string literals, escapes, interpolation, format literals
+consumes: jq tokenization
 instructions: |
-  Parse and evaluate JSON escapes, Unicode strings, formatted strings, and \(expression)
-  interpolation. Reject invalid escapes and malformed interpolation at compile time.
+  Parse JSON escapes, Unicode, formatted strings, and \(expression) interpolation with generator
+  multiplicity preserved. Gate with the PARSE-002 executing selector.
 acceptance: yes
 depends: parse-001
 state: pending
 scope: target
 
-## story 6: Implement the jq filter expression grammar.
+## story 8: Implement the jq filter expression grammar.
 id: parse-003
 summary: Implement the jq filter expression grammar.
 type: service
 kind: capability
 phase: 2
-block: 4
-implements: FEATURE-Filter-Grammar.md
+block: 6
+implements: FEATURE-Filter-Parser.md
 covers: PARSE-003
 context: parser.y, lexer.l, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 26645
-provides: AST grammar for pipes, commas, indexing, slices, arrays, objects, operators, optionals
-consumes: lexer, literal parser
+size: 27567
+provides: AST for pipes, commas, precedence, indexing, slices, arrays, objects, operators
+consumes: jq tokenization
 instructions: |
-  Implement parser precedence and associativity for filter composition, indexing, slicing, arrays,
-  objects, unary operators, binary operators, and optional expressions. Produce an executable AST
-  or equivalent intermediate representation.
+  Implement expression parsing and precedence for pipes, commas, indexing, slicing, arrays,
+  objects, unary operators, binary operators, and optional expressions. Gate with the PARSE-003
+  executing selector.
 acceptance: yes
-depends: parse-001, parse-002
+depends: parse-002
 state: pending
 scope: target
 
-## story 7: Implement declarations and control syntax parsing.
+## story 9: Implement declarations and control syntax parsing.
 id: parse-004
 summary: Implement declarations and control syntax parsing.
 type: service
 kind: capability
 phase: 2
-block: 4
-implements: FEATURE-Declarations-And-Control-Syntax.md
+block: 6
+implements: FEATURE-Declaration-Parser.md
 covers: PARSE-004
 context: parser.y, lexer.l, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 26673
-provides: def, module grammar, imports grammar, conditionals, try, reductions, foreach, labels, patterns
-consumes: filter grammar, lexer
+size: 27589
+provides: declarations, modules grammar, conditionals, exceptions, reductions, labels, bindings
+consumes: AST for filter expressions
 instructions: |
-  Parse declarations, module syntax, conditionals, try/catch, reduce, foreach, labels, bindings,
-  and destructuring patterns. Reject invalid module grammar and unresolved labels at compile time
-  without loading excluded module fixtures.
+  Parse def, module/include grammar, conditionals, try/catch, reductions, foreach, labels,
+  bindings, destructuring, and required rejection cases without loading excluded module fixtures.
+  Gate with the PARSE-004 executing selector.
 acceptance: yes
 depends: parse-003
-state: pending
-scope: target
-
-## story 8: Implement the jq JSON value model and numeric edge cases.
-id: value-001
-summary: Implement the jq JSON value model and numeric edge cases.
-type: service
-kind: capability
-phase: 2
-block: 5
-implements: FEATURE-Value-Model.md
-covers: VALUE-001
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 52608
-budget: over-target
-provides: null, booleans, numbers, strings, arrays, objects, NaN, infinities
-consumes: interpreter architecture
-instructions: |
-  Define immutable jq values using only the standard library. Preserve numeric literals where
-  required, support NaN and infinities, and provide JSON conversion behavior compatible with the
-  harness.
-acceptance: yes
-depends: architecture, conf-001
-state: pending
-scope: target
-
-## story 9: Implement JSON process input and compact output handling.
-id: exec-003
-summary: Implement JSON process input and compact output handling.
-type: service
-kind: capability
-phase: 2
-block: 6
-implements: FEATURE-JSON-IO-Boundary.md
-covers: EXEC-003
-context: run_conformance.py, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 15036
-provides: JSON stdin decoding, compact JSON line serialization, Unicode and special-number handling
-consumes: executable jq, JSON value model
-instructions: |
-  Decode the harness-provided JSON input stream and serialize every generated value as one compact
-  JSON value per line. Preserve ordering, Unicode, NaN, infinity, and numeric behavior required by
-  the corpus.
-acceptance: yes
-depends: exec-001, value-001
 state: pending
 scope: target
 
@@ -219,119 +240,118 @@ id: core-001
 summary: Implement stream-valued filter evaluation.
 type: service
 kind: capability
-phase: 2
+phase: 3
 block: 7
 implements: FEATURE-Generator-Core.md
 covers: CORE-001
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52590
+size: 53378
 budget: over-target
-provides: ordered filter generators, empty, iteration, range, backtracking
-consumes: parsed AST, JSON value model
+provides: ordered generator evaluation, empty, iteration, range
+consumes: AST for filter expressions
 instructions: |
-  Evaluate every filter as an ordered generator supporting zero, one, or many outputs. Preserve
-  backtracking, multiplicity, and ordering for identity, iteration, range, empty, and downstream
-  pipeline evaluation.
+  Evaluate every filter as an ordered generator supporting zero, one, or many outputs, backtracking,
+  identity, iteration, range, and empty. Gate with the CORE-001 executing selector.
 acceptance: yes
-depends: parse-003, value-001
+depends: parse-004
 state: pending
 scope: target
 
-## story 11: Implement composition and Cartesian generator evaluation.
+## story 11: Implement composition and Cartesian evaluation.
 id: core-002
-summary: Implement composition and Cartesian generator evaluation.
+summary: Implement composition and Cartesian evaluation.
 type: service
 kind: capability
-phase: 2
+phase: 3
 block: 8
-implements: FEATURE-Composition-And-Cartesian-Evaluation.md
+implements: FEATURE-Composition.md
 covers: CORE-002
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52620
+size: 53614
 budget: over-target
-provides: pipes, commas, Cartesian arguments, arrays, objects, binary filter composition
-consumes: generator core, parsed expressions
+provides: pipe, comma, argument Cartesian products, collection, object construction
+consumes: ordered generator evaluation
 instructions: |
-  Implement composition semantics for pipes and commas, Cartesian products across multi-output
-  arguments, array collection, object construction, and binary operators.
+  Implement generator composition, Cartesian argument evaluation, array collection, object
+  construction, and multiplicity/order semantics. Gate with the CORE-002 executing selector.
 acceptance: yes
-depends: core-001, parse-003
+depends: core-001
 state: pending
 scope: target
 
-## story 12: Implement empty results and runtime error flow.
+## story 12: Implement empty, runtime errors, optional evaluation, and try.
 id: core-003
-summary: Implement empty results and runtime error flow.
+summary: Implement empty, runtime errors, optional evaluation, and try.
 type: service
 kind: capability
-phase: 2
+phase: 3
 block: 9
-implements: FEATURE-Errors-And-Optional-Evaluation.md
+implements: FEATURE-Error-and-Optional-Evaluation.md
 covers: CORE-003
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52667
+size: 53504
 budget: over-target
-provides: empty, runtime errors, optional filters, try/catch, partial output
-consumes: generator core, process contract
+provides: empty, error, runtime failure, optional operator, try/catch
+consumes: ordered generator evaluation
 instructions: |
-  Implement runtime error propagation, try/catch, optional operators, empty behavior, and partial
-  output before failure. Preserve the distinction between suppressed and unsuppressed errors.
+  Preserve errors, suppression, try/catch behavior, optional operators, and output emitted before
+  runtime failure. Gate with the CORE-003 executing selector.
 acceptance: yes
-depends: core-001, core-002
+depends: core-002
 state: pending
 scope: target
 
-## story 13: Implement jq compilation and runtime exit contracts.
-id: exec-002
-summary: Implement jq compilation and runtime exit contracts.
-type: service
-kind: capability
-phase: 2
-block: 10
-implements: FEATURE-Process-Contract.md
-covers: EXEC-002
-context: run_conformance.py, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 14887
-provides: compile exit 3, runtime exit 5, success exit 0, stderr diagnostics
-consumes: executable jq, parser, evaluator
-instructions: |
-  Distinguish syntax/static rejection from runtime errors. Return 3 for compile failures, 5 for
-  runtime failures, and 0 for successful completion. Preserve values emitted before a runtime error
-  and send diagnostics only to stderr.
-acceptance: yes
-depends: exec-001, parse-004, core-003
-state: pending
-scope: target
-
-## story 14: Implement jq truthiness, equality, and ordering.
+## story 13: Implement jq truthiness, equality, and ordering.
 id: core-004
 summary: Implement jq truthiness, equality, and ordering.
 type: service
 kind: capability
-phase: 2
-block: 11
-implements: FEATURE-Truthiness-And-Comparison.md
+phase: 3
+block: 10
+implements: FEATURE-Truthiness-and-Comparison.md
 covers: CORE-004
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52576
+size: 53552
 budget: over-target
-provides: false/null truthiness, equality, ordering, numeric equivalence
-consumes: generator core, JSON value model
+provides: truthiness, equality, inequality, type ordering, comparisons
+consumes: ordered generator evaluation
 instructions: |
-  Implement jq truthiness in which only false and null are falsey. Implement structural equality,
-  numeric equivalence, and jq's total type ordering for comparisons.
+  Implement false/null truthiness, strict jq equality, numeric equivalence, and total ordering
+  across jq value types. Gate with the CORE-004 executing selector.
 acceptance: yes
-depends: core-002, value-001
+depends: core-003
+state: pending
+scope: target
+
+## story 14: Implement the jq value model and special numbers.
+id: value-001
+summary: Implement the jq value model and special numbers.
+type: service
+kind: capability
+phase: 4
+block: 11
+implements: FEATURE-Value-Model.md
+covers: VALUE-001
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 53543
+budget: over-target
+provides: null, booleans, numbers, strings, arrays, objects, NaN, infinities
+consumes: truthiness, equality, and ordering
+instructions: |
+  Represent jq values using only the standard library, preserving required literal-number
+  behavior and supporting NaN and infinities. Gate with the VALUE-001 executing selector.
+acceptance: yes
+depends: core-004
 state: pending
 scope: target
 
@@ -340,22 +360,22 @@ id: value-002
 summary: Implement field and index access.
 type: service
 kind: capability
-phase: 2
+phase: 4
 block: 12
-implements: FEATURE-Field-And-Index-Access.md
+implements: FEATURE-Accessors.md
 covers: VALUE-002
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52603
+size: 53469
 budget: over-target
-provides: object fields, array indices, optional access, negative indices, missing values
-consumes: value model, generator core
+provides: object fields, array indices, optional access, negative indices
+consumes: jq value model
 instructions: |
-  Implement object field access, array and string indexing, optional access, negative indices,
-  missing-field null behavior, and corresponding runtime errors.
+  Implement object-field access, array indexing, missing values, optional access, and negative
+  indices with jq error semantics. Gate with the VALUE-002 executing selector.
 acceptance: yes
-depends: value-001, core-001, parse-003
+depends: value-001
 state: pending
 scope: target
 
@@ -364,46 +384,47 @@ id: value-003
 summary: Implement slices and collection iteration.
 type: service
 kind: capability
-phase: 2
+phase: 4
 block: 13
-implements: FEATURE-Slices-And-Iteration.md
+implements: FEATURE-Slices-and-Iteration.md
 covers: VALUE-003
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52691
+size: 53521
 budget: over-target
-provides: array/string slices, array/object iteration, fractional bounds, out-of-range behavior
-consumes: field and index access, generator core
+provides: array/string slices, array/object iteration, fractional bounds
+consumes: field and index access
 instructions: |
-  Implement array and string slices, object and array iteration, optional iteration, fractional
-  bounds, negative bounds, and out-of-range behavior.
+  Implement array and string slices, array/object iteration, optional iteration, fractional and
+  out-of-range bounds. Gate with the VALUE-003 executing selector.
 acceptance: yes
 depends: value-002
 state: pending
 scope: target
 
-## story 17: Implement type and numeric primitive builtins.
+## story 17: Implement type, length, numeric predicates, and math primitives.
 id: value-004
-summary: Implement type and numeric primitive builtins.
+summary: Implement type, length, numeric predicates, and math primitives.
 type: service
 kind: capability
-phase: 2
+phase: 4
 block: 14
-implements: FEATURE-Type-And-Numeric-Primitives.md
+implements: FEATURE-Type-and-Numeric-Builtins.md
 covers: VALUE-004
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52536
+size: 55962
 budget: over-target
-provides: type, length, utf8bytelength, numeric predicates, conversions, arithmetic math primitives
-consumes: value model, comparison semantics
+provides: type, length, utf8bytelength, numeric predicates, conversion, arithmetic math
+consumes: jq value model, field and index access
 instructions: |
-  Implement type, length, UTF-8 byte length, numeric predicates, tonumber/toboolean, floor,
-  sqrt, and the standard mathematical primitives required by the corpus.
+  Implement type and length behavior, UTF-8 byte length, numeric predicates, tonumber,
+  tostring-related conversion, arithmetic primitives, and required math functions. Gate with the
+  VALUE-004 executing selector.
 acceptance: yes
-depends: value-001, value-002, core-004
+depends: value-003
 state: pending
 scope: target
 
@@ -412,22 +433,22 @@ id: flow-001
 summary: Implement arithmetic and structural operators.
 type: service
 kind: capability
-phase: 3
+phase: 5
 block: 15
-implements: FEATURE-Arithmetic-And-Structural-Operators.md
+implements: FEATURE-Arithmetic-Operators.md
 covers: FLOW-001
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52492
+size: 53481
 budget: over-target
-provides: plus, minus, multiply, divide, modulo, negation, recursive merge, string operations
-consumes: value model, comparison semantics
+provides: plus, minus, multiply, divide, modulo, negation, recursive merge, repetition
+consumes: type and numeric builtins
 instructions: |
-  Implement typed arithmetic and structural operators, including recursive object merge, string
-  repetition and splitting, array subtraction, division-by-zero errors, and unary negation.
+  Implement numeric, array, string, and object arithmetic; recursive object merge; string
+  repetition and splitting; unary negation and division errors. Gate with the FLOW-001 selector.
 acceptance: yes
-depends: value-004, core-002, core-003
+depends: value-004
 state: pending
 scope: target
 
@@ -436,22 +457,22 @@ id: flow-002
 summary: Implement boolean and alternative operators.
 type: service
 kind: capability
-phase: 3
+phase: 5
 block: 16
-implements: FEATURE-Boolean-And-Alternative-Operators.md
+implements: FEATURE-Boolean-and-Alternative-Operators.md
 covers: FLOW-002
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52456
+size: 53421
 budget: over-target
 provides: and, or, not, defined-or, defined-or assignment
-consumes: truthiness, generator core, arithmetic operators
+consumes: truthiness and generator evaluation
 instructions: |
-  Implement Boolean operators, not, defined-or fallback semantics, and //= while preserving
-  generator multiplicity and short-circuit behavior.
+  Implement boolean operators, not, //, and //= with jq generator filtering and short-circuit
+  behavior. Gate with the FLOW-002 executing selector.
 acceptance: yes
-depends: core-004, flow-001
+depends: flow-001
 state: pending
 scope: target
 
@@ -460,22 +481,22 @@ id: flow-003
 summary: Implement conditionals and exception flow.
 type: service
 kind: capability
-phase: 3
+phase: 5
 block: 17
-implements: FEATURE-Conditionals-And-Exception-Flow.md
+implements: FEATURE-Conditionals-and-Exceptions.md
 covers: FLOW-003
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52480
+size: 59092
 budget: over-target
-provides: if/then/elif/else/end, try/catch, optional operators
-consumes: truthiness, runtime error flow
+provides: if, elif, else, try, catch, optional branches
+consumes: boolean and alternative operators
 instructions: |
-  Implement branching over generator-valued conditions, optional else branches, elif chains,
-  try/catch propagation, and optional error suppression.
+  Implement branching over generator results, optional else behavior, and exception flow with
+  correct partial-output and backtracking semantics. Gate with the FLOW-003 executing selector.
 acceptance: yes
-depends: core-003, core-004, flow-002
+depends: flow-002
 state: pending
 scope: target
 
@@ -484,142 +505,142 @@ id: flow-004
 summary: Implement lexical labels and breaks.
 type: service
 kind: capability
-phase: 3
+phase: 5
 block: 18
-implements: FEATURE-Labels-And-Breaks.md
+implements: FEATURE-Labels-and-Breaks.md
 covers: FLOW-004
 context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 58046
+size: 59009
 budget: over-target
-provides: label, break, lexical generator termination
-consumes: parser declarations, runtime error flow, generator core
+provides: label and break
+consumes: conditionals and exception flow
 instructions: |
-  Implement lexically scoped labels and break control so the correct enclosing generator stops
-  without leaking unrelated outputs. Reject breaks without visible labels.
+  Implement lexically scoped labels and breaks that terminate only the matching generator
+  context, including invalid-label compile behavior. Gate with the FLOW-004 executing selector.
 acceptance: yes
-depends: parse-004, core-003, flow-003
+depends: flow-003
 state: pending
 scope: target
 
-## story 22: Implement lexical variable bindings.
-id: func-001
-summary: Implement lexical variable bindings.
-type: service
-kind: capability
-phase: 3
-block: 19
-implements: FEATURE-Variable-Bindings.md
-covers: FUNC-001
-context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 58069
-budget: over-target
-provides: as bindings, nested scope, shadowing, keyword identifiers, value lifetime
-consumes: parser, generator evaluator
-instructions: |
-  Implement lexical as bindings, nested scope, shadowing, keyword variable names, and binding
-  lifetime across generator backtracking.
-acceptance: yes
-depends: parse-004, core-002
-state: pending
-scope: target
-
-## story 23: Implement reductions and iteration controls.
+## story 22: Implement reductions and iteration controls.
 id: flow-005
 summary: Implement reductions and iteration controls.
 type: service
 kind: capability
-phase: 3
-block: 20
-implements: FEATURE-Reductions-And-Iteration-Control.md
+phase: 5
+block: 19
+implements: FEATURE-Reductions-and-Iteration-Control.md
 covers: FLOW-005
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54911
+size: 55949
 budget: over-target
-provides: reduce, foreach, range, limit, skip, first, last, nth
-consumes: generator core, labels, bindings
+provides: reduce, foreach, limit, skip, first, last, nth, range
+consumes: labels and breaks, generator evaluation
 instructions: |
-  Implement reduce and foreach state transitions plus range, limit, skip, first, last, and nth.
-  Preserve Cartesian argument evaluation, backtracking, extraction, and label-based termination.
+  Implement reduce and foreach state transitions plus limit, skip, first, last, nth, and
+  generator-preserving range behavior. Gate with the FLOW-005 executing selector.
 acceptance: yes
-depends: core-002, flow-004, func-001
+depends: flow-004
 state: pending
 scope: target
 
-## story 24: Implement filter and value function parameters.
-id: func-002
-summary: Implement filter and value function parameters.
-type: service
-kind: capability
-phase: 3
-block: 21
-implements: FEATURE-Function-Parameters.md
-covers: FUNC-002
-context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 58064
-budget: over-target
-provides: filter parameters, value parameters, multiple arities, closures, Cartesian arguments
-consumes: lexical bindings, generator evaluator
-instructions: |
-  Implement user-defined filter and value parameters, multiple arities, closures, and repeated
-  argument evaluation under jq's callback/filter parameter semantics.
-acceptance: yes
-depends: func-001, core-002
-state: pending
-scope: target
-
-## story 25: Implement function definitions, scope, and recursion.
-id: func-003
-summary: Implement function definitions, scope, and recursion.
-type: service
-kind: capability
-phase: 3
-block: 22
-implements: FEATURE-Function-Definitions-And-Recursion.md
-covers: FUNC-003
-context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
-stack: common.md, python.md
-stack_mode: consumer
-size: 58081
-budget: over-target
-provides: def declarations, redefinitions, lexical function scope, recursion, forward/self references
-consumes: parser, function parameters, bindings
-instructions: |
-  Implement definitions and lexical function scope, redefinitions by arity, self-recursion, and
-  the function visibility rules settled by the parser and manual.
-acceptance: yes
-depends: parse-004, func-001, func-002
-state: pending
-scope: target
-
-## story 26: Implement recursive generators.
+## story 23: Implement recursive generators.
 id: flow-006
 summary: Implement recursive generators.
 type: service
 kind: capability
-phase: 3
-block: 23
+phase: 5
+block: 20
 implements: FEATURE-Recursive-Generators.md
 covers: FLOW-006
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54889
+size: 55923
 budget: over-target
 provides: while, until, repeat, recurse, recursive descent
-consumes: generator core, function definitions, conditionals
+consumes: reductions and iteration controls
 instructions: |
-  Implement while, until, repeat, recurse, recursive descent, and safe recursive generator
-  termination with the stream semantics specified by the manual.
+  Implement while, until, repeat, recurse, recursive descent, termination, and generator
+  ordering without incorrect recursion cutoffs. Gate with the FLOW-006 executing selector.
 acceptance: yes
-depends: flow-003, flow-005, func-003
+depends: flow-005
+state: pending
+scope: target
+
+## story 24: Implement lexical variable bindings.
+id: func-001
+summary: Implement lexical variable bindings.
+type: service
+kind: capability
+phase: 6
+block: 21
+implements: FEATURE-Variable-Bindings.md
+covers: FUNC-001
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 59106
+budget: over-target
+provides: as bindings, lexical scope, shadowing, keyword identifiers
+consumes: recursive generators
+instructions: |
+  Implement as bindings, nested lexical scope, shadowing, keyword names, and value lifetime.
+  Gate with the FUNC-001 executing selector.
+acceptance: yes
+depends: flow-006
+state: pending
+scope: target
+
+## story 25: Implement filter and value function parameters.
+id: func-002
+summary: Implement filter and value function parameters.
+type: service
+kind: capability
+phase: 6
+block: 22
+implements: FEATURE-Function-Parameters.md
+covers: FUNC-002
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 59001
+budget: over-target
+provides: filter parameters, value parameters, multiple arities, Cartesian arguments
+consumes: lexical variable bindings
+instructions: |
+  Implement user-defined filter and value parameters, multiple arities, closures, callback
+  evaluation, and Cartesian argument streams. Gate with the FUNC-002 executing selector.
+acceptance: yes
+depends: func-001
+state: pending
+scope: target
+
+## story 26: Implement function definitions, scope, and recursion.
+id: func-003
+summary: Implement function definitions, scope, and recursion.
+type: service
+kind: capability
+phase: 6
+block: 23
+implements: FEATURE-Function-Definitions.md
+covers: FUNC-003
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: common.md, python.md
+stack_mode: consumer
+size: 58989
+budget: over-target
+provides: def, function redefinition, recursion, forward and self references
+consumes: function parameters
+instructions: |
+  Implement definitions, lexical function scope, arity-specific redefinition, recursion, and
+  self/forward references as specified. Gate with the FUNC-003 executing selector.
+acceptance: yes
+depends: func-002
 state: pending
 scope: target
 
@@ -628,22 +649,22 @@ id: func-004
 summary: Implement destructuring patterns and alternatives.
 type: service
 kind: capability
-phase: 3
+phase: 6
 block: 24
-implements: FEATURE-Destructuring-Patterns.md
+implements: FEATURE-Destructuring.md
 covers: FUNC-004
 context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 58115
+size: 58968
 budget: over-target
 provides: array/object patterns, missing bindings, ?// alternatives
-consumes: lexical bindings, generator errors, function scope
+consumes: function definitions and lexical bindings
 instructions: |
-  Implement array and object destructuring, null bindings for missing members, and ?// fallback
-  alternatives including retry after downstream errors.
+  Implement array/object destructuring, missing bindings, ?// alternatives, fallback binding
+  behavior, and error-driven alternative selection. Gate with the FUNC-004 executing selector.
 acceptance: yes
-depends: func-001, flow-003, parse-004
+depends: func-003
 state: pending
 scope: target
 
@@ -652,22 +673,22 @@ id: path-001
 summary: Implement path discovery and projection.
 type: service
 kind: capability
-phase: 4
+phase: 7
 block: 25
 implements: FEATURE-Path-Discovery.md
 covers: PATH-001
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54859
+size: 55828
 budget: over-target
 provides: path, paths, pick, path projections
-consumes: accessors, iteration, generator evaluator
+consumes: destructuring and accessors
 instructions: |
-  Implement exact and pattern path discovery, paths, path filters, and pick projections while
-  preserving path ordering and invalid-path errors.
+  Implement exact and iterated path discovery, paths filtering, and pick projections while
+  preserving path ordering and invalid-path errors. Gate with the PATH-001 executing selector.
 acceptance: yes
-depends: value-003, func-004, flow-006
+depends: func-004
 state: pending
 scope: target
 
@@ -676,22 +697,22 @@ id: path-002
 summary: Implement path access and mutation primitives.
 type: service
 kind: capability
-phase: 4
+phase: 7
 block: 26
 implements: FEATURE-Path-Primitives.md
 covers: PATH-002
-context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54841
+size: 53423
 budget: over-target
 provides: getpath, setpath, delpaths
-consumes: path discovery, immutable value model
+consumes: path discovery and projection
 instructions: |
-  Implement getpath, setpath, and delpaths with nested object/array creation, deletion,
-  invalid-path handling, negative-index rules, and depth limits.
+  Implement nested path reads, creation and replacement, deletion, array expansion, invalid path
+  handling, and depth limits for getpath, setpath, and delpaths. Gate with PATH-002.
 acceptance: yes
-depends: path-001, value-002
+depends: path-001
 state: pending
 scope: target
 
@@ -700,22 +721,22 @@ id: path-003
 summary: Implement deletion and assignment operators.
 type: service
 kind: capability
-phase: 4
+phase: 7
 block: 27
-implements: FEATURE-Deletion-And-Assignment.md
+implements: FEATURE-Assignment-Operators.md
 covers: PATH-003
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54894
+size: 55804
 budget: over-target
-provides: del, =, |=, +=, -=, *=, /=, %=, //=
-consumes: path primitives, arithmetic operators, generator evaluator
+provides: del, =, |=, arithmetic assignments, defined-or assignment
+consumes: getpath, setpath, delpaths
 instructions: |
-  Implement immutable deletion, plain assignment, update assignment, arithmetic assignment,
-  defined-or assignment, multi-path updates, and first-result update semantics.
+  Implement immutable deletion, plain and update assignment, arithmetic assignment, multi-path
+  updates, and empty-update deletion semantics. Gate with the PATH-003 executing selector.
 acceptance: yes
-depends: path-002, flow-001, flow-002
+depends: path-002
 state: pending
 scope: target
 
@@ -724,20 +745,20 @@ id: path-004
 summary: Implement complex assignment edge cases.
 type: service
 kind: capability
-phase: 4
+phase: 7
 block: 28
-implements: FEATURE-Complex-Assignment-Edges.md
+implements: FEATURE-Complex-Assignments.md
 covers: PATH-004
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52482
+size: 53401
 budget: over-target
-provides: iterated paths, empty updates, array expansion, invalid paths, assignment depth limits
-consumes: assignment operators, path primitives
+provides: iterated assignment edge cases, array expansion, invalid and deep paths
+consumes: deletion and assignment operators
 instructions: |
-  Complete iterated path assignments, empty-update deletion, array expansion, invalid and
-  fractional/NaN indices, negative-index behavior, and depth-limit protections.
+  Handle iterated paths, empty updates, array expansion, invalid paths, negative and NaN indices,
+  and path/depth limits. Gate with the PATH-004 executing selector.
 acceptance: yes
 depends: path-003
 state: pending
@@ -748,46 +769,46 @@ id: data-001
 summary: Implement collection transformation builtins.
 type: service
 kind: capability
-phase: 4
+phase: 8
 block: 29
-implements: FEATURE-Collection-Transformations.md
+implements: FEATURE-Collection-Transforms.md
 covers: DATA-001
 context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54819
+size: 55883
 budget: over-target
 provides: map, map_values, select, add, flatten, transpose, combinations, walk
-consumes: generator evaluator, operators, path mutation
+consumes: assignment operators, generator evaluation
 instructions: |
-  Implement collection transformation builtins and their generator behavior, including map,
-  map_values, select, add, flatten, transpose, combinations, and recursive walk.
+  Implement collection transformation builtins and their generator, empty, recursion, and
+  mutation semantics. Gate with the DATA-001 executing selector.
 acceptance: yes
-depends: flow-005, path-003, value-004
+depends: path-004
 state: pending
 scope: target
 
-## story 33: Implement sorting and grouping builtins.
+## story 33: Implement sorting, grouping, and extrema builtins.
 id: data-002
-summary: Implement sorting and grouping builtins.
+summary: Implement sorting, grouping, and extrema builtins.
 type: service
 kind: capability
-phase: 4
+phase: 8
 block: 30
-implements: FEATURE-Sorting-And-Grouping.md
+implements: FEATURE-Sorting-and-Grouping.md
 covers: DATA-002
-context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54799
+size: 55871
 budget: over-target
-provides: sort, sort_by, group_by, unique, unique_by, min, max, keyed variants
-consumes: comparison and ordering semantics, collection transformations
+provides: sort, sort_by, group_by, unique, unique_by, min, max, keyed extrema
+consumes: jq comparison and generator semantics
 instructions: |
-  Implement sorting, keyed sorting, grouping, uniqueness, minimum, maximum, and keyed variants
-  using jq's structural ordering and stable generator behavior.
+  Implement sorting and grouping by jq ordering, stable keyed projections, uniqueness, and
+  minimum/maximum variants. Gate with the DATA-002 executing selector.
 acceptance: yes
-depends: core-004, data-001
+depends: data-001
 state: pending
 scope: target
 
@@ -796,22 +817,22 @@ id: data-003
 summary: Implement object-entry and containment builtins.
 type: service
 kind: capability
-phase: 4
+phase: 8
 block: 31
-implements: FEATURE-Object-Entries-And-Containment.md
+implements: FEATURE-Object-and-Containment-Builtins.md
 covers: DATA-003
-context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54815
+size: 55890
 budget: over-target
 provides: keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries
-consumes: value access, equality, collection transformations
+consumes: jq value model and comparison semantics
 instructions: |
-  Implement object and array key utilities, containment and inverse containment, membership,
-  entry conversions, and with_entries including supported key aliases.
+  Implement object/array key utilities, containment relations, entry conversion, and entry
+  transformations with jq ordering and structural equality. Gate with DATA-003.
 acceptance: yes
-depends: value-002, core-004, data-001
+depends: data-002
 state: pending
 scope: target
 
@@ -820,22 +841,22 @@ id: data-004
 summary: Implement index and membership utilities.
 type: service
 kind: capability
-phase: 4
+phase: 8
 block: 32
-implements: FEATURE-Index-And-Membership-Utilities.md
+implements: FEATURE-Index-and-Membership.md
 covers: DATA-004
 context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54805
+size: 55795
 budget: over-target
-provides: indices, index, rindex, bsearch, all, any, isempty, SQL IN
-consumes: comparison semantics, generator evaluator
+provides: indices, index, rindex, bsearch, all, any, isempty, IN
+consumes: collection and comparison builtins
 instructions: |
-  Implement string and array index searches, binary search, all/any short-circuiting, isempty,
-  and SQL-style IN operators over generator streams.
+  Implement string/array indexing, binary search, all/any short-circuiting, isempty, and SQL-style
+  IN utilities with generator arguments. Gate with the DATA-004 executing selector.
 acceptance: yes
-depends: core-004, flow-005, data-003
+depends: data-003
 state: pending
 scope: target
 
@@ -844,22 +865,22 @@ id: text-001
 summary: Implement string manipulation builtins.
 type: service
 kind: capability
-phase: 4
+phase: 9
 block: 33
-implements: FEATURE-String-Manipulation.md
+implements: FEATURE-String-Builtins.md
 covers: TEXT-001
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54845
+size: 55942
 budget: over-target
-provides: trim, ltrim, rtrim, prefix/suffix, case conversion, explode, implode, split, join, interpolation
-consumes: string values, generator evaluator
+provides: trimming, prefixes, suffixes, case conversion, explode, implode, split, join
+consumes: jq value model and generator evaluation
 instructions: |
-  Implement string trimming, prefix/suffix operations, ASCII case conversion, codepoint
-  explode/implode, split/join, and string interpolation.
+  Implement trimming, prefix/suffix operations, ASCII case conversion, codepoint
+  explode/implode, split, join, and interpolation-compatible string behavior. Gate with TEXT-001.
 acceptance: yes
-depends: value-004, parse-002, core-002
+depends: data-004
 state: pending
 scope: target
 
@@ -868,22 +889,22 @@ id: text-002
 summary: Implement JSON and output format filters.
 type: service
 kind: capability
-phase: 4
+phase: 9
 block: 34
-implements: FEATURE-JSON-And-Output-Formats.md
+implements: FEATURE-Output-Formats.md
 covers: TEXT-002
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52345
+size: 55893
 budget: over-target
 provides: tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d
-consumes: value model, string manipulation
+consumes: string manipulation builtins and JSON serializer
 instructions: |
-  Implement JSON conversion and all required format filters using standard-library escaping,
-  encoding, and decoding rules, including formatted interpolation behavior.
+  Implement JSON conversion and all required format filters, escaping, encoding, decoding, and
+  interpolation behavior. Gate with the TEXT-002 executing selector.
 acceptance: yes
-depends: value-001, text-001
+depends: text-001
 state: pending
 scope: target
 
@@ -892,22 +913,22 @@ id: text-003
 summary: Implement regular-expression filters.
 type: service
 kind: capability
-phase: 4
+phase: 9
 block: 35
 implements: FEATURE-Regular-Expressions.md
 covers: TEXT-003
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52368
+size: 55897
 budget: over-target
-provides: test, match, capture, scan, split, splits, sub, gsub
-consumes: string values, interpolation, generator evaluator
+provides: test, match, capture, scan, splits, regex split, sub, gsub
+consumes: string manipulation builtins
 instructions: |
-  Implement regex filters with standard-library regex support, required flags, named and unnamed
-  captures, offsets, lengths, streams, splitting, substitution, and global substitution.
+  Implement the standard-library regex surface required by the corpus, flags, captures, offsets,
+  streams, splitting, substitution, and global substitution. Gate with TEXT-003.
 acceptance: yes
-depends: text-001, parse-002, core-002
+depends: text-002
 state: pending
 scope: target
 
@@ -916,22 +937,22 @@ id: text-004
 summary: Implement date and time filters.
 type: service
 kind: capability
-phase: 4
+phase: 9
 block: 36
-implements: FEATURE-Date-And-Time-Filters.md
+implements: FEATURE-Date-and-Time.md
 covers: TEXT-004
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 54773
+size: 55892
 budget: over-target
-provides: fromdate, todate, strptime, strftime, gmtime, localtime, mktime
-consumes: value conversion, string values
+provides: fromdateiso8601, todateiso8601, strptime, strftime, gmtime, localtime, mktime
+consumes: jq string and numeric values
 instructions: |
-  Implement UTC ISO date conversion and the supplied low-level date/time filters using Python
-  datetime and time facilities, preserving jq's broken-down time representation.
+  Implement UTC ISO date conversion and required low-level date/time filters using the Python
+  standard library, including supplied invalid-input behavior. Gate with TEXT-004.
 acceptance: yes
-depends: value-004, text-001
+depends: text-003
 state: pending
 scope: target
 
@@ -940,46 +961,46 @@ id: io-001
 summary: Implement input stream controls.
 type: service
 kind: capability
-phase: 4
+phase: 10
 block: 37
 implements: FEATURE-Input-Streams.md
 covers: IO-001
 context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52327
+size: 53359
 budget: over-target
 provides: input, inputs, input_filename, input_line_number
-consumes: JSON process boundary, generator evaluator
+consumes: executable JSON input boundary
 instructions: |
-  Implement input and inputs against the fixed stdin interface, together with input filename and
-  line number behavior available within that interface.
+  Implement input and inputs over the fixed stdin interface and the available filename and line
+  number metadata. Gate with the IO-001 executing selector.
 acceptance: yes
-depends: exec-003, core-001
+depends: text-004
 state: pending
 scope: target
 
-## story 41: Implement diagnostics and stderr filters.
+## story 41: Implement diagnostics and stderr output filters.
 id: io-002
-summary: Implement diagnostics and stderr filters.
+summary: Implement diagnostics and stderr output filters.
 type: service
 kind: capability
-phase: 4
+phase: 10
 block: 38
-implements: FEATURE-Diagnostics-And-Stderr.md
+implements: FEATURE-Diagnostics.md
 covers: IO-002
-context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 52347
+size: 55824
 budget: over-target
 provides: debug, stderr, halt_error
-consumes: process exit contract, JSON serialization
+consumes: process exit and diagnostic behavior
 instructions: |
-  Implement debug, stderr, halt_error, and their output-channel and exit-code semantics. Keep
-  diagnostics out of stdout and preserve partial output behavior.
+  Implement debug, stderr, and halt_error channel behavior, preserving stdout values and exit
+  status semantics. Gate with the IO-002 executing selector.
 acceptance: yes
-depends: exec-002, exec-003, core-003
+depends: io-001
 state: pending
 scope: target
 
@@ -988,70 +1009,70 @@ id: io-003
 summary: Implement streaming transformations.
 type: service
 kind: capability
-phase: 4
+phase: 10
 block: 39
-implements: FEATURE-Streaming-Transformations.md
+implements: FEATURE-Streaming.md
 covers: IO-003
 context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 55187
+size: 55987
 budget: over-target
 provides: tostream, fromstream, truncate_stream
-consumes: generator evaluator, path operations
+consumes: generator evaluation and input stream controls
 instructions: |
-  Implement jq streaming representations and tostream, fromstream, and truncate_stream over the
-  fixed non-streaming process boundary.
+  Implement jq streaming value representations, truncation, reconstruction, and round-trip
+  behavior required by the corpus. Gate with the IO-003 executing selector.
 acceptance: yes
-depends: path-001, core-001, data-001
+depends: io-002
 state: pending
 scope: target
 
-## story 43: Provide scoped conformance verification.
+## story 43: Provide scoped conformance verification for implementation slices.
 id: conf-002
-summary: Provide scoped conformance verification.
+summary: Provide scoped conformance verification for implementation slices.
 type: service
 kind: test harness
-phase: 5
+phase: 10
 block: 40
-implements: FEATURE-Scoped-Conformance-Verification.md
+implements: FEATURE-Scoped-Conformance.md
 covers: CONF-002
 context: run_conformance.py, jq.test, exclusions.txt, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 25133
-provides: scoped conformance execution contract
-consumes: executable jq, staged conformance assets
+size: 24928
+provides: executing scoped conformance gates
+consumes: ./jq -c program execution
 instructions: |
-  Ensure each implementation story can invoke the supplied runner with a construct-specific
-  --select slice, JQ set to the candidate executable, --json enabled, and assertions on parsed
-  summary state with nonzero selected case count and zero failures/errors.
+  Ensure each implementation story invokes the supplied runner with JQ supplied through the
+  inherited environment and a selector that executes a non-empty slice of its owned constructs.
+  Scoped checks must assert parsed failure/error tallies and exit status, never enumerate-only modes.
 acceptance: yes
-depends: exec-003, parse-004, core-004, value-004, flow-006, func-004, path-004, data-004, text-004, io-003, conf-001
+depends: io-003, conf-001
 state: pending
-scope: both
+scope: target
 
 ## story 44: Pass the complete jq conformance corpus.
 id: conf-003
 summary: Pass the complete jq conformance corpus.
-type: service
+type: feature
 kind: test harness
-phase: 6
+phase: 11
 block: 41
-implements: FEATURE-Complete-Conformance-Verification.md
+implements: FEATURE-Complete-Conformance.md
 covers: CONF-003
 accepts: st-001
 context: full_test.sh, run_conformance.py, jq.test, exclusions.txt, ARCHITECTURE_compact.md
 stack: common.md, python.md
 stack_mode: consumer
-size: 25441
+size: 24838
 provides: complete conformance release verification
-consumes: executable jq, all interpreter capabilities, staged conformance assets
+consumes: ./jq -c program execution
 instructions: |
-  Run the supplied sources/full_test.sh as the sole terminal full-suite verification. Require the
-  executable interface check and a zero harness exit status. Do not filter, skip, reinterpret, or
-  edit the scoring assets.
+  Run the supplied sh sources/full_test.sh as the sole terminal whole-corpus acceptance. Print
+  captured stdout and stderr for diagnosis and assert only the completed suite's successful exit
+  status, with zero failed or errored cases as reported by the authoritative runner.
 acceptance: yes
 depends: architecture, exec-001, exec-002, exec-003, parse-001, parse-002, parse-003, parse-004, core-001, core-002, core-003, core-004, value-001, value-002, value-003, value-004, flow-001, flow-002, flow-003, flow-004, flow-005, flow-006, func-001, func-002, func-003, func-004, path-001, path-002, path-003, path-004, data-001, data-002, data-003, data-004, text-001, text-002, text-003, text-004, io-001, io-002, io-003, conf-001, conf-002
 state: pending
-scope: both
+scope: target

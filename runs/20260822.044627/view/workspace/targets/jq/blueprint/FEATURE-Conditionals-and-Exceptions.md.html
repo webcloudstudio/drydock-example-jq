@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Conditionals-and-Exceptions.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Conditionals-and-Exceptions.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Conditionals-and-Exceptions.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Conditionals and Exceptions</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq conditional branching, optional evaluation, try/catch, and runtime error propagation.</td></tr><tr><td>Depends On</td><td>FEATURE-Boolean-and-Alternative-Operators.md, FEATURE-Error-and-Optional-Evaluation.md</td></tr><tr><td>Provides</td><td>if, elif, else, try, catch, optional branches</td></tr><tr><td>Consumes</td><td>boolean and alternative operators, generator evaluation, runtime diagnostics</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This capability controls branching and exception flow across jq&#x27;s ordered generator streams.</p>
+<h2>Behavior</h2>
+<ul><li><code>if</code>, <code>elif</code>, and <code>else</code> evaluate branches according to jq false/null truthiness.</li><li>Multiple condition outputs independently select branches.</li><li>An omitted <code>else</code> behaves as the identity filter.</li><li><code>try EXP catch HANDLER</code> catches runtime errors and evaluates the handler with the error value.</li><li><code>try EXP</code> suppresses errors as <code>empty</code>.</li><li>The <code>?</code> suffix provides optional evaluation.</li><li>Outputs emitted before an uncaught runtime error remain on stdout and the process exits 5.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-003-conformance ===<br>Intent: Conditionals and exception handling produce the declared branch and error behavior. import json import os import subprocess</p>
+<p>env = {**os.environ, &quot;PATH&quot;: os.environ.get(&quot;PATH&quot;, &quot;&quot;)}</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;if . then \&quot;yes\&quot; else \&quot;no\&quot; end&quot;], input=&quot;false\n&quot;, capture_output=True, text=True, env=env, ) assert result.returncode == 0, result.returncode assert json.loads(result.stdout) == &quot;no&quot;</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;try error(\&quot;boom\&quot;) catch .&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=env, ) assert result.returncode == 0, result.returncode assert json.loads(result.stdout) == &quot;boom&quot; === END AC flow-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Compile errors must remain distinct from runtime errors.</li><li>Error messages are diagnostic only; acceptance relies on exit status and structured outputs.</li><li>Preserve partial output before an uncaught runtime failure.</li></ul></article>
+</main>
+</body>
+</html>

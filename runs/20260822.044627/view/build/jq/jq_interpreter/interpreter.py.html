@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/interpreter.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/interpreter.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/interpreter.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Application-facing interpreter orchestration.&quot;&quot;&quot;
+
+import json
+from collections.abc import Iterable, Iterator
+
+from .evaluator import evaluate
+from .parser import parse
+from .runtime import JsonValue
+
+
+class Interpreter:
+    &quot;&quot;&quot;Compile once, then evaluate each JSON input in order.&quot;&quot;&quot;
+
+    def __init__(self, program: str) -&gt; None:
+        self._compiled = parse(program)
+
+    def run(self, inputs: Iterable[JsonValue]) -&gt; Iterator[JsonValue]:
+        &quot;&quot;&quot;Yield every output, preserving input and generator ordering.&quot;&quot;&quot;
+        for value in inputs:
+            yield from evaluate(self._compiled, value)
+
+
+def parse_input(line: str) -&gt; JsonValue:
+    &quot;&quot;&quot;Decode one JSON input record.&quot;&quot;&quot;
+    return json.loads(line.lstrip(&quot;\ufeff&quot;), parse_constant=_parse_json_constant)
+
+
+def _parse_json_constant(value: str) -&gt; float:
+    &quot;&quot;&quot;Decode jq&#x27;s accepted non-standard numeric constants.&quot;&quot;&quot;
+    return {&quot;NaN&quot;: float(&quot;nan&quot;), &quot;Infinity&quot;: float(&quot;inf&quot;),
+            &quot;-Infinity&quot;: float(&quot;-inf&quot;)}[value]
+</pre></article>
+</main>
+</body>
+</html>

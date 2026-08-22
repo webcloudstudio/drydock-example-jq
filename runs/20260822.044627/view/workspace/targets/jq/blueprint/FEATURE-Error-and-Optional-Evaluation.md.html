@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Error-and-Optional-Evaluation.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Error-and-Optional-Evaluation.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Error-and-Optional-Evaluation.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Error and Optional Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq runtime errors, optional evaluation, suppression, and try/catch behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Composition.md</td></tr><tr><td>Provides</td><td>empty, error, runtime failure, optional operator, try/catch</td></tr><tr><td>Consumes</td><td>ordered generator evaluation</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Runtime errors propagate with exit status 5 after preserving values already emitted. <code>empty</code> emits no values. The optional suffix suppresses errors, while <code>try ... catch ...</code> evaluates a handler with the error value.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-003-conformance ===<br>Intent: Runtime errors, optional evaluation, and try/catch behave as declared.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>optional = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.foo?&quot;], input=&quot;1\n&quot;, capture_output=True, text=True, ) assert optional.returncode == 0 assert optional.stdout.splitlines() == [&quot;null&quot;]</p>
+<p>caught = subprocess.run( [&quot;./jq&quot;, &#x27;-c&#x27;, &#x27;try error(&quot;x&quot;) catch .&#x27;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert caught.returncode == 0 assert caught.stdout.splitlines() == [&#x27;&quot;x&quot;&#x27;] === END AC core-003-conformance ===</p>
+<p>=== AC core-003-runtime-contract ===<br>Intent: Compile errors, runtime errors, and successful execution retain their distinct exit statuses.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>valid = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=&quot;1\n&quot;, capture_output=True, text=True, ) compile_error = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;[&quot;], input=&quot;1\n&quot;, capture_output=True, text=True, ) runtime_error = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;1\n&quot;, capture_output=True, text=True, ) assert valid.returncode == 0 assert compile_error.returncode == 3 assert runtime_error.returncode == 5 === END AC core-003-runtime-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Diagnostics are written to stderr and are not used as the behavioral oracle.</li><li>Partial stdout emitted before a runtime error is preserved.</li><li>Optional evaluation must not suppress compile-time errors.</li></ul></article>
+</main>
+</body>
+</html>

@@ -3,19 +3,19 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Provide jq regular-expression matching, scanning, splitting, and substitution filters. |
-| Depends On  | FEATURE-String-Manipulation.md, FEATURE-Literals-And-Interpolation.md, FEATURE-Composition-And-Cartesian-Evaluation.md |
-| Provides    | test, match, capture, scan, split, splits, sub, gsub |
-| Consumes    | string values, interpolation, generator evaluation |
+| Description | Provide jq regular-expression matching and substitution filters. |
+| Depends On  | FEATURE-Output-Formats.md |
+| Provides    | test, match, capture, scan, splits, regex split, sub, gsub |
+| Consumes    | string manipulation builtins |
 
 ## Intent
 
-Implement the regex filter family with Python standard-library regular expressions. Support required flags, named and unnamed captures, Unicode code-point offsets and lengths, streams, splitting, substitution, and global substitution.
+Implement the standard-library regular-expression surface required by the corpus, including supported flags, named and unnamed captures, Unicode offsets, streaming scans, splitting, and substitutions.
 
 ## Programmatic Acceptance
 
 === AC text-003-conformance ===
-Intent: The implementation passes the authoritative regular-expression corpus slice.
+Intent: The authoritative corpus cases covering regular-expression filters pass.
 Suite: scoped
 Requires: executable=python3; scope=test
 
@@ -24,9 +24,9 @@ import os
 import subprocess
 import sys
 
-SELECT = r"test\(|match\(|capture\(|scan\(|sub\(|gsub\("
+selector = r"test\(|match\(|capture\(|scan\(|sub\(|gsub\("
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", SELECT, "--json"],
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
     capture_output=True,
     text=True,
     env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
@@ -41,12 +41,31 @@ assert summary["error"] == 0
 assert result.returncode == 0
 === END AC text-003-conformance ===
 
+=== AC text-003-execution ===
+Intent: The regex selector executes a non-empty corpus slice through jq.
+import json
+import os
+import subprocess
+import sys
+
+selector = r"test\(|match\(|capture\(|scan\(|sub\(|gsub\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+report = json.loads(result.stdout)
+assert report["summary"]["pass"] > 0
+assert result.returncode == 0
+=== END AC text-003-execution ===
+
 ## User Acceptance
 
 - None.
 
 ## Guardrails
 
-- Use only standard-library regex facilities.
-- Preserve stream multiplicity and match ordering.
-- Never compare or gate on diagnostic wording.
+- Use only the Python standard library.
+- Preserve generator multiplicity and match ordering.
+- Keep diagnostics on stderr and do not alter staged sources.

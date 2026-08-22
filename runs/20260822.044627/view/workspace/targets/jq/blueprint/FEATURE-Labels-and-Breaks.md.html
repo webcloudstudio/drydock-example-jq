@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Labels and Breaks</h1>
-<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements lexically scoped labels and generator termination through break expressions.</td></tr><tr><td>Depends On</td><td>FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Conditionals-And-Exception-Flow.md</td></tr><tr><td>Provides</td><td>label, break</td></tr><tr><td>Consumes</td><td>parsed declarations, runtime error flow, generator core</td></tr></tbody></table></div>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define lexically scoped jq labels and break expressions for terminating generators.</td></tr><tr><td>Depends On</td><td>FEATURE-Conditionals-and-Exceptions.md</td></tr><tr><td>Provides</td><td>label and break</td></tr><tr><td>Consumes</td><td>conditionals and exception flow, ordered generator evaluation</td></tr></tbody></table></div>
 <h2>Intent</h2>
-<p>Implement jq&#x27;s lexical <code>label $name | ... break $name ...</code> control mechanism. A break terminates the matching enclosing generator and behaves as though that label expression produced <code>empty</code>.</p>
+<p>This capability implements lexical control transfer from <code>break $label</code> to its matching visible <code>label $label</code>.</p>
 <h2>Behavior</h2>
-<ul><li>Labels bind only within their lexical body.</li><li><code>break $name</code> terminates the nearest visible matching label.</li><li>Outputs produced before the break are retained in order.</li><li>Breaks do not leak into unrelated generators or labels.</li><li>A break without a visible label is rejected at compile time.</li><li>Labels and breaks work inside iteration, reductions, conditionals, and nested pipelines.</li></ul>
+<ul><li><code>label $name | EXP</code> establishes a lexical break target.</li><li><code>break $name</code> terminates the nearest matching labeled generator and produces no further values from it.</li><li>Breaks do not escape their lexical label or affect unrelated generators.</li><li>A break without a visible matching label is rejected at compile time with exit status 3.</li><li>Labels preserve output ordering for values produced before the break.</li></ul>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC flow-004-conformance ===<br>Intent: The labels and breaks implementation passes every selected conformance case containing label or break syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
-<p>import json import os import subprocess import sys</p>
-<p>select = r&quot;label|break&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-004-conformance ===</p>
+<p>=== AC flow-004-conformance ===<br>Intent: Labels terminate generators at their matching break and invalid labels fail at compile time.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;label $out | (1, 2, break $out, 3)&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 assert result.stdout.splitlines() == [&quot;1&quot;, &quot;2&quot;]</p>
+<p>invalid = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;break $missing&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert invalid.returncode == 3 === END AC flow-004-conformance ===</p>
 <h2>User Acceptance</h2>
 <ul><li>None.</li></ul>
 <h2>Guardrails</h2>
-<ul><li>Enforce lexical visibility during compilation.</li><li>Terminate only the matching label scope.</li><li>Preserve outputs emitted before termination and generator ordering.</li></ul></article>
+<ul><li>Break targets are lexical, not dynamically searched.</li><li>A break must not leak values after its matching label terminates.</li><li>Invalid labels must be compile failures, never runtime failures.</li></ul></article>
 </main>
 </body>
 </html>

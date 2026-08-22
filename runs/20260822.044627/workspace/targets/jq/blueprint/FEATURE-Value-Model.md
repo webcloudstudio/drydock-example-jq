@@ -3,23 +3,19 @@
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Defines the immutable jq value model, numeric behavior, special numbers, and JSON conversion support. |
-| Depends On  | ARCHITECTURE.md |
-| Provides    | null, booleans, numbers, strings, arrays, objects, NaN, infinities, numeric literal preservation |
-| Consumes    | interpreter architecture, standard-library numeric and JSON facilities |
+| Description | Defines the internal representation and serialization of jq values, including special numbers. |
+| Depends On  | FEATURE-Truthiness-and-Comparison.md |
+| Provides    | null, booleans, numbers, strings, arrays, objects, NaN, infinities |
+| Consumes    | truthiness, equality, and ordering |
 
-## Scope and Behavior
+## Value Contract
 
-The implementation represents jq null, booleans, numbers, strings, arrays, and objects without third-party dependencies. Values are treated immutably by evaluation and assignment operations.
-
-Numbers support ordinary finite values, NaN, positive infinity, and negative infinity where jq exposes them. Numeric literals retain the precision and representation required by the corpus when no arithmetic conversion occurs; arithmetic may use the implementation's floating-point representation as specified by the source.
-
-JSON conversion must support the corpus's special-number behavior and compact serialization conventions. Structural values remain safe to serialize without cycles.
+The interpreter represents JSON-compatible nulls, booleans, numbers, strings, arrays, and objects using standard-library facilities. Numeric handling preserves literal-aware behavior required by the corpus and supports NaN and infinities where jq exposes them. Serialization emits valid JSON-compatible output for the harness.
 
 ## Programmatic Acceptance
 
 === AC value-001-conformance ===
-Intent: The conformance corpus cases exercising special numbers and JSON conversion execute and pass.
+Intent: The authoritative corpus special-number and number-serialization cases execute without failures.
 Suite: scoped
 Requires: executable=python3; scope=test
 
@@ -28,9 +24,9 @@ import os
 import subprocess
 import sys
 
-select = r"nan|infinite|tojson|fromjson"
+selector = r"nan|infinite|tojson|fromjson"
 result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
     capture_output=True,
     text=True,
     env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
@@ -40,26 +36,29 @@ print(result.stderr, file=sys.stderr)
 report = json.loads(result.stdout)
 summary = report["summary"]
 assert sum(summary.values()) > 0
-assert summary["fail"] == 0 and summary["error"] == 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
 assert result.returncode == 0
 === END AC value-001-conformance ===
 
-=== AC value-001-round-trip ===
-Intent: A supplied JSON value survives conversion to JSON text and back as the same value.
+=== AC value-001-special-values ===
+Intent: The implementation accepts and processes the special numeric values exercised by jq.
+Requires: executable=python3; scope=test
+
 import json
 import subprocess
 
-value = {"a": [1, 2], "b": "text", "ok": True}
-source = json.dumps(value, separators=(",", ":")) + "\n"
+input_value = "null\n"
 result = subprocess.run(
-    ["./jq", "-c", "tojson | fromjson"],
-    input=source,
+    ["./jq", "-c", "infinite, nan | type"],
+    input=input_value,
     capture_output=True,
     text=True,
 )
 assert result.returncode == 0
-assert json.loads(result.stdout) == value
-=== END AC value-001-round-trip ===
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual == ["number", "number"]
+=== END AC value-001-special-values ===
 
 ## User Acceptance
 
@@ -67,6 +66,6 @@ assert json.loads(result.stdout) == value
 
 ## Guardrails
 
-- Use only Python standard-library facilities.
-- Do not shell out to jq or use a third-party jq binding.
-- Preserve input and generator values without accidental mutation.
+- No third-party numeric or jq implementation may be used.
+- NaN and infinity handling must remain compatible with the supplied harness.
+- Numeric formatting must not introduce non-JSON output lines.

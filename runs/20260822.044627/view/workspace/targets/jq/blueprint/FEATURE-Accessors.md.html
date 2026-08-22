@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Accessors.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Accessors.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Accessors.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Accessors</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines object-field access, array indexing, optional access, and negative-index behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Value-Model.md</td></tr><tr><td>Provides</td><td>object fields, array indices, optional access, negative indices</td></tr><tr><td>Consumes</td><td>jq value model</td></tr></tbody></table></div>
+<h2>Access Semantics</h2>
+<p>Object fields return the matching value or null when absent. Array indices are zero-based and support negative indices. Invalid access raises a jq runtime error unless the expression is optional, in which case the error is suppressed according to jq semantics.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-002-conformance ===<br>Intent: Field access, negative indexing, and optional access produce the supplied jq behavior.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>payload = &#x27;{&quot;field&quot;:[10,20,30]}\n&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.field[-1], .missing?, .field[0]&quot;], input=payload, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [30, None, 10] assert actual == expected === END AC value-002-conformance ===</p>
+<p>=== AC value-002-access-contract ===<br>Intent: Field access, negative indexing, and optional access produce the supplied jq behavior.<br>Requires: executable=python3; scope=test</p>
+<p>import json import subprocess</p>
+<p>payload = &#x27;{&quot;field&quot;:[10,20,30]}\n&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.field[-1], .missing?, .field[0]&quot;], input=payload, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [30, None, 10] assert actual == expected === END AC value-002-access-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Missing fields yield null rather than Python exceptions.</li><li>Negative array indices follow jq indexing rules.</li><li>Optional access suppresses only the applicable runtime access error.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/jq_interpreter/errors.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/errors.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/errors.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Errors crossing the interpreter&#x27;s process boundary.&quot;&quot;&quot;
+
+
+class CompileError(Exception):
+    &quot;&quot;&quot;The jq program could not be parsed or statically validated.&quot;&quot;&quot;
+
+
+class RuntimeError(Exception):
+    &quot;&quot;&quot;Evaluation failed after the program was compiled.&quot;&quot;&quot;
+</pre></article>
+</main>
+</body>
+</html>

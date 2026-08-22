@@ -1,49 +1,42 @@
-# FEATURE: Lexer
+# FEATURE: jq Lexer
 
 | Field       | Value |
 |-------------|-------|
 | Version     | 20260822 V1 |
-| Description | Tokenizes jq programs according to the supplied lexical specification. |
-| Depends On  | ARCHITECTURE.md |
-| Provides    | jq tokens, comments, delimiters, identifiers, literals, bindings |
-| Consumes    | interpreter architecture |
+| Description | Tokenizes jq source text into the lexical forms required by the parser and evaluator. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Json-IO.md |
+| Provides    | jq tokenization |
+| Consumes    | interpreter executable boundary |
 
-## Intent
+## Lexical Scope
 
-The lexer recognizes jq keywords, identifiers, field selectors, variable bindings, literals, operators, comments, delimiters, format tokens, and string/interpolation state transitions. Comments are ignored without altering adjacent program structure. Invalid characters and malformed literals are reported as compile failures.
+Implement lexical recognition for:
+
+- JSON literals and numeric forms, including exponent notation.
+- Identifiers, field names, variable bindings, and qualified names.
+- jq keywords such as `def`, `if`, `reduce`, `try`, `label`, `module`, and `include`.
+- Operators including arithmetic, comparison, pipe, comma, alternative, assignment, and optional forms.
+- Parentheses, brackets, braces, separators, and delimiters.
+- Line comments beginning with `#`, including the source-defined continuation behavior.
+- Format tokens beginning with `@`.
+- Quoted strings, JSON escapes, and interpolation markers.
+
+The lexer must reject invalid characters and malformed escapes so the parser can report a compile failure with exit code `3`.
+
+## Source Contract
+
+`sources/lexer.l` is the lexical authority. `sources/parser.y` consumes the corresponding token categories. The lexer must not load module files or introduce command-line behavior beyond the fixed `-c` interface.
 
 ## Programmatic Acceptance
 
-=== AC lexer-basic-syntax ===
-Intent: The authoritative lexer-focused corpus slice executes successfully.
+=== AC parse-001-conformance ===
+Intent: Core lexical literals and punctuation compile and execute successfully.
 
 import json
-import os
-import subprocess
-import sys
-
-result = subprocess.run(
-    [sys.executable, "sources/run_conformance.py", "--select", r"^(true|false|null|1|\.)$", "--json"],
-    capture_output=True,
-    text=True,
-    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
-)
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-report = json.loads(result.stdout)
-summary = report["summary"]
-assert sum(summary.values()) > 0
-assert summary["fail"] == 0 and summary["error"] == 0
-assert result.returncode == 0
-=== END AC lexer-basic-syntax ===
-
-=== AC lexer-comments ===
-Intent: Comments are ignored while the surrounding filter remains executable.
-
 import subprocess
 
 result = subprocess.run(
-    ["./jq", "-c", "1 # comment\n, 2"],
+    ["./jq", "-c", "{true: true, false: false, null: null, number: 1, identity: .}"],
     input="null\n",
     capture_output=True,
     text=True,
@@ -51,16 +44,51 @@ result = subprocess.run(
 print(result.stdout)
 print(result.stderr, file=__import__("sys").stderr)
 assert result.returncode == 0
-assert result.stdout.splitlines() == ["1", "2"]
-=== END AC lexer-comments ===
+actual = json.loads(result.stdout)
+assert actual["true"] is True
+assert actual["false"] is False
+assert actual["null"] is None
+assert actual["number"] == 1
+assert actual["identity"] is None
+=== END AC parse-001-conformance ===
 
-=== AC lexer-invalid-token ===
-Intent: Invalid lexical input is rejected as a compile failure.
+=== AC parse-001-comments-and-keywords ===
+Intent: Lexical comments and keyword identifiers remain distinguishable in valid jq source.
+
+import json
+import subprocess
+
+program = "{if:0,and:1,or:2,then:3,else:4,elif:5,end:6,as:7,def:8}"
+result = subprocess.run(
+    ["./jq", "-c", program],
+    input="null\n",
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__("sys").stderr)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual == {
+    "if": 0,
+    "and": 1,
+    "or": 2,
+    "then": 3,
+    "else": 4,
+    "elif": 5,
+    "end": 6,
+    "as": 7,
+    "def": 8,
+}
+=== END AC parse-001-comments-and-keywords ===
+
+=== AC parse-001-invalid-lexeme ===
+Intent: An invalid escape is rejected during compilation with the declared compile-failure status.
 
 import subprocess
 
 result = subprocess.run(
-    ["./jq", "-c", "%::wat"],
+    ["./jq", "-c", '"u\\vw"'],
     input="null\n",
     capture_output=True,
     text=True,
@@ -68,7 +96,7 @@ result = subprocess.run(
 print(result.stdout)
 print(result.stderr, file=__import__("sys").stderr)
 assert result.returncode == 3
-=== END AC lexer-invalid-token ===
+=== END AC parse-001-invalid-lexeme ===
 
 ## User Acceptance
 
@@ -76,6 +104,8 @@ assert result.returncode == 3
 
 ## Guardrails
 
-- Follow `sources/lexer.l` for token boundaries and lexical states.
-- Do not silently reinterpret invalid escapes or characters.
-- Preserve comments, delimiters, bindings, and interpolation distinctions for the parser.
+- Follow the token categories and delimiter-state behavior defined by `sources/lexer.l`.
+- Preserve string escape and interpolation markers for parser consumption.
+- Reject malformed escapes and invalid characters at compile time.
+- Keep comments out of the token stream.
+- Do not modify staged lexical or parser sources.

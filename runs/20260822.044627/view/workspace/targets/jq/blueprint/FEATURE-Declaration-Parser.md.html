@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Declaration-Parser.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Declaration-Parser.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Declaration-Parser.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Declaration Parser</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq declarations, control syntax, bindings, modules, and destructuring.</td></tr><tr><td>Depends On</td><td>FEATURE-Filter-Parser.md</td></tr><tr><td>Provides</td><td>declarations, modules grammar, conditionals, exceptions, reductions, labels, bindings</td></tr><tr><td>Consumes</td><td>AST for filter expressions</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC parse-004-declarations ===<br>Intent: Declarations and bindings parse and execute successfully. import json import os import subprocess</p>
+<p>env = {**os.environ, &quot;PATH&quot;: os.environ.get(&quot;PATH&quot;, &quot;&quot;)}</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;def inc: . + 1; inc&quot;], input=&quot;2\n&quot;, capture_output=True, text=True, env=env, ) assert result.returncode == 0, result.returncode assert json.loads(result.stdout) == 3</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;. as {$x} | $x&quot;], input=&#x27;{&quot;x&quot;:4}\n&#x27;, capture_output=True, text=True, env=env, ) assert result.returncode == 0, result.returncode assert json.loads(result.stdout) == 4 === END AC parse-004-declarations ===</p>
+<p>=== AC parse-004-module-rejections ===<br>Intent: Invalid declaration syntax is rejected as a compile error. import os import subprocess</p>
+<p>env = {**os.environ, &quot;PATH&quot;: os.environ.get(&quot;PATH&quot;, &quot;&quot;)}</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;def ;&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=env, ) assert result.returncode == 3, result.returncode assert result.stdout == &quot;&quot;</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;if true then&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, env=env, ) assert result.returncode == 3, result.returncode assert result.stdout == &quot;&quot; === END AC parse-004-module-rejections ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not resolve or load excluded module fixtures.</li><li>Preserve lexical scope for bindings, labels, and function declarations.</li><li>Do not modify files under <code>sources/</code>.</li></ul></article>
+</main>
+</body>
+</html>

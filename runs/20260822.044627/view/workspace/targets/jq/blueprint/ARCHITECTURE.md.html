@@ -9,31 +9,29 @@
 <body>
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/ARCHITECTURE.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/ARCHITECTURE.md">Raw file</a></div></header>
-<article class="doc"><h1>ARCHITECTURE: jq</h1>
-<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Modular standard-library Python architecture for a standalone jq interpreter.</td></tr><tr><td>Depends On</td><td>—</td></tr><tr><td>Provides</td><td>interpreter architecture, executable boundary, generator evaluation model</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
-<h2>Architecture</h2>
-<p>The implementation is a modular Python executable named <code>jq</code> at the application root. The process boundary parses <code>-c &#x27;&lt;program&gt;&#x27;</code>, reads JSON values from standard input, evaluates the parsed filter as an ordered generator, and serializes each produced value as one compact JSON value per output line.</p>
-<p>The implementation is divided into:</p>
-<ul><li>CLI and process boundary: argument validation, input framing, output serialization, diagnostics, and exit codes.</li><li>Lexer and parser: jq tokenization, precedence, syntax validation, and AST construction.</li><li>Value model: JSON values, numeric literals, NaN, infinities, immutable update helpers, and structural comparison.</li><li>Evaluator: generator execution, lexical environments, function calls, backtracking, errors, labels, and reductions.</li><li>Builtins: accessors, operators, collections, strings, regular expressions, dates, paths, assignments, I/O, and streaming.</li></ul>
-<p>Values are treated immutably at jq-language boundaries. Filters yield zero or more values; downstream filters execute once for every upstream value, preserving order and multiplicity.</p>
-<h3>Module ownership</h3>
-<div class="scroll"><table><thead><tr><th>Boundary</th><th>Owner</th><th>Responsibility</th></tr></thead><tbody><tr><td>CLI and process execution</td><td>executable entry point</td><td><code>-c</code>, stdin, stdout, stderr, exit status</td></tr><tr><td>Lexical analysis</td><td>lexer module</td><td>tokens, comments, literals, interpolation states</td></tr><tr><td>Syntax</td><td>parser module</td><td>AST and compile errors</td></tr><tr><td>Runtime values</td><td>value module</td><td>JSON-compatible values and numeric behavior</td></tr><tr><td>Evaluation</td><td>evaluator module</td><td>streams, environments, control flow, errors</td></tr><tr><td>Builtins</td><td>builtin modules</td><td>jq primitives and standard-library definitions</td></tr><tr><td>Paths and mutation</td><td>path module</td><td>path discovery and immutable updates</td></tr><tr><td>Conformance</td><td>staged <code>sources/</code> assets</td><td>corpus execution and scoring</td></tr></tbody></table></div>
-<p>No system <code>jq</code>, third-party jq implementation, package installation, network access, or external runtime dependency is permitted.</p>
+<article class="doc"><h1>ARCHITECTURE: jq Interpreter</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines the modular standard-library Python architecture for the standalone jq interpreter.</td></tr><tr><td>Depends On</td><td>—</td></tr><tr><td>Provides</td><td>interpreter module boundaries, executable boundary</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The interpreter is a standalone executable named <code>jq</code>. It accepts <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>, reads JSON values from standard input, evaluates jq filters as ordered generators, and writes compact JSON values to standard output.</p>
 <h2>Technology Stack</h2>
-<ul><li>Python 3.11 or newer, using only the standard library.</li><li>POSIX <code>sh</code> for the supplied scoring entry point.</li></ul>
+<ul><li>Python 3.11 or newer, using only the standard library.</li><li>POSIX <code>sh</code> for the supplied scoring entry point.</li><li>No third-party runtime dependency, network access, package installation, jq binding, or shell-out to another jq executable.</li></ul>
+<h2>Modules and Boundaries</h2>
+<div class="scroll"><table><thead><tr><th>Boundary</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>jq</code> executable</td><td>Parse command-line arguments, read standard input, invoke the interpreter, serialize outputs, and map failures to exit codes.</td></tr><tr><td>Lexer</td><td>Tokenize jq literals, identifiers, fields, bindings, keywords, operators, delimiters, comments, formats, and interpolated strings.</td></tr><tr><td>Parser</td><td>Produce an AST or equivalent intermediate representation, enforce precedence and static validity, and reject invalid programs.</td></tr><tr><td>Evaluator</td><td>Execute filters as ordered streams, preserving multiplicity, backtracking, Cartesian products, and partial output.</td></tr><tr><td>Runtime values</td><td>Represent JSON values, literal-aware numbers, NaN, infinities, arrays, objects, and immutable transformations.</td></tr><tr><td>Builtins</td><td>Implement jq primitives and standard-library filters over the evaluator&#x27;s stream model.</td></tr><tr><td>Paths and assignment</td><td>Discover paths and apply immutable reads, writes, updates, and deletions.</td></tr><tr><td>Diagnostics</td><td>Keep compile failures, runtime failures, stderr output, and successful completion distinct.</td></tr></tbody></table></div>
+<p>The executable boundary must not depend on a system jq command or an external implementation. Parser and evaluator interfaces remain internal to the Python implementation; the only public interface is the executable process contract.</p>
+<h2>Runtime Contracts</h2>
+<ul><li>Compile failure exits <code>3</code>.</li><li>Runtime failure exits <code>5</code>.</li><li>Successful completion exits <code>0</code>.</li><li>Diagnostics are written to stderr.</li><li>Each produced value is serialized as one compact JSON value per line.</li><li>Values emitted before a runtime failure remain on stdout.</li><li>Generator ordering and multiplicity are observable and must be preserved.</li></ul>
+<h2>Module Ownership</h2>
+<div class="scroll"><table><thead><tr><th>Concern</th><th>Owning boundary</th><th>Allowed dependencies</th></tr></thead><tbody><tr><td>Process and CLI</td><td>executable boundary</td><td>parser, evaluator, serializer, diagnostics</td></tr><tr><td>Syntax</td><td>lexer and parser</td><td>standard-library text handling, AST definitions</td></tr><tr><td>Evaluation</td><td>evaluator</td><td>AST, runtime values, builtins, paths</td></tr><tr><td>Persistence/configuration</td><td>none</td><td>jq has no persistent store or application configuration</td></tr><tr><td>File store</td><td>none</td><td>module loading is excluded by the fixed interface</td></tr><tr><td>External services</td><td>none</td><td>network and external runtimes are forbidden</td></tr></tbody></table></div>
+<h2>Numeric Decision</h2>
+<p>Use a literal-aware standard-library numeric model. Preserve source/input number spelling where jq semantics require it, perform arithmetic using standard-library numeric operations, and support special floating-point values without adding dependencies.</p>
+<h2>Source Role Context</h2>
+<p>The implementation uses the staged lexer, parser, manual, builtin reference, corpus, and conformance harness as read-only context. The staged harness remains external to the implementation and is never modified.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC architecture-boundary ===<br>Intent: The implementation exposes the declared executable boundary and remains runnable with the standard-library runtime.</p>
-<p>from pathlib import Path import os import subprocess import sys</p>
-<p>executable = Path(&quot;jq&quot;) assert executable.is_file() assert os.access(executable, os.X_OK)</p>
-<p>result = subprocess.run( [sys.executable, &quot;-c&quot;, &quot;import json, decimal, math, re, datetime, time&quot;], capture_output=True, text=True, ) assert result.returncode == 0 === END AC architecture-boundary ===</p>
-<p>=== AC architecture-conformance-start ===<br>Intent: The staged conformance assets can be imported and parsed from the declared architecture boundary.</p>
-<p>import sys</p>
-<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
-<p>cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS) ) assert cases assert excluded === END AC architecture-conformance-start ===</p>
+<ul><li>None. This specification defines architecture and boundaries; executable behavior is verified by the implementing feature specifications and the terminal conformance story.</li></ul>
 <h2>User Acceptance</h2>
 <ul><li>None.</li></ul>
 <h2>Guardrails</h2>
-<ul><li>Do not shell out to a system <code>jq</code>.</li><li>Do not use a third-party jq implementation or binding.</li><li>Preserve generator ordering, multiplicity, backtracking, and immutable value semantics.</li><li>Keep staged scoring assets unchanged.</li></ul></article>
+<ul><li>Do not add third-party dependencies.</li><li>Do not modify files under <code>sources/</code>.</li><li>Do not shell out to a system jq executable.</li><li>Do not collapse generator streams into single return values.</li><li>Do not conflate compile exit <code>3</code> with runtime exit <code>5</code>.</li></ul></article>
 </main>
 </body>
 </html>

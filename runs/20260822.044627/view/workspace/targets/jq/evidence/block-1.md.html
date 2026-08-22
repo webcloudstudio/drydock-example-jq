@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-1.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-1.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-1.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 1 · Foundational (block-1)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 10201</li><li>execution id: 20260822.180626.371Z-122a84e1</li></ul>
+<h2>Stories built</h2>
+<ul><li>Define the standalone interpreter architecture and module boundaries. (architecture) [story]</li></ul>
+<h2>Reusable compacts</h2>
+<ul><li>ARCHITECTURE_compact.md</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: ARCHITECTURE.md (SP 1018)</li><li>stack: common.md (SP 1807)</li><li>stack: python.md (SP 3892)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq</li><li>jq_interpreter/<strong>init</strong>.py</li><li>jq_interpreter/ast.py</li><li>jq_interpreter/builtins.py</li><li>jq_interpreter/cli.py</li><li>jq_interpreter/diagnostics.py</li><li>jq_interpreter/errors.py</li><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/interpreter.py</li><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>jq_interpreter/paths.py</li><li>jq_interpreter/runtime.py</li><li>tests/test_architecture.py</li></ul>
+<h2>Build summary</h2>
+<p>&lt;reusable-compact filename=&quot;ARCHITECTURE.md&quot;&gt;</p>
+<ul><li>Executable: <code>./jq -c &#x27;&lt;program&gt;&#x27;</code>; compact JSON lines on stdout.</li><li>Exit codes: <code>0</code> success, <code>3</code> compile failure, <code>5</code> runtime failure; diagnostics on stderr.</li><li>Standard-library Python only; no external jq, dependencies, networking, or persistence.</li><li>Modules: CLI, lexer, parser/AST, evaluator streams, runtime values, builtins, paths/assignment, diagnostics.</li><li>Preserve generator ordering, multiplicity, backtracking, immutable transformations, and partial output.</li></ul>
+<p>&lt;/reusable-compact&gt;</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq</li><li>jq_interpreter/<strong>init</strong>.py</li><li>jq_interpreter/ast.py</li><li>jq_interpreter/builtins.py</li><li>jq_interpreter/cli.py</li><li>jq_interpreter/diagnostics.py</li><li>jq_interpreter/errors.py</li><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/interpreter.py</li><li>jq_interpreter/lexer.py</li><li>jq_interpreter/parser.py</li><li>jq_interpreter/paths.py</li><li>jq_interpreter/runtime.py</li><li>tests/test_architecture.py</li></ul>
+<p>SUMMARY: Established the standalone Python interpreter architecture, executable boundary, module contracts, exit-code handling, streaming identity behavior, immutable path reads, and foundational tests. All 5 tests pass. No staged conformance suite was run because this architecture specification declares no programmatic acceptance.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

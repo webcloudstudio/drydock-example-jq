@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Type-and-Numeric-Builtins.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Type-and-Numeric-Builtins.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Type-and-Numeric-Builtins.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Type and Numeric Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq type inspection, length, conversion, numeric predicates, and mathematical builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Slices-and-Iteration.md, FEATURE-Value-Model.md</td></tr><tr><td>Provides</td><td>type, length, utf8bytelength, numeric predicates, tonumber, tostring, arithmetic math builtins</td></tr><tr><td>Consumes</td><td>jq value model, field and index access</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>This capability supplies jq&#x27;s standard type and numeric primitives using Python&#x27;s standard library. It preserves jq truth about value kinds, Unicode byte lengths, numeric conversion, special values, and mathematical operations.</p>
+<h2>Behavior</h2>
+<ul><li><code>type</code> returns jq&#x27;s six value-type names.</li><li><code>length</code> handles null, strings, arrays, objects, and numbers according to jq semantics and rejects booleans.</li><li><code>utf8bytelength</code> counts UTF-8 bytes for strings and rejects other types.</li><li><code>tonumber</code>, <code>toboolean</code>, and <code>tostring</code> perform jq-compatible conversions.</li><li><code>nan</code>, <code>infinite</code>, <code>isnan</code>, <code>isinfinite</code>, <code>isfinite</code>, and <code>isnormal</code> support special numeric values.</li><li>Standard-library math functions required by the corpus are exposed with jq generator semantics.</li><li>Numeric equality and serialization remain compatible with the literal-aware value model.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-004-conformance ===<br>Intent: The authoritative corpus slice covering type, length, numeric predicates, conversion, and math builtins executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, &quot;length|type|sqrt|floor|tonumber&quot;, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Do not silently coerce booleans into numbers.</li><li>Preserve jq&#x27;s distinction between numeric values and boolean values.</li></ul></article>
+</main>
+</body>
+</html>

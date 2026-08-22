@@ -1,0 +1,420 @@
+=== BEGIN ARTIFACT FEATURE-Reductions-and-Iteration-Control.md ===
+# FEATURE: Reductions and Iteration Control
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq reductions and generator control primitives. |
+| Depends On  | FEATURE-Labels-and-Breaks.md, FEATURE-Generator-Core.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth, range |
+| Consumes    | label and break evaluation, ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The evaluator implements stateful `reduce` and `foreach` operations, bounded and skipped generator consumption, first/last/nth selection, and range generation. All operations preserve jq stream ordering, multiplicity, cartesian argument behavior, and lexical break handling.
+
+## Programmatic Acceptance
+
+=== AC reductions-scoped ===
+Intent: The reductions and iteration-control corpus slice executes and passes.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"reduce|foreach|limit|skip|nth|first|last"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC reductions-scoped ===
+
+=== AC range-scoped ===
+Intent: Range generation cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"range"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC range-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, backtracking, and partial runtime output.
+- Do not implement reductions as scalar-only operations.
+- Negative limits, skips, and nth indices must retain jq runtime-error behavior.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Recursive-Generators.md ===
+# FEATURE: Recursive Generators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq recursive and repeated generator filters. |
+| Depends On  | FEATURE-Reductions-and-Iteration-Control.md |
+| Provides    | while, until, repeat, recurse, recursive descent |
+| Consumes    | reductions and ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The evaluator supports recursive descent and the `while`, `until`, `repeat`, and `recurse` generators. Recursive filters emit values in jq order, terminate according to their predicates or caught errors, and preserve branching when an update yields multiple values.
+
+## Programmatic Acceptance
+
+=== AC recursive-generators-scoped ===
+Intent: Recursive generator corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"while|until|recurse|repeat"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC recursive-generators-scoped ===
+
+=== AC recursive-descent-scoped ===
+Intent: Recursive-descent syntax cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\.\."
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC recursive-descent-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Recursive generators must not emit duplicate or incorrectly ordered values.
+- Termination must not depend on a fixed shallow recursion cutoff.
+- Runtime errors from repeated expressions must remain catchable.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Variable-Bindings.md ===
+# FEATURE: Variable Bindings
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides lexical jq value bindings and destructuring scope foundations. |
+| Depends On  | FEATURE-Recursive-Generators.md |
+| Provides    | as bindings, lexical scope, shadowing, keyword identifiers |
+| Consumes    | recursive generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The evaluator binds each output of a left-hand filter to a lexical variable for the following expression. Bindings support nested scopes, shadowing, keyword-shaped names, structural lifetime, and generator backtracking without mutation.
+
+## Programmatic Acceptance
+
+=== AC variable-bindings-scoped ===
+Intent: Variable-binding corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r" as \$|\$[A-Za-z]"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC variable-bindings-scoped ===
+
+=== AC binding-syntax-scoped ===
+Intent: Binding and destructuring syntax cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"\bas\s+\$|\bas\s+\{|\bas\s+\["
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC binding-syntax-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Bindings are immutable and lexically scoped.
+- Shadowing must not alter the value visible outside its scope.
+- Every generator output must receive its corresponding binding.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Function-Parameters.md ===
+# FEATURE: Function Parameters
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq filter and value function parameter evaluation. |
+| Depends On  | FEATURE-Variable-Bindings.md |
+| Provides    | filter parameters, value parameters, multiple arities, Cartesian arguments |
+| Consumes    | lexical variable bindings |
+
+## Questions
+
+- None.
+
+## Workflow
+
+User-defined functions accept filter parameters and value parameters with jq arity rules. Filter arguments remain executable generators, value arguments are evaluated and bound, and multiple argument streams produce the required cartesian combinations.
+
+## Programmatic Acceptance
+
+=== AC function-parameters-scoped ===
+Intent: Function-parameter corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-parameters-scoped ===
+
+=== AC cartesian-function-scoped ===
+Intent: Multi-argument and generator-valued function cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*\\([^)]*;[^)]*\\)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC cartesian-function-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Distinguish filter parameters from value parameters.
+- Preserve argument stream ordering and cartesian multiplicity.
+- Resolve parameters according to lexical scope and declared arity.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Function-Definitions.md ===
+# FEATURE: Function Definitions
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq function definitions, lexical scope, redefinition, and recursion. |
+| Depends On  | FEATURE-Function-Parameters.md |
+| Provides    | def, function redefinition, recursion, forward and self references |
+| Consumes    | function parameter evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The interpreter compiles `def` declarations into lexically scoped callable definitions. Definitions support recursive self-reference, arity-specific redefinition, forward references permitted by jq semantics, and closure behavior across nested definitions.
+
+## Programmatic Acceptance
+
+=== AC function-definitions-scoped ===
+Intent: Function-definition and recursion corpus cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def "
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-definitions-scoped ===
+
+=== AC function-recursion-scoped ===
+Intent: Recursive user-function cases execute and pass.
+Suite: scoped
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"def .*:.*\\b(if|f\\b|g\\b)"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC function-recursion-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Function identity includes name and arity.
+- Redefinition must affect only references permitted by jq lexical scope.
+- Recursive calls must terminate or propagate runtime errors according to the filter semantics.
+
+=== END ARTIFACT ===
