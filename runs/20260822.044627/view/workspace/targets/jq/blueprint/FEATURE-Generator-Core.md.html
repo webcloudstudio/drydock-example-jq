@@ -14,7 +14,7 @@
 <h2>Programmatic Acceptance</h2>
 <p>=== AC core-001-conformance === import json import os import subprocess import sys</p>
 <p>SELECT = r&quot;,|empty|range\(&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC core-001-conformance === END AC core-001-conformance ===</p></article>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC core-001-conformance ===</p></article>
 </main>
 </body>
 </html>

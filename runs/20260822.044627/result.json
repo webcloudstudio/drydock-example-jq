@@ -113,7 +113,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1981,
+      "elapsed_ms": 2384,
       "label": "05-plan-verify",
       "llm_executions": [],
       "returncode": 1,
@@ -130,30 +130,13 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 303268,
+      "elapsed_ms": 68706,
       "label": "06-plan-repair",
       "llm_executions": [
-        "20260822.051124.360Z-4cbfac34",
-        "20260822.051141.737Z-0b79d680",
-        "20260822.051157.809Z-b8aff4ff",
-        "20260822.051213.892Z-78bf0634",
-        "20260822.051229.913Z-bf21039c",
-        "20260822.051246.215Z-cd93da18",
-        "20260822.051300.745Z-0d18301f",
-        "20260822.051318.017Z-589d0d52",
-        "20260822.051326.800Z-fa597ba7",
-        "20260822.051338.276Z-5f61734c",
-        "20260822.051355.328Z-2bebd559",
-        "20260822.051411.709Z-aa88c805",
-        "20260822.051422.823Z-bff7b0c5",
-        "20260822.051439.215Z-e0c9c693",
-        "20260822.051450.838Z-459d9d8b",
-        "20260822.051459.317Z-e031e20f",
-        "20260822.051510.487Z-6c04226d",
-        "20260822.051521.311Z-26e8e7fd",
-        "20260822.051534.065Z-c41093ac",
-        "20260822.051556.958Z-ddde8232",
-        "20260822.051610.201Z-8c4fe110"
+        "20260822.055715.103Z-16d7d816",
+        "20260822.055731.053Z-c4f6a8c3",
+        "20260822.055746.656Z-277a3e07",
+        "20260822.055802.495Z-29557cd5"
       ],
       "returncode": 1,
       "stderr_path": "evidence/commands/06-plan-repair.stderr.log",
@@ -169,7 +152,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 2910,
+      "elapsed_ms": 4507,
       "label": "07-plan-verify-after-repair",
       "llm_executions": [],
       "returncode": 1,
@@ -186,7 +169,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1348,
+      "elapsed_ms": 576,
       "label": "08-after-plan-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -202,7 +185,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1169,
+      "elapsed_ms": 2415,
       "label": "09-after-plan-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -217,7 +200,7 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 387,
+      "elapsed_ms": 626,
       "label": "10-after-plan-workspace-status",
       "llm_executions": [],
       "returncode": 0,
@@ -226,17 +209,17 @@
     }
   ],
   "degraded": [],
-  "elapsed_ms": 1811157,
+  "elapsed_ms": 94788,
   "environment": {
     "drydock_version": "0.2.0",
     "effort": "",
-    "finished_at": "2026-08-22T05:16:38.691879Z",
-    "git_commit": "4e0368d03ff9c237a39c51b815227b9714776ffe",
+    "finished_at": "2026-08-22T05:58:45.279683Z",
+    "git_commit": "2887d98d92e1d08e15360c3b5394e9faa15aea95",
     "model": "gpt-5.6-luna",
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "provider": "codex",
     "python_version": "3.12.13",
-    "started_at": "2026-08-22T04:46:27.482870Z"
+    "started_at": "2026-08-22T05:57:10.383410Z"
   },
   "error": "jq: stopped at plan-repair: acceptance criteria still cannot run after one repair pass",
   "evidence_dir": "evidence",
@@ -246,18 +229,18 @@
   "observed_verdict": "ERROR",
   "output_dir": ".",
   "release_verdict": "",
-  "resumed_from": "",
+  "resumed_from": "verify",
   "run_id": "20260822.044627",
   "score_exit_codes": {},
   "status": "failed",
   "target": "jq",
   "usage": {
-    "cached_input_tokens": 457472,
-    "calls": 44,
-    "fresh_input_tokens": 1597114,
-    "input_tokens": 2054586,
+    "cached_input_tokens": 531968,
+    "calls": 54,
+    "fresh_input_tokens": 1669756,
+    "input_tokens": 2201724,
     "invalid_records": 0,
-    "llm_elapsed_ms": 1742164,
-    "output_tokens": 87375
+    "llm_elapsed_ms": 1901274,
+    "output_tokens": 94094
   }
 }

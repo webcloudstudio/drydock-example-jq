@@ -25,5 +25,4 @@ tally = report["summary"]
 assert sum(tally.values()) > 0, f"selector matched no case: {SELECT}"
 assert tally["fail"] == 0 and tally["error"] == 0, tally
 assert result.returncode == 0, result.returncode
-=== END AC path-004-conformance
 === END AC path-004-conformance ===

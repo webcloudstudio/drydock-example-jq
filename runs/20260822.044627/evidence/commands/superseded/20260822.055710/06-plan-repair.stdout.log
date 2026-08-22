@@ -1,0 +1,38 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+repair: FEATURE-Date-and-Time.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:53:40 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] '=== END AC date-utc-and-errors ===' has no matching opening block
+repair: FEATURE-Diagnostics.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:53:58 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] '=== END AC diagnostics-streams ===' has no matching opening block
+repair: FEATURE-Input-Controls.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:54:13 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] '=== END AC input-stream-behavior ===' has no matching opening block
+repair: FEATURE-JSON-I-O.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:54:28 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
+repair: FEATURE-Complex-Assignments.md · path-004-conformance · 1 of 1 attempt
+2026-08-22 01:54:44 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✓  FEATURE-Complex-Assignments.md [path-004-conformance]: repaired
+repair: FEATURE-Generator-Core.md · core-001-conformance · 1 of 1 attempt
+2026-08-22 01:55:00 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✓  FEATURE-Generator-Core.md [core-001-conformance]: repaired
+plan repair: jq
+  2 repaired, 4 outstanding, 2 files changed
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] '=== END AC date-utc-and-errors ===' has no matching opening block
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] '=== END AC diagnostics-streams ===' has no matching opening block
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] '=== END AC input-stream-behavior ===' has no matching opening block
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
+plan verify: jq
+  4 criteria cannot run as written
+  ✗  FEATURE-Date-and-Time.md: FEATURE-Date-and-Time.md [date-conformance] acceptance block closes with a different id: expected '=== END AC date-conformance ===', found '=== END AC date-utc-and-errors ==='
+  ✗  FEATURE-Diagnostics.md: FEATURE-Diagnostics.md [diagnostics-conformance] acceptance block closes with a different id: expected '=== END AC diagnostics-conformance ===', found '=== END AC diagnostics-streams ==='
+  ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
+  ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
+  Run: drydock plan repair jq

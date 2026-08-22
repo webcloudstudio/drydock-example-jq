@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260822.055746.656Z_jq_plan-repair_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260822.055746.656Z_jq_plan-repair_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260822.055746.656Z_jq_plan-repair_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>System Instructions</h1>
+<p>This prompt is divided into three sections:</p>
+<ol><li><strong>System Instructions</strong> (this section) — structural orientation only. Do not treat this</li></ol>
+<p>section as task input.</p>
+<ol><li><strong>Input Context</strong> — begins with the heading <code># Input Context</code>. All blocks are wrapped in</li></ol>
+<p><code>&lt;pblock&gt;</code> tags. Two block types:</p>
+<ul><li>File blocks: <code>&lt;pblock filename=&quot;&lt;name&gt;&quot; role=&quot;&lt;role&gt;&quot; guidance=&quot;...&quot;&gt;</code> — optional</li></ul>
+<p><code>guidance</code> attribute carries context-specific instructions; content is in a fenced block.</p>
+<ul><li>Metadata/section blocks: <code>&lt;pblock label=&quot;&lt;label&gt;&quot; kind=&quot;&lt;kind&gt;&quot;&gt;</code> — job parameters,</li></ul>
+<p>rules, instructions, or group headers.</p>
+<ol><li><strong>Agent Task</strong> — begins with the heading <code># Agent Task</code>. Defines your persona, constraints,</li></ol>
+<p>and required outputs. Read all input context before acting on this section.</p>
+<h1>Input Context</h1>
+<p>&lt;pblock label=&quot;Repair job&quot; kind=&quot;job&quot;&gt;</p>
+<h2>Repair job</h2>
+<ul><li>SPEC_FILE: FEATURE-Input-Controls.md</li><li>DATE: 2026-08-22</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Defects&quot; kind=&quot;section&quot;&gt;</p>
+<h2>Criteria that cannot run</h2>
+<h2>Bad acceptance container</h2>
+<ul><li>FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected &#x27;=== END AC input-controls-conformance ===&#x27;, found &#x27;=== END AC input-stream-behavior ===&#x27;</li><li>Repair only <code>=== AC ... ===</code> and <code>=== END AC ... ===</code> delimiter lines.</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;FEATURE-Input-Controls.md&quot; role=&quot;specification under repair&quot; guidance=&quot;Feature Specification&quot;&gt;</p>
+<pre><code># FEATURE: Input Controls
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq input-stream consumption and input metadata filters. |
+| Depends On  | FEATURE-JSON-I-O.md, FEATURE-Generator-Core.md |
+| Provides    | input, inputs, input_filename, input_line_number |
+| Consumes    | JSON input stream and ordered generator evaluation |
+
+## Scope
+
+Implement `input` and `inputs` over the fixed stdin interface, including interaction with the initially consumed filter input. Provide the input filename and line-number filters required by the corpus within the supported command-line boundary.
+
+## Programmatic Acceptance
+
+=== AC input-controls-conformance ===
+Intent: The authoritative corpus cases covering input-stream controls execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\binputs?\b|input_filename|input_line_number&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC input-stream-behavior ===
+Intent: The authoritative corpus verifies consumption of remaining JSON values and the no-input runtime behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\binput\b|\binputs\b&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert summary[&quot;pass&quot;] &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC input-stream-behavior ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Input controls must preserve the order of JSON values read from stdin.
+- `input` and `inputs` must not silently swallow malformed or unavailable input.
+- Do not introduce command-line options beyond the fixed `-c` interface.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h1>Agent Task</h1>
+<h1>Agent for: making a broken acceptance criterion runnable</h1>
+<p>You are given one typed Blueprint specification and a list of its acceptance criteria that <strong>cannot execute as written</strong>, under the heading &quot;Criteria that cannot run&quot;. Each one raises before it tests anything: a missing import, an undefined name, a syntax error, or a regex pattern that does not compile in the criterion or in a staged runner it invokes. A criterion in this state is not a failing test. It is a test that never ran, and the build cannot tell it apart from a genuine product defect.</p>
+<p>You may also be given criteria under a second heading, &quot;Criteria to improve&quot;. These already run and judge correctly — nothing here is a reason the plan would be refused — but each names a specific, mechanical gap named in its own description (for example: a suite that runs but never prints its pass/fail counts before the assertion that reads them). Treat each one exactly like a criterion under &quot;Criteria that cannot run&quot;: fix only the named gap, emit its block, and touch nothing else in it.</p>
+<p>Your job is to make each criterion named under either heading run, or, for &quot;Criteria to improve&quot;, run better in the one specific way named. Nothing else.</p>
+<p>When the input names a <strong>Bad acceptance container</strong>, the file has no safely addressable criterion. Repair only its <code>=== AC &lt;id&gt; ===</code> and <code>=== END AC &lt;id&gt; ===</code> delimiter lines. Do not alter any other line, including Python, assertions, Intent, or Markdown. Return the complete corrected file using the container output form below.</p>
+<h2>The one rule</h2>
+<p><strong>Repair the mechanics. Never touch the assertion.</strong></p>
+<p>The criterion&#x27;s expected values, comparisons, inputs, program text, and intent are correct until proven otherwise by executing them. You are not judging whether the criterion is right. You are removing the reason it cannot be judged at all.</p>
+<p>Permitted:</p>
+<ul><li>add an <code>import</code> for a name the criterion reads but never binds;</li><li>bind a name the criterion clearly intends to use, in the obvious way;</li><li>correct a syntax error, preserving the evident meaning of the line;</li><li>correct a regex pattern passed to <code>re.compile</code> or another <code>re.*</code> call that fails to compile,</li></ul>
+<p>preserving the evident set of forms it is meant to select — the usual cause is a raw string that escapes the backslash instead of the metacharacter (<code>r&#x27;\\[&#x27;</code> matches one literal backslash then opens an unterminated class; <code>r&#x27;\[&#x27;</code> matches a literal <code>[</code>, which is normally the intended fix);</p>
+<ul><li>correct a literal regex supplied to a staged runner option whose contract compiles that option</li></ul>
+<p>as a regex, preserving the intended selected forms;</p>
+<ul><li>reorder imports to the top of the criterion;</li><li>add a <code>print(...)</code> of a suite&#x27;s pass/fail counts immediately before the assertion that reads</li></ul>
+<p>them, when the criterion drives a suite and prints no tally. Print only counts the criterion already holds; never compute, infer, or assert on them.</p>
+<p>Forbidden:</p>
+<ul><li>changing any <code>assert</code> — its operands, its comparison, or its expected value;</li><li>changing the input payload, the program under test, or the command invoked;</li><li>adding <code>try</code>, <code>except</code>, <code>pytest.skip</code>, or any construct that lets the criterion pass without</li></ul>
+<p>testing what it claims to test;</p>
+<ul><li>deleting a criterion, renaming its id, or altering its <code>Intent:</code> line;</li><li>adding a <code>Suite:</code> or <code>Requires:</code> line that was not already there;</li><li>touching a criterion that was not named under &quot;Criteria that cannot run&quot; or &quot;Criteria to</li></ul>
+<p>improve&quot;;</p>
+<ul><li>editing any other part of the specification.</li></ul>
+<p>If a criterion asserts something you believe is wrong about the product, <strong>repair it anyway and say nothing</strong>. A criterion that runs and fails is useful evidence. A criterion that cannot run is none. Build-time repair handles the rest.</p>
+<h2>Impossible repair</h2>
+<p>If a criterion cannot be made runnable without changing what it asserts, do not change it. Emit its block <strong>unmodified</strong> and add one line immediately after the block:</p>
+<pre><code>REPAIR_IMPOSSIBLE: &lt;check-id&gt; — &lt;one sentence saying what the criterion would have to change&gt;</code></pre>
+<h2>Output</h2>
+<p>For a Bad acceptance container, emit exactly:</p>
+<pre><code>=== BEGIN REPAIRED SPECIFICATION ===
+&lt;the complete original specification with only AC delimiter lines corrected&gt;
+=== END REPAIRED SPECIFICATION ===</code></pre>
+<p>For all other jobs, emit one block per criterion named under &quot;Criteria that cannot run&quot; or &quot;Criteria to improve&quot;, and nothing else.</p>
+<p>Use no prose, no summary, and no fenced code around a criterion block. Use the exact delimiters, with the criterion&#x27;s own id:</p>
+<pre><code>=== AC &lt;check-id&gt; ===
+Intent: &lt;unchanged&gt;
+
+&lt;the repaired Python&gt;
+=== END AC &lt;check-id&gt; ===</code></pre>
+<p>The block you emit replaces the existing block byte for byte. Include the whole criterion — every line between the delimiters — not a patch or a diff.</p></article>
+</main>
+</body>
+</html>

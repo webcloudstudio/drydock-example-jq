@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.055731.053Z_jq_plan-repair_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.055731.053Z_jq_plan-repair_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.055731.053Z_jq_plan-repair_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN REPAIRED SPECIFICATION ===
+# FEATURE: Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq diagnostic, raw stderr, debug, and halt-error behavior. |
+| Depends On  | FEATURE-Process-Contract.md, FEATURE-Errors-and-Optional.md |
+| Provides    | debug, stderr, halt_error |
+| Consumes    | compile and runtime exit contract |
+
+## Scope
+
+Implement `debug`, `stderr`, and `halt_error`, preserving jq&#x27;s separation of JSON results on stdout from diagnostic and raw output on stderr. `halt_error` must stop evaluation and use its requested exit status while ordinary runtime failures retain exit status 5.
+
+## Programmatic Acceptance
+
+=== AC diagnostics-conformance ===
+Intent: The authoritative corpus cases covering jq diagnostics and stderr filters execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;debug|stderr|halt_error&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC diagnostics-conformance ===
+Intent: The authoritative corpus verifies stdout preservation, stderr side effects, and halt behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;debug|stderr|halt_error&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert summary[&quot;pass&quot;] &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC diagnostics-streams ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics must never be emitted on stdout.
+- Preserve values emitted before a runtime or halt error.
+- Do not compare or depend on diagnostic message text outside the authoritative corpus.
+=== END REPAIRED SPECIFICATION ===</pre></article>
+</main>
+</body>
+</html>

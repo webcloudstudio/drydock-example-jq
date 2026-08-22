@@ -1,100 +1,30 @@
 Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
-repair: FEATURE-Accessors.md · value-002-conformance · 1 of 1 attempt
-2026-08-22 01:11:24 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+repair: FEATURE-Date-and-Time.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:15 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Accessors.md [value-002-conformance]: repaired
-repair: FEATURE-Arithmetic-and-Structural-Operators.md · flow-001-conformance · 1 of 1 attempt
-2026-08-22 01:11:41 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] '=== END AC date-utc-and-errors ===' has no matching opening block
+repair: FEATURE-Diagnostics.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:31 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Arithmetic-and-Structural-Operators.md [flow-001-conformance]: repaired
-repair: FEATURE-Boolean-and-Alternative-Operators.md · flow-002-conformance · 1 of 1 attempt
-2026-08-22 01:11:57 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] '=== END AC diagnostics-streams ===' has no matching opening block
+repair: FEATURE-Input-Controls.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:46 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Boolean-and-Alternative-Operators.md [flow-002-conformance]: repaired
-repair: FEATURE-Complex-Assignments.md · path-004-conformance · 1 of 1 attempt
-2026-08-22 01:12:13 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] '=== END AC input-stream-behavior ===' has no matching opening block
+repair: FEATURE-JSON-I-O.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:58:02 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-repair: FEATURE-Conditionals-and-Exception-Flow.md · flow-003-conformance · 1 of 1 attempt
-2026-08-22 01:12:29 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Conditionals-and-Exception-Flow.md [flow-003-conformance]: repaired
-repair: FEATURE-Destructuring-Alternatives.md · func-004-conformance · 1 of 1 attempt
-2026-08-22 01:12:46 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Destructuring-Alternatives.md [func-004-conformance]: repaired
-repair: FEATURE-Filter-Grammar.md · parse-003-conformance · 1 of 1 attempt
-2026-08-22 01:13:00 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Filter-Grammar.md [parse-003-conformance]: repaired
-repair: FEATURE-Full-Conformance.md · full-conformance-exit · 1 of 1 attempt
-2026-08-22 01:13:18 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Full-Conformance.md [full-conformance-exit]: repaired
-repair: FEATURE-Function-Definitions.md · function-definitions-scoped-conformance · 1 of 1 attempt
-2026-08-22 01:13:26 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Function-Definitions.md [function-definitions-scoped-conformance]: repaired
-repair: FEATURE-Generator-Core.md · core-001-conformance · 1 of 1 attempt
-2026-08-22 01:13:38 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-repair: FEATURE-Labels-and-Breaks.md · flow-004-conformance · 1 of 1 attempt
-2026-08-22 01:13:55 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Labels-and-Breaks.md [flow-004-conformance]: repaired
-repair: FEATURE-Literals-and-Strings.md · parse-002-conformance · 1 of 1 attempt
-2026-08-22 01:14:11 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Literals-and-Strings.md [parse-002-conformance]: repaired
-repair: FEATURE-Path-Discovery.md · path-001-conformance · 1 of 1 attempt
-2026-08-22 01:14:22 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Path-Discovery.md [path-001-conformance]: repaired
-repair: FEATURE-Process-Contract.md · process-compile-exit · 1 of 1 attempt
-2026-08-22 01:14:39 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Process-Contract.md [process-compile-exit]: repaired
-repair: FEATURE-Recursive-Generators.md · recursive-generators-scoped-conformance · 1 of 1 attempt
-2026-08-22 01:14:50 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Recursive-Generators.md [recursive-generators-scoped-conformance]: repaired
-repair: FEATURE-Regular-Expressions.md · regex-conformance · 1 of 1 attempt
-2026-08-22 01:14:59 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Regular-Expressions.md [regex-conformance]: repaired
-repair: FEATURE-Scoped-Conformance.md · scoped-conformance · 1 of 1 attempt
-2026-08-22 01:15:10 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Scoped-Conformance.md [scoped-conformance]: repaired
-repair: FEATURE-Sorting-and-Grouping.md · data-002-conformance · 1 of 1 attempt
-2026-08-22 01:15:21 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Sorting-and-Grouping.md [data-002-conformance]: repaired
-repair: FEATURE-String-Manipulation.md · text-001-conformance · 1 of 1 attempt
-2026-08-22 01:15:34 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-String-Manipulation.md [text-001-conformance]: repaired
-repair: FEATURE-Type-and-Numeric-Primitives.md · value-004-conformance · 1 of 1 attempt
-2026-08-22 01:15:56 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Type-and-Numeric-Primitives.md [value-004-conformance]: repaired
-repair: FEATURE-Variable-Bindings.md · variable-bindings-scoped-conformance · 1 of 1 attempt
-2026-08-22 01:16:10 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
-  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
-  ✓  FEATURE-Variable-Bindings.md [variable-bindings-scoped-conformance]: repaired
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
 plan repair: jq
-  19 repaired, 6 outstanding, 19 files changed
-  ✗  FEATURE-Date-and-Time.md []: impossible — file does not parse: FEATURE-Date-and-Time.md [date-conformance] acceptance block closes with a different id: expected '=== END AC date-conformance ===', found '=== END AC date-utc-and-errors ==='
-  ✗  FEATURE-Diagnostics.md []: impossible — file does not parse: FEATURE-Diagnostics.md [diagnostics-conformance] acceptance block closes with a different id: expected '=== END AC diagnostics-conformance ===', found '=== END AC diagnostics-streams ==='
-  ✗  FEATURE-Input-Controls.md []: impossible — file does not parse: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
-  ✗  FEATURE-JSON-I-O.md []: impossible — file does not parse: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
-  ✗  FEATURE-Complex-Assignments.md [path-004-conformance]: impossible — the supplied criterion contains no leading-zero decimal literal to repair without changing its assertions.
-  ✗  FEATURE-Generator-Core.md [core-001-conformance]: impossible — the supplied criterion contains no invalid leading-zero literal; repairing the reported issue would require changing an assertion or otherwise altering valid code.
+  0 repaired, 4 outstanding, 0 files changed
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] '=== END AC date-utc-and-errors ===' has no matching opening block
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] '=== END AC diagnostics-streams ===' has no matching opening block
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] '=== END AC input-stream-behavior ===' has no matching opening block
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
 plan verify: jq
-  6 criteria cannot run as written
-  ✗  FEATURE-Complex-Assignments.md [path-004-conformance]: criterion is not valid Python: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (line 21)
+  4 criteria cannot run as written
   ✗  FEATURE-Date-and-Time.md: FEATURE-Date-and-Time.md [date-conformance] acceptance block closes with a different id: expected '=== END AC date-conformance ===', found '=== END AC date-utc-and-errors ==='
   ✗  FEATURE-Diagnostics.md: FEATURE-Diagnostics.md [diagnostics-conformance] acceptance block closes with a different id: expected '=== END AC diagnostics-conformance ===', found '=== END AC diagnostics-streams ==='
-  ✗  FEATURE-Generator-Core.md [core-001-conformance]: criterion is not valid Python: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (line 21)
   ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
   ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
   Run: drydock plan repair jq

@@ -1,0 +1,11 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+plan verify: jq
+  6 criteria cannot run as written
+  ✗  FEATURE-Complex-Assignments.md [path-004-conformance]: criterion is not valid Python: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (line 21)
+  ✗  FEATURE-Date-and-Time.md: FEATURE-Date-and-Time.md [date-conformance] acceptance block closes with a different id: expected '=== END AC date-conformance ===', found '=== END AC date-utc-and-errors ==='
+  ✗  FEATURE-Diagnostics.md: FEATURE-Diagnostics.md [diagnostics-conformance] acceptance block closes with a different id: expected '=== END AC diagnostics-conformance ===', found '=== END AC diagnostics-streams ==='
+  ✗  FEATURE-Generator-Core.md [core-001-conformance]: criterion is not valid Python: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (line 21)
+  ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
+  ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
+  Run: drydock plan repair jq
+Target - committed project workspace git store
