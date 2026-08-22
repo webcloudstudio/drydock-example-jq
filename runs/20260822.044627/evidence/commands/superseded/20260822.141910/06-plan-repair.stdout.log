@@ -1,18 +1,18 @@
 Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
 repair: FEATURE-Date-and-Time.md · acceptance container · 1 of 1 attempt
-2026-08-22 10:19:21 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+2026-08-22 01:57:15 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
   ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] '=== END AC date-utc-and-errors ===' has no matching opening block
 repair: FEATURE-Diagnostics.md · acceptance container · 1 of 1 attempt
-2026-08-22 10:19:41 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+2026-08-22 01:57:31 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
   ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] '=== END AC diagnostics-streams ===' has no matching opening block
 repair: FEATURE-Input-Controls.md · acceptance container · 1 of 1 attempt
-2026-08-22 10:19:57 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+2026-08-22 01:57:46 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
   ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] '=== END AC input-stream-behavior ===' has no matching opening block
 repair: FEATURE-JSON-I-O.md · acceptance container · 1 of 1 attempt
-2026-08-22 10:20:13 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+2026-08-22 01:58:02 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
   Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
   ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
 plan repair: jq
@@ -28,3 +28,4 @@ plan verify: jq
   ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
   ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
   Run: drydock plan repair jq
+Target - committed project workspace git store

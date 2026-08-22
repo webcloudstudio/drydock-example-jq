@@ -2,5 +2,5 @@
 {"label": "IMPORTED", "result": "pass", "at": "2026-08-22T04:46:33.960+00:00", "detail": "", "command": "drydock import jq", "attempts": 1}
 {"label": "ANALYZED", "result": "pass", "at": "2026-08-22T04:48:42.765+00:00", "detail": "", "command": "drydock analyze jq", "attempts": 1}
 {"label": "PLAN CREATED", "result": "fail", "at": "2026-08-22T05:11:22.564+00:00", "detail": "23 criteria cannot run", "command": "drydock plan verify jq", "attempts": 2}
-{"label": "PLAN REPAIRED", "result": "fail", "at": "2026-08-22T05:58:24.743+00:00", "detail": "4 criteria cannot run", "command": "drydock plan verify jq", "attempts": 8}
+{"label": "PLAN REPAIRED", "result": "fail", "at": "2026-08-22T14:20:32.503+00:00", "detail": "4 criteria cannot run", "command": "drydock plan verify jq", "attempts": 11}
 {"state": "PLAN CREATED", "result": "fail", "at": "2026-08-22T05:11:22.564+00:00", "attempts": 2}

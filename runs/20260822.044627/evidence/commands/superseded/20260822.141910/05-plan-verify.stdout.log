@@ -6,3 +6,4 @@ plan verify: jq
   ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected '=== END AC input-controls-conformance ===', found '=== END AC input-stream-behavior ==='
   ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected '=== END AC json-multiple-inputs ===', found '=== END AC json-compact-line ==='
   Run: drydock plan repair jq
+Target - committed project workspace git store
