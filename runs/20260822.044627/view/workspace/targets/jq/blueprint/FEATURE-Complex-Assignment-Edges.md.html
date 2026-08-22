@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Complex-Assignment-Edges.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Complex-Assignment-Edges.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Complex-Assignment-Edges.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Complex Assignment Edges</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines edge-case behavior for iterated, empty, fractional, invalid, and deep assignments.</td></tr><tr><td>Depends On</td><td>FEATURE-Deletion-And-Assignment.md, FEATURE-Path-Primitives.md</td></tr><tr><td>Provides</td><td>Iterated path assignment, empty-update deletion, array expansion, assignment depth protections</td></tr><tr><td>Consumes</td><td>Assignment operators, path primitives</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Complete assignment semantics for complex path expressions and adversarial boundary cases.</p>
+<h2>Implementation Requirements</h2>
+<ul><li>Apply assignments across iterated and multi-path selections in generator order.</li><li>Treat an update producing <code>empty</code> as deletion.</li><li>Expand arrays with <code>null</code> values when setting beyond their current length.</li><li>Handle negative, fractional, NaN, and out-of-range indexes according to jq semantics.</li><li>Reject invalid string updates and invalid array path components with runtime errors.</li><li>Enforce assignment path depth limits.</li><li>Preserve partial output behavior when a later assignment fails.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC complex-assignment-conformance ===<br>Intent: The complex assignment implementation passes representative declared path update and empty-update deletion behaviors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess</p>
+<p>jq = os.path.join(os.getcwd(), &quot;jq&quot;)</p>
+<p>updated = subprocess.run( [jq, &quot;-c&quot;, &quot;.a |= . + 1&quot;], input=&#x27;{&quot;a&quot;:1}&#x27;, capture_output=True, text=True, ) assert updated.returncode == 0 assert json.loads(updated.stdout) == {&quot;a&quot;: 2}</p>
+<p>deleted = subprocess.run( [jq, &quot;-c&quot;, &quot;del(.a)&quot;], input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:2}&#x27;, capture_output=True, text=True, ) assert deleted.returncode == 0 assert json.loads(deleted.stdout) == {&quot;b&quot;: 2}</p>
+<p>=== END AC complex-assignment-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not silently clamp invalid assignment indexes when jq specifies an error.</li><li>Do not discard valid outputs produced before a later runtime failure.</li><li>Do not exceed configured path depth limits through recursive or iterated assignments.</li></ul></article>
+</main>
+</body>
+</html>

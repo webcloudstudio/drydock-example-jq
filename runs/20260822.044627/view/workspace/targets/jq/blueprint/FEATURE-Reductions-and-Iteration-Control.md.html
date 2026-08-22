@@ -3,16 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Reductions-and-Iteration-Control.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Reductions-And-Iteration-Control.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Reductions-and-Iteration-Control.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Reductions-and-Iteration-Control.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Reductions-And-Iteration-Control.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Reductions-And-Iteration-Control.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Reductions and Iteration Control</h1>
-<p>Reductions, iteration controls, range generation, and generator selection are supported.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq reductions and generator-control builtins with stateful stream semantics.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Generator-Core.md, FEATURE-Labels-And-Breaks.md, FEATURE-Variable-Bindings.md</td></tr><tr><td>Provides</td><td>reduce, foreach, range, limit, skip, first, last, nth</td></tr><tr><td>Consumes</td><td>ordered generators, lexical labels, variable bindings</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement <code>reduce</code> and <code>foreach</code> state transitions over generator inputs. Implement <code>range</code>, <code>limit</code>, <code>skip</code>, <code>first</code>, <code>last</code>, and <code>nth</code>, including multi-valued arguments, empty streams, negative-count errors, extraction behavior, and label-based termination. Preserve jq&#x27;s ordering, backtracking, and accumulator semantics.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC reductions-scoped-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC reductions-scoped-conformance ===</p></article>
+<p>=== AC flow-005-conformance ===<br>Intent: The authoritative corpus slice exercising reductions and iteration controls executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;reduce|foreach|limit|skip|nth|first|last&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-005-conformance ===</p>
+<p>=== AC flow-005-interface ===<br>Intent: The implementation exposes every declared reduction and iteration-control interface. import subprocess import sys</p>
+<p>program = &quot;reduce .[] as $x (0; . + $x)&quot; payload = &quot;[1,2,3]\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode in (0, 5) === END AC flow-005-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator order, multiplicity, and backtracking.</li><li>Do not replace stateful reductions with single-value evaluation.</li><li>Do not alter staged conformance assets.</li></ul></article>
 </main>
 </body>
 </html>

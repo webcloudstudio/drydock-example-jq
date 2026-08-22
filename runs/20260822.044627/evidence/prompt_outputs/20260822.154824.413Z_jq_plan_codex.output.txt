@@ -1,0 +1,342 @@
+=== BEGIN ARTIFACT FEATURE-Arithmetic-And-Structural-Operators.md ===
+# FEATURE: Arithmetic and Structural Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq arithmetic, structural combination, repetition, splitting, and negation operators. |
+| Depends On  | FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Errors-And-Optional-Evaluation.md |
+| Provides    | +, -, *, /, %, unary negation, recursive object merge, string repetition and splitting |
+| Consumes    | jq value model, generator evaluation, comparison semantics |
+
+## Intent
+
+Implement jq's typed arithmetic and structural operators. Operators evaluate both operands as filters over the same input and preserve Cartesian generator behavior.
+
+## Behavior
+
+- Numbers use jq-compatible arithmetic.
+- Arrays concatenate with `+` and subtract matching elements with `-`.
+- Strings concatenate with `+`, repeat with numeric `*`, and split with `/`.
+- Objects merge with `+`; `*` recursively merges nested objects.
+- `null` is additive with any value.
+- Division and remainder by zero raise runtime errors.
+- Unary negation accepts numbers only and preserves partial output semantics.
+
+## Programmatic Acceptance
+
+=== AC flow-001-conformance ===
+Intent: The arithmetic and structural operator implementation passes representative declared arithmetic and structural behaviors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+addition = subprocess.run(
+    [jq, "-c", "1 + 2"],
+    capture_output=True,
+    text=True,
+)
+assert addition.returncode == 0
+assert json.loads(addition.stdout) == 3
+
+merge = subprocess.run(
+    [jq, "-c", '{"a":{"x":1}} * {"a":{"y":2}}'],
+    capture_output=True,
+    text=True,
+)
+assert merge.returncode == 0
+assert json.loads(merge.stdout) == {"a": {"x": 1, "y": 2}}
+
+=== END AC flow-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not perform implicit cross-type conversions.
+- Preserve operator precedence, generator multiplicity, and runtime errors.
+- Do not shell out to another jq implementation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Boolean-And-Alternative-Operators.md ===
+# FEATURE: Boolean and Alternative Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq Boolean operators, truthiness-aware alternatives, and defined-or assignment. |
+| Depends On  | FEATURE-Truthiness-And-Comparison.md, FEATURE-Arithmetic-And-Structural-Operators.md |
+| Provides    | and, or, not, //, //= |
+| Consumes    | jq truthiness, generator core, arithmetic operators |
+
+## Intent
+
+Implement strict Boolean operators and jq's value-selection alternative operators. Boolean operators produce Boolean values, while `//` selects non-null and non-false generator outputs.
+
+## Behavior
+
+- Only `false` and `null` are falsey.
+- `and`, `or`, and `not` produce Boolean results with generator-valued operands evaluated according to jq semantics.
+- `a // b` emits all non-false, non-null values from `a`; otherwise it evaluates `b`.
+- `//=` updates defined-or paths using jq assignment semantics.
+- Short-circuiting must prevent unnecessary error-producing branches where jq requires it.
+
+## Programmatic Acceptance
+
+=== AC flow-002-conformance ===
+Intent: The Boolean and alternative operator implementation passes representative declared Boolean and fallback behaviors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+boolean = subprocess.run(
+    [jq, "-c", "true and (1 == 1)"],
+    capture_output=True,
+    text=True,
+)
+assert boolean.returncode == 0
+assert json.loads(boolean.stdout) is True
+
+alternative = subprocess.run(
+    [jq, "-c", "null // 7"],
+    capture_output=True,
+    text=True,
+)
+assert alternative.returncode == 0
+assert json.loads(alternative.stdout) == 7
+
+=== END AC flow-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not treat empty strings, arrays, or objects as falsey.
+- Preserve generator multiplicity and alternative fallback semantics.
+- Do not evaluate fallback branches when jq semantics select the left stream.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Collection-Transformations.md ===
+# FEATURE: Collection Transformations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq collection transformation builtins with generator-preserving behavior. |
+| Depends On  | FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Deletion-And-Assignment.md, FEATURE-Type-And-Numeric-Primitives.md |
+| Provides    | map, map_values, select, add, flatten, transpose, combinations, walk |
+| Consumes    | generator evaluator, operators, path mutation |
+
+## Workflow
+
+Collection filters transform arrays and objects while preserving jq stream order and multiplicity. Implement `map`, `map_values`, `select`, `add`, `flatten`, `transpose`, `combinations`, and recursive `walk` using the established evaluator and immutable update semantics. Empty generators, nested arrays, jagged matrices, and recursive values must follow the manual and `sources/builtin.jq`.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+Intent: The collection transformation implementation passes representative declared map and flatten behaviors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+mapped = subprocess.run(
+    [jq, "-c", "map(. * 2)"],
+    input="[1,2,3]",
+    capture_output=True,
+    text=True,
+)
+assert mapped.returncode == 0
+assert json.loads(mapped.stdout) == [2, 4, 6]
+
+flattened = subprocess.run(
+    [jq, "-c", "flatten"],
+    input="[[1],[2,3]]",
+    capture_output=True,
+    text=True,
+)
+assert flattened.returncode == 0
+assert json.loads(flattened.stdout) == [1, 2, 3]
+
+=== END AC data-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, and backtracking.
+- Do not mutate input values in place.
+- Use only Python standard-library facilities.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Complex-Assignment-Edges.md ===
+# FEATURE: Complex Assignment Edges
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines edge-case behavior for iterated, empty, fractional, invalid, and deep assignments. |
+| Depends On  | FEATURE-Deletion-And-Assignment.md, FEATURE-Path-Primitives.md |
+| Provides    | Iterated path assignment, empty-update deletion, array expansion, assignment depth protections |
+| Consumes    | Assignment operators, path primitives |
+
+## Purpose
+
+Complete assignment semantics for complex path expressions and adversarial boundary cases.
+
+## Implementation Requirements
+
+- Apply assignments across iterated and multi-path selections in generator order.
+- Treat an update producing `empty` as deletion.
+- Expand arrays with `null` values when setting beyond their current length.
+- Handle negative, fractional, NaN, and out-of-range indexes according to jq semantics.
+- Reject invalid string updates and invalid array path components with runtime errors.
+- Enforce assignment path depth limits.
+- Preserve partial output behavior when a later assignment fails.
+
+## Programmatic Acceptance
+
+=== AC complex-assignment-conformance ===
+Intent: The complex assignment implementation passes representative declared path update and empty-update deletion behaviors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+updated = subprocess.run(
+    [jq, "-c", ".a |= . + 1"],
+    input='{"a":1}',
+    capture_output=True,
+    text=True,
+)
+assert updated.returncode == 0
+assert json.loads(updated.stdout) == {"a": 2}
+
+deleted = subprocess.run(
+    [jq, "-c", "del(.a)"],
+    input='{"a":1,"b":2}',
+    capture_output=True,
+    text=True,
+)
+assert deleted.returncode == 0
+assert json.loads(deleted.stdout) == {"b": 2}
+
+=== END AC complex-assignment-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not silently clamp invalid assignment indexes when jq specifies an error.
+- Do not discard valid outputs produced before a later runtime failure.
+- Do not exceed configured path depth limits through recursive or iterated assignments.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Composition-And-Cartesian-Evaluation.md ===
+# FEATURE: Composition and Cartesian Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implement jq composition, Cartesian argument evaluation, collection, object construction, and binary filter composition. |
+| Depends On  | FEATURE-Generator-Core.md, FEATURE-Filter-Grammar.md |
+| Provides    | Pipes, commas, Cartesian arguments, arrays, objects, and binary filter composition |
+| Consumes    | Generator core, parsed expressions, JSON value model |
+
+## Scope
+
+Composition shall feed every output of a left-hand filter into the right-hand filter, concatenate comma streams in order, evaluate multi-output arguments as Cartesian products, and collect all generated values for arrays and objects. Binary operators shall receive independently evaluated filter results according to jq semantics.
+
+## Programmatic Acceptance
+
+=== AC composition-conformance ===
+Intent: The composition implementation passes representative declared pipe, comma, array, and object behaviors.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+piped = subprocess.run(
+    [jq, "-c", ".[] | . * 2"],
+    input="[1,2]",
+    capture_output=True,
+    text=True,
+)
+assert piped.returncode == 0
+assert [json.loads(line) for line in piped.stdout.splitlines()] == [2, 4]
+
+constructed = subprocess.run(
+    [jq, "-c", "[1,2]"],
+    capture_output=True,
+    text=True,
+)
+assert constructed.returncode == 0
+assert json.loads(constructed.stdout) == [1, 2]
+
+=== END AC composition-conformance ===
+
+=== AC composition-cartesian-streams ===
+Intent: The composition implementation preserves comma stream ordering and Cartesian products.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+
+jq = os.path.join(os.getcwd(), "jq")
+
+streams = subprocess.run(
+    [jq, "-c", "1,2,3"],
+    capture_output=True,
+    text=True,
+)
+assert streams.returncode == 0
+assert [json.loads(line) for line in streams.stdout.splitlines()] == [1, 2, 3]
+
+cartesian = subprocess.run(
+    [jq, "-c", "[1,2] as $a | [3,4] as $b | [$a,$b]"],
+    capture_output=True,
+    text=True,
+)
+assert cartesian.returncode == 0
+assert json.loads(cartesian.stdout) == [[1, 3], [1, 4], [2, 3], [2, 4]]
+
+=== END AC composition-cartesian-streams ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve left-to-right generator ordering.
+- Evaluate every multi-output argument combination required by jq.
+- Array and object construction must collect generated values without dropping or duplicating outputs.
+=== END ARTIFACT ===

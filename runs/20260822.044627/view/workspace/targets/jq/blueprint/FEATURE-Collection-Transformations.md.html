@@ -10,9 +10,20 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Collection-Transformations.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Collection-Transformations.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Collection Transformations</h1>
-<p>Collection transformation and recursive traversal builtins preserve generator ordering and multiplicity.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq collection transformation builtins with generator-preserving behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Deletion-And-Assignment.md, FEATURE-Type-And-Numeric-Primitives.md</td></tr><tr><td>Provides</td><td>map, map_values, select, add, flatten, transpose, combinations, walk</td></tr><tr><td>Consumes</td><td>generator evaluator, operators, path mutation</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Collection filters transform arrays and objects while preserving jq stream order and multiplicity. Implement <code>map</code>, <code>map_values</code>, <code>select</code>, <code>add</code>, <code>flatten</code>, <code>transpose</code>, <code>combinations</code>, and recursive <code>walk</code> using the established evaluator and immutable update semantics. Empty generators, nested arrays, jagged matrices, and recursive values must follow the manual and <code>sources/builtin.jq</code>.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC data-001-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC data-001-conformance ===</p></article>
+<p>=== AC data-001-conformance ===<br>Intent: The collection transformation implementation passes representative declared map and flatten behaviors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess</p>
+<p>jq = os.path.join(os.getcwd(), &quot;jq&quot;)</p>
+<p>mapped = subprocess.run( [jq, &quot;-c&quot;, &quot;map(. * 2)&quot;], input=&quot;[1,2,3]&quot;, capture_output=True, text=True, ) assert mapped.returncode == 0 assert json.loads(mapped.stdout) == [2, 4, 6]</p>
+<p>flattened = subprocess.run( [jq, &quot;-c&quot;, &quot;flatten&quot;], input=&quot;[[1],[2,3]]&quot;, capture_output=True, text=True, ) assert flattened.returncode == 0 assert json.loads(flattened.stdout) == [1, 2, 3]</p>
+<p>=== END AC data-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator ordering, multiplicity, and backtracking.</li><li>Do not mutate input values in place.</li><li>Use only Python standard-library facilities.</li></ul></article>
 </main>
 </body>
 </html>

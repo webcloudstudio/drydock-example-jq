@@ -1,0 +1,295 @@
+=== BEGIN ARTIFACT FEATURE-Collection-Transformations.md ===
+# FEATURE: Collection Transformations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq collection transformation builtins with generator-preserving behavior. |
+| Depends On  | FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Deletion-And-Assignment.md, FEATURE-Type-And-Numeric-Primitives.md |
+| Provides    | map, map_values, select, add, flatten, transpose, combinations, walk |
+| Consumes    | generator evaluator, operators, path mutation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Collection filters transform arrays and objects while preserving jq stream order and multiplicity. Implement `map`, `map_values`, `select`, `add`, `flatten`, `transpose`, `combinations`, and recursive `walk` using the established evaluator and immutable update semantics. Empty generators, nested arrays, jagged matrices, and recursive values must follow the manual and `sources/builtin.jq`.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+Intent: The authoritative corpus slice covering collection transformations executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"map|flatten|transpose|combinations|walk"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, and backtracking.
+- Do not mutate input values in place.
+- Use only Python standard-library facilities.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Sorting-And-Grouping.md ===
+# FEATURE: Sorting And Grouping
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq structural sorting, grouping, uniqueness, and extremum builtins. |
+| Depends On  | FEATURE-Truthiness-And-Comparison.md, FEATURE-Collection-Transformations.md |
+| Provides    | sort, sort_by, group_by, unique, unique_by, min, max, min_by, max_by |
+| Consumes    | comparison and ordering semantics, collection transformations |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement structural ordering across jq values, including null, booleans, numbers, strings, arrays, and objects. Implement keyed sorting and grouping, duplicate removal, and minimum/maximum selection. Filter arguments may produce multiple values and must be compared in jq's prescribed lexicographic order.
+
+## Programmatic Acceptance
+
+=== AC data-002-conformance ===
+Intent: The authoritative corpus slice covering sorting, grouping, uniqueness, and extrema executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"sort|group_by|unique|min|max"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Equality and ordering must remain consistent with jq numeric equivalence.
+- Object key order must not affect structural equality.
+- Preserve stable output ordering where the jq semantics require it.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Object-Entries-And-Containment.md ===
+# FEATURE: Object Entries And Containment
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq key, membership, containment, and object-entry conversion builtins. |
+| Depends On  | FEATURE-Field-And-Index-Access.md, FEATURE-Truthiness-And-Comparison.md, FEATURE-Collection-Transformations.md |
+| Provides    | keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries |
+| Consumes    | value access, equality, collection transformations |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement key enumeration for arrays and objects, membership predicates, recursive containment and inverse containment, and conversion between objects and entry arrays. Support the documented key aliases in `from_entries` and preserve object semantics through `with_entries`.
+
+## Programmatic Acceptance
+
+=== AC data-003-conformance ===
+Intent: The authoritative corpus slice covering keys, membership, containment, and entries executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"keys|has\(|contains|inside|to_entries|from_entries"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- `keys` sorts object keys by Unicode codepoint; `keys_unsorted` preserves insertion order.
+- Containment is recursive and type-sensitive.
+- Missing fields and invalid access follow established jq runtime semantics.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Index-And-Membership-Utilities.md ===
+# FEATURE: Index And Membership Utilities
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq index search, binary search, quantifier, emptiness, and SQL-style membership utilities. |
+| Depends On  | FEATURE-Truthiness-And-Comparison.md, FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Object-Entries-And-Containment.md |
+| Provides    | indices, index, rindex, bsearch, all, any, isempty, IN |
+| Consumes    | comparison semantics, generator evaluator |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement substring and contiguous-array index searches, binary search over sorted arrays, short-circuiting `all` and `any`, emptiness detection, and SQL-style `IN` forms. Preserve generator behavior and avoid evaluating unnecessary values after a decisive quantifier result.
+
+## Programmatic Acceptance
+
+=== AC data-004-conformance ===
+Intent: The authoritative corpus slice covering index, membership, quantifier, and emptiness utilities executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"indices|index\(|rindex|bsearch|any|all|IN\("
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC data-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- `all` and `any` must preserve jq truthiness and short-circuit behavior.
+- Array searches require contiguous structural matches.
+- Do not coerce unrelated jq types during membership checks.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-String-Manipulation.md ===
+# FEATURE: String Manipulation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq string trimming, case, codepoint, splitting, joining, and interpolation behavior. |
+| Depends On  | FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Literals-And-Interpolation.md, FEATURE-Composition-And-Cartesian-Evaluation.md |
+| Provides    | trim, ltrim, rtrim, ltrimstr, rtrimstr, trimstr, startswith, endswith, ascii_downcase, ascii_upcase, explode, implode, split, join, string interpolation |
+| Consumes    | string values, generator evaluator |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement Unicode-aware whitespace trimming, prefix and suffix removal, ASCII-only case conversion, codepoint conversion, string splitting and joining, and interpolation over generator-valued expressions. Follow jq's distinctions between codepoints and UTF-8 byte lengths and its handling of null, booleans, and numbers in joins.
+
+## Programmatic Acceptance
+
+=== AC text-001-conformance ===
+Intent: The authoritative corpus slice covering string manipulation and interpolation executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r"split|join|trim|ascii_|explode|implode|startswith|endswith"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", selector, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0
+assert summary["error"] == 0
+assert result.returncode == 0
+=== END AC text-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve Unicode codepoints and embedded control characters.
+- `ascii_downcase` and `ascii_upcase` affect only ASCII letters.
+- String operations must reject invalid input with runtime errors rather than silently coercing it.
+
+=== END ARTIFACT ===

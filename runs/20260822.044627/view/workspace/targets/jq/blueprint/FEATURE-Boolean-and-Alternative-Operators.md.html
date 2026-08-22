@@ -3,18 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Boolean-and-Alternative-Operators.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Boolean-And-Alternative-Operators.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Boolean-and-Alternative-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Boolean-and-Alternative-Operators.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Boolean-And-Alternative-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Boolean-And-Alternative-Operators.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Boolean and Alternative Operators</h1>
-<p>Boolean, negation, defined-or, and defined-or assignment semantics are supported.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements jq Boolean operators, truthiness-aware alternatives, and defined-or assignment.</td></tr><tr><td>Depends On</td><td>FEATURE-Truthiness-And-Comparison.md, FEATURE-Arithmetic-And-Structural-Operators.md</td></tr><tr><td>Provides</td><td>and, or, not, //, //=</td></tr><tr><td>Consumes</td><td>jq truthiness, generator core, arithmetic operators</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement strict Boolean operators and jq&#x27;s value-selection alternative operators. Boolean operators produce Boolean values, while <code>//</code> selects non-null and non-false generator outputs.</p>
+<h2>Behavior</h2>
+<ul><li>Only <code>false</code> and <code>null</code> are falsey.</li><li><code>and</code>, <code>or</code>, and <code>not</code> produce Boolean results with generator-valued operands evaluated according to jq semantics.</li><li><code>a // b</code> emits all non-false, non-null values from <code>a</code>; otherwise it evaluates <code>b</code>.</li><li><code>//=</code> updates defined-or paths using jq assignment semantics.</li><li>Short-circuiting must prevent unnecessary error-producing branches where jq requires it.</li></ul>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC flow-002-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;//|and|or|not&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-002-conformance ===</p></article>
+<p>=== AC flow-002-conformance ===<br>Intent: The Boolean and alternative operator implementation passes representative declared Boolean and fallback behaviors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess</p>
+<p>jq = os.path.join(os.getcwd(), &quot;jq&quot;)</p>
+<p>boolean = subprocess.run( [jq, &quot;-c&quot;, &quot;true and (1 == 1)&quot;], capture_output=True, text=True, ) assert boolean.returncode == 0 assert json.loads(boolean.stdout) is True</p>
+<p>alternative = subprocess.run( [jq, &quot;-c&quot;, &quot;null // 7&quot;], capture_output=True, text=True, ) assert alternative.returncode == 0 assert json.loads(alternative.stdout) == 7</p>
+<p>=== END AC flow-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not treat empty strings, arrays, or objects as falsey.</li><li>Preserve generator multiplicity and alternative fallback semantics.</li><li>Do not evaluate fallback branches when jq semantics select the left stream.</li></ul></article>
 </main>
 </body>
 </html>

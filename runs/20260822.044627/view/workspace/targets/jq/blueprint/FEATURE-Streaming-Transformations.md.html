@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Streaming-Transformations.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Streaming-Transformations.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Streaming-Transformations.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Streaming Transformations</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implement jq streaming conversion and truncation filters over the fixed process boundary.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Discovery.md, FEATURE-Generator-Core.md, FEATURE-Collection-Transformations.md</td></tr><tr><td>Provides</td><td>tostream, fromstream, truncate_stream</td></tr><tr><td>Consumes</td><td>ordered generators, path discovery, JSON values</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement the streaming value representation described by the jq manual while retaining the fixed non-streaming CLI interface. <code>tostream</code> emits path/value stream records, <code>fromstream</code> reconstructs values, and <code>truncate_stream</code> removes leading path components.</p>
+<h2>Behavior</h2>
+<ul><li><code>tostream</code> emits stream records in jq traversal order, including container termination records.</li><li><code>fromstream</code> reconstructs arrays, objects, scalars, empty containers, and multiple streamed values.</li><li><code>truncate_stream</code> consumes an integer depth and emits records with that many leading path components removed.</li><li>Invalid stream structures and invalid truncation depths follow jq runtime-error behavior.</li><li>The implementation uses only the standard library and preserves generator ordering.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC streaming-conformance ===<br>Intent: The streaming filters pass the executed conformance cases selected by their syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;tostream|fromstream|truncate_stream&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC streaming-conformance ===</p>
+<p>=== AC streaming-roundtrip ===<br>Intent: A streamed value can be reconstructed without changing its value. import json import os import subprocess</p>
+<p>source = &quot;[0,[1,{\&quot;a\&quot;:2}]]&quot; program = &quot;. as $dot | fromstream($dot|tostream) | . == $dot&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=source + &quot;\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [True] assert actual == expected === END AC streaming-roundtrip ===</p>
+<p>=== AC streaming-truncation ===<br>Intent: Truncating a stream removes the requested leading path depth. import json import subprocess</p>
+<p>stream = &quot;[[0],\&quot;a\&quot;],[[1,0],\&quot;b\&quot;],[[1,0]],[[1]]&quot; program = &quot;truncate_stream(1|[[0],\&quot;a\&quot;],[[1,0],\&quot;b\&quot;],[[1,0]],[[1]])&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;1\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [[[0], &quot;b&quot;], [[0]]] assert actual == expected === END AC streaming-truncation ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not add a streaming command-line mode; these filters operate within the fixed <code>-c</code> interface.</li><li>Do not shell out to jq or use a third-party implementation.</li><li>Preserve stream record order and multiplicity.</li><li>Do not modify files under <code>sources/</code>.</li></ul></article>
+</main>
+</body>
+</html>

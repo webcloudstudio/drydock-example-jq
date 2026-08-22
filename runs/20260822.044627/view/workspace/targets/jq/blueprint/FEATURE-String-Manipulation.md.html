@@ -10,11 +10,17 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-String-Manipulation.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-String-Manipulation.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: String Manipulation</h1>
-<p>String trimming, conversion, splitting, joining, case, and Unicode filters are supported.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq string trimming, case, codepoint, splitting, joining, and interpolation behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Literals-And-Interpolation.md, FEATURE-Composition-And-Cartesian-Evaluation.md</td></tr><tr><td>Provides</td><td>trim, ltrim, rtrim, ltrimstr, rtrimstr, trimstr, startswith, endswith, ascii_downcase, ascii_upcase, explode, implode, split, join, string interpolation</td></tr><tr><td>Consumes</td><td>string values, generator evaluator</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement Unicode-aware whitespace trimming, prefix and suffix removal, ASCII-only case conversion, codepoint conversion, string splitting and joining, and interpolation over generator-valued expressions. Follow jq&#x27;s distinctions between codepoints and UTF-8 byte lengths and its handling of null, booleans, and numbers in joins.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC text-001-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;split|join|ascii_downcase|ascii_upcase|trim&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC text-001-conformance ===</p></article>
+<p>=== AC text-001-conformance ===<br>Intent: The authoritative corpus slice covering string manipulation and interpolation executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;split|join|trim|ascii_|explode|implode|startswith|endswith&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC text-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve Unicode codepoints and embedded control characters.</li><li><code>ascii_downcase</code> and <code>ascii_upcase</code> affect only ASCII letters.</li><li>String operations must reject invalid input with runtime errors rather than silently coercing it.</li></ul></article>
 </main>
 </body>
 </html>

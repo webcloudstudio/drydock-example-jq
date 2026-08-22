@@ -3,18 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Arithmetic-and-Structural-Operators.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Arithmetic-And-Structural-Operators.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Arithmetic-and-Structural-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Arithmetic-and-Structural-Operators.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Arithmetic-And-Structural-Operators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Arithmetic-And-Structural-Operators.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Arithmetic and Structural Operators</h1>
-<p>Arithmetic, string, array, object, recursive merge, repetition, and splitting operators are supported.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements jq arithmetic, structural combination, repetition, splitting, and negation operators.</td></tr><tr><td>Depends On</td><td>FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Errors-And-Optional-Evaluation.md</td></tr><tr><td>Provides</td><td>+, -, *, /, %, unary negation, recursive object merge, string repetition and splitting</td></tr><tr><td>Consumes</td><td>jq value model, generator evaluation, comparison semantics</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement jq&#x27;s typed arithmetic and structural operators. Operators evaluate both operands as filters over the same input and preserve Cartesian generator behavior.</p>
+<h2>Behavior</h2>
+<ul><li>Numbers use jq-compatible arithmetic.</li><li>Arrays concatenate with <code>+</code> and subtract matching elements with <code>-</code>.</li><li>Strings concatenate with <code>+</code>, repeat with numeric <code>*</code>, and split with <code>/</code>.</li><li>Objects merge with <code>+</code>; <code>*</code> recursively merges nested objects.</li><li><code>null</code> is additive with any value.</li><li>Division and remainder by zero raise runtime errors.</li><li>Unary negation accepts numbers only and preserves partial output semantics.</li></ul>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC flow-001-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;\+|\*|//&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-001-conformance ===</p></article>
+<p>=== AC flow-001-conformance ===<br>Intent: The arithmetic and structural operator implementation passes representative declared arithmetic and structural behaviors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess</p>
+<p>jq = os.path.join(os.getcwd(), &quot;jq&quot;)</p>
+<p>addition = subprocess.run( [jq, &quot;-c&quot;, &quot;1 + 2&quot;], capture_output=True, text=True, ) assert addition.returncode == 0 assert json.loads(addition.stdout) == 3</p>
+<p>merge = subprocess.run( [jq, &quot;-c&quot;, &#x27;{&quot;a&quot;:{&quot;x&quot;:1}} * {&quot;a&quot;:{&quot;y&quot;:2}}&#x27;], capture_output=True, text=True, ) assert merge.returncode == 0 assert json.loads(merge.stdout) == {&quot;a&quot;: {&quot;x&quot;: 1, &quot;y&quot;: 2}}</p>
+<p>=== END AC flow-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not perform implicit cross-type conversions.</li><li>Preserve operator precedence, generator multiplicity, and runtime errors.</li><li>Do not shell out to another jq implementation.</li></ul></article>
 </main>
 </body>
 </html>

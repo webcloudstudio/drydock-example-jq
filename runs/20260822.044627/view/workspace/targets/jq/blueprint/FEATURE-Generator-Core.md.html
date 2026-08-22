@@ -10,11 +10,20 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Generator-Core.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Generator-Core.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Generator Core</h1>
-<p>Filters evaluate as ordered streams with multiplicity, backtracking, and empty results.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Evaluate jq filters as ordered streams with multiplicity, empty results, iteration, and backtracking.</td></tr><tr><td>Depends On</td><td>FEATURE-Filter-Grammar.md, FEATURE-Value-Model.md</td></tr><tr><td>Provides</td><td>Ordered filter generators, empty, iteration, range, and backtracking</td></tr><tr><td>Consumes</td><td>Parsed jq expressions, JSON value model</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Every filter shall evaluate as a generator that can produce zero, one, or many values. The evaluator shall preserve output ordering, multiplicity, downstream execution for every upstream value, empty results, iteration, and backtracking.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC core-001-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;,|empty|range\(&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC core-001-conformance ===</p></article>
+<p>=== AC generator-core-conformance ===<br>Intent: The authoritative corpus slice exercising identity, iteration, comma generators, range, and empty behavior executes and passes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.|,|\[\.\]|range|empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC generator-core-conformance ===</p>
+<p>=== AC generator-order-and-multiplicity ===<br>Intent: The selected generator cases complete successfully, proving ordered multiplicity rather than scalar-only evaluation.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.|,|\[\.\]|range|empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] + summary[&quot;fail&quot;] + summary[&quot;error&quot;] + summary[&quot;skip&quot;] &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC generator-order-and-multiplicity ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator order and multiplicity exactly.</li><li>Do not collapse streams into single values during evaluation.</li><li><code>empty</code> must produce no output and must backtrack to the preceding generator.</li></ul></article>
 </main>
 </body>
 </html>

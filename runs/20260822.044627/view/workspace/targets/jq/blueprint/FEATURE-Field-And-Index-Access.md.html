@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Field-And-Index-Access.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Field-And-Index-Access.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Field-And-Index-Access.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Field and Index Access</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq object-field, array-index, string-index, optional-access, and negative-index behavior.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Value-Model.md, FEATURE-Generator-Core.md, FEATURE-Filter-Grammar.md</td></tr><tr><td>Provides</td><td>object fields, array indices, string indices, optional access, negative indices, missing values</td></tr><tr><td>Consumes</td><td>jq values, generator evaluation, parsed access expressions</td></tr></tbody></table></div>
+<h2>Scope and Behavior</h2>
+<p>Identifier fields such as <code>.foo</code> access object keys and return <code>null</code> for missing object fields. Bracket access supports computed string keys, array indices, and string indices. Array indices are zero-based and accept negative values when in range.</p>
+<p>Accessing an invalid type or invalid index raises a runtime error unless the expression uses <code>?</code>, in which case the error is suppressed. Missing array elements and missing object fields follow jq&#x27;s documented null behavior. Access must preserve generator ordering when the key or index expression produces multiple values.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-002-conformance ===<br>Intent: The conformance corpus cases exercising field and index access execute and pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.[A-Za-z]|\[[-0-9]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-002-conformance ===</p>
+<p>=== AC value-002-access ===<br>Intent: Field, negative-index, missing-field, and optional access behave through the executable interface. import json import subprocess</p>
+<p>input_value = {&quot;items&quot;: [10, 20, 30], &quot;name&quot;: &quot;jq&quot;} source = json.dumps(input_value) + &quot;\n&quot; program = &quot;[.name, .missing, .items[-1], .items[99]?]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == [&quot;jq&quot;, None, 30, None] === END AC value-002-access ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not treat absent fields as Python exceptions when jq requires <code>null</code>.</li><li>Do not confuse boolean indices with numeric indices.</li><li>Optional access suppresses runtime errors without suppressing valid null results.</li></ul></article>
+</main>
+</body>
+</html>

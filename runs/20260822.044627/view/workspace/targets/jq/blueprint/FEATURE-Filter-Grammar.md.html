@@ -10,11 +10,20 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Filter-Grammar.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Filter-Grammar.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Filter Grammar</h1>
-<p>The parser implements jq expression grammar, precedence, composition, indexing, construction, and optional operators.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq filter expressions with the specified composition, precedence, indexing, collection, and operator grammar.</td></tr><tr><td>Depends On</td><td>FEATURE-Lexer.md, FEATURE-Literals-And-Interpolation.md</td></tr><tr><td>Provides</td><td>AST grammar for pipes, commas, indexing, slices, arrays, objects, operators, and optionals</td></tr><tr><td>Consumes</td><td>jq lexer, literal parser, interpreter architecture</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The parser shall implement jq expression precedence and associativity for pipes, commas, arithmetic and comparison operators, indexing, slicing, iteration, arrays, objects, unary negation, parentheses, and optional expressions. It shall produce an executable intermediate representation for the evaluator.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC parse-003-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;\[|\{|\||\?&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC parse-003-conformance ===</p></article>
+<p>=== AC filter-grammar-conformance ===<br>Intent: The authoritative corpus slice exercising expression punctuation, indexing, collection, and operators executes and passes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.|\[|\{|\+|\-|\*|/|%&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC filter-grammar-conformance ===</p>
+<p>=== AC filter-grammar-runtime-boundary ===<br>Intent: The selected grammar cases preserve the harness distinction between successful execution and compile rejection.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\.|\[|\{|\+|\-|\*|/|%&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert summary[&quot;pass&quot;] + summary[&quot;fail&quot;] + summary[&quot;error&quot;] + summary[&quot;skip&quot;] &gt; 0 assert result.returncode == 0 === END AC filter-grammar-runtime-boundary ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve parser precedence and associativity from <code>sources/parser.y</code>.</li><li>Do not reinterpret generator syntax as scalar-only expressions.</li><li>Reject malformed expressions with compile exit status 3.</li></ul></article>
 </main>
 </body>
 </html>

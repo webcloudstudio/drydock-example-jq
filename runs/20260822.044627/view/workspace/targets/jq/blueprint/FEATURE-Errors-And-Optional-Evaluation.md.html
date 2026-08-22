@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Errors-And-Optional-Evaluation.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Errors-And-Optional-Evaluation.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Errors-And-Optional-Evaluation.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Errors and Optional Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq empty results, runtime errors, optional evaluation, try/catch, and partial output behavior.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Generator-Core.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Process-Contract.md</td></tr><tr><td>Provides</td><td>empty, runtime error propagation, optional filters, try/catch, partial output</td></tr><tr><td>Consumes</td><td>ordered generators, executable process contract, parsed expressions</td></tr></tbody></table></div>
+<h2>Scope and Behavior</h2>
+<p>Runtime evaluation must distinguish an empty generator from a value of <code>null</code>. Errors propagate through ordinary evaluation and terminate the process with exit code 5, while <code>try</code> and the optional operator suppress or transform errors according to jq semantics.</p>
+<p>A filter may emit values before a later runtime error. Those values remain on stdout, diagnostics go to stderr, and the process exits with the runtime-error status. <code>try EXP catch HANDLER</code> evaluates the handler with the error value; <code>try EXP</code> uses an empty result as its handler. <code>EXP?</code> is equivalent to <code>try EXP</code>.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-003-conformance ===<br>Intent: The conformance corpus cases exercising try, error, optional evaluation, and partial output execute and pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;try|error|\?&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC core-003-conformance ===</p>
+<p>=== AC core-003-runtime-contract ===<br>Intent: Runtime failures use the documented runtime exit status while successful optional evaluation completes normally. import json import os import subprocess</p>
+<p>program = &quot;try (error(\&quot;x\&quot;)) catch .&quot; input_value = &quot;null\n&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True) assert result.returncode == 0 assert result.stderr == &quot;&quot; assert json.loads(result.stdout) == &quot;x&quot;</p>
+<p>program = &quot;1, error(\&quot;x\&quot;)&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=input_value, capture_output=True, text=True) assert result.returncode == 5 assert json.loads(result.stdout.splitlines()[0]) == 1 === END AC core-003-runtime-contract ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not convert <code>empty</code> into <code>null</code>.</li><li>Do not discard values emitted before a runtime error.</li><li>Do not compare or require diagnostic wording.</li><li>Compile failures remain distinct from runtime failures.</li></ul></article>
+</main>
+</body>
+</html>

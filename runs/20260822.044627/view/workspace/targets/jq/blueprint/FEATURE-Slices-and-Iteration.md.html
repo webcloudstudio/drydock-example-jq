@@ -3,16 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Slices-and-Iteration.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Slices-And-Iteration.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Slices-and-Iteration.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Slices-and-Iteration.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Slices-And-Iteration.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Slices-And-Iteration.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Slices and Iteration</h1>
-<p>Array and string slices and array/object iteration preserve jq ordering and multiplicity.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq array, string, and object iteration plus slicing and bounds behavior.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Field-And-Index-Access.md, FEATURE-Generator-Core.md</td></tr><tr><td>Provides</td><td>array and string slices, array/object iteration, fractional bounds, negative bounds, out-of-range behavior</td></tr><tr><td>Consumes</td><td>field and index access, ordered generators, jq values</td></tr></tbody></table></div>
+<h2>Scope and Behavior</h2>
+<p><code>.[start:end]</code> returns a slice of an array or string. Bounds may be omitted, negative, fractional, out of range, or represented by expressions. jq&#x27;s documented truncation and clamping rules determine the resulting slice.</p>
+<p><code>.[]</code> emits each array element or object value as an ordered generator. Optional iteration suppresses invalid-type errors. Empty arrays and objects produce no values. Iteration and slices preserve Unicode codepoint behavior for strings and do not alter the original value.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC value-003-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC value-003-conformance ===</p></article>
+<p>=== AC value-003-conformance ===<br>Intent: The conformance corpus cases exercising slices and iteration execute and pass.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\[.*:|\.\[\]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-003-conformance ===</p>
+<p>=== AC value-003-iteration ===<br>Intent: Iteration emits ordered array and object values, while optional iteration handles invalid input. import json import subprocess</p>
+<p>source = &#x27;{&quot;a&quot;:[1,2],&quot;obj&quot;:{&quot;x&quot;:3,&quot;y&quot;:4},&quot;bad&quot;:5}\n&#x27; program = &quot;[.a[], .obj[], (.bad[]?)]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == [1, 2, 3, 4] === END AC value-003-iteration ===</p>
+<p>=== AC value-003-slices ===<br>Intent: Array and string slices honor the supplied bounds and return values derived from those inputs. import json import subprocess</p>
+<p>array_value = [0, 1, 2, 3, 4] string_value = &quot;abcdef&quot; source = json.dumps([array_value, string_value], separators=(&quot;,&quot;, &quot;:&quot;)) + &quot;\n&quot; program = &quot;[.[0][1:-1], .[1][1:4]]&quot; result = subprocess.run([&quot;./jq&quot;, &quot;-c&quot;, program], input=source, capture_output=True, text=True) assert result.returncode == 0 assert json.loads(result.stdout) == [[1, 2, 3], &quot;bcd&quot;] === END AC value-003-slices ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Preserve generator order and multiplicity during iteration.</li><li>Slice operations must not mutate the source array or string.</li><li>Out-of-range slicing is bounded behavior; it must not become an indexing error.</li></ul></article>
 </main>
 </body>
 </html>

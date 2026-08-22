@@ -3,18 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Sorting-and-Grouping.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Sorting-And-Grouping.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Sorting-and-Grouping.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Sorting-and-Grouping.md">Raw file</a></div></header>
-<article class="doc"><h1>FEATURE: Sorting and Grouping</h1>
-<p>Sorting, grouping, uniqueness, and extrema use jq structural comparison.</p>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Sorting-And-Grouping.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Sorting-And-Grouping.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Sorting And Grouping</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq structural sorting, grouping, uniqueness, and extremum builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Truthiness-And-Comparison.md, FEATURE-Collection-Transformations.md</td></tr><tr><td>Provides</td><td>sort, sort_by, group_by, unique, unique_by, min, max, min_by, max_by</td></tr><tr><td>Consumes</td><td>comparison and ordering semantics, collection transformations</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement structural ordering across jq values, including null, booleans, numbers, strings, arrays, and objects. Implement keyed sorting and grouping, duplicate removal, and minimum/maximum selection. Filter arguments may produce multiple values and must be compared in jq&#x27;s prescribed lexicographic order.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC data-002-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;sort|group_by|unique|min|max&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC data-002-conformance ===</p></article>
+<p>=== AC data-002-conformance ===<br>Intent: The authoritative corpus slice covering sorting, grouping, uniqueness, and extrema executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;sort|group_by|unique|min|max&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Equality and ordering must remain consistent with jq numeric equivalence.</li><li>Object key order must not affect structural equality.</li><li>Preserve stable output ordering where the jq semantics require it.</li></ul></article>
 </main>
 </body>
 </html>

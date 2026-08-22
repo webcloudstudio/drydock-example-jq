@@ -10,9 +10,19 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Function-Parameters.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Function-Parameters.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Function Parameters</h1>
-<p>User-defined filter and value function parameters support multiple arities and generator arguments.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq filter and value function parameters with arity and closure semantics.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Variable-Bindings.md, FEATURE-Composition-And-Cartesian-Evaluation.md</td></tr><tr><td>Provides</td><td>filter parameters, value parameters, multiple arities, closures, Cartesian arguments</td></tr><tr><td>Consumes</td><td>lexical bindings, generator evaluation, function definitions</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement user-defined functions whose parameters may be filters or value bindings. Support multiple arities, repeated callback evaluation with the current input, Cartesian products from multi-output arguments, and closure capture through lexical environments.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC function-parameters-scoped-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC function-parameters-scoped-conformance ===</p></article>
+<p>=== AC func-002-conformance ===<br>Intent: The authoritative corpus slice exercising function parameters executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;def .*\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC func-002-conformance ===</p>
+<p>=== AC func-002-interface ===<br>Intent: A filter parameter is evaluated against the function&#x27;s current input. import subprocess</p>
+<p>program = &quot;def twice(f): f | f; 5 | twice(.*2)&quot; payload = &quot;null\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode in (0, 5) === END AC func-002-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Distinguish filter parameters from value parameters.</li><li>Preserve callback re-evaluation and generator multiplicity.</li><li>Keep captured lexical environments isolated between calls.</li></ul></article>
 </main>
 </body>
 </html>

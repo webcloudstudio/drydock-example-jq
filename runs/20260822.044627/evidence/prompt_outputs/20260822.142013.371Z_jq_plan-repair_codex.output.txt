@@ -1,0 +1,96 @@
+=== BEGIN REPAIRED SPECIFICATION ===
+# FEATURE: JSON Input and Output
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Handles JSON input streams and compact one-value-per-line output. |
+| Depends On  | FEATURE-Process-Contract.md |
+| Provides    | JSON input stream and compact JSON output |
+| Consumes    | compile and runtime exit contract |
+
+## Capability
+
+The command reads multiple JSON values from standard input and applies the filter independently to each value in input order. Every generated result is written as one compact JSON value per line, preserving Unicode and structural value semantics.
+
+## Serialization
+
+Output is compact JSON without pretty-print indentation. Structural comparison, not key order or numeric spelling, defines conformance. Special numeric values required by jq are represented according to the supplied corpus behavior.
+
+## Programmatic Acceptance
+
+=== AC json-stream-slice ===
+Intent: The supplied corpus verifies JSON input handling and compact output behavior for foundational identity and literal cases.
+
+import json
+import os
+import subprocess
+import sys
+
+select = r"^\.$|^null$"
+result = subprocess.run(
+    [sys.executable, "sources/run_conformance.py", "--select", select, "--json"],
+    capture_output=True,
+    text=True,
+    env={**os.environ, "JQ": f"{os.getcwd()}/jq"},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report["summary"]
+assert sum(summary.values()) > 0
+assert summary["fail"] == 0 and summary["error"] == 0
+assert result.returncode == 0
+=== END AC json-stream-slice ===
+
+=== AC json-multiple-inputs ===
+Intent: Multiple JSON input values are processed in order and produce one output line per value.
+
+import json
+import subprocess
+
+source = "1\n2\n"
+result = subprocess.run(
+    ["./jq", "-c", "."],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == len(source.splitlines())
+values = [json.loads(line) for line in lines]
+assert values == [1, 2]
+=== END AC json-multiple-inputs ===
+
+=== AC json-compact-line ===
+Intent: Compact serialization emits each generated value on its own line.
+
+import json
+import subprocess
+
+value = {"a": [1, 2], "b": "text"}
+source = json.dumps(value) + "\n"
+result = subprocess.run(
+    ["./jq", "-c", "."],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == 1
+decoded = json.loads(lines[0])
+assert decoded == value
+assert "\n" not in lines[0]
+=== END AC json-compact-line ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Output ordering and multiplicity must match generator evaluation.
+- Diagnostics and debug output must not contaminate JSON standard output.
+=== END REPAIRED SPECIFICATION ===

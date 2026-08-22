@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.154021.224Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.154021.224Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.154021.224Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Type-And-Numeric-Primitives.md ===
+# FEATURE: Type and Numeric Primitives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq type inspection, numeric conversion, measurement, and mathematical primitives. |
+| Depends On  | FEATURE-Value-Model.md, FEATURE-Field-And-Index-Access.md, FEATURE-Truthiness-And-Comparison.md |
+| Provides    | type, length, utf8bytelength, tonumber, toboolean, numeric predicates, floor, sqrt, math primitives |
+| Consumes    | jq values, comparison semantics |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement jq&#x27;s type and numeric builtins using Python&#x27;s standard library. Support type inspection, lengths, UTF-8 byte counts, numeric and boolean conversion, finite/NaN predicates, rounding, square roots, and the mathematical functions exercised by the corpus.
+
+Numbers must preserve jq-compatible equality and serialization behavior, including NaN and infinities. Invalid input types and conversions raise jq runtime errors.
+
+## Behavior
+
+- `type` returns jq&#x27;s six type names.
+- `length` handles null, strings, arrays, objects, and numbers; booleans are invalid.
+- `utf8bytelength` accepts strings and counts UTF-8 bytes.
+- `tonumber` and `toboolean` preserve existing values and convert valid strings.
+- Numeric predicates distinguish finite, infinite, NaN, and normal values.
+- `floor`, `sqrt`, and required standard math functions follow jq numeric semantics.
+
+## Programmatic Acceptance
+
+=== AC value-004-conformance ===
+Intent: The type and numeric primitive implementation passes every selected conformance case containing the owned numeric and type syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;length|type|sqrt|floor|tonumber&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC value-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Do not silently coerce invalid jq values.
+- Preserve generator ordering and runtime error behavior.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Arithmetic-And-Structural-Operators.md ===
+# FEATURE: Arithmetic and Structural Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq arithmetic, structural combination, repetition, splitting, and negation operators. |
+| Depends On  | FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Errors-And-Optional-Evaluation.md |
+| Provides    | +, -, *, /, %, unary negation, recursive object merge, string repetition and splitting |
+| Consumes    | jq value model, generator evaluation, comparison semantics |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement jq&#x27;s typed arithmetic and structural operators. Operators evaluate both operands as filters over the same input and preserve Cartesian generator behavior.
+
+## Behavior
+
+- Numbers use jq-compatible arithmetic.
+- Arrays concatenate with `+` and subtract matching elements with `-`.
+- Strings concatenate with `+`, repeat with numeric `*`, and split with `/`.
+- Objects merge with `+`; `*` recursively merges nested objects.
+- `null` is additive with any value.
+- Division and remainder by zero raise runtime errors.
+- Unary negation accepts numbers only and preserves partial output semantics.
+
+## Programmatic Acceptance
+
+=== AC flow-001-conformance ===
+Intent: The arithmetic and structural operator implementation passes every selected conformance case containing the owned operators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;\+|\-|\*|/|%&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC flow-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not perform implicit cross-type conversions.
+- Preserve operator precedence, generator multiplicity, and runtime errors.
+- Do not shell out to another jq implementation.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Boolean-And-Alternative-Operators.md ===
+# FEATURE: Boolean and Alternative Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq Boolean operators, truthiness-aware alternatives, and defined-or assignment. |
+| Depends On  | FEATURE-Truthiness-And-Comparison.md, FEATURE-Arithmetic-And-Structural-Operators.md |
+| Provides    | and, or, not, //, //= |
+| Consumes    | jq truthiness, generator core, arithmetic operators |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement strict Boolean operators and jq&#x27;s value-selection alternative operators. Boolean operators produce Boolean values, while `//` selects non-null and non-false generator outputs.
+
+## Behavior
+
+- Only `false` and `null` are falsey.
+- `and`, `or`, and `not` produce Boolean results with generator-valued operands evaluated according to jq semantics.
+- `a // b` emits all non-false, non-null values from `a`; otherwise it evaluates `b`.
+- `//=` updates defined-or paths using jq assignment semantics.
+- Short-circuiting must prevent unnecessary error-producing branches where jq requires it.
+
+## Programmatic Acceptance
+
+=== AC flow-002-conformance ===
+Intent: The Boolean and alternative operator implementation passes every selected conformance case containing the owned operators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;and|or|not|//&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC flow-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not treat empty strings, arrays, or objects as falsey.
+- Preserve generator multiplicity and alternative fallback semantics.
+- Do not evaluate fallback branches when jq semantics select the left stream.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conditionals-And-Exception-Flow.md ===
+# FEATURE: Conditionals and Exception Flow
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq conditional branching, try/catch handling, and optional error suppression. |
+| Depends On  | FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Truthiness-And-Comparison.md, FEATURE-Boolean-And-Alternative-Operators.md |
+| Provides    | if/then/elif/else/end, try/catch, optional filter operator |
+| Consumes    | jq truthiness, runtime error flow, generator evaluation |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement control flow over jq generator streams. Conditions may produce multiple values, and each truthy or falsey result selects its corresponding branch independently.
+
+## Behavior
+
+- `if A then B else C end` evaluates branches for each output of `A`.
+- Missing `else` defaults to identity.
+- `elif` chains preserve jq branch ordering and fallback behavior.
+- `try EXP catch HANDLER` catches runtime errors and evaluates the handler with the error value.
+- `try EXP` suppresses errors and produces no replacement output.
+- `EXP?` is equivalent to `try EXP`.
+- Outputs produced before an uncaught runtime error remain available to the process boundary.
+
+## Programmatic Acceptance
+
+=== AC flow-003-conformance ===
+Intent: The conditional and exception-flow implementation passes every selected conformance case containing the owned syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;if |try |\?&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC flow-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve partial output before runtime failure.
+- Catch only runtime errors within the protected expression.
+- Keep compile failures distinct from runtime failures.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Labels-And-Breaks.md ===
+# FEATURE: Labels and Breaks
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements lexically scoped labels and generator termination through break expressions. |
+| Depends On  | FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Conditionals-And-Exception-Flow.md |
+| Provides    | label, break |
+| Consumes    | parsed declarations, runtime error flow, generator core |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement jq&#x27;s lexical `label $name | ... break $name ...` control mechanism. A break terminates the matching enclosing generator and behaves as though that label expression produced `empty`.
+
+## Behavior
+
+- Labels bind only within their lexical body.
+- `break $name` terminates the nearest visible matching label.
+- Outputs produced before the break are retained in order.
+- Breaks do not leak into unrelated generators or labels.
+- A break without a visible label is rejected at compile time.
+- Labels and breaks work inside iteration, reductions, conditionals, and nested pipelines.
+
+## Programmatic Acceptance
+
+=== AC flow-004-conformance ===
+Intent: The labels and breaks implementation passes every selected conformance case containing label or break syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;label|break&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0
+assert summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC flow-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Enforce lexical visibility during compilation.
+- Terminate only the matching label scope.
+- Preserve outputs emitted before termination and generator ordering.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

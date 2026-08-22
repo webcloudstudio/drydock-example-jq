@@ -10,9 +10,21 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Executable-Entry-Point.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Executable-Entry-Point.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Executable Entry Point</h1>
-<p>The application provides the executable <code>./jq -c &#x27;&lt;program&gt;&#x27;</code> interface.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides the executable jq command-line entry point for compact filter execution.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Conformance-Asset-Staging.md</td></tr><tr><td>Provides</td><td>executable jq, -c filter invocation</td></tr><tr><td>Consumes</td><td>interpreter architecture, JSON input stream</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>The application root contains an executable named <code>jq</code>. It accepts the exercised <code>-c &#x27;&lt;program&gt;&#x27;</code> interface, reads JSON values from standard input, evaluates the filter, and emits every generated result as a compact JSON value on its own output line.</p>
+<p>The entry point is self-contained within the modular Python implementation and does not require installation or environment configuration beyond the standard Python runtime.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC executable-permission === from pathlib import Path entry = Path(&quot;jq&quot;) assert entry.is_file() assert entry.stat().st_mode &amp; 0o111 === END AC executable-permission ===</p></article>
+<p>=== AC executable-basic-filters ===<br>Intent: The executable accepts the required -c interface and executes the basic corpus slice.</p>
+<p>import json import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(true|false|null|1)$&quot;, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC executable-basic-filters ===</p>
+<p>=== AC executable-stdin-output ===<br>Intent: The executable reads JSON from stdin and emits one result for each generated output.</p>
+<p>import json import subprocess</p>
+<p>payload = &quot;[1,2,3]\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[]&quot;], input=payload, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = json.loads(payload) assert actual == expected === END AC executable-stdin-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The executable must be named exactly <code>jq</code> and be executable at the application root.</li><li>Only the exercised <code>-c</code> interface is required.</li><li>Output must remain one compact JSON value per line.</li></ul></article>
 </main>
 </body>
 </html>

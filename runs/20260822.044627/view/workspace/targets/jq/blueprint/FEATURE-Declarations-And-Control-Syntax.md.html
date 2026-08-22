@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Declarations-And-Control-Syntax.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Declarations-And-Control-Syntax.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Declarations-And-Control-Syntax.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Declarations and Control Syntax</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Parse jq declarations, control constructs, bindings, module grammar, and destructuring syntax.</td></tr><tr><td>Depends On</td><td>FEATURE-Filter-Grammar.md</td></tr><tr><td>Provides</td><td>def, module and import grammar, conditionals, try/catch, reductions, foreach, labels, and patterns</td></tr><tr><td>Consumes</td><td>jq filter grammar, lexer, interpreter architecture</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>The front end shall parse function definitions, module and import directives, conditionals, exception flow, reductions, foreach, labels, variable bindings, and destructuring patterns. Module syntax shall be validated sufficiently to reject invalid metadata and paths without loading excluded module fixtures.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC declarations-control-conformance ===<br>Intent: The authoritative corpus slice exercising declarations, control syntax, bindings, reductions, foreach, labels, and module grammar executes and passes with no failures or errors.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;%%FAIL|\bif\b|\btry\b|\breduce\b|\bforeach\b|\bdef\b| as |\blabel\b|\bmodule\b|\binclude\b&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC declarations-control-conformance ===</p>
+<p>=== AC declarations-compile-rejections ===<br>Intent: The selected invalid declaration and control programs are rejected as compile failures by the authoritative harness.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;%%FAIL|\bmodule\b|\binclude\b|\blabel\b|\bdef\b&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC declarations-compile-rejections ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Invalid module metadata, import paths, and unresolved labels must fail at compile time.</li><li>Module grammar validation must not access excluded module fixtures.</li><li>Preserve lexical scope and declaration ordering for later evaluation.</li></ul></article>
+</main>
+</body>
+</html>

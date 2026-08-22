@@ -10,9 +10,19 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Path-Primitives.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Path-Primitives.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Path Primitives</h1>
-<p>Nested jq values can be read, updated, created, and deleted through path arrays.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines nested path lookup, creation, replacement, and deletion primitives.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Discovery.md, FEATURE-Field-And-Index-Access.md</td></tr><tr><td>Provides</td><td>getpath, setpath, delpaths</td></tr><tr><td>Consumes</td><td>Path discovery, immutable value model</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s primitive operations for reading, setting, and deleting values at nested paths.</p>
+<h2>Implementation Requirements</h2>
+<ul><li>Implement <code>getpath(paths)</code> for one or more paths.</li><li>Implement <code>setpath(path; value)</code> with nested object and array creation.</li><li>Implement <code>delpaths(paths)</code> for multiple nested deletions.</li><li>Preserve immutable input values and return updated copies.</li><li>Handle missing object fields and array positions according to jq semantics.</li><li>Reject invalid path component types and invalid array operations with runtime errors.</li><li>Enforce path depth limits required by the corpus.</li></ul>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC path-002-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC path-002-conformance ===</p></article>
+<p>=== AC path-primitives-conformance ===<br>Intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;getpath|setpath|delpaths&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC path-primitives-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not mutate values aliased by another expression.</li><li>Do not convert invalid paths into silent no-ops except where jq specifies that behavior.</li><li>Do not bypass the path depth limit.</li></ul></article>
 </main>
 </body>
 </html>

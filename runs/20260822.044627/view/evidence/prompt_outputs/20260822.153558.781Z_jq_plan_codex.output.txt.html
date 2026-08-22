@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.153558.781Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.153558.781Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.153558.781Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT ARCHITECTURE.md ===
+# ARCHITECTURE: jq
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines the modular standard-library architecture for a standalone jq interpreter. |
+| Depends On  |  |
+| Provides    | interpreter architecture, executable boundary, generator evaluation model |
+| Consumes    |  |
+
+## Questions
+
+- None.
+
+## Architecture
+
+The implementation is a modular Python interpreter with an executable `jq` entry point. The runtime is divided into:
+
+- CLI and process boundary: argument handling, JSON input decoding, compact output, diagnostics, and exit codes.
+- Lexer: jq tokens, comments, literals, identifiers, fields, bindings, delimiters, and formats.
+- Parser: precedence-aware AST construction, declarations, control syntax, patterns, and compile diagnostics.
+- Value model: immutable JSON-compatible values, numeric literals, NaN, and infinities.
+- Evaluator: ordered generator execution, backtracking, scopes, errors, labels, and assignments.
+- Builtins: arithmetic, collections, strings, regular expressions, dates, paths, I/O, and streaming.
+
+All runtime code uses Python&#x27;s standard library. No system jq executable, third-party jq implementation, package, network service, or external runtime dependency is permitted.
+
+### Ownership boundaries
+
+| Area | Owner | Boundary |
+|---|---|---|
+| CLI and serialization | executable/process modules | Owns stdin, stdout, stderr, and process status |
+| Lexing and parsing | lexer/parser modules | Produces executable AST or equivalent |
+| Values | value module | Owns numeric and immutable value behavior |
+| Evaluation | evaluator module | Owns generator ordering, scopes, errors, and control flow |
+| Builtins | builtin/runtime modules | Operates through evaluator and value interfaces |
+| Conformance assets | `sources/` | Read-only external test and specification assets |
+
+The evaluator must expose generator semantics rather than scalar function semantics: each filter consumes one input and may produce zero, one, or many ordered outputs.
+
+## Technology Stack
+
+- Python 3.11 or newer, standard library only, for the interpreter and acceptance checks.
+- POSIX `sh` for the supplied conformance entry point.
+
+## Programmatic Acceptance
+
+=== AC architecture-runtime ===
+Intent: The architecture establishes an executable Python runtime boundary.
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+=== END AC architecture-runtime ===
+
+=== AC architecture-stdlib ===
+Intent: The architecture runs with the declared Python standard-library runtime.
+import sys
+
+assert sys.version_info &gt;= (3, 11)
+import argparse
+import base64
+import dataclasses
+import datetime
+import decimal
+import itertools
+import json
+import math
+import re
+=== END AC architecture-stdlib ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not shell out to jq.
+- Do not use third-party packages or bindings.
+- Preserve generator ordering, multiplicity, backtracking, and partial output.
+- Keep `sources/` read-only.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Executable-Entry-Point.md ===
+# FEATURE: Executable Entry Point
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides the executable jq command and its fixed compact filter interface. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | executable jq, -c filter invocation |
+| Consumes    | interpreter architecture, JSON input stream |
+
+## Questions
+
+- None.
+
+## Intent
+
+The application root contains an executable named `jq`. It accepts `-c &#x27;&lt;program&gt;&#x27;`, reads JSON values from standard input, evaluates the supplied filter, and writes each generated value as one compact JSON value per line.
+
+## Programmatic Acceptance
+
+=== AC exec-entrypoint ===
+Intent: The executable entry point runs the corpus&#x27;s primitive interface cases.
+import json
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(true|false|null|1)$&quot;, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC exec-entrypoint ===
+
+=== AC exec-interface ===
+Intent: The executable accepts the declared compact command-line interface and completes successfully.
+import os
+import subprocess
+
+payload = &quot;null\n&quot;
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;.&quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 0
+assert result.stdout.splitlines()
+=== END AC exec-interface ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The executable must be named `jq` and located at the application root.
+- `-c` is the only exercised option.
+- Output must contain one compact JSON value per line.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Process-Contract.md ===
+# FEATURE: Process Contract
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines jq compilation, runtime failure, success, and diagnostic exit behavior. |
+| Depends On  | FEATURE-Executable-Entry-Point.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Errors-And-Optional-Evaluation.md |
+| Provides    | compile exit 3, runtime exit 5, success exit 0, stderr diagnostics |
+| Consumes    | executable jq, parser, evaluator |
+
+## Questions
+
+- None.
+
+## Intent
+
+Compilation failures return exit code `3`. Runtime failures return exit code `5`. Successful completion returns `0`. Diagnostics are written to standard error, and values emitted before a runtime failure remain on standard output.
+
+## Programmatic Acceptance
+
+=== AC process-contract-compile ===
+Intent: Invalid jq programs are rejected with the compile-failure status.
+import os
+import subprocess
+
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;{&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 3
+=== END AC process-contract-compile ===
+
+=== AC process-contract-runtime ===
+Intent: A valid jq program that raises at runtime returns the runtime-failure status.
+import os
+import subprocess
+
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 5
+=== END AC process-contract-runtime ===
+
+=== AC process-contract-partial-output ===
+Intent: Runtime failure preserves values emitted before the failure.
+import os
+import subprocess
+
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;1, error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 5
+assert result.stdout.splitlines()
+=== END AC process-contract-partial-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile and runtime failures must remain distinguishable.
+- Diagnostics must never be required on stdout.
+- Do not discard partial output before a runtime error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-JSON-IO-BoundARY.md ===
+# FEATURE: JSON I/O Boundary
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Handles JSON input streams and compact output serialization for jq values. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Executable-Entry-Point.md, FEATURE-Value-Model.md |
+| Provides    | JSON stdin decoding, compact JSON line serialization, Unicode and special-number handling |
+| Consumes    | executable jq, JSON value model |
+
+## Questions
+
+- None.
+
+## Intent
+
+The process boundary decodes each JSON input value supplied on standard input and serializes every generated result compactly, preserving order and the value distinctions required by the conformance harness.
+
+## Programmatic Acceptance
+
+=== AC json-boundary ===
+Intent: JSON boundary behavior passes the corpus cases covering primitive input and output serialization.
+import json
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(true|false|null|1)$&quot;, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC json-boundary ===
+
+=== AC json-order ===
+Intent: Multiple input values and generated outputs preserve stream order.
+import json
+import os
+import subprocess
+
+payload = &quot;1\n2\n&quot;
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;.&quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [1, 2]
+assert actual == expected
+=== END AC json-order ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Emit compact JSON values one per line.
+- Preserve output order and multiplicity.
+- Do not alter supplied conformance assets.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Lexer.md ===
+# FEATURE: Lexer
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Tokenizes jq source into keywords, literals, identifiers, operators, and delimiters. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | jq tokens, comments, delimiters, identifiers, fields, literals, bindings |
+| Consumes    | interpreter architecture |
+
+## Questions
+
+- None.
+
+## Intent
+
+The lexer recognizes jq keywords, identifiers, fields, variable bindings, numeric and string literals, operators, comments, formats, delimiters, and the state transitions required by interpolation and nested expressions.
+
+## Programmatic Acceptance
+
+=== AC lexer-corpus ===
+Intent: Lexer-focused primitive and literal cases execute successfully through the supplied conformance runner.
+import json
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(true|false|null|1|\.)$&quot;, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC lexer-corpus ===
+
+=== AC lexer-comments ===
+Intent: The lexer accepts comments and ignores them outside string literals.
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [os.path.join(os.getcwd(), &quot;jq&quot;), &quot;-c&quot;, &quot;1 # comment&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+assert result.returncode == 0
+assert result.stdout.splitlines()
+=== END AC lexer-comments ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Invalid characters and malformed tokens must produce compile failure.
+- Comment handling must not consume string contents.
+- Nested delimiters and interpolation state must remain balanced.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

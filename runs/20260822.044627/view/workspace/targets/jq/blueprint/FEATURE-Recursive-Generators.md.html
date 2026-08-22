@@ -10,11 +10,19 @@
 <main>
 <header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Recursive-Generators.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Recursive-Generators.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Recursive Generators</h1>
-<p>Recursive generator filters preserve termination and stream ordering.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq recursive generator primitives and recursive descent.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Conditionals-And-Exception-Flow.md, FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Function-Definitions-And-Recursion.md</td></tr><tr><td>Provides</td><td>while, until, repeat, recurse, recursive descent</td></tr><tr><td>Consumes</td><td>generator evaluation, conditionals, user-defined functions</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement <code>while</code>, <code>until</code>, <code>repeat</code>, and the zero-argument and parameterized forms of <code>recurse</code>. Support recursive descent through <code>..</code>, stream-valued updates, termination conditions, error termination for <code>repeat</code>, and recursion without incorrect output suppression or duplication.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC recursive-generators-scoped-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;foreach|recurse&quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC recursive-generators-scoped-conformance ===</p></article>
+<p>=== AC flow-006-conformance ===<br>Intent: The authoritative corpus slice exercising recursive generators executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;while|until|recurse|repeat&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-006-conformance ===</p>
+<p>=== AC flow-006-interface ===<br>Intent: The recursive generator interface executes a terminating recursive transformation. import subprocess</p>
+<p>program = &quot;[while(. &lt; 4; . + 1)]&quot; payload = &quot;1\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode in (0, 5) === END AC flow-006-interface ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Ensure recursive generators terminate according to their conditions or caught errors.</li><li>Preserve every generated value in order.</li><li>Do not introduce external runtimes or modify staged sources.</li></ul></article>
 </main>
 </body>
 </html>

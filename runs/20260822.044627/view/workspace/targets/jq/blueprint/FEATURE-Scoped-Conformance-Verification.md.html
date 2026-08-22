@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance-Verification.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance-Verification.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Scoped-Conformance-Verification.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Scoped Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide construct-scoped execution of the supplied jq conformance harness.</td></tr><tr><td>Depends On</td><td>FEATURE-Executable-Entry-Point.md, FEATURE-Process-Contract.md, FEATURE-Conformance-Asset-Staging.md</td></tr><tr><td>Provides</td><td>scoped conformance execution contract</td></tr><tr><td>Consumes</td><td>executable jq, staged conformance assets</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Ensure implementation stories can execute only the corpus slice corresponding to the capability under construction, using the supplied runner and its machine-readable report.</p>
+<h2>Behavior</h2>
+<ul><li>Each scoped invocation supplies <code>JQ</code> while preserving the inherited environment.</li><li>Selectors match actual jq program syntax and execute selected cases.</li><li>Acceptance reads the parsed JSON summary rather than scraping human-readable output.</li><li>A valid scoped run requires a nonzero selected case count, zero failures, zero errors, and exit status zero.</li><li>The unfiltered corpus remains reserved for the terminal verification story.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC scoped-runner-contract ===<br>Intent: The supplied runner executes a nonempty scoped slice and reports a clean result. import json import os import subprocess import sys</p>
+<p>select = r&quot;reduce&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-runner-contract ===</p>
+<p>=== AC scoped-selector-executes ===<br>Intent: A syntax selector identifies executable corpus cases rather than merely enumerating them. import json import os import subprocess import sys</p>
+<p>select = r&quot;try |error|\?&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-selector-executes ===</p>
+<p>=== AC scoped-environment-preserved ===<br>Intent: A scoped invocation supplies JQ without discarding the inherited execution environment. import json import os import subprocess import sys</p>
+<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, r&quot;^(true|false|null|1)$&quot;, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC scoped-environment-preserved ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never use enumeration or dry-run mode as a behavioral acceptance gate.</li><li>Never invoke the unfiltered corpus from this story.</li><li>Never assert against printed summary text; parse the JSON report.</li><li>Never replace the inherited environment when setting <code>JQ</code>.</li><li>Do not modify supplied harness assets.</li></ul></article>
+</main>
+</body>
+</html>

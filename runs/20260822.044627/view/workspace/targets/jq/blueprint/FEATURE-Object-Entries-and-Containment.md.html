@@ -3,16 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Object-Entries-and-Containment.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Object-Entries-And-Containment.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Object-Entries-and-Containment.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Object-Entries-and-Containment.md">Raw file</a></div></header>
-<article class="doc"><h1>FEATURE: Object Entries and Containment</h1>
-<p>Object keys, entries, containment, and entry transformations follow jq semantics.</p>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Object-Entries-And-Containment.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Object-Entries-And-Containment.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Object Entries And Containment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq key, membership, containment, and object-entry conversion builtins.</td></tr><tr><td>Depends On</td><td>FEATURE-Field-And-Index-Access.md, FEATURE-Truthiness-And-Comparison.md, FEATURE-Collection-Transformations.md</td></tr><tr><td>Provides</td><td>keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries</td></tr><tr><td>Consumes</td><td>value access, equality, collection transformations</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement key enumeration for arrays and objects, membership predicates, recursive containment and inverse containment, and conversion between objects and entry arrays. Support the documented key aliases in <code>from_entries</code> and preserve object semantics through <code>with_entries</code>.</p>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC data-003-conformance === from pathlib import Path assert Path(&quot;jq&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC data-003-conformance ===</p></article>
+<p>=== AC data-003-conformance ===<br>Intent: The authoritative corpus slice covering keys, membership, containment, and entries executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>selector = r&quot;keys|has\(|contains|inside|to_entries|from_entries&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC data-003-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li><code>keys</code> sorts object keys by Unicode codepoint; <code>keys_unsorted</code> preserves insertion order.</li><li>Containment is recursive and type-sensitive.</li><li>Missing fields and invalid access follow established jq runtime semantics.</li></ul></article>
 </main>
 </body>
 </html>

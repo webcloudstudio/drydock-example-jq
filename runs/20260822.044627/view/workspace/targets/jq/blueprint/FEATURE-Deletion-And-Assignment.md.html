@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Deletion-And-Assignment.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Deletion-And-Assignment.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Deletion-And-Assignment.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Deletion And Assignment</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq deletion, plain assignment, update assignment, and arithmetic assignment.</td></tr><tr><td>Depends On</td><td>FEATURE-Path-Primitives.md, FEATURE-Arithmetic-And-Structural-Operators.md, FEATURE-Boolean-And-Alternative-Operators.md</td></tr><tr><td>Provides</td><td>del, =,</td><td>=, +=, -=, *=, /=, %=, //=</td></tr><tr><td>Consumes</td><td>Path primitives, arithmetic operators, generator evaluation</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Implement jq&#x27;s immutable path-based mutation operators and deletion behavior.</p>
+<h2>Implementation Requirements</h2>
+<ul><li>Implement <code>del(path-expression)</code>.</li><li>Implement plain assignment with all values produced by the right-hand side.</li><li>Implement update assignment using the selected path value as the update input.</li><li>Implement arithmetic and defined-or assignment operators.</li><li>Support multiple paths and generator-valued left-hand sides.</li><li>Delete paths when an update expression produces <code>empty</code>.</li><li>Preserve the original input for sibling expressions evaluated after an assignment.</li><li>Use the first update result for <code>|=</code> as specified.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC deletion-assignment-conformance ===<br>Intent: The authoritative corpus slice covering deletion and assignment operators executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;\bdel\(|\|=|\+=|-=|\*=|/=|%=|//=&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC deletion-assignment-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Treat jq values as immutable.</li><li>Do not apply plain-assignment RHS filters to the selected path value.</li><li>Do not use the last update result for <code>|=</code>.</li><li>Do not leak mutations into sibling outputs or later evaluations of the original input.</li></ul></article>
+</main>
+</body>
+</html>

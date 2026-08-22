@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Complete-Conformance-Verification.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Complete-Conformance-Verification.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Complete-Conformance-Verification.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Complete Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Verify the completed interpreter against the entire supplied jq conformance corpus.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-Executable-Entry-Point.md, FEATURE-Process-Contract.md, FEATURE-JSON-IO-Boundary.md, FEATURE-Lexer.md, FEATURE-Literals-And-Interpolation.md, FEATURE-Filter-Grammar.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Generator-Core.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Truthiness-And-Comparison.md, FEATURE-Value-Model.md, FEATURE-Field-And-Index-Access.md, FEATURE-Slices-And-Iteration.md, FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Arithmetic-And-Structural-Operators.md, FEATURE-Boolean-And-Alternative-Operators.md, FEATURE-Conditionals-And-Exception-Flow.md, FEATURE-Labels-And-Breaks.md, FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Recursive-Generators.md, FEATURE-Variable-Bindings.md, FEATURE-Function-Parameters.md, FEATURE-Function-Definitions-And-Recursion.md, FEATURE-Destructuring-Patterns.md, FEATURE-Path-Discovery.md, FEATURE-Path-Primitives.md, FEATURE-Deletion-And-Assignment.md, FEATURE-Complex-Assignment-Edges.md, FEATURE-Collection-Transformations.md, FEATURE-Sorting-And-Grouping.md, FEATURE-Object-Entries-And-Containment.md, FEATURE-Index-And-Membership-Utilities.md, FEATURE-String-Manipulation.md, FEATURE-JSON-And-Output-Formats.md, FEATURE-Regular-Expressions.md, FEATURE-Date-And-Time-Filters.md, FEATURE-Input-Streams.md, FEATURE-Diagnostics-And-Stderr.md, FEATURE-Streaming-Transformations.md, FEATURE-Conformance-Asset-Staging.md, FEATURE-Scoped-Conformance-Verification.md</td></tr><tr><td>Provides</td><td>complete conformance release verification</td></tr><tr><td>Consumes</td><td>executable jq, all interpreter capabilities, staged conformance assets</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Run the supplied scoring entry point once the complete interpreter is assembled. This is the terminal verification story and the project-level technical acceptance gate.</p>
+<h2>Behavior</h2>
+<ul><li><code>sources/full_test.sh</code> verifies that <code>./jq</code> is executable.</li><li>The script invokes the supplied conformance runner over the complete corpus.</li><li>The candidate must return zero for every executed valid case and exit 3 for every marked compile failure.</li><li>Declared module-loader exclusions remain skipped by the supplied exclusion list.</li><li>The story does not modify, filter, reinterpret, or replace the scoring assets.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC complete-conformance ===<br>Intent: The completed executable passes the supplied full jq conformance suite.<br>Suite: full<br>Requires: executable=sh; scope=test<br>Requires: executable=python3; scope=test</p>
+<p>import os import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, env={**os.environ}, ) print(result.stdout) print(result.stderr, file=os.sys.stderr) assert result.returncode == 0 === END AC complete-conformance ===</p>
+<p>=== AC executable-interface-final ===<br>Intent: The final executable accepts the fixed compact filter interface and completes successfully. import json import subprocess</p>
+<p>program = &quot;.&quot; payload = &#x27;{&quot;status&quot;:&quot;ready&quot;}\n&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=payload, capture_output=True, text=True, ) assert result.returncode == 0 actual = [json.loads(line) for line in result.stdout.splitlines()] expected = [json.loads(payload)] assert actual == expected === END AC executable-interface-final ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>This is the only story permitted to invoke <code>sh sources/full_test.sh</code>.</li><li>It is terminal and depends on every implementation and conformance story.</li><li>Do not add selectors, skips, output reinterpretation, or exit-code substitution.</li><li>Do not modify any file under <code>sources/</code>.</li><li>The full-suite exit status is the acceptance verdict; diagnostics are for evidence only.</li></ul></article>
+</main>
+</body>
+</html>

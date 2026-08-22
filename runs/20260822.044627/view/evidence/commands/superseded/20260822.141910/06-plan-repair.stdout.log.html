@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/superseded/20260822.141910/06-plan-repair.stdout.log</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/superseded/20260822.141910/06-plan-repair.stdout.log</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../evidence/commands/superseded/20260822.141910/06-plan-repair.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+repair: FEATURE-Date-and-Time.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:15 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] &#x27;=== END AC date-utc-and-errors ===&#x27; has no matching opening block
+repair: FEATURE-Diagnostics.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:31 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] &#x27;=== END AC diagnostics-streams ===&#x27; has no matching opening block
+repair: FEATURE-Input-Controls.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:57:46 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] &#x27;=== END AC input-stream-behavior ===&#x27; has no matching opening block
+repair: FEATURE-JSON-I-O.md · acceptance container · 1 of 1 attempt
+2026-08-22 01:58:02 EDT  Calling CODEX/gpt-5.6-luna (plan repair)...
+  Completed CODEX/gpt-5.6-luna (plan repair)  rc=0
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
+plan repair: jq
+  0 repaired, 4 outstanding, 0 files changed
+  ✗  FEATURE-Date-and-Time.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Date-and-Time.md [date-utc-and-errors] &#x27;=== END AC date-utc-and-errors ===&#x27; has no matching opening block
+  ✗  FEATURE-Diagnostics.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Diagnostics.md [diagnostics-streams] &#x27;=== END AC diagnostics-streams ===&#x27; has no matching opening block
+  ✗  FEATURE-Input-Controls.md []: unrepaired — repair left the acceptance container unparseable and was reverted: FEATURE-Input-Controls.md [input-stream-behavior] &#x27;=== END AC input-stream-behavior ===&#x27; has no matching opening block
+  ✗  FEATURE-JSON-I-O.md []: unrepaired — repair changed content other than AC delimiters and was reverted
+plan verify: jq
+  4 criteria cannot run as written
+  ✗  FEATURE-Date-and-Time.md: FEATURE-Date-and-Time.md [date-conformance] acceptance block closes with a different id: expected &#x27;=== END AC date-conformance ===&#x27;, found &#x27;=== END AC date-utc-and-errors ===&#x27;
+  ✗  FEATURE-Diagnostics.md: FEATURE-Diagnostics.md [diagnostics-conformance] acceptance block closes with a different id: expected &#x27;=== END AC diagnostics-conformance ===&#x27;, found &#x27;=== END AC diagnostics-streams ===&#x27;
+  ✗  FEATURE-Input-Controls.md: FEATURE-Input-Controls.md [input-controls-conformance] acceptance block closes with a different id: expected &#x27;=== END AC input-controls-conformance ===&#x27;, found &#x27;=== END AC input-stream-behavior ===&#x27;
+  ✗  FEATURE-JSON-I-O.md: FEATURE-JSON-I-O.md [json-multiple-inputs] acceptance block closes with a different id: expected &#x27;=== END AC json-multiple-inputs ===&#x27;, found &#x27;=== END AC json-compact-line ===&#x27;
+  Run: drydock plan repair jq
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

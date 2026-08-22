@@ -3,18 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md</title>
+<title>workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md</title>
 <link rel="stylesheet" href="../../../../../assets/kit.css">
 </head>
 <body>
 <main>
-<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Labels-and-Breaks.md">Raw file</a></div></header>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Labels-And-Breaks.md">Raw file</a></div></header>
 <article class="doc"><h1>FEATURE: Labels and Breaks</h1>
-<p>Lexically scoped labels and break control are supported.</p>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Implements lexically scoped labels and generator termination through break expressions.</td></tr><tr><td>Depends On</td><td>FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Conditionals-And-Exception-Flow.md</td></tr><tr><td>Provides</td><td>label, break</td></tr><tr><td>Consumes</td><td>parsed declarations, runtime error flow, generator core</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement jq&#x27;s lexical <code>label $name | ... break $name ...</code> control mechanism. A break terminates the matching enclosing generator and behaves as though that label expression produced <code>empty</code>.</p>
+<h2>Behavior</h2>
+<ul><li>Labels bind only within their lexical body.</li><li><code>break $name</code> terminates the nearest visible matching label.</li><li>Outputs produced before the break are retained in order.</li><li>Breaks do not leak into unrelated generators or labels.</li><li>A break without a visible label is rejected at compile time.</li><li>Labels and breaks work inside iteration, reductions, conditionals, and nested pipelines.</li></ul>
 <h2>Programmatic Acceptance</h2>
-<p>=== AC flow-004-conformance === import json import os import subprocess import sys</p>
-<p>SELECT = r&quot;label |break &quot;</p>
-<p>result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally assert result.returncode == 0, result.returncode === END AC flow-004-conformance ===</p></article>
+<p>=== AC flow-004-conformance ===<br>Intent: The labels and breaks implementation passes every selected conformance case containing label or break syntax.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;label|break&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Enforce lexical visibility during compilation.</li><li>Terminate only the matching label scope.</li><li>Preserve outputs emitted before termination and generator ordering.</li></ul></article>
 </main>
 </body>
 </html>

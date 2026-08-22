@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260822.142013.371Z_jq_plan-repair_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260822.142013.371Z_jq_plan-repair_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260822.142013.371Z_jq_plan-repair_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN REPAIRED SPECIFICATION ===
+# FEATURE: JSON Input and Output
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Handles JSON input streams and compact one-value-per-line output. |
+| Depends On  | FEATURE-Process-Contract.md |
+| Provides    | JSON input stream and compact JSON output |
+| Consumes    | compile and runtime exit contract |
+
+## Capability
+
+The command reads multiple JSON values from standard input and applies the filter independently to each value in input order. Every generated result is written as one compact JSON value per line, preserving Unicode and structural value semantics.
+
+## Serialization
+
+Output is compact JSON without pretty-print indentation. Structural comparison, not key order or numeric spelling, defines conformance. Special numeric values required by jq are represented according to the supplied corpus behavior.
+
+## Programmatic Acceptance
+
+=== AC json-stream-slice ===
+Intent: The supplied corpus verifies JSON input handling and compact output behavior for foundational identity and literal cases.
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&quot;^\.$|^null$&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC json-stream-slice ===
+
+=== AC json-multiple-inputs ===
+Intent: Multiple JSON input values are processed in order and produce one output line per value.
+
+import json
+import subprocess
+
+source = &quot;1\n2\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == len(source.splitlines())
+values = [json.loads(line) for line in lines]
+assert values == [1, 2]
+=== END AC json-multiple-inputs ===
+
+=== AC json-compact-line ===
+Intent: Compact serialization emits each generated value on its own line.
+
+import json
+import subprocess
+
+value = {&quot;a&quot;: [1, 2], &quot;b&quot;: &quot;text&quot;}
+source = json.dumps(value) + &quot;\n&quot;
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == 1
+decoded = json.loads(lines[0])
+assert decoded == value
+assert &quot;\n&quot; not in lines[0]
+=== END AC json-compact-line ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Output ordering and multiplicity must match generator evaluation.
+- Diagnostics and debug output must not contaminate JSON standard output.
+=== END REPAIRED SPECIFICATION ===</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/blueprint/FEATURE-Conformance-Asset-Staging.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/blueprint/FEATURE-Conformance-Asset-Staging.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/blueprint/FEATURE-Conformance-Asset-Staging.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Conformance Asset Staging</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Stage and validate the immutable jq conformance assets required by the build.</td></tr><tr><td>Depends On</td><td>—</td></tr><tr><td>Provides</td><td>staged sources/* assets, parsed corpus and exclusions</td></tr><tr><td>Consumes</td><td>—</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Make the supplied manual, corpus, parser and lexer references, builtin reference, exclusions, runner, and full-test script available under <code>sources/</code> in the application root without modification.</p>
+<h2>Behavior</h2>
+<ul><li>All imported source assets are copied byte-for-byte to their declared <code>sources/</code> paths.</li><li>The supplied harness imports successfully.</li><li>The corpus parses into its authoritative case set.</li><li>Every exclusion matches at least one corpus case.</li><li>This story validates staging only and does not execute candidate conformance cases.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC staging-assets ===<br>Intent: The staged harness parses the corpus and applies every declared exclusion successfully. import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS), ) assert len(cases) == 550 assert len(excluded) == 13 === END AC staging-assets ===</p>
+<p>=== AC staging-harness-import ===<br>Intent: The staged harness exposes the required corpus and exclusion paths. from pathlib import Path import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>assert harness.CORPUS.is_file() assert harness.EXCLUSIONS.is_file() assert Path(&quot;sources/full_test.sh&quot;).is_file() assert Path(&quot;sources/jq.test&quot;).is_file() === END AC staging-harness-import ===</p>
+<p>=== AC staging-readonly-assets ===<br>Intent: The staged scoring assets retain their required executable and readable forms. from pathlib import Path</p>
+<p>assert Path(&quot;sources/full_test.sh&quot;).stat().st_mode &amp; 0o111 assert Path(&quot;sources/run_conformance.py&quot;).read_text(encoding=&quot;utf-8&quot;) assert Path(&quot;sources/jq-manual.txt&quot;).read_text(encoding=&quot;utf-8&quot;) assert Path(&quot;sources/parser.y&quot;).read_text(encoding=&quot;utf-8&quot;) assert Path(&quot;sources/lexer.l&quot;).read_text(encoding=&quot;utf-8&quot;) === END AC staging-readonly-assets ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Never modify, trim, regenerate, or substitute any file under <code>sources/</code>.</li><li>Do not launch the conformance harness from this staging story.</li><li>Preserve the supplied corpus and exclusion data verbatim.</li><li>The staged assets are read-only scoring inputs.</li></ul></article>
+</main>
+</body>
+</html>
