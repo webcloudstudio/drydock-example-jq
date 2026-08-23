@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_io_002_diagnostics.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_io_002_diagnostics.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_io_002_diagnostics.py">Raw file</a></div></header>
+<article class="doc"><pre>import json
+import subprocess
+import sys
+
+
+def run(program: str, input_text: str = &quot;null\n&quot;) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, &quot;jq&quot;, &quot;-c&quot;, program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def test_debug_preserves_stdout_and_writes_a_diagnostic() -&gt; None:
+    result = run(&quot;debug&quot;)
+
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [None]
+    assert json.loads(result.stderr) == [&quot;DEBUG:&quot;, None]
+
+
+def test_debug_with_messages_preserves_input_once() -&gt; None:
+    result = run(&#x27;debug(&quot;message&quot;, 2)&#x27;)
+
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [None]
+    assert result.stderr.splitlines() == [&#x27;[&quot;DEBUG:&quot;,&quot;message&quot;]&#x27;, &#x27;[&quot;DEBUG:&quot;,2]&#x27;]
+
+
+def test_stderr_preserves_value_without_mixing_channels() -&gt; None:
+    result = run(&quot;stderr&quot;)
+
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [None]
+    assert result.stderr == &quot;null&quot;
+
+
+def test_halt_error_emits_raw_value_and_stops_after_partial_output() -&gt; None:
+    result = run(&#x27;1, (&quot;failed&quot; | halt_error(7))&#x27;)
+
+    assert result.returncode == 7
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [1]
+    assert result.stderr == &quot;failed&quot;
+</pre></article>
+</main>
+</body>
+</html>

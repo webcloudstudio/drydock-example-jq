@@ -51,3 +51,19 @@ def test_range_supports_one_two_and_three_argument_forms() -> None:
 
 def test_range_argument_streams_form_a_cartesian_product() -> None:
     assert outputs(run("[range(0, 1; 3, 4)]")) == [[0, 1, 2, 0, 1, 2, 3, 1, 2, 1, 2, 3]]
+
+
+def test_tostream_emits_depth_first_leaf_and_close_records() -> None:
+    assert outputs(run("tostream", [0, [1, {"a": 2}]])) == [
+        [[0], 0], [[1, 0], 1], [[1, 1, "a"], 2], [[1, 1]], [[1]], [[]]
+    ]
+
+
+def test_fromstream_reconstructs_streamed_values() -> None:
+    program = "fromstream(1|truncate_stream([[0],\"a\"],[[1,0],\"b\"],[[1,0]],[[1]]))"
+    assert outputs(run(program, None)) == [["b"]]
+
+
+def test_truncate_stream_drops_prefix_paths_and_preserves_record_shape() -> None:
+    program = "truncate_stream([[0],\"a\"],[[1,0],\"b\"],[[1,0]],[[1]])"
+    assert outputs(run(program, 1)) == [[[0], "b"], [[0]]]

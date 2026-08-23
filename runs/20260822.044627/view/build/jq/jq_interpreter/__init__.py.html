@@ -11,11 +11,11 @@
 <header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/jq_interpreter/__init__.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/jq_interpreter/__init__.py">Raw file</a></div></header>
 <article class="doc"><pre>&quot;&quot;&quot;Standard-library jq interpreter package.&quot;&quot;&quot;
 
-from .errors import CompileError, RuntimeError
+from .errors import CompileError, HaltError, RuntimeError
 from .interpreter import Interpreter
 from .architecture import MODULE_BOUNDARIES
 
-__all__ = [&quot;CompileError&quot;, &quot;Interpreter&quot;, &quot;MODULE_BOUNDARIES&quot;, &quot;RuntimeError&quot;]
+__all__ = [&quot;CompileError&quot;, &quot;HaltError&quot;, &quot;Interpreter&quot;, &quot;MODULE_BOUNDARIES&quot;, &quot;RuntimeError&quot;]
 </pre></article>
 </main>
 </body>

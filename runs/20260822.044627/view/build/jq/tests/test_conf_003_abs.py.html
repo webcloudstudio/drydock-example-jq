@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_conf_003_abs.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_conf_003_abs.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_conf_003_abs.py">Raw file</a></div></header>
+<article class="doc"><pre>from __future__ import annotations
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def run_filter(program: str, value: object) -&gt; tuple[int, list[object]]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    outputs = [json.loads(line) for line in result.stdout.splitlines()]
+    return result.returncode, outputs
+
+
+def test_abs_preserves_non_numeric_values() -&gt; None:
+    code, outputs = run_filter(&quot;abs&quot;, &quot;abc&quot;)
+    assert code == 0
+    assert outputs == [&quot;abc&quot;]
+</pre></article>
+</main>
+</body>
+</html>

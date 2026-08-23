@@ -1,0 +1,15 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/__init__.py
+- jq_interpreter/cli.py
+- jq_interpreter/errors.py
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_io_002_diagnostics.py
+
+SUMMARY:
+Implemented `debug`, `stderr`, and `halt_error` with channel separation and exit semantics. All 177 tests pass; diagnostics conformance passes with 1 pass, 0 failures, 0 errors.
+
+BLOCKERS:
+- None

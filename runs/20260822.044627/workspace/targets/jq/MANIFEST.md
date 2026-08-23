@@ -4,8 +4,10 @@ state: approved
 blocks: 43
 applied_specs: |
   ARCHITECTURE.md sha256=804f795bcb5936ed9308172bfc354af1341b7ac3f836bc04948b5e4308da2eae commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-1 applied_at=2026-08-22T19:49:06+00:00 build_sha256=3b3a42c00117ba97d1370f8302c9ae4e17b24a50bf7118f6d7d0edbb947983c7
-  ARCHITECTURE_compact.md sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-36 applied_at=2026-08-23T05:06:38+00:00 build_sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6
+  ARCHITECTURE_compact.md sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6
   FEATURE-CONF-001.md sha256=c634bd9f1cd543ea1b8152a21e0b077b520a2f989c050d15037015e151bebc26 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-5 applied_at=2026-08-22T19:54:30+00:00 build_sha256=a92a983b09d4f4abd687d9dc869a8bcbcb8bfa0d8f45b72d84a16259a7702fbb
+  FEATURE-CONF-002.md sha256=2f8a839b3ba0a50a0860da6fa0e650928442ac5f787ebf079a57649523c60994 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-42 applied_at=2026-08-23T11:57:52+00:00 build_sha256=64b568b9f136eb79dd7944bb632f9adc983157ba54ba8d9d26fb4199f240ed1d
+  FEATURE-CONF-003.md sha256=bb20be3246e9ab219f93759368ca61ad4d20564cb3792b2f9bf6874e5a38d31d commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=dba783eecf6e57f412e8567a73e7048b88eb401fad192411f69273d2d2fd31e1
   FEATURE-CORE-001.md sha256=2093027cf769a2249afd777cb175da2d183f72db572dde1d187799ef25f1ed40 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-9 applied_at=2026-08-23T02:20:49+00:00 build_sha256=46080600359116d964d3f709bd25c4f6eaa062d495f2bbd978331cf2f7a34d21
   FEATURE-CORE-002.md sha256=dae33f65d485a584052a3d16f4949fdb6970421983956b44c454fec55aa88abb commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-10 applied_at=2026-08-23T02:25:09+00:00 build_sha256=8c07eafa49b1aaf10a26b47c04d565d3a3260fa2a6409b2856fca86e21a0939b
   FEATURE-CORE-003.md sha256=d0a35f2f0e37e03ed674463b77d6546f81a3c5980d11a6efbecc70a1d3aea5d4 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-11 applied_at=2026-08-23T02:28:41+00:00 build_sha256=7e76f381159750755ff135097b53eef89090f50a97dce82643c81a11e52ef138
@@ -28,6 +30,9 @@ applied_specs: |
   FEATURE-FUNC-002.md sha256=273775cd2bbf9b3fe4538c1e0d4e80c197fd5e5b9b6e515fda4158e5fc3fb6cf commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-24 applied_at=2026-08-23T03:39:24+00:00 build_sha256=611ba927725e778a96e74d2d5cfd5a07d537533e679099d899c8e076ad715813
   FEATURE-FUNC-003.md sha256=793e652654dc7740b1a4b6eb6dfcb749dd74f5246b49ec92929e1b05eab0f7b9 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-25 applied_at=2026-08-23T03:45:29+00:00 build_sha256=d2c8ddfc9ef0eb3627a5e4276977673ae14dc029ad8bdb054f2dc142300462f9
   FEATURE-FUNC-004.md sha256=1826c0cd09c6d2097bcd8ca60f370dc3d9610dfc4a2bc91b1a1eba24459c0ce5 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-26 applied_at=2026-08-23T03:50:50+00:00 build_sha256=6e0197159bd2eadf79928ba2225a7ccdb8d36b2410a0c437ce71bd8c37305f9f
+  FEATURE-IO-001.md sha256=1ded0b97c10c955e03a384956779cbc162d703410676506c2c6e598a2f9f0465 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-39 applied_at=2026-08-23T11:49:07+00:00 build_sha256=cdafc279ab6b8e6450f7d69e852bab39bf9bd74e53d1017dbf97340381189e5e
+  FEATURE-IO-002.md sha256=80ddd83b6bcaa58563c13b65941834fb5905c817a6c261dc142997def2157bf3 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-40 applied_at=2026-08-23T11:52:44+00:00 build_sha256=90128f940748080d70007bdf0f4996284f35fb10bd03c1d2c094515167cfe35d
+  FEATURE-IO-003.md sha256=97b41eb9d6e95b80f726fcbbc2db1658351ab2fc20d26b0753e364b76601b45f commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=1c819234ad8d053951c06476470df77659104025034e189e3648a1b18d6a41a2
   FEATURE-Json-IO.md sha256=b53fb24c9294612630c2043fe71a4ed7a4c57edebd64f3343cd3844019df54e0 commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=6add55349a875de1033db60ec668d4cdd214e75d0966df04cfaba467a0799526
   FEATURE-PARSE-001.md sha256=98e8d8ad7372a72ab6110f6213eada45188ccecaaf6f8bac0ba5d7bc54236db0 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-6 applied_at=2026-08-22T19:58:27+00:00 build_sha256=473d7b652d420756de904cced1b6fcd8a09218080716535b02a4872b9bf005d1
   FEATURE-PARSE-002.md sha256=00b9ba80ba69e5afbb7248ffe43ece325b6ec88d0fd1aa842f0789df08fd2ec8 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-7 applied_at=2026-08-22T20:02:37+00:00 build_sha256=8e25d3c11864553872e1479878675f36c5dee34b98bd5dcbe109a6b154cb0bd8
@@ -40,19 +45,21 @@ applied_specs: |
   FEATURE-Process-Contract.md sha256=b52f3427527125a46e8704b90ba4a2318c1c0d930818142fe7e7265034a00cbc commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-2 applied_at=2026-08-22T18:11:32+00:00 build_sha256=4d6818d551ca2e0c13a5f0b8f30b47fad0b6f3351f72979a6e88a9c33b7c890c
   FEATURE-TEXT-001.md sha256=4495f77e17235c016d99c020ed2463220bdf571a11038c0f4dd95d6fa531f11a commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-35 applied_at=2026-08-23T04:58:24+00:00 build_sha256=e0edef08bba6bf74b162379a6e87c9c9175d75691e552e1dcefe9c0a700be4a6
   FEATURE-TEXT-002.md sha256=3173aa0142dd47f253c36734ddf49c392f080cdc5fff5fc86440ef633d32cdcb commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-36 applied_at=2026-08-23T05:06:38+00:00 build_sha256=1e4deee124064dc3e5978e8a0a5c21ff602e3c60113e0d4cda91a32cb2d8a9f1
+  FEATURE-TEXT-003.md sha256=1b5b689b9492dea27017fbc5248eaace3542c4ae73236ded0f285ce5d244a34c commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-37 applied_at=2026-08-23T11:38:15+00:00 build_sha256=a1e2c4cf7206bfab0c6359cfcd443864042b90ed36474df5a3fc1622a9ea4513
+  FEATURE-TEXT-004.md sha256=0b42202d9abf982069c897d8c6ff6417555aef658f477c2d04a31efd9e31e735 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-38 applied_at=2026-08-23T11:44:03+00:00 build_sha256=0a01924789a554a7c9d33b71f3b5080349877f405474247a2d69f0cb94471ac4
   FEATURE-VALUE-001.md sha256=2236dc509b59427b8b587756ada8b8eb1bb9ac8dd65300c394ff2e3a68ff15c3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-13 applied_at=2026-08-23T02:35:55+00:00 build_sha256=e82ede8e9cb71584fe44dfda14d541a84d3907bc5f6a06b7278acaf553294d36
   FEATURE-VALUE-002.md sha256=15d912ab5c5ea9208974390a15db9172b610bf448fda72d31acf34a9a7befbd3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-14 applied_at=2026-08-23T02:40:18+00:00 build_sha256=cb3d265a31adaa7ef067038120d3812466ef819d8639d7182c9c3092cc1ffe25
   FEATURE-VALUE-003.md sha256=567865f1649cba6545abbbafc67328f689dcd18bc12100e56f4bdd207874141b commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-15 applied_at=2026-08-23T02:45:34+00:00 build_sha256=24fc09c4de2ee76d61921b74d69587c2813fec7ff3ee758eab0aa5bbd655ad46
   FEATURE-VALUE-004.md sha256=eacd7e627e0d069f120ce5d8e3d45eccac0afc68c8c802ab4ac5dc4ff930abba commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-16 applied_at=2026-08-23T02:51:20+00:00 build_sha256=e0b5074ad931e7bb4fb259f6e1a13e1fecfe54630057ea9b50c8c42863a83550
-  builtin.jq sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-35 applied_at=2026-08-23T04:58:24+00:00 build_sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4
-  exclusions.txt sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9 commit=57be153c5abe180550f189d8cb5e1b39b287dbba applied_by=block-5 applied_at=2026-08-22T19:54:30+00:00 build_sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9
-  full_test.sh sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5 commit=57be153c5abe180550f189d8cb5e1b39b287dbba applied_by=block-5 applied_at=2026-08-22T19:54:30+00:00 build_sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5
-  jq-manual.txt sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-36 applied_at=2026-08-23T05:06:38+00:00 build_sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3
-  jq.test sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-36 applied_at=2026-08-23T05:06:38+00:00 build_sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd
+  builtin.jq sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4
+  exclusions.txt sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9
+  full_test.sh sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5
+  jq-manual.txt sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3
+  jq.test sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd
   lexer.l sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-8 applied_at=2026-08-23T02:16:48+00:00 build_sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3
   parser.y sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-29 applied_at=2026-08-23T04:11:08+00:00 build_sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60
-  run_conformance.py sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492 commit=57be153c5abe180550f189d8cb5e1b39b287dbba applied_by=block-5 applied_at=2026-08-22T19:54:30+00:00 build_sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492
-applied: ARCHITECTURE.md=b6180cf90d8f416e778a09e787101cfc5e91831d,ARCHITECTURE_compact.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CONF-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-005.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-006.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,TECHNOLOGY_STACK.md=b6180cf90d8f416e778a09e787101cfc5e91831d,builtin.jq=b6180cf90d8f416e778a09e787101cfc5e91831d,common.md=b6180cf90d8f416e778a09e787101cfc5e91831d,exclusions.txt=b6180cf90d8f416e778a09e787101cfc5e91831d,full_test.sh=b6180cf90d8f416e778a09e787101cfc5e91831d,jq-manual.txt=b6180cf90d8f416e778a09e787101cfc5e91831d,jq.test=b6180cf90d8f416e778a09e787101cfc5e91831d,lexer.l=b6180cf90d8f416e778a09e787101cfc5e91831d,parser.y=b6180cf90d8f416e778a09e787101cfc5e91831d,python.md=b6180cf90d8f416e778a09e787101cfc5e91831d,run_conformance.py=b6180cf90d8f416e778a09e787101cfc5e91831d
+  run_conformance.py sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492
+applied: ARCHITECTURE.md=b6180cf90d8f416e778a09e787101cfc5e91831d,ARCHITECTURE_compact.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CONF-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CONF-002.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CONF-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CORE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-005.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-006.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-IO-001.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-IO-002.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-IO-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-PARSE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-TEXT-004.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-VALUE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,TECHNOLOGY_STACK.md=b6180cf90d8f416e778a09e787101cfc5e91831d,builtin.jq=30c808224d13655ccad1d4708f9bcab07d4b0dfd,common.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,exclusions.txt=30c808224d13655ccad1d4708f9bcab07d4b0dfd,full_test.sh=30c808224d13655ccad1d4708f9bcab07d4b0dfd,jq-manual.txt=30c808224d13655ccad1d4708f9bcab07d4b0dfd,jq.test=30c808224d13655ccad1d4708f9bcab07d4b0dfd,lexer.l=b6180cf90d8f416e778a09e787101cfc5e91831d,parser.y=b6180cf90d8f416e778a09e787101cfc5e91831d,python.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,run_conformance.py=30c808224d13655ccad1d4708f9bcab07d4b0dfd
 
 ## story 1: Define the standalone jq interpreter architecture and module boundaries.
 id: architecture-foundation
@@ -935,7 +942,7 @@ scope: target
 
 ## story 38: Implement regular-expression filters.
 id: TEXT-003
-finding: programmatic acceptance failed: text-003-regex-conformance, text-003-captures: AssertionError
+finding: ADVISORY: implemented, not verified — every criterion this story declared settled UNVERIFIED, so nothing was measured against the built code. Repair the criteria in the Blueprint and rebuild to obtain a verdict.
 evidence: evidence/block-37.md
 summary: Implement regular-expression filters.
 type: service
@@ -954,11 +961,13 @@ consumes: jq strings, generator evaluator
 instructions: Implement regex matching with standard-library re features mapped to jq flags, named captures, offsets, streams, splitting, substitution, and global replacement.
 acceptance: yes
 depends: TEXT-002
-state: closed/failed
+state: closed/implemented
 scope: target
 
 ## story 39: Implement date and time filters.
 id: TEXT-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-38.md
 summary: Implement date and time filters.
 type: service
 kind: capability
@@ -976,11 +985,13 @@ consumes: jq strings and numbers
 instructions: Implement UTC date parsing and formatting plus required low-level time conversions using Python standard-library time and datetime facilities.
 acceptance: yes
 depends: TEXT-003
-state: pending
+state: closed/implemented
 scope: target
 
 ## story 40: Implement input stream controls.
 id: IO-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-39.md
 summary: Implement input stream controls.
 type: service
 kind: capability
@@ -998,11 +1009,13 @@ consumes: JSON stdin reader
 instructions: Implement input and inputs over the fixed stdin interface and provide the documented filename and line-number primitives.
 acceptance: yes
 depends: TEXT-004
-state: pending
+state: closed/implemented
 scope: target
 
 ## story 41: Implement diagnostics and stderr output.
 id: IO-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-40.md
 summary: Implement diagnostics and stderr output.
 type: service
 kind: capability
@@ -1020,11 +1033,13 @@ consumes: process exit and diagnostic contract
 instructions: Implement debug and stderr side effects, halt_error output and exit behavior, and preserve stdout/stderr separation.
 acceptance: yes
 depends: IO-001
-state: pending
+state: closed/implemented
 scope: target
 
 ## story 42: Implement streaming transformations.
 id: IO-003
+finding: ADVISORY: implemented, not verified — every criterion this story declared settled UNVERIFIED, so nothing was measured against the built code. Repair the criteria in the Blueprint and rebuild to obtain a verdict.
+evidence: evidence/block-41.md
 summary: Implement streaming transformations.
 type: service
 kind: capability
@@ -1042,11 +1057,13 @@ consumes: generator evaluator, path primitives
 instructions: Implement jq streaming representations and conversion utilities for the supplied streaming cases.
 acceptance: yes
 depends: IO-002
-state: pending
+state: closed/implemented
 scope: target
 
 ## story 43: Provide scoped conformance verification.
 id: CONF-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-42.md
 summary: Provide scoped conformance verification.
 type: service
 kind: test harness
@@ -1063,11 +1080,13 @@ consumes: ./jq, sources/run_conformance.py
 instructions: Verify that scoped acceptance invocations execute selected corpus cases with JQ extended from the inherited environment and machine-readable results.
 acceptance: yes
 depends: IO-003, CONF-001
-state: pending
+state: closed/implemented
 scope: target
 
 ## story 44: Run the complete jq conformance corpus.
 id: CONF-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-43.md
 summary: Run the complete jq conformance corpus.
 type: service
 kind: test harness
@@ -1085,5 +1104,5 @@ consumes: ./jq, sources/full_test.sh
 instructions: Run the supplied full-test script as the terminal verification. Assert its exit status is zero, print captured stdout and stderr for diagnosis, and do not reinterpret or filter the corpus.
 acceptance: yes
 depends: EXEC-001, EXEC-002, EXEC-003, PARSE-001, PARSE-002, PARSE-003, PARSE-004, CORE-001, CORE-002, CORE-003, CORE-004, VALUE-001, VALUE-002, VALUE-003, VALUE-004, FLOW-001, FLOW-002, FLOW-003, FLOW-004, FLOW-005, FLOW-006, FUNC-001, FUNC-002, FUNC-003, FUNC-004, PATH-001, PATH-002, PATH-003, PATH-004, DATA-001, DATA-002, DATA-003, DATA-004, TEXT-001, TEXT-002, TEXT-003, TEXT-004, IO-001, IO-002, IO-003, CONF-001, CONF-002
-state: pending
+state: closed/implemented
 scope: target

@@ -1,0 +1,18 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/cli.py
+- jq_interpreter/evaluator.py
+- jq_interpreter/interpreter.py
+- jq_interpreter/parser.py
+- tests/test_json_io.py
+
+SUMMARY:
+Implemented `input`, `inputs`, `input_filename`, and `input_line_number` with shared stdin stream state and metadata tracking.
+
+Verification:
+- Both IO-001 scoped gates passed.
+- Full test suite: 173 passed.
+
+BLOCKERS:
+- None

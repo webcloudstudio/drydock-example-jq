@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_conf_002_acceptance.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_conf_002_acceptance.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_conf_002_acceptance.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Acceptance coverage for scoped, machine-readable conformance verification.&quot;&quot;&quot;
+
+import json
+import os
+import subprocess
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+RUNNER = ROOT / &quot;sources&quot; / &quot;run_conformance.py&quot;
+
+
+class Conf002AcceptanceTests(unittest.TestCase):
+    def test_runner_exposes_scoped_machine_readable_candidate_contract(self) -&gt; None:
+        source = RUNNER.read_text(encoding=&quot;utf-8&quot;)
+
+        self.assertTrue(RUNNER.is_file())
+        self.assertIn(&quot;JQ&quot;, source)
+        self.assertIn(&quot;--select&quot;, source)
+        self.assertIn(&quot;--json&quot;, source)
+
+    def test_scoped_run_executes_cases_and_reports_json(self) -&gt; None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(RUNNER),
+                &quot;--select&quot;,
+                r&quot;reduce&quot;,
+                &quot;--json&quot;,
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            env={**os.environ, &quot;JQ&quot;: str(ROOT / &quot;jq&quot;)},
+            check=False,
+        )
+
+        report = json.loads(result.stdout)
+        tally = report[&quot;summary&quot;]
+        self.assertGreater(sum(tally.values()), 0)
+        self.assertEqual(tally[&quot;fail&quot;], 0)
+        self.assertEqual(tally[&quot;error&quot;], 0)
+        self.assertEqual(result.returncode, 0)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</pre></article>
+</main>
+</body>
+</html>

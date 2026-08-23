@@ -58,6 +58,27 @@ def test_multiline_and_unicode_json_values_are_decoded() -&gt; None:
         {&quot;answer&quot;: &quot;μ&quot;},
         [1, 2],
     ]
+
+
+def test_inputs_emits_only_values_after_the_current_input() -&gt; None:
+    result = run_jq(&quot;inputs&quot;, &quot;1\n2\n3\n&quot;)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [2, 3]
+
+
+def test_input_emits_the_next_value_without_replacing_current_input() -&gt; None:
+    result = run_jq(&quot;[., input]&quot;, &quot;1\n2\n&quot;)
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == [1, 2]
+
+
+def test_stdin_metadata_reports_filename_and_value_start_line() -&gt; None:
+    result = run_jq(&quot;[input_filename, input_line_number]&quot;, &quot;1\n\n  2\n&quot;)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [
+        [&quot;&lt;stdin&gt;&quot;, 1],
+        [&quot;&lt;stdin&gt;&quot;, 3],
+    ]
 </pre></article>
 </main>
 </body>

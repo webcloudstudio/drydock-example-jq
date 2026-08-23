@@ -2,14 +2,25 @@
 import json
 import math
 import datetime
+import calendar
+import time
 import itertools
 import sys
 import re
+from collections.abc import Iterator
 from functools import cmp_to_key
 
 from .ast import Add, Array, Comma, Filter, Format, Identity, Iterate, Literal, Limit, Node, Pipe, Raise, StringTemplate
-from .errors import FLOW_RUNTIME_ERRORS, RuntimeError
+from .errors import FLOW_RUNTIME_ERRORS, HaltError, RuntimeError
 from .runtime import InputNumber, JsonValue, ValueStream, identity_stream
+
+
+class EvaluationContext:
+    """Shared unread-input state for one jq process."""
+
+    def __init__(self, stream: Iterator[object]) -> None:
+        self.stream = stream
+        self.current: object | None = None
 
 
 class _OverflowFloat(float):
@@ -18,10 +29,10 @@ class _OverflowFloat(float):
     pass
 
 
-def evaluate(program: Filter, value: JsonValue) -> ValueStream:
+def evaluate(program: Filter, value: JsonValue, context: EvaluationContext | None = None) -> ValueStream:
     """Evaluate one input as an ordered stream of output values."""
     if isinstance(program, Node):
-        yield from _node(program, value, {})
+        yield from _node(program, value, {'__input_context__': context} if context else {})
         return
     if isinstance(program, Identity):
         yield from identity_stream(value)
@@ -33,7 +44,7 @@ def evaluate(program: Filter, value: JsonValue) -> ValueStream:
         yield program.value
         return
     if isinstance(program, Pipe):
-        for intermediate in evaluate(program.left, value): yield from evaluate(program.right, intermediate)
+        for intermediate in evaluate(program.left, value, context): yield from evaluate(program.right, intermediate, context)
         return
     if isinstance(program, Add):
         left = list(evaluate(program.left, value))
@@ -1137,6 +1148,51 @@ def _delete_path(value, path):
         elif key in result: result[key] = _delete_path(result[key], path[1:])
         return result
     return value
+def _to_stream(value: object, path: list[object] | None = None) -> Iterator[list[object]]:
+    """Yield jq's depth-first path/value stream, including close records."""
+    current_path = [] if path is None else path
+    if isinstance(value, list):
+        if not value:
+            yield [current_path, value]
+            return
+        for index, child in enumerate(value):
+            yield from _to_stream(child, current_path + [index])
+        yield [current_path]
+        return
+    if isinstance(value, dict):
+        if not value:
+            yield [current_path, value]
+            return
+        for key, child in value.items():
+            yield from _to_stream(child, current_path + [key])
+        yield [current_path]
+        return
+    yield [current_path, value]
+
+
+def _from_stream(records: Iterator[object]) -> Iterator[object]:
+    """Rebuild values from stream records and emit each completed root."""
+    root: object = None
+    has_root = False
+    for record in records:
+        if not isinstance(record, list) or not record or not isinstance(record[0], list):
+            raise RuntimeError('stream record must contain a path')
+        path = record[0]
+        if len(record) == 2:
+            root = _set_path(root, path, record[1])
+            has_root = True
+            if not path:
+                yield root
+                root, has_root = None, False
+        elif len(record) == 1:
+            if len(path) == 1:
+                if has_root:
+                    yield root
+                root, has_root = None, False
+        else:
+            raise RuntimeError('stream record must contain one or two values')
+
+
 def _call(name,args,value,env):
     parameter = env.get('__params__', {}).get(name)
     if parameter is not None:
@@ -1183,7 +1239,50 @@ def _call(name,args,value,env):
             yield from _node(body, value, invocation)
         return
     if name == 'empty': return
+    if name == 'tostream':
+        yield from _to_stream(value)
+        return
+    if name == 'truncate_stream':
+        if len(args) != 1:
+            raise RuntimeError('truncate_stream requires a stream expression')
+        count = value
+        if isinstance(count, bool) or not isinstance(count, (int, float)):
+            raise RuntimeError('truncate_stream requires a number')
+        count = int(count)
+        for record in _node(args[0], value, env):
+            if not isinstance(record, list) or not record or not isinstance(record[0], list):
+                raise RuntimeError('stream record must contain a path')
+            if len(record[0]) > count:
+                yield [record[0][count:]] if len(record) == 1 else [record[0][count:], record[1]]
+        return
+    if name == 'fromstream':
+        if not args:
+            raise RuntimeError('fromstream requires a stream expression')
+        yield from _from_stream(_node(args[0], value, env))
+        return
     if name == 'error': raise RuntimeError(_one(args[0],value,env) if args else value)
+    if name == 'debug':
+        messages = list(_node(args[0], value, env)) if args else [value]
+        for message in messages:
+            sys.stderr.write(_deep_json_dumps(['DEBUG:', message]))
+            sys.stderr.write('\n')
+            sys.stderr.flush()
+        yield value
+        return
+    if name == 'stderr':
+        sys.stderr.write(_raw_diagnostic(value))
+        sys.stderr.flush()
+        yield value
+        return
+    if name == 'halt_error':
+        halt_value = value
+        exit_code = 5
+        if args:
+            exit_value = _one(args[0], value, env)
+            if isinstance(exit_value, bool) or not isinstance(exit_value, (int, float)):
+                raise RuntimeError('halt_error exit code must be a number')
+            exit_code = int(exit_value)
+        raise HaltError(halt_value, exit_code)
     if name=='length':
         if isinstance(value, (list, dict, str)): yield len(value)
         elif isinstance(value, (int, float)) and not isinstance(value, bool): yield _OverflowFloat(abs(value)) if isinstance(value, _OverflowFloat) else abs(value)
@@ -1283,6 +1382,9 @@ def _call(name,args,value,env):
             yield _deep_json_dumps(value)
         return
     if name=='abs':
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            yield value
+            return
         if isinstance(value, InputNumber) and value >= 0:
             yield value
         else:
@@ -1476,17 +1578,61 @@ def _call(name,args,value,env):
             if index < len(values): yield values[index]
         return
     if name == 'input':
-        raise RuntimeError('break')
+        context = env.get('__input_context__')
+        if not isinstance(context, EvaluationContext):
+            raise RuntimeError('break')
+        try:
+            record = next(context.stream)
+        except StopIteration as error:
+            raise RuntimeError('break') from error
+        context.current = record
+        yield record.value
+        return
+    if name == 'inputs':
+        context = env.get('__input_context__')
+        if isinstance(context, EvaluationContext):
+            for record in context.stream:
+                context.current = record
+                yield record.value
+        return
+    if name == 'input_filename':
+        context = env.get('__input_context__')
+        record = context.current if isinstance(context, EvaluationContext) else None
+        yield getattr(record, 'filename', '<stdin>')
+        return
+    if name == 'input_line_number':
+        context = env.get('__input_context__')
+        record = context.current if isinstance(context, EvaluationContext) else None
+        yield getattr(record, 'line_number', 1)
+        return
+    if name in ('fromdateiso8601', 'fromdate'):
+        if not isinstance(value, str):
+            raise RuntimeError('date input must be a string')
+        try:
+            parsed = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
+        except ValueError as error:
+            raise RuntimeError('date input must be in ISO 8601 format') from error
+        yield calendar.timegm(parsed.timetuple()); return
+    if name in ('todateiso8601', 'todate'):
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise RuntimeError('date input must be a number')
+        yield datetime.datetime.fromtimestamp(float(value), datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'); return
     if name in ('strftime', 'strflocaltime'):
         if not args or not isinstance(_one(args[0], value, env), str):
             raise RuntimeError(f'{name}/1 requires a string format')
         if isinstance(value, (int, float)) and not isinstance(value, bool):
-            dt = datetime.datetime.fromtimestamp(float(value), datetime.timezone.utc)
+            timestamp = float(value)
+            dt = (datetime.datetime.fromtimestamp(timestamp, datetime.timezone.utc)
+                  if name == 'strftime' else datetime.datetime.fromtimestamp(timestamp).astimezone())
         elif isinstance(value, list) and len(value) >= 3 and all(isinstance(x, (int, float)) for x in value[:3]):
-            dt = datetime.datetime(int(value[0]), int(value[1]) + 1, int(value[2]),
-                                   int(value[3]) if len(value) > 3 else 0,
-                                   int(value[4]) if len(value) > 4 else 0,
-                                   int(value[5]) if len(value) > 5 else 0)
+            try:
+                dt = datetime.datetime(int(value[0]), int(value[1]) + 1, int(value[2]),
+                                       int(value[3]) if len(value) > 3 else 0,
+                                       int(value[4]) if len(value) > 4 else 0,
+                                       int(value[5]) if len(value) > 5 else 0,
+                                       tzinfo=(datetime.timezone.utc if name == 'strftime' else None))
+            except (TypeError, ValueError, OverflowError) as error:
+                raise RuntimeError(f'{name}/1 requires parsed datetime inputs') from error
         else:
             raise RuntimeError(f'{name}/1 requires parsed datetime inputs')
         for fmt in _node(args[0], value, env):
@@ -1495,10 +1641,10 @@ def _call(name,args,value,env):
             yield dt.strftime(fmt)
         return
     if name == 'mktime':
-        if not isinstance(value, list) or len(value) < 6 or not all(isinstance(x, (int, float)) for x in value[:6]):
+        if not isinstance(value, list) or len(value) < 3 or not all(isinstance(x, (int, float)) for x in value[:min(len(value), 6)]):
             raise RuntimeError('mktime requires parsed datetime inputs')
-        dt = datetime.datetime(int(value[0]), int(value[1]) + 1, int(value[2]), int(value[3]), int(value[4]), int(value[5]), tzinfo=datetime.timezone.utc)
-        yield int(dt.timestamp()); return
+        fields = [int(value[index]) if index < len(value) else 0 for index in range(6)]
+        yield calendar.timegm((fields[0], fields[1] + 1, fields[2], fields[3], fields[4], fields[5], 0, 0, 0)); return
     if name == 'strptime':
         fmt = _one(args[0], value, env) if args else None
         if not isinstance(value, str) or not isinstance(fmt, str):
@@ -1827,8 +1973,15 @@ def _call(name,args,value,env):
         stamp = float(value)
         dt = datetime.datetime.fromtimestamp(stamp, datetime.timezone.utc)
         yield [dt.year, dt.month - 1, dt.day, dt.hour, dt.minute,
-               dt.second + (stamp - int(stamp)), dt.weekday(),
+               dt.second + (stamp - int(stamp)), (dt.weekday() + 1) % 7,
                dt.timetuple().tm_yday - 1]
+        return
+    if name == 'localtime':
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise RuntimeError('localtime requires a number')
+        broken = time.localtime(float(value))
+        yield [broken.tm_year, broken.tm_mon - 1, broken.tm_mday, broken.tm_hour,
+               broken.tm_min, broken.tm_sec, (broken.tm_wday + 1) % 7, broken.tm_yday - 1]
         return
     if name == 'pow': yield math.pow(_one(args[0],value,env), _one(args[1],value,env)); return
     if name == 'implode':
@@ -2203,6 +2356,11 @@ def _stringify(value: object) -> str:
             from decimal import Decimal
             return format(Decimal(str(value)), '.0f')
         return str(int(value))
+    return value if isinstance(value, str) else _deep_json_dumps(value)
+
+
+def _raw_diagnostic(value: object) -> str:
+    """Render a value as jq's undecorated stderr representation."""
     return value if isinstance(value, str) else _deep_json_dumps(value)
 
 def _apply_format(name: str, value: object, template: bool = False) -> str:

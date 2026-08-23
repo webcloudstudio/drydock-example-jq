@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-41.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-41.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-41.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 41 · Service (block-41)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-23</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53670</li><li>execution id: 20260823.115246.709Z-e65b4efc</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement streaming transformations. (IO-003) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-IO-003.md (SP 375)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_stream_evaluator.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: io-003-conformance (FEATURE-IO-003.md)</li></ul>
+<p>intent: The streaming transformation cases selected from the authoritative corpus execute and pass. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 0, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 0, &#x27;fail&#x27;: 0, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;io-003-conformance.py&quot;, line 17, in &lt;module&gt; assert sum(summary.values()) &gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>UNVERIFIED: io-003-conformance (FEATURE-IO-003.md)</li></ul>
+<p>intent: The streaming transformation cases selected from the authoritative corpus execute and pass. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 1 error: unverified acceptance: selector matched zero cases stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 0, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 0, &#x27;fail&#x27;: 0, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;io-003-conformance.py&quot;, line 17, in &lt;module&gt; assert sum(summary.values()) &gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Build summary</h2>
+<p>Implemented streaming transformations:</p>
+<ul><li>Added <code>tostream</code>, <code>fromstream</code>, and <code>truncate_stream</code>.</li><li>Preserved depth-first ordering and stream record shapes.</li><li>Added focused tests; 10 streaming tests pass.</li><li>Conformance selector matched zero staged cases because <code>jq.test</code> contains no streaming names.</li></ul>
+<p>AC_BROKEN: io-003-conformance</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_stream_evaluator.py</li></ul>
+<p>SUMMARY: Streaming filters implemented and locally verified, including round-trip reconstruction and truncation.</p>
+<p>BLOCKERS:</p>
+<ul><li>Declared conformance criterion is broken by the staged corpus containing zero matching cases.</li></ul></article>
+</main>
+</body>
+</html>

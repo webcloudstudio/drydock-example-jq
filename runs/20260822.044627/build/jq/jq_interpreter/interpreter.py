@@ -2,6 +2,7 @@
 
 import json
 from collections.abc import Iterable, Iterator
+from dataclasses import dataclass
 
 from .evaluator import evaluate
 from .parser import parse
@@ -12,6 +13,13 @@ class _InputInteger(int):
     """An input integer whose literal spelling remains available to jq."""
 
 
+@dataclass(frozen=True)
+class InputRecord:
+    value: JsonValue
+    filename: str = '<stdin>'
+    line_number: int = 1
+
+
 class Interpreter:
     """Compile once, then evaluate each JSON input in order."""
 
@@ -20,8 +28,22 @@ class Interpreter:
 
     def run(self, inputs: Iterable[JsonValue]) -> Iterator[JsonValue]:
         """Yield every output, preserving input and generator ordering."""
-        for value in inputs:
-            yield from evaluate(self._compiled, value)
+        from .evaluator import EvaluationContext
+        stream = iter(InputRecord(value, line_number=index)
+                      for index, value in enumerate(inputs, start=1))
+        context = EvaluationContext(stream)
+        for record in stream:
+            context.current = record
+            yield from evaluate(self._compiled, record.value, context)
+
+    def run_records(self, records: Iterable[InputRecord]) -> Iterator[JsonValue]:
+        """Evaluate records while retaining their source metadata."""
+        from .evaluator import EvaluationContext
+        stream = iter(records)
+        context = EvaluationContext(stream)
+        for record in stream:
+            context.current = record
+            yield from evaluate(self._compiled, record.value, context)
 
 
 def parse_input(line: str) -> JsonValue:
@@ -36,25 +58,21 @@ def parse_inputs(text: str) -> Iterator[JsonValue]:
     span multiple physical lines.  ``raw_decode`` preserves the boundary
     between successive values without requiring a non-standard JSON parser.
     """
-    # jq accepts its non-standard constants in lower case as well.  The
-    # standard decoder only dispatches parse_constant for JSON's capitalized
-    # spellings, so normalize standalone bare constants before decoding.
+    yield from (record.value for record in parse_input_records(text))
+
+
+def parse_input_records(text: str) -> Iterator[InputRecord]:
+    """Decode values and retain the line on which each value starts."""
     import re
     text = re.sub(r'(?<![A-Za-z_])-(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])', lambda m: '-NaN' if 'nan' in m.group(0).lower() else '-Infinity', text)
     text = re.sub(r'(?<![A-Za-z_])(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])', lambda m: 'NaN' if m.group(0).lower() == 'nan' else 'Infinity', text)
     text = re.sub(r'(?<![A-Za-z_])-NaN(?![A-Za-z_])', 'NaN', text)
     def parse_integer(text: str) -> int | float:
         integer = int(text)
-        # Retain spelling only where the configured double representation can
-        # no longer represent the integer exactly.  Ordinary integers remain
-        # ints so diagnostics and compact structural values keep jq's shape.
         return InputNumber(text) if abs(integer) > 2**53 else _InputInteger(integer)
 
-    decoder = json.JSONDecoder(
-        parse_constant=_parse_json_constant,
-        parse_int=parse_integer,
-        parse_float=InputNumber,
-    )
+    decoder = json.JSONDecoder(parse_constant=_parse_json_constant,
+                               parse_int=parse_integer, parse_float=InputNumber)
     position = 0
     while True:
         while position < len(text) and text[position].isspace():
@@ -64,8 +82,9 @@ def parse_inputs(text: str) -> Iterator[JsonValue]:
         if position == 0 and text.startswith("\ufeff"):
             position += 1
             continue
+        start = position
         value, position = decoder.raw_decode(text, position)
-        yield value
+        yield InputRecord(value, line_number=text.count('\n', 0, start) + 1)
 
 
 def _parse_json_constant(value: str) -> float:

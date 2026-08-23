@@ -47,3 +47,24 @@ def test_multiline_and_unicode_json_values_are_decoded() -> None:
         {"answer": "μ"},
         [1, 2],
     ]
+
+
+def test_inputs_emits_only_values_after_the_current_input() -> None:
+    result = run_jq("inputs", "1\n2\n3\n")
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [2, 3]
+
+
+def test_input_emits_the_next_value_without_replacing_current_input() -> None:
+    result = run_jq("[., input]", "1\n2\n")
+    assert result.returncode == 0
+    assert json.loads(result.stdout) == [1, 2]
+
+
+def test_stdin_metadata_reports_filename_and_value_start_line() -> None:
+    result = run_jq("[input_filename, input_line_number]", "1\n\n  2\n")
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [
+        ["<stdin>", 1],
+        ["<stdin>", 3],
+    ]

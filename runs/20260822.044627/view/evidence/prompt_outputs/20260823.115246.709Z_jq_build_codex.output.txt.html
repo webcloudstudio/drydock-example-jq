@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260823.115246.709Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260823.115246.709Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260823.115246.709Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>Implemented streaming transformations:
+
+- Added `tostream`, `fromstream`, and `truncate_stream`.
+- Preserved depth-first ordering and stream record shapes.
+- Added focused tests; 10 streaming tests pass.
+- Conformance selector matched zero staged cases because `jq.test` contains no streaming names.
+
+AC_BROKEN: io-003-conformance
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_stream_evaluator.py
+
+SUMMARY:
+Streaming filters implemented and locally verified, including round-trip reconstruction and truncation.
+
+BLOCKERS:
+- Declared conformance criterion is broken by the staged corpus containing zero matching cases.</pre></article>
+</main>
+</body>
+</html>

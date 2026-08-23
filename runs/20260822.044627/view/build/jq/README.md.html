@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/README.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/README.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../build/jq/README.md">Raw file</a></div></header>
+<article class="doc"><h1>drydock jq Uat Kit</h1>
+<p>Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46 excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from github.com/jqlang/jq at tag jq-1.8.2, SHA-256 verified in PROVENANCE.md.</p>
+<h2>Intent</h2>
+<p>Build a standalone interpreter for the jq language as described in <code>sources/jq-manual.txt</code>. The product is an executable file named <code>jq</code> at the application root. It reads JSON from standard input, evaluates a jq filter as an ordered generator, and writes each value the filter produces to standard output as one compact JSON value per line.</p>
+<p>Correctness is measured by the upstream jq conformance corpus <code>sources/jq.test</code>, taken verbatim from jq 1.8.2, minus the cases named in <code>sources/exclusions.txt</code>. The goal is every case passing, none failed and none errored.</p>
+<h2>What It Does</h2>
+<p>Support array and object destructuring in <code>as</code> bindings, bind absent members as <code>null</code>, and backtrack through <code>?//</code> alternatives when a pattern or subsequent expression fails.</p>
+<p>Implement filters that discover paths through JSON values and construct projections from selected paths.</p>
+<p>Implement immutable access and mutation of nested arrays and objects through explicit path arrays.</p>
+<p>Implement jq&#x27;s immutable deletion, plain assignment, update assignment, and arithmetic assignment semantics.</p>
+<p>Handle complex assignment cases involving iterated paths, empty updates, array expansion, invalid indices, NaN indices, string slices, and depth limits.</p>
+<h2>Next Steps</h2>
+<ul><li>Complete the first-run checks above.</li></ul></article>
+</main>
+</body>
+</html>

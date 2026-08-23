@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "build-skip-feature-io-003.md-io-003-conformance",
+    "type": "text",
+    "severity": "low",
+    "origin": "build",
+    "blueprint": "FEATURE-IO-003.md",
+    "story": "IO-003",
+    "status": "recommended",
+    "archived": false,
+    "title": "Acceptance skipped: io-003-conformance",
+    "description": "unverified acceptance: selector matched zero cases",
+    "options": [],
+    "system_choice": "Leave io-003-conformance untested until its acceptance setup is repaired; do not treat it as passed."
+  }
+]

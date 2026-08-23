@@ -409,8 +409,7 @@ body {
   &lt;img src=&quot;/logo.png&quot; alt=&quot;Drydock&quot; style=&quot;height:64px;display:block;&quot;&gt;
 &lt;/div&gt;
 
-&lt;section class=&quot;state-panel&quot;&gt;&lt;strong&gt;STATE: BUILDING&lt;span class=&quot;state-verdict state-pass&quot;&gt;PASS&lt;/span&gt;&lt;/strong&gt;&lt;span class=&quot;state-when&quot;&gt;2026-08-22 19:49 · attempt 3&lt;/span&gt;&lt;ol class=&quot;state-ladder&quot;&gt;&lt;li class=&quot;state-step state-held&quot;&gt;INITIALIZED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;IMPORTED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;ANALYZED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;PLAN CREATED&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;PLAN REPAIRED&lt;/li&gt;&lt;li class=&quot;state-step state-current state-pass&quot;&gt;BUILDING&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;BUILT&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;SCORE AC&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;SCORE BUILD&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;SCORE RELEASE&lt;/li&gt;&lt;/ol&gt;&lt;/section&gt;
-&lt;section class=&quot;big-error-panel&quot;&gt;&lt;strong&gt;Failed: programmatic acceptance failed: text-003-regex-conformance, text-003-captures&lt;/strong&gt;&lt;span&gt;Command: build. Open &lt;b&gt;BIG ERRORS&lt;/b&gt; for recovery.&lt;/span&gt;&lt;/section&gt;
+&lt;section class=&quot;state-panel&quot;&gt;&lt;strong&gt;STATE: SCORE AC&lt;span class=&quot;state-verdict state-fail&quot;&gt;FAIL&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;3 of 57 failed&lt;/span&gt;&lt;span class=&quot;state-when&quot;&gt;2026-08-23 08:29&lt;/span&gt;&lt;ol class=&quot;state-ladder&quot;&gt;&lt;li class=&quot;state-step state-held&quot;&gt;INITIALIZED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;IMPORTED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;ANALYZED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;PLAN CREATED&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;PLAN REPAIRED&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;BUILDING&lt;/li&gt;&lt;li class=&quot;state-step state-held&quot;&gt;BUILT&lt;/li&gt;&lt;li class=&quot;state-step state-current state-fail&quot;&gt;SCORE AC&lt;/li&gt;&lt;li class=&quot;state-step state-fail&quot;&gt;SCORE BUILD&lt;/li&gt;&lt;li class=&quot;state-step&quot;&gt;SCORE RELEASE&lt;/li&gt;&lt;/ol&gt;&lt;/section&gt;
 &lt;nav class=&quot;chair-tabs&quot; aria-label=&quot;Commanders Chair views&quot;&gt;
   &lt;button class=&quot;chair-tab active&quot; type=&quot;button&quot; data-chair-tab=&quot;overview&quot;&gt;Overview&lt;/button&gt;
   &lt;button class=&quot;chair-tab&quot; type=&quot;button&quot; data-chair-tab=&quot;build&quot;&gt;Build Report&lt;/button&gt;
@@ -421,14 +420,14 @@ body {
 &lt;main id=&quot;chair-overview&quot; class=&quot;chair-pane&quot;&gt;
 &lt;section class=&quot;question-lead&quot;&gt;
   &lt;div class=&quot;question-status question-status-inline&quot;&gt;&lt;strong&gt;Questionnaires:&lt;/strong&gt; No open questionnaires&lt;/div&gt;
-  &lt;div class=&quot;next-step&quot;&gt;&lt;strong&gt;Next Step:&lt;/strong&gt; drydock build jq  (43 steps remaining)&lt;/div&gt;
+  &lt;div class=&quot;next-step&quot;&gt;&lt;strong&gt;Next Step:&lt;/strong&gt; drydock build jq  (44 steps remaining)&lt;/div&gt;
 &lt;/section&gt;
 
 &lt;div class=&quot;stats&quot;&gt;
 &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-value&quot;&gt;0%&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;Complete&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-value&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;Verified&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-value&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;In Review&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-value&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;Failed&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-value&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;Failed&lt;/div&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;div class=&quot;details&quot;&gt;
@@ -509,19 +508,19 @@ body {
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 36 · Service&lt;/div&gt;
 &lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement JSON and output format filters.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 37 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement regular-expression filters.&lt;/span&gt; &lt;span class=&quot;badge badge-failed&quot;&gt;failed&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement regular-expression filters.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 38 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement date and time filters.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement date and time filters.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 39 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement input stream controls.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement input stream controls.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 40 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement diagnostics and stderr output.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement diagnostics and stderr output.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 41 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement streaming transformations.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Implement streaming transformations.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 42 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Provide scoped conformance verification.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Provide scoped conformance verification.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;div class=&quot;story-feature&quot;&gt;Build Block 43 · Service&lt;/div&gt;
-&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Run the complete jq conformance corpus.&lt;/span&gt; &lt;span class=&quot;badge badge-pending&quot;&gt;pending&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;story-row&quot;&gt;&lt;span class=&quot;story-name&quot;&gt;Run the complete jq conformance corpus.&lt;/span&gt; &lt;span class=&quot;badge badge-review&quot;&gt;built&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
   &lt;/section&gt;
   &lt;section id=&quot;questions&quot; class=&quot;detail-section&quot;&gt;

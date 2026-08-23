@@ -1,0 +1,49 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Drydock status
+
+  Target          /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq
+  Name            drydock jq Uat Kit
+  Description     Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46
+                  excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
+  Phase           Implement
+  State           44 closed/implemented
+  Metadata        built · complete
+  Sources         9 imported · 47 authored blueprint files
+  Analysis        Ready · 42 stories · 0 questions · 0 blockers
+  Blueprint       ⚠  0 errors · 9 warnings
+    ⚠  Acceptance snippets: FEATURE-CORE-001.md [core-001-conformance]: expects 'null\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-001.md [core-001-conformance]: expects '0\n1\n2\n', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '1\n2\n3\n', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '[5,6]\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-002.md [core-002-conformance]: expects '{"a":1,"b":2}\n', a value re-typed
+       rather than derived from the input or read back from the system. This criterion is reported but does not
+       gate its story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-003.md [core-003-conformance]: expects '"x"\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects '0\n0\n1\n1\n', a value re-typed rather
+       than derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects 'true\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+    ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects 'false\n', a value re-typed rather than
+       derived from the input or read back from the system. This criterion is reported but does not gate its
+       story; bind the value to a name and use that name on both sides to make it binding
+  Plan            44 closed/implemented
+  Frontier        (none)
+  Workflow        5 steps
+                  Initialize         complete at 2026-08-22T04:46:29.469+00:00
+                  Import             complete at 2026-08-22T04:46:33.960+00:00
+                  Analyze            complete at 2026-08-22T04:48:42.765+00:00
+                  Plan               complete at 2026-08-22T19:46:51.359+00:00
+                  Build              complete at 2026-08-23T12:16:58.422+00:00
+  Next step       drydock build jq

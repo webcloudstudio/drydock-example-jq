@@ -398,8 +398,7 @@ body {
   <img src="/logo.png" alt="Drydock" style="height:64px;display:block;">
 </div>
 
-<section class="state-panel"><strong>STATE: BUILDING<span class="state-verdict state-pass">PASS</span></strong><span class="state-when">2026-08-22 19:49 · attempt 3</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-current state-pass">BUILDING</li><li class="state-step">BUILT</li><li class="state-step">SCORE AC</li><li class="state-step">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li></ol></section>
-<section class="big-error-panel"><strong>Failed: programmatic acceptance failed: text-003-regex-conformance, text-003-captures</strong><span>Command: build. Open <b>BIG ERRORS</b> for recovery.</span></section>
+<section class="state-panel"><strong>STATE: SCORE AC<span class="state-verdict state-fail">FAIL</span></strong><span>3 of 57 failed</span><span class="state-when">2026-08-23 08:29</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-held">BUILDING</li><li class="state-step state-held">BUILT</li><li class="state-step state-current state-fail">SCORE AC</li><li class="state-step state-fail">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li></ol></section>
 <nav class="chair-tabs" aria-label="Commanders Chair views">
   <button class="chair-tab active" type="button" data-chair-tab="overview">Overview</button>
   <button class="chair-tab" type="button" data-chair-tab="build">Build Report</button>
@@ -410,14 +409,14 @@ body {
 <main id="chair-overview" class="chair-pane">
 <section class="question-lead">
   <div class="question-status question-status-inline"><strong>Questionnaires:</strong> No open questionnaires</div>
-  <div class="next-step"><strong>Next Step:</strong> drydock build jq  (43 steps remaining)</div>
+  <div class="next-step"><strong>Next Step:</strong> drydock build jq  (44 steps remaining)</div>
 </section>
 
 <div class="stats">
 <div class="stat"><div class="stat-value">0%</div><div class="stat-label">Complete</div></div>
 <div class="stat"><div class="stat-value">0</div><div class="stat-label">Verified</div></div>
 <div class="stat"><div class="stat-value">0</div><div class="stat-label">In Review</div></div>
-<div class="stat"><div class="stat-value">1</div><div class="stat-label">Failed</div></div>
+<div class="stat"><div class="stat-value">0</div><div class="stat-label">Failed</div></div>
 </div>
 
 <div class="details">
@@ -498,19 +497,19 @@ body {
 <div class="story-feature">Build Block 36 · Service</div>
 <div class="story-row"><span class="story-name">Implement JSON and output format filters.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 37 · Service</div>
-<div class="story-row"><span class="story-name">Implement regular-expression filters.</span> <span class="badge badge-failed">failed</span></div>
+<div class="story-row"><span class="story-name">Implement regular-expression filters.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 38 · Service</div>
-<div class="story-row"><span class="story-name">Implement date and time filters.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Implement date and time filters.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 39 · Service</div>
-<div class="story-row"><span class="story-name">Implement input stream controls.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Implement input stream controls.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 40 · Service</div>
-<div class="story-row"><span class="story-name">Implement diagnostics and stderr output.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Implement diagnostics and stderr output.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 41 · Service</div>
-<div class="story-row"><span class="story-name">Implement streaming transformations.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Implement streaming transformations.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 42 · Service</div>
-<div class="story-row"><span class="story-name">Provide scoped conformance verification.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Provide scoped conformance verification.</span> <span class="badge badge-review">built</span></div>
 <div class="story-feature">Build Block 43 · Service</div>
-<div class="story-row"><span class="story-name">Run the complete jq conformance corpus.</span> <span class="badge badge-pending">pending</span></div>
+<div class="story-row"><span class="story-name">Run the complete jq conformance corpus.</span> <span class="badge badge-review">built</span></div>
 </div>
   </section>
   <section id="questions" class="detail-section">
