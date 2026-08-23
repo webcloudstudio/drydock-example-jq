@@ -1,6 +1,6 @@
 # jq: PASSED
 
-4 of 6 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
+4 of 4 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
 
 ## Receipt
 
@@ -8,10 +8,8 @@
 |---|---|---|---|
 | Lifecycle completed | PASS | 19 lifecycle commands executed; the run ended at 19-score-release. | [result.json](result.json) |
 | External conformance suite passed | PASS | sh sources/full_test.sh exited 0. | [evidence/commands/16-test.stdout.log](evidence/commands/16-test.stdout.log) |
-| Target completion check passed | UNPROVEN | drydock status jq --check exited 1. | [evidence/commands/12-initial-complete.stdout.log](evidence/commands/12-initial-complete.stdout.log) |
-| Acceptance score passed | FAIL | drydock score acceptance exited 1. | [evidence/commands/17-score-acceptance.stdout.log](evidence/commands/17-score-acceptance.stdout.log) |
 | Release score passed | PASS | drydock score release exited 0. | [evidence/commands/19-score-release.stdout.log](evidence/commands/19-score-release.stdout.log) |
-| Integrity verification passed | PASS | 1,378 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 1,190 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 

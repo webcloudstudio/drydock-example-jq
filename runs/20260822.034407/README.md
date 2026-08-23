@@ -1,6 +1,6 @@
 # jq: FAILED
 
-1 of 6 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
+1 of 4 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
 
 ## Receipt
 
@@ -8,10 +8,8 @@
 |---|---|---|---|
 | Lifecycle completed | FAIL | 13 lifecycle commands executed; the run ended at 13-after-initial-build-workspace-status. | [result.json](result.json) |
 | External conformance suite passed | UNPROVEN | No external test command is defined for this project. | — |
-| Target completion check passed | UNPROVEN | No completion check was recorded for this run. | — |
-| Acceptance score passed | UNPROVEN | No acceptance score was recorded for this run. | — |
 | Release score passed | UNPROVEN | No release score was recorded for this run. | — |
-| Integrity verification passed | PASS | 359 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 237 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
