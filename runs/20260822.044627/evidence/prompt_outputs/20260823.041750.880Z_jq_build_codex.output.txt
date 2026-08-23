@@ -1,0 +1,14 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/interpreter.py
+- jq_interpreter/parser.py
+
+SUMMARY:
+Implemented collection builtins: `map`, `map_values`, `select`, `flatten`, `transpose`, `combinations`, and `walk`, including generator ordering and bounded flattening.
+
+Verification: scoped conformance 40 passed; pytest 138 passed.
+
+BLOCKERS:
+- None

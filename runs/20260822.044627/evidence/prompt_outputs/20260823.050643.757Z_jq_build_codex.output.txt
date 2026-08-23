@@ -1,0 +1,14 @@
+AC_BROKEN: text-003-regex-conformance, text-003-captures
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_text_003_regex.py
+
+SUMMARY:
+Implemented regex matching, captures, scanning, splitting, substitution, jq flags, and interpolation. Project tests pass: 167 passed. Scoped acceptance commands ran but matched zero corpus cases.
+
+BLOCKERS:
+- `sources/jq.test` contains no regex cases, so required nonzero-case assertions cannot pass.

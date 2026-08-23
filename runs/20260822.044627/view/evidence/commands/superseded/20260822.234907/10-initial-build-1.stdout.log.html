@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/commands/superseded/20260822.234907/10-initial-build-1.stdout.log</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/commands/superseded/20260822.234907/10-initial-build-1.stdout.log</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../evidence/commands/superseded/20260822.234907/10-initial-build-1.stdout.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Build: jq
+scope: entire project
+frontier: resume block-8
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 1 of up to 7 · resumed repair · codex/gpt-5.6-luna
+  failing: parse-003-conformance (210/464 cases), parse-004-conformance (92/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 1 · 0/2 AC passed · failed: parse-003-conformance (235/464 cases), parse-004-conformance (105/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 2 of up to 7 · automatic repair 1 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (235/464 cases), parse-004-conformance (105/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 2 · 0/2 AC passed · failed: parse-003-conformance (253/464 cases), parse-004-conformance (116/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 3 of up to 7 · automatic repair 2 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (253/464 cases), parse-004-conformance (116/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 3 · 0/2 AC passed · failed: parse-003-conformance (275/464 cases), parse-004-conformance (122/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 4 of up to 7 · automatic repair 3 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (275/464 cases), parse-004-conformance (122/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 4 · 0/2 AC passed · failed: parse-003-conformance (282/464 cases), parse-004-conformance (130/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 5 of up to 7 · automatic repair 4 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (282/464 cases), parse-004-conformance (130/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 5 · 0/2 AC passed · failed: parse-003-conformance (289/464 cases), parse-004-conformance (133/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 6 of up to 7 · automatic repair 5 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (289/464 cases), parse-004-conformance (133/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 6 · 0/2 AC passed · failed: parse-003-conformance (306/464 cases), parse-004-conformance (143/224 cases)
+
+LLM BUILD: Block 8 · Service [block-8]
+  stories: Implement jq filter expression grammar. [PARSE-003], Implement declarations and control syntax parsing. [PARSE-004]
+  call: 7 of up to 7 · automatic repair 6 of 6 · codex/gpt-5.6-luna
+  failing: parse-003-conformance (306/464 cases), parse-004-conformance (143/224 cases)
+  Completed CODEX/gpt-5.6-luna (build)  rc=0
+acceptance: call 7 · 0/2 AC passed · failed: parse-003-conformance (331/464 cases), parse-004-conformance (153/224 cases)
+failed: PARSE-003 — closed/failed · execution 20260822.231236.324Z-ca97b585
+
+result: 0 built, 2 failed, 0 unchanged
+elapsed: 1 hour 21 minutes 34 seconds
+
+BUILD STALLED — 37 block(s) outstanding and none could advance:
+  PARSE-003
+  PARSE-004
+  CORE-001
+  CORE-002
+  CORE-003
+  CORE-004
+  VALUE-001
+  VALUE-002
+  VALUE-003
+  VALUE-004
+  FLOW-001
+  FLOW-002
+  FLOW-003
+  FLOW-004
+  FLOW-005
+  FLOW-006
+  FUNC-001
+  FUNC-002
+  FUNC-003
+  FUNC-004
+  ... and 17 more
+
+========================================================================
+BUILD FAILED: jq  (1 step)
+========================================================================
+
+  Failure
+    Provenance
+      Target: jq
+      Block: Block 8 · Service [block-8]
+      Story: Implement jq filter expression grammar. [PARSE-003]
+    Cause: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+    agent summary:
+      Implemented parser/evaluator fixes for recursive descent,
+      generator indexes, ranges, slices, computed-key validation,
+      paths, bindings, and control precedence. Project tests pass:
+      32 passed. Scoped acceptance remains failing: - parse-003:
+      331 passed, 123 failed, 1 errored, 9 skipped - parse-004:
+      153 passed, 57 failed, 1 errored, 13 skipped
+    acceptance: 0/1 passing · baseline 0/1 · unchanged
+    Assertion
+      Acceptance checks:
+      Acceptance: parse-003-conformance
+      Intent: The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+      Source: FEATURE-PARSE-003.md
+      Code: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+    Result
+      Process exit code: 1
+      Error: AssertionError
+      Stderr:
+          File &quot;parse-003-conformance.py&quot;, line 18, in &lt;module&gt;
+            assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        AssertionError
+    Recovery
+      Run: drydock build jq
+        to continue the build. This story resumes where it left off and is
+        retried against the checks it failed.
+    agent blockers:
+      - Significant evaluator functionality remains incomplete,
+      including builtins, assignment semantics, function scoping,
+      and advanced control behavior.
+    execution: 20260822.231236.324Z-ca97b585
+    evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/block-8.md
+
+  Next
+    Run: drydock build jq
+      to continue the build. This story resumes where it left off and is
+      retried against the checks it failed.
+========================================================================
+
+========================================================================
+POST-LLM FAILURE  ·  build  ·  programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+========================================================================
+
+  Block &quot;Block 8 · Service&quot; [block-8] failed its acceptance criteria.
+    Story &quot;Implement jq filter expression grammar.&quot; [PARSE-003] does not meet its own acceptance criteria:
+      - AC parse-003-conformance — The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+          assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError
+          cases: pass=331 fail=124 error=0 skip=9 total=464 from=summary
+          raised at: parse-003-conformance.py:18
+          process exit code: 1
+          values at failure:
+            summary = {&#x27;pass&#x27;: 331, &#x27;fail&#x27;: 124, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 9}
+          observed output:
+                  &quot;line&quot;: 2607,
+  … (46 more lines truncated)
+
+  Recovery
+    Run: drydock build jq
+      to continue the build. This story resumes where it left off and is retried against the checks it failed.
+
+========================================================================
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_value_002_access.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_value_002_access.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_value_002_access.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Executable coverage for VALUE-002 field and index access.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+EXECUTABLE = ROOT / &quot;jq&quot;
+
+
+def run_jq(program: str, value: object) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(EXECUTABLE), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def outputs(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_field_access_returns_value_and_null_for_missing_field() -&gt; None:
+    result = run_jq(&quot;.present, .missing&quot;, {&quot;present&quot;: 7})
+    assert result.returncode == 0
+    assert outputs(result) == [7, None]
+
+
+def test_chained_and_quoted_field_access() -&gt; None:
+    result = run_jq(&#x27;.nested.&quot;special.key&quot;&#x27;, {&quot;nested&quot;: {&quot;special.key&quot;: &quot;ok&quot;}})
+    assert result.returncode == 0
+    assert outputs(result) == [&quot;ok&quot;]
+
+
+def test_array_and_string_index_access_support_negative_indices() -&gt; None:
+    result = run_jq(&quot;.[-1], .[1], .[99]&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+    assert result.returncode == 0
+    assert outputs(result) == [&quot;c&quot;, &quot;b&quot;, None]
+
+    string_result = run_jq(&quot;.[-1], .[1]&quot;, &quot;abc&quot;)
+    assert string_result.returncode == 0
+    assert outputs(string_result) == [&quot;c&quot;, &quot;b&quot;]
+
+
+def test_optional_access_suppresses_type_errors_but_keeps_valid_values() -&gt; None:
+    result = run_jq(&quot;[.[] | .value?]&quot;, [1, {&quot;value&quot;: 2}, {}])
+    assert result.returncode == 0
+    assert outputs(result) == [[2, None]]
+
+
+def test_non_string_object_index_is_an_access_error() -&gt; None:
+    result = run_jq(&quot;.[1]&quot;, {&quot;1&quot;: &quot;not an implicit conversion&quot;})
+    assert result.returncode == 5
+
+
+def test_non_optional_access_on_scalar_is_a_runtime_error() -&gt; None:
+    result = run_jq(&quot;.field&quot;, 1)
+    assert result.returncode == 5
+</pre></article>
+</main>
+</body>
+</html>

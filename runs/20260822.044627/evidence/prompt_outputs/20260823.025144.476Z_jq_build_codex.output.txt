@@ -1,0 +1,20 @@
+Implemented FLOW-001 operator fixes.
+
+- Typed arithmetic excludes booleans.
+- Added empty-string splitting.
+- Update assignments use typed arithmetic/merge semantics.
+- Added focused operator tests.
+
+Validation: scoped conformance 174 passed, 0 failed/errors; full tests 79 passed.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_flow_001_operators.py
+
+SUMMARY:
+Arithmetic and structural operator behavior is implemented and verified.
+
+BLOCKERS:
+- None

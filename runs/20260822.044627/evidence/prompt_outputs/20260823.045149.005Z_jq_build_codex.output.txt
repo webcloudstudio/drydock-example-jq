@@ -1,0 +1,20 @@
+Implemented TEXT-001 string builtins.
+
+- Added ASCII case conversion and parser registration.
+- Fixed empty-string splitting and strict string validation.
+- Added focused regression tests.
+- `pytest -q`: 156 passed.
+- Scoped conformance: 30 passed, 0 failed, 0 errored, 1 skipped.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+- tests/test_text_001_string_builtins.py
+
+SUMMARY:
+String manipulation builtins now satisfy the declared scoped conformance suite.
+
+BLOCKERS:
+- None

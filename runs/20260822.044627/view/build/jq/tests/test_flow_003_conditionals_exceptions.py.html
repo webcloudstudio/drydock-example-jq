@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_003_conditionals_exceptions.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_003_conditionals_exceptions.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_003_conditionals_exceptions.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Regression coverage for FLOW-003 conditional and exception semantics.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object = None) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def outputs(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_if_evaluates_each_condition_result_in_order() -&gt; None:
+    result = run(&quot;if (true, false, true) then 1 else 2 end&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [1, 2, 1]
+
+
+def test_if_without_else_preserves_the_original_input() -&gt; None:
+    result = run(&quot;if false then 1 end&quot;, 7)
+    assert result.returncode == 0
+    assert outputs(result) == [7]
+
+
+def test_elif_selects_the_first_truthy_condition_for_each_result() -&gt; None:
+    result = run(&#x27;if . == 0 then &quot;zero&quot; elif . == 1 then &quot;one&quot; else &quot;many&quot; end&#x27;, 1)
+    assert result.returncode == 0
+    assert outputs(result) == [&quot;one&quot;]
+
+
+def test_try_catch_preserves_outputs_before_the_error() -&gt; None:
+    result = run(&#x27;try (1, error(&quot;boom&quot;), 2) catch .&#x27;)
+    assert result.returncode == 0
+    assert outputs(result) == [1, &quot;boom&quot;]
+
+
+def test_try_without_catch_suppresses_the_error() -&gt; None:
+    result = run(&#x27;try error(&quot;boom&quot;)&#x27;)
+    assert result.returncode == 0
+    assert outputs(result) == []
+
+
+def test_optional_preserves_outputs_before_a_later_error() -&gt; None:
+    result = run(&#x27;(1, error(&quot;boom&quot;), 2)?&#x27;)
+    assert result.returncode == 0
+    assert outputs(result) == [1]
+
+
+def test_uncaught_error_after_output_keeps_partial_stdout_and_status() -&gt; None:
+    result = run(&#x27;1, error(&quot;boom&quot;), 2&#x27;)
+    assert result.returncode == 5
+    assert outputs(result) == [1]
+</pre></article>
+</main>
+</body>
+</html>

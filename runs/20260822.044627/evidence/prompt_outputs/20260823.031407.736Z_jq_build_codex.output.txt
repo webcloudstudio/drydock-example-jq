@@ -1,0 +1,15 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_flow_005_reductions_iteration.py
+
+SUMMARY:
+Implemented projection-aware `first` path handling for `pick`, with reduction/iteration regression coverage.
+
+Verification:
+- FLOW-005 conformance: 52 passed, 0 failed, 0 errored
+- Pytest: 101 passed
+
+BLOCKERS:
+- None

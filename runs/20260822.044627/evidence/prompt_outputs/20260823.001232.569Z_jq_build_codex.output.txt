@@ -1,0 +1,13 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- [jq_interpreter/evaluator.py](/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py)
+
+SUMMARY:
+Implemented evaluator fixes for computed paths, lexical function definitions, assignments, deep merges, and large-number arithmetic. Local tests pass: 32 passed. Scoped gates remain failing: PARSE-003 reported 373 passed, 82 failed; PARSE-004 reported 173 passed, 38 failed, with 13 excluded cases.
+
+BLOCKERS:
+- Advanced path tracking, function parameter semantics, and jq-compatible numeric/error behavior remain incomplete.
+
+FAILURE_SUMMARY: Scoped conformance gates still have semantic failures.
+FAILURE_DETAIL: The interpreter passes local tests but does not yet satisfy all PARSE-003 and PARSE-004 corpus cases; further evaluator work is required.

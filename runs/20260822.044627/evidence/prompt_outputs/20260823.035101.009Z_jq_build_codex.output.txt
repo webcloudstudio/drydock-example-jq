@@ -1,0 +1,15 @@
+Implemented PATH-001 path discovery and projection improvements.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_path_001_discovery_projection.py
+
+SUMMARY:
+Fixed filtered `paths(...)` traversal and added regression coverage for path ordering, recursive discovery, and `pick` projections.
+
+Verification: 125 tests passed; conformance slice passed 29 cases with zero failures/errors.
+
+BLOCKERS:
+- None

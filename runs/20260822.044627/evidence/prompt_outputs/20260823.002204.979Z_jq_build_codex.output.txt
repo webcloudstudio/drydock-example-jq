@@ -1,0 +1,12 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- [jq_interpreter/evaluator.py](/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py)
+
+SUMMARY:
+- Fixed deep containment/path handling, optional slices, and `indices`.
+- Project tests pass: 32 passed.
+- Scoped conformance remains failing: PARSE-003 357 passed / 61 failed; PARSE-004 177 passed / 34 failed.
+
+BLOCKERS:
+- Significant evaluator semantics remain incomplete, including assignments, function closures/recursion, numeric edge cases, path expressions, and builtins.

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_core_002_composition.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_core_002_composition.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_core_002_composition.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for CORE-002 stream composition semantics.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object = None) -&gt; list[object]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_pipe_evaluates_right_filter_for_each_left_output() -&gt; None:
+    assert run(&quot;[1, 2, 3] | .[]&quot;) == [1, 2, 3]
+
+
+def test_comma_preserves_left_then_right_order() -&gt; None:
+    assert run(&quot;(.a, .b, .a)&quot;, {&quot;a&quot;: 1, &quot;b&quot;: 2}) == [1, 2, 1]
+
+
+def test_array_collects_all_generator_outputs() -&gt; None:
+    assert run(&quot;[.[] | . + 1]&quot;, [1, 2, 3]) == [[2, 3, 4]]
+
+
+def test_object_values_form_a_cartesian_product() -&gt; None:
+    assert run(&quot;{a: (1, 2), b: (3, 4)}&quot;) == [
+        {&quot;a&quot;: 1, &quot;b&quot;: 3},
+        {&quot;a&quot;: 1, &quot;b&quot;: 4},
+        {&quot;a&quot;: 2, &quot;b&quot;: 3},
+        {&quot;a&quot;: 2, &quot;b&quot;: 4},
+    ]
+
+
+def test_binary_operands_form_a_cartesian_product() -&gt; None:
+    assert run(&quot;(1, 2) + (10, 20)&quot;) == [11, 21, 12, 22]
+
+
+def test_argument_streams_form_an_ordered_cartesian_product() -&gt; None:
+    assert run(&quot;[range(0, 1; 3, 4)]&quot;) == [
+        [0, 1, 2, 0, 1, 2, 3, 1, 2, 1, 2, 3]
+    ]
+</pre></article>
+</main>
+</body>
+</html>

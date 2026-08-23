@@ -16,7 +16,11 @@ from collections.abc import Iterable, Iterator
 
 from .evaluator import evaluate
 from .parser import parse
-from .runtime import JsonValue
+from .runtime import InputNumber, JsonValue
+
+
+class _InputInteger(int):
+    &quot;&quot;&quot;An input integer whose literal spelling remains available to jq.&quot;&quot;&quot;
 
 
 class Interpreter:
@@ -43,7 +47,25 @@ def parse_inputs(text: str) -&gt; Iterator[JsonValue]:
     span multiple physical lines.  ``raw_decode`` preserves the boundary
     between successive values without requiring a non-standard JSON parser.
     &quot;&quot;&quot;
-    decoder = json.JSONDecoder(parse_constant=_parse_json_constant)
+    # jq accepts its non-standard constants in lower case as well.  The
+    # standard decoder only dispatches parse_constant for JSON&#x27;s capitalized
+    # spellings, so normalize standalone bare constants before decoding.
+    import re
+    text = re.sub(r&#x27;(?&lt;![A-Za-z_])-(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])&#x27;, lambda m: &#x27;-NaN&#x27; if &#x27;nan&#x27; in m.group(0).lower() else &#x27;-Infinity&#x27;, text)
+    text = re.sub(r&#x27;(?&lt;![A-Za-z_])(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])&#x27;, lambda m: &#x27;NaN&#x27; if m.group(0).lower() == &#x27;nan&#x27; else &#x27;Infinity&#x27;, text)
+    text = re.sub(r&#x27;(?&lt;![A-Za-z_])-NaN(?![A-Za-z_])&#x27;, &#x27;NaN&#x27;, text)
+    def parse_integer(text: str) -&gt; int | float:
+        integer = int(text)
+        # Retain spelling only where the configured double representation can
+        # no longer represent the integer exactly.  Ordinary integers remain
+        # ints so diagnostics and compact structural values keep jq&#x27;s shape.
+        return InputNumber(text) if abs(integer) &gt; 2**53 else _InputInteger(integer)
+
+    decoder = json.JSONDecoder(
+        parse_constant=_parse_json_constant,
+        parse_int=parse_integer,
+        parse_float=InputNumber,
+    )
     position = 0
     while True:
         while position &lt; len(text) and text[position].isspace():
@@ -59,8 +81,10 @@ def parse_inputs(text: str) -&gt; Iterator[JsonValue]:
 
 def _parse_json_constant(value: str) -&gt; float:
     &quot;&quot;&quot;Decode jq&#x27;s accepted non-standard numeric constants.&quot;&quot;&quot;
-    return {&quot;NaN&quot;: float(&quot;nan&quot;), &quot;Infinity&quot;: float(&quot;inf&quot;),
-            &quot;-Infinity&quot;: float(&quot;-inf&quot;)}[value]
+    return {&quot;NaN&quot;: float(&quot;nan&quot;), &quot;nan&quot;: float(&quot;nan&quot;),
+            &quot;Infinity&quot;: float(&quot;inf&quot;), &quot;infinite&quot;: float(&quot;inf&quot;),
+            &quot;-Infinity&quot;: float(&quot;-inf&quot;), &quot;-infinite&quot;: float(&quot;-inf&quot;),
+            &quot;-NaN&quot;: float(&quot;nan&quot;), &quot;-nan&quot;: float(&quot;nan&quot;)} [value]
 </pre></article>
 </main>
 </body>

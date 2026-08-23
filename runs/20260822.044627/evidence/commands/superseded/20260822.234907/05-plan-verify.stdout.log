@@ -1,0 +1,14 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+plan verify: jq
+  65 acceptance criteria in 47 files: every one can run
+  ⚠  15 criteria: captures a program's output and prints none of it; print its pass/fail counts before asserting so repair can see progress
+       FEATURE-CORE-001.md [core-001-conformance], FEATURE-CORE-002.md [core-002-conformance], FEATURE-CORE-003.md [core-003-conformance], FEATURE-CORE-004.md [core-004-conformance], FEATURE-EXEC-002.md [compile-exit-code], and 10 more
+  ⚠  FEATURE-CORE-001.md [core-001-conformance]: expects 'null\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-001.md [core-001-conformance]: expects '0\n1\n2\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-002.md [core-002-conformance]: expects '1\n2\n3\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-002.md [core-002-conformance]: expects '[5,6]\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-002.md [core-002-conformance]: expects '{"a":1,"b":2}\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-003.md [core-003-conformance]: expects '"x"\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-004.md [core-004-conformance]: expects '0\n0\n1\n1\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-004.md [core-004-conformance]: expects 'true\n', a value re-typed rather than derived from the input or read back from the system
+  ⚠  FEATURE-CORE-004.md [core-004-conformance]: expects 'false\n', a value re-typed rather than derived from the input or read back from the system

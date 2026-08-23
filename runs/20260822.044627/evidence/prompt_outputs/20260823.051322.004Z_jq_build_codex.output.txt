@@ -1,0 +1,14 @@
+AC_BROKEN: text-003-regex-conformance, text-003-captures
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_text_003_regex.py
+
+SUMMARY:
+Regex implementation is covered by 5 passing focused tests; full suite passes: 167 tests. Both authoritative selectors match zero corpus cases because `sources/jq.test` contains no regex programs.
+
+BLOCKERS:
+- Staged corpus omission makes both acceptance assertions fail on `sum(summary.values()) > 0`.

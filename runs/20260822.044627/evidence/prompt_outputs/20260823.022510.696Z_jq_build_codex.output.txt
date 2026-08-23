@@ -1,0 +1,13 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- `jq_interpreter/evaluator.py`
+- `tests/test_core_003_errors.py`
+
+SUMMARY:
+Implemented CORE-003 runtime error handling and lazy `nth` evaluation. Added tests for empty, optional suppression, try/catch, runtime exit status, partial output, and generator errors.
+
+Verification: 51 tests passed; focused conformance: 134 passed, 0 failed, 0 errored, 1 skipped.
+
+BLOCKERS:
+- None

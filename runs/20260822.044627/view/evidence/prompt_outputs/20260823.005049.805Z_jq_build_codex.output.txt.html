@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260823.005049.805Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260823.005049.805Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260823.005049.805Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/interpreter.py
+
+SUMMARY:
+- Added runtime fixes for formatting, numeric parsing, lowercase JSON constants, `foreach` ordering, `implode`, and `fromjson`.
+- Project tests pass: 32 passed.
+- Focused conformance slice passes: 13 passed.
+- Authoritative PARSE-003 and PARSE-004 checks still have failures.
+
+BLOCKERS:
+- Remaining failures include function closures, path updates, advanced numeric handling, diagnostics, and several builtins.
+
+FAILURE_SUMMARY: Scoped conformance criteria remain failing.
+
+FAILURE_DETAIL: Pytest is green, but the required PARSE-003 and PARSE-004 harness assertions still report nonzero failures; further evaluator work is required.</pre></article>
+</main>
+</body>
+</html>

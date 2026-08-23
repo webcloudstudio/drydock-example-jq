@@ -1,0 +1,4 @@
+2026-08-23T00:15:54.276258Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+            # Index expressions are evaluated with the indexed value as
+            # their input: `.foo[.baz]` reads `baz` from `.foo`.
+            for key in _node(a[1], base, env):

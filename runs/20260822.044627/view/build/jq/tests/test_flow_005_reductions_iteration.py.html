@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_005_reductions_iteration.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_005_reductions_iteration.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_005_reductions_iteration.py">Raw file</a></div></header>
+<article class="doc"><pre>from jq_interpreter.evaluator import evaluate
+from jq_interpreter.parser import parse
+
+
+def outputs(program: str, value: object) -&gt; list[object]:
+    return list(evaluate(parse(program), value))
+
+
+def test_first_is_a_path_expression_for_pick() -&gt; None:
+    assert outputs(&quot;pick(first)&quot;, [1, 2]) == [[1]]
+
+
+def test_composed_first_path_expression_for_pick() -&gt; None:
+    assert outputs(&quot;pick(first|first)&quot;, [[10, 20], 30]) == [[[10]]]
+
+
+def test_reduce_accumulates_generator_values_in_order() -&gt; None:
+    assert outputs(&quot;reduce .[] as $item (0; . + $item)&quot;, [1, 2, 3]) == [6]
+
+
+def test_foreach_extracts_each_intermediate_state() -&gt; None:
+    assert outputs(&quot;foreach .[] as $item (0; . + $item; [$item, . * 2])&quot;, [1, 2, 3]) == [
+        [1, 2],
+        [2, 6],
+        [3, 12],
+    ]
+
+
+def test_limit_skip_and_nth_operate_on_streams() -&gt; None:
+    assert outputs(&quot;[limit(2; .[])]&quot;, [1, 2, 3]) == [[1, 2]]
+    assert outputs(&quot;[skip(2; .[])]&quot;, [1, 2, 3]) == [[3]]
+    assert outputs(&quot;nth(1; .[])&quot;, [1, 2, 3]) == [2]
+</pre></article>
+</main>
+</body>
+</html>

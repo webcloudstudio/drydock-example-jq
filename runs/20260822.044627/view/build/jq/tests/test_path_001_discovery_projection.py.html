@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_path_001_discovery_projection.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_path_001_discovery_projection.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_path_001_discovery_projection.py">Raw file</a></div></header>
+<article class="doc"><pre>from jq_interpreter import Interpreter
+
+
+def outputs(program: str, value: object) -&gt; list[object]:
+    return list(Interpreter(program).run([value]))
+
+
+def test_paths_predicate_preserves_nested_paths_and_order() -&gt; None:
+    assert outputs(&quot;[paths(type == \&quot;number\&quot;)]&quot;, [1, [[], {&quot;a&quot;: 2}], {&quot;a&quot;: [True, 3]}]) == [
+        [[0], [1, 1, &quot;a&quot;], [2, &quot;a&quot;, 1]]
+    ]
+
+
+def test_path_recursive_descent_includes_root_then_children() -&gt; None:
+    assert outputs(&quot;[path(..)]&quot;, {&quot;a&quot;: [{&quot;b&quot;: 1}]}) == [
+        [[], [&quot;a&quot;], [&quot;a&quot;, 0], [&quot;a&quot;, 0, &quot;b&quot;]]
+    ]
+
+
+def test_pick_materializes_missing_object_branches_as_null() -&gt; None:
+    assert outputs(&quot;pick(.a, .b.c, .x)&quot;, {&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 2}, &quot;e&quot;: 4}) == [
+        {&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 2}, &quot;x&quot;: None}
+    ]
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompt_outputs/20260823.010841.589Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompt_outputs/20260823.010841.589Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompt_outputs/20260823.010841.589Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/interpreter.py
+- jq_interpreter/parser.py
+
+SUMMARY:
+- Added parameter-path updates, path diagnostics, walk, sorting/grouping, numeric length, NaN handling, and related evaluator fixes.
+- Project tests pass: 32 passed.
+- Scoped conformance remains incomplete: PARSE-004 has 15 failures; PARSE-003 still has unresolved failures.
+
+BLOCKERS:
+- Function closure semantics and decimal-number preservation remain incorrect.
+- Several assignment/path and advanced builtin cases still fail.
+
+FAILURE_SUMMARY: Scoped conformance criteria still fail.
+
+FAILURE_DETAIL: General evaluator behavior improved, but the declared PARSE-003 and PARSE-004 acceptance assertions do not yet pass; continue with closure, path assignment, and numeric representation repairs.</pre></article>
+</main>
+</body>
+</html>

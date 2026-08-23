@@ -1,0 +1,17 @@
+Implemented PATH-002.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_path_002_access_mutation.py
+
+SUMMARY:
+Added validated immutable `getpath`, `setpath`, and `delpaths` behavior, including nested creation, deletion ordering, negative indices, depth/index limits, and invalid path handling.
+
+Verification:
+- Scoped conformance: 16 passed, 0 failed, 0 errors
+- Pytest: 131 passed
+
+BLOCKERS:
+- None

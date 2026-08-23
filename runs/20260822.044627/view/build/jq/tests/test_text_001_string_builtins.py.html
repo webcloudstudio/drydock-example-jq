@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_text_001_string_builtins.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_text_001_string_builtins.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_text_001_string_builtins.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused tests for the TEXT-001 string builtin surface.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run_jq(program: str, input_value: object) -&gt; tuple[int, list[object]]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(input_value, ensure_ascii=False) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    outputs = [json.loads(line) for line in result.stdout.splitlines()]
+    return result.returncode, outputs
+
+
+def test_empty_separator_splits_unicode_codepoints() -&gt; None:
+    assert run_jq(&#x27;split(&quot;&quot;)&#x27;, &quot;aμ😀&quot;) == (0, [[&quot;a&quot;, &quot;μ&quot;, &quot;😀&quot;]])
+
+
+def test_ascii_case_conversion_preserves_non_ascii() -&gt; None:
+    assert run_jq(&quot;ascii_downcase, ascii_upcase&quot;, &quot;Abc Éé&quot;) == (0, [&quot;abc Éé&quot;, &quot;ABC Éé&quot;])
+
+
+def test_unicode_trim_and_codepoint_round_trip() -&gt; None:
+    assert run_jq(&quot;trim&quot;, &quot;\u2003 μ \u2003&quot;) == (0, [&quot;μ&quot;])
+    assert run_jq(&quot;explode | implode&quot;, &quot;hé😀&quot;) == (0, [&quot;hé😀&quot;])
+
+
+def test_string_predicates_and_join() -&gt; None:
+    assert run_jq(&#x27;[startswith(&quot;pre&quot;), endswith(&quot;fix&quot;)]&#x27;, &quot;prefix&quot;) == (0, [[True, True]])
+    assert run_jq(&#x27;join(&quot;-&quot;)&#x27;, [&quot;a&quot;, 2, None, False]) == (0, [&quot;a-2--false&quot;])
+
+
+def test_string_builtins_reject_non_string_inputs() -&gt; None:
+    assert run_jq(&#x27;startswith(&quot;x&quot;)&#x27;, 3)[0] == 5
+    assert run_jq(&#x27;split(&quot;,&quot;)&#x27;, 3)[0] == 5
+</pre></article>
+</main>
+</body>
+</html>

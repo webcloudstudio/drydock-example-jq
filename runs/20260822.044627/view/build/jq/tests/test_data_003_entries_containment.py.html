@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_data_003_entries_containment.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_data_003_entries_containment.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_data_003_entries_containment.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Behavioral coverage for object entries, membership, and containment.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object) -&gt; list[object]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_keys_sort_objects_but_keys_unsorted_preserves_insertion_order() -&gt; None:
+    assert run(&quot;[keys, keys_unsorted]&quot;, {&quot;b&quot;: 2, &quot;a&quot;: 1, &quot;c&quot;: 3}) == [
+        [[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [&quot;b&quot;, &quot;a&quot;, &quot;c&quot;]]
+    ]
+
+
+def test_has_and_in_distinguish_object_keys_from_array_indices() -&gt; None:
+    assert run(&quot;[has(1), has(1.5)]&quot;, [&quot;zero&quot;, &quot;one&quot;]) == [[True, False]]
+    assert run(&quot;1 | in({\&quot;1\&quot;:0})&quot;, None) == [False]
+    assert run(&quot;1 | in([0,1])&quot;, None) == [True]
+
+
+def test_contains_and_inside_recurse_through_objects_and_arrays() -&gt; None:
+    value = {&quot;foo&quot;: 12, &quot;bar&quot;: [1, 2, {&quot;nested&quot;: 3}]}
+    return_values = run(
+        &quot;[contains({foo:12, bar:[{nested:3}]}), &quot;
+        &quot;inside({foo:12, bar:[1,2,{nested:3, extra:4}]})]&quot;,
+        value,
+    )
+    assert return_values == [[True, True]]
+
+
+def test_entry_conversion_accepts_supported_aliases_and_transforms_keys() -&gt; None:
+    assert run(
+        &quot;to_entries | map(.key |= \&quot;KEY_\&quot; + .) | from_entries&quot;,
+        {&quot;a&quot;: 1, &quot;b&quot;: 2},
+    ) == [{&quot;KEY_a&quot;: 1, &quot;KEY_b&quot;: 2}]
+
+
+def test_with_entries_drops_empty_results_and_keeps_first_value() -&gt; None:
+    assert run(
+        &quot;with_entries(if .key == \&quot;drop\&quot; then empty else .value |= . + 1 end)&quot;,
+        {&quot;keep&quot;: 1, &quot;drop&quot;: 2},
+    ) == [{&quot;keep&quot;: 2}]
+
+
+def test_index_utilities_cover_overlaps_empty_search_and_insertion_points() -&gt; None:
+    assert run(&#x27;[indices(&quot;aba&quot;), index(&quot;aba&quot;), rindex(&quot;aba&quot;), index(&quot;&quot;)]&#x27;, &quot;xababababa&quot;) == [
+        [[1, 3, 5, 7], 1, 7, None]
+    ]
+    assert run(&#x27;[bsearch(0,1,2,3,4)]&#x27;, [1, 2, 3]) == [[-1, 0, 1, 2, -4]]
+
+
+def test_quantifiers_and_membership_use_all_generated_values() -&gt; None:
+    assert run(&#x27;[any((false,true); .), all((true,false); .)]&#x27;, None) == [[True, False]]
+    assert run(&#x27;[IN(range(10;20); range(10)), IN(range(5;20); range(10))]&#x27;, None) == [
+        [False, True]
+    ]
+</pre></article>
+</main>
+</body>
+</html>

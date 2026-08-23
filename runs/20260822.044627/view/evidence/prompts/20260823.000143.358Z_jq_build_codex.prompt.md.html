@@ -1,0 +1,4469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>evidence/prompts/20260823.000143.358Z_jq_build_codex.prompt.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>evidence/prompts/20260823.000143.358Z_jq_build_codex.prompt.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../evidence/prompts/20260823.000143.358Z_jq_build_codex.prompt.md">Raw file</a></div></header>
+<article class="doc"><h1>System Instructions</h1>
+<p>This prompt is divided into three sections:</p>
+<ol><li><strong>System Instructions</strong> (this section) — structural orientation only. Do not treat this</li></ol>
+<p>section as task input.</p>
+<ol><li><strong>Input Context</strong> — begins with the heading <code># Input Context</code>. All blocks are wrapped in</li></ol>
+<p><code>&lt;pblock&gt;</code> tags. Two block types:</p>
+<ul><li>File blocks: <code>&lt;pblock filename=&quot;&lt;name&gt;&quot; role=&quot;&lt;role&gt;&quot; guidance=&quot;...&quot;&gt;</code> — optional</li></ul>
+<p><code>guidance</code> attribute carries context-specific instructions; content is in a fenced block.</p>
+<ul><li>Metadata/section blocks: <code>&lt;pblock label=&quot;&lt;label&gt;&quot; kind=&quot;&lt;kind&gt;&quot;&gt;</code> — job parameters,</li></ul>
+<p>rules, instructions, or group headers.</p>
+<ol><li><strong>Agent Task</strong> — begins with the heading <code># Agent Task</code>. Defines your persona, constraints,</li></ol>
+<p>and required outputs. Read all input context before acting on this section.</p>
+<h1>Input Context</h1>
+<p>&lt;pblock label=&quot;Build block job&quot; kind=&quot;job&quot;&gt;</p>
+<h2>Build block job</h2>
+<ul><li>TARGET: jq</li><li>BUILD_DIRECTORY: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq</li><li>WORKING_DIRECTORY: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq</li><li>BUILD_BLOCK: Block 8 · Service (block-8)</li><li>STORIES: Implement jq filter expression grammar. (PARSE-003), Implement declarations and control syntax parsing. (PARSE-004)</li><li>DATE: 2026-08-22</li><li>BUILD_SCOPE: exactly one MANIFEST.md build block</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Stories in this block&quot; kind=&quot;section&quot;&gt;</p>
+<h2>Stories in this block</h2>
+<ul><li>Implement jq filter expression grammar. (PARSE-003) [story]</li><li>Implement declarations and control syntax parsing. (PARSE-004) [story]</li></ul>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Files on disk&quot; kind=&quot;section&quot;&gt;</p>
+<h2>Files on disk in the build directory</h2>
+<ul><li>sources/builtin.jq</li><li>sources/exclusions.txt</li><li>sources/full_test.sh</li><li>sources/jq-manual.txt</li><li>sources/jq.test</li><li>sources/lexer.l</li><li>sources/parser.y</li><li>sources/run_conformance.py</li></ul>
+<p>These are the only imported files present on disk. Every other file named in this prompt is supplied as prompt context and is not on disk; read it here and do not report it as a missing input.</p>
+<p>&lt;/pblock&gt;</p>
+<h2>COMPASS - Target Orientation</h2>
+<p>&lt;pblock filename=&quot;COMPASS.md&quot; role=&quot;compass&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/COMPASS.md&quot; guidance=&quot;Important: This is the core project intent, constraints, and guardrails. It should have presecedence in conflicts.&quot;&gt;</p>
+<pre><code># COMPASS: jq
+
+## Compass
+
+Build a standalone interpreter for the jq language as described in `sources/jq-manual.txt`. The
+product is an executable file named `jq` at the application root. It reads JSON from standard
+input, evaluates a jq filter as an ordered generator, and writes each value the filter produces to
+standard output as one compact JSON value per line.
+
+Correctness is measured by the upstream jq conformance corpus `sources/jq.test`, taken verbatim
+from jq 1.8.2, minus the cases named in `sources/exclusions.txt`. The goal is every case passing,
+none failed and none errored.
+
+## Constraints
+
+- Implement in Python using only the standard library.
+- Provide an executable named `jq` at the application root, invoked as `./jq -c &#x27;&lt;program&gt;&#x27;`.
+- `-c` is the only option exercised. No other command-line option is required.
+- Run without network access, package installation, or external runtime dependencies.
+- Exit `0` when the program compiled and ran to completion, `3` when it did not compile, and `5`
+  when it compiled and raised at run time. The harness grades on this distinction.
+- Diagnostics go to standard error and are never compared.
+
+## Guardrails
+
+- Do not shell out to a system `jq` executable.
+- Do not use a third-party jq implementation or binding.
+- Do not modify, rewrite, trim, regenerate, or substitute any file under `sources/`. Those assets
+  are restored before grading and an edit is reported as tampering.
+- Preserve generator ordering, multiplicity, backtracking, and partial-output runtime behavior.
+- Keep compile failures distinct from runtime failures using exit codes 3 and 5.
+
+## Verification Protocol
+
+This section is normative. It governs which story may invoke the supplied harness, and how.
+
+### Invoking the harness
+
+`sources/run_conformance.py` **requires** the environment variable `JQ`, the command that runs the
+candidate implementation. Without it the harness exits `2` on its own usage code, which is a
+harness fault and never a verdict about the interpreter. Every invocation, in every acceptance
+criterion and every developer command, supplies it:
+
+```bash
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py            # whole corpus, the scored run
+JQ=&quot;$PWD/jq&quot; python3 sources/run_conformance.py --select &#x27;reduce&#x27;   # run one construct for real
+```
+
+Those two commands are the only ways this build runs the harness. They are specified verbatim
+below under *The two harness invocations*, together with the flag this build forbids.
+
+`sources/` is read only. No story edits, patches, or regenerates `sources/run_conformance.py`,
+`sources/jq.test`, or `sources/exclusions.txt`; a harness defect is reported, not repaired in
+place. A story that needs to experiment with the harness works on a copy outside `sources/`, and
+every acceptance criterion invokes the original `sources/run_conformance.py`.
+
+An acceptance criterion written in Python supplies it by **extending** the inherited environment,
+never by replacing it:
+
+```python
+env={**os.environ, &quot;JQ&quot;: str(build_dir / &quot;jq&quot;)}
+```
+
+`env={&quot;JQ&quot;: ...}` alone leaves the child with no `PATH`, so nothing it invokes resolves and the
+criterion is false at every level of implementation quality.
+
+`sources/full_test.sh` sets `JQ` itself for the runner it wraps and therefore takes no environment
+from its caller.
+
+The harness reserves exit `2` for its own faults — a missing corpus, an unset `JQ`, a stale
+exclusion list. Exit `2` never means the interpreter is wrong.
+
+The summary line is:
+
+```
+jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)
+```
+
+### The two harness invocations
+
+An acceptance criterion that runs `sources/run_conformance.py` uses one of these two commands. No
+criterion in this build passes any other flag to the harness.
+
+| Story kind | Command | Executes cases? | Asserts |
+|---|---|---|---|
+| Every behavioral story | `--select &lt;regex&gt; --json` | Yes, the selected slice | exit `0`, zero `fail`, zero `error`, non-zero case count |
+| Terminal story (once, last) | `sh sources/full_test.sh` | Yes, all of them | exit `0` |
+
+The staging story does not appear in this table. It does not run the harness at all; see *The
+staging story* below.
+
+#### `--list` is never run
+
+`sources/run_conformance.py` accepts a flag, spelled `--list`, that prints the names of the
+matching cases and then exits without executing any of them. `sources/INSTRUCTIONS.md`, the file
+header, and `--help` all document it.
+
+**This build never runs it. Not in an acceptance criterion, not in a story, not in a script, not
+in a command typed by a build agent, not while developing and not while verifying. The string
+`--list` does not appear anywhere in this project&#x27;s output. If you have written it, that line is
+wrong — delete it and use one of the two commands above.**
+
+A Drydock build is headless. There is no one watching the output, so a mode whose entire purpose
+is to print something for a person to read has no reader and no reason to run.
+
+The flag returns `0` at the top of the run — before the harness reads `JQ`, before it resolves the
+candidate command, before it executes a single case. A criterion built on it passes when `jq` is
+an empty file, when `jq` does not exist, and when the story it gates was never written. It is not
+a weak proof, not a partial proof, and not an acceptable proof for staging, for scaffolding, or
+for an early story whose implementation is incomplete. It is not a proof. Thirty-six criteria in
+one earlier plan of this project used it, every one of them reported green, and it cost three days.
+
+If you are writing a criterion and reaching for that flag, the reason is always the same: the
+story&#x27;s code does not exist yet and you want a command that will not fail. That is the definition
+of a criterion that proves nothing. Write the `--select ... --json` form instead and let it be red
+until the story makes it green. **A criterion is supposed to fail before its story is built.**
+
+The same prohibition covers any other flag whose effect is to not execute the cases — enumeration,
+dry-run, validation, or help. If a flag&#x27;s documented purpose is &quot;run nothing&quot;, it has no place in
+an acceptance criterion.
+
+#### Behavioral criterion — copy this, changing only `SELECT`
+
+```python
+import json
+import os
+import subprocess
+import sys
+
+SELECT = r&quot;reduce&quot;
+
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report[&quot;summary&quot;]
+assert sum(tally.values()) &gt; 0, f&quot;selector matched no case: {SELECT}&quot;
+assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0, tally
+assert result.returncode == 0, result.returncode
+```
+
+Three assertions, and all three are required.
+
+1. **The selector matched something.** `--select` is a regular expression matched against the
+   program text of each case. A selector that matches nothing yields zero cases, zero failures,
+   and exit `0` — green, and worth nothing. Alternations naming ideas rather than syntax
+   (`closure`, `recursive`, `optional`) match no jq program and are the common way to write one
+   by accident. Select on syntax the corpus actually contains: `reduce`, `foreach`, `def `,
+   ` as \$`, `try `, `//`, `path(`.
+2. **No case failed or errored.** Read off the parsed JSON tally, not off any printed line.
+3. **The exit status is `0`.** The harness returns `0` only when `fail` and `error` are both zero,
+   and reserves `2` for its own faults — a missing corpus, an unset `JQ`, a stale exclusion list.
+   Exit `2` is never a verdict about the interpreter.
+
+`--json` writes the report and nothing else to stdout, so `json.loads(result.stdout)` is total. Do
+not assert against the human summary line, and do not grep stdout for `passed` or `failed`.
+
+### The terminal story
+
+The **terminal story** is the last story in the build order: the one on which every other story is
+a transitive dependency, and after which no further story runs. It is a verification story. Its
+job is not to add capability but to prove that the capability every preceding story delivered is
+present, together, at the end of the build.
+
+The terminal story of this project runs `sh sources/full_test.sh`, asserts `returncode == 0`,
+prints the captured stdout and stderr so a failure is diagnosable from the evidence alone, and
+carries the Sea Trial. It is the only story permitted to run the whole corpus.
+
+A story is not terminal because its name contains &quot;verify&quot;, because it is a test harness, or
+because it stages the test assets. Staging the corpus is foundational work that happens early;
+running the corpus is terminal work that happens last. Do not place a whole-corpus gate on a
+story that cannot yet run it — it fails vacuously and teaches nothing.
+
+### Scope of every other story
+
+Every non-terminal story is gated on its own declared behavior only, through `--select` against
+the constructs that story implements, and the criterion asserts the selected slice passes. A
+non-terminal story never invokes `sources/full_test.sh` and never runs the corpus unfiltered: a
+partial interpreter fails most of an authoritative corpus by construction, and its unimplemented
+cases exhaust the harness&#x27;s per-case timeout rather than returning, so the unscoped run costs the
+most exactly where it teaches the least.
+
+Regression across stories is not the responsibility of any story&#x27;s criteria. Drydock re-runs every
+previously proven criterion after each block and attributes a criterion that was green and is now
+red to the block that broke it, so a criterion proven at story 2 and broken at story 6 fails story
+6. Do not author a mid-build story whose purpose is to re-run earlier stories&#x27; checks.
+
+### The staging story
+
+The story that stages the conformance assets is gated on the assets being present, complete, and
+mutually consistent — not on a bare file-existence assertion, and not on the corpus running. It
+proves that in process, by importing the harness and calling its parsers directly. It never
+launches the harness, so the question of which flags to pass does not arise:
+
+```python
+import sys
+
+sys.path.insert(0, &quot;sources&quot;)
+import run_conformance as harness
+
+EXPECTED_CASES = 550
+EXPECTED_EXCLUSIONS = 13
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;))
+excluded = harness.apply_exclusions(cases, harness.parse_exclusions(harness.EXCLUSIONS))
+assert len(cases) == EXPECTED_CASES, len(cases)
+assert len(excluded) == EXPECTED_EXCLUSIONS, len(excluded)
+```
+
+This reads state rather than output: the harness module imports, the corpus parses into the
+expected number of cases, and every exclusion still matches a case — `apply_exclusions` raises on
+a stale entry, so a corpus and an exclusion list that have drifted apart fail here rather than
+silently skipping cases later.
+
+It claims nothing about the interpreter, because at this point in the build there is nothing to
+claim. Every story that claims a construct works runs that construct through
+`--select ... --json`.
+
+## The corpus
+
+`sources/jq.test` documents its own format in its header. Cases are separated by blank lines;
+blank lines and `#` lines are ignored. A case is a program line, an input line, and then the
+expected output values, one per line. A case preceded by `%%FAIL` is a program that must be
+rejected at compile time; the following lines are upstream jq&#x27;s diagnostic, which the harness
+records but never compares. Reproducing jq&#x27;s exact error text is reverse-engineering a C
+implementation rather than conforming to a specification, so a `%%FAIL` case passes on exit `3`
+alone.
+
+Values are compared structurally, not textually. `1` and `1.0` are the same jq value, and so are
+two objects whose keys print in a different order. Output formatting is therefore not under test,
+but the number and order of values is.
+
+`sources/exclusions.txt` names the corpus cases this kit cannot run, with the reason. They are the
+module-loader cases, whose `import` and `include` resolve against a search path of fixture files a
+flat source import cannot carry. They are reported as `skipped` and are not part of the score.
+
+The module *grammar* cases are not excluded and must pass. `module (.+1); 0`, `module []; 0`,
+`include &quot;a&quot; (.+1); 0`, `include &quot;a&quot; []; 0`, `include &quot;\ &quot;; 0`, `include &quot;\(a)&quot;; 0`, and `%::wat`
+are all `%%FAIL` cases: the front end parses the module syntax far enough to reject them, without
+ever touching the filesystem.
+
+&lt;!-- drydock:build-write-guardrail:start --&gt;
+## Build Write Guardrail
+
+- Authorized build directory: `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq`
+- Authorized Target directory: `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq`
+- Build agents have permission to create, modify, and remove files required by the active build block inside these authorized directories.
+- No path outside these authorized directories may be modified.
+- Protected Drydock artifacts:
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/MANIFEST.md`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/COMPASS.md`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/QuarterDeck/`
+  - `/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/`
+&lt;!-- drydock:build-write-guardrail:end --&gt;</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>STACK - Technology HOW</h2>
+<p>&lt;pblock filename=&quot;python_compact.md&quot; role=&quot;stack&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/Rigging/stack/python_compact.md&quot;&gt;</p>
+<pre><code>&lt;!-- Compacted from rigging/stack/python.md on 2026-07-16 (manual update to match python.md V3) --&gt;
+
+# Python — Compact
+
+## Configuration Management
+
+One typed frozen-dataclass `Config` is the only env reader — never read `os.environ` elsewhere. No `Dev`/`Prod`/`Test` subclasses; the environment (`.env`) selects configuration. Never hardcode secrets, ports, or paths. Secret hygiene and `.env.example`: see `stack/env_variables_and_secrets.md`.
+
+```python
+# config.py
+import os
+from dataclasses import dataclass
+from dotenv import load_dotenv
+load_dotenv()
+
+@dataclass(frozen=True)
+class Config:
+    secret_key: str
+    database_path: str
+    port: int
+    debug: bool = False
+
+    @classmethod
+    def load(cls) -&gt; &quot;Config&quot;:
+        try:
+            return cls(
+                secret_key=os.environ[&quot;SECRET_KEY&quot;],
+                database_path=os.environ.get(&quot;DATABASE_PATH&quot;, &quot;data/app.db&quot;),
+                port=int(os.environ.get(&quot;APP_PORT&quot;, &quot;5001&quot;)),
+                debug=os.environ.get(&quot;APP_DEBUG&quot;) == &quot;1&quot;,
+            )
+        except KeyError as e:
+            raise RuntimeError(f&quot;Missing required env var: {e}&quot;) from e
+```
+
+## Code Style and Understandability
+
+Code must be understandable through naming, structure, small focused units, explicit types, clear interfaces, appropriate abstractions, and tests. Names state intent; one responsibility per module; functions do one thing at one level of abstraction; no speculative abstraction layers. Comments state constraints the code cannot express — never restate mechanics.
+
+## Type Hints and Static Typing
+
+Modern hints on all public interfaces; typed structures across boundaries; run a type checker when practical.
+
+- Built-in generics (`list[str]`, `dict[str, int]`) and `X | None` — never `typing.List`, `Optional`, `Union`
+- Type every public function, method, and class attribute
+- Schemas/serializers/services/data structures are typed classes: frozen dataclasses internally, Pydantic/`TypedDict` at serialization boundaries
+- No bare `dict`, positional tuples, or `Any` crossing a module boundary
+- `uv add --dev mypy` then `uv run mypy .` (or pyright) alongside ruff and pytest in CI
+
+## Logging
+
+Use `logging` with named loggers, never `print()`. Configure formatter + console and file handlers at startup (`data/logs/app.log`); level from `APP_DEBUG`.
+
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.info(&#x27;Server starting on port %s&#x27;, port)
+```
+
+## Environment Separation
+
+Distinct `.env` per environment; same typed `Config` reads whichever is present. Never run debug in production.
+
+| Setting | Dev | Test | Prod |
+|---------|-----|------|------|
+| APP_DEBUG | 1 | 0 | 0 |
+| DATABASE_PATH | data/app.db | :memory: | data/app.db |
+| SECRET_KEY | .env value | .env value | .env value (required) |
+| LOGGING | DEBUG | WARNING | INFO |
+
+## Testing
+
+`pytest` with fixtures; fresh in-memory DB per test; test at the boundary. Every Python build must include a complete pytest suite regardless of the specification — no tests, no ACTIVE conformity.
+
+```python
+# tests/conftest.py
+import pytest
+
+@pytest.fixture
+def app(monkeypatch):
+    monkeypatch.setenv(&quot;SECRET_KEY&quot;, &quot;test&quot;)
+    monkeypatch.setenv(&quot;DATABASE_PATH&quot;, &quot;:memory:&quot;)
+    from app import create_app
+    from config import Config
+    yield create_app(Config.load())
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
+```
+
+**test_smoke.py** — app factory works; `GET /health` returns 200 `{&quot;status&quot;: &quot;ok&quot;}`; `GET /` returns 200.
+
+**test_routes.py** — one test per route: `GET` pages assert 200; `POST` APIs assert status in `{200, 201, 204}`; HTMX routes send `HX-Request: true`; `{id}` routes use fixture-created records.
+
+**test_db.py** (only if DATABASE.md exists) — expected tables exist; round-trip per major table; invalid FK raises `IntegrityError` (`PRAGMA foreign_keys=ON`).
+
+Do not test third-party internals, config loading, or private helpers.
+
+```ini
+# pytest.ini
+[pytest]
+testpaths = tests
+addopts = -v
+```
+
+## Security
+
+Validate all user input; parameterized queries exclusively; never trust client data.
+
+- `?` placeholders, never f-strings, for all DB operations
+- `secure_filename()` for user-supplied paths
+- Length and type validation on inputs
+- Secret key from environment, never hardcoded
+- Never expose stack traces to end users
+
+## Dependency Management (uv)
+
+`uv` only; `pyproject.toml` is the manifest; `uv.lock` committed; `.venv/` gitignored. Full toolchain conventions: `stack/uv_ruff.md`.
+
+```bash
+uv venv                          # creates .venv/
+uv add flask python-dotenv       # runtime deps → pyproject.toml + uv.lock
+uv add --dev pytest ruff mypy    # dev deps
+uv sync --frozen                 # CI — fail if lock is stale
+```
+
+- Never bare `pip install` or `python -m venv`
+- Dev deps in `[project.optional-dependencies].dev`; runtime deps minimal
+
+## Startup Validation
+
+`Config.load()` already validates required env vars; startup validation confirms DB connectivity. Crash early on misconfiguration.
+
+```python
+def validate_startup(config: Config, db: Database):
+    try:
+        db.healthcheck()          # SELECT 1 inside the Database class
+    except Exception as e:
+        raise RuntimeError(f&#x27;Database not accessible: {e}&#x27;)
+    logger.info(&#x27;Startup validation passed&#x27;)
+```
+
+## Directory Layout
+
+```
+project-name/
+├── app.py              # Entry point / app factory
+├── routes.py           # Route handlers
+├── models.py           # Data models and type registries
+├── db.py               # Database class: typed tables, connection, schema, migrations
+├── ops.py              # Business logic and operations
+├── config.py           # typed Config class — the only env reader
+├── templates/          # base.html + types/ partials
+├── static/             # css/, js/
+├── tests/              # conftest.py, test_*.py
+├── bin/                # (from common.md)
+├── data/               # (from common.md)
+├── pyproject.toml
+├── uv.lock
+├── .env                # gitignored; .env.example committed
+└── .gitignore
+```</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>CONTEXT - Read-Only Support</h2>
+<p>&lt;pblock filename=&quot;parser.y&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/parser.y&quot;&gt;</p>
+<pre><code>%{
+#include &lt;assert.h&gt;
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &quot;compile.h&quot;
+#include &quot;jv_alloc.h&quot;
+#include &quot;builtin.h&quot;
+#define YYMALLOC jv_mem_alloc
+#define YYFREE jv_mem_free
+%}
+%code requires {
+#include &quot;locfile.h&quot;
+struct lexer_param;
+
+#define YYLTYPE location
+#define YYLLOC_DEFAULT(Loc, Rhs, N)             \
+  do {                                          \
+    if (N) {                                    \
+      (Loc).start = YYRHSLOC(Rhs, 1).start;     \
+      (Loc).end = YYRHSLOC(Rhs, N).end;         \
+    } else {                                    \
+      (Loc).start = YYRHSLOC(Rhs, 0).end;       \
+      (Loc).end = YYRHSLOC(Rhs, 0).end;         \
+    }                                           \
+  } while (0)
+}
+
+%locations
+%define parse.error verbose
+%define api.pure
+%union {
+  jv literal;
+  block blk;
+}
+
+%destructor { jv_free($$); } &lt;literal&gt;
+%destructor { block_free($$); } &lt;blk&gt;
+
+%parse-param {block* answer}
+%parse-param {int* errors}
+%parse-param {struct locfile* locations}
+%parse-param {struct lexer_param* lexer_param_ptr}
+%lex-param {block* answer}
+%lex-param {int* errors}
+%lex-param {struct locfile* locations}
+%lex-param {struct lexer_param* lexer_param_ptr}
+
+
+%token INVALID_CHARACTER
+%token &lt;literal&gt; IDENT
+%token &lt;literal&gt; FIELD
+%token &lt;literal&gt; BINDING
+%token &lt;literal&gt; LITERAL
+%token &lt;literal&gt; FORMAT
+%token REC &quot;..&quot;
+%token SETMOD &quot;%=&quot;
+%token EQ &quot;==&quot;
+%token NEQ &quot;!=&quot;
+%token DEFINEDOR &quot;//&quot;
+%token AS &quot;as&quot;
+%token DEF &quot;def&quot;
+%token MODULE &quot;module&quot;
+%token IMPORT &quot;import&quot;
+%token INCLUDE &quot;include&quot;
+%token IF &quot;if&quot;
+%token THEN &quot;then&quot;
+%token ELSE &quot;else&quot;
+%token ELSE_IF &quot;elif&quot;
+%token REDUCE &quot;reduce&quot;
+%token FOREACH &quot;foreach&quot;
+%token END &quot;end&quot;
+%token AND &quot;and&quot;
+%token OR &quot;or&quot;
+%token TRY &quot;try&quot;
+%token CATCH &quot;catch&quot;
+%token LABEL &quot;label&quot;
+%token BREAK &quot;break&quot;
+%token LOC &quot;$__loc__&quot;
+%token SETPIPE &quot;|=&quot;
+%token SETPLUS &quot;+=&quot;
+%token SETMINUS &quot;-=&quot;
+%token SETMULT &quot;*=&quot;
+%token SETDIV &quot;/=&quot;
+%token SETDEFINEDOR &quot;//=&quot;
+%token LESSEQ &quot;&lt;=&quot;
+%token GREATEREQ &quot;&gt;=&quot;
+%token ALTERNATION &quot;?//&quot;
+
+%token QQSTRING_START
+%token &lt;literal&gt; QQSTRING_TEXT
+%token QQSTRING_INTERP_START
+%token QQSTRING_INTERP_END
+%token QQSTRING_END
+
+/* Instead of raising this, find a way to use precedence to resolve
+ * shift-reduce conflicts. */
+%expect 0
+
+%precedence FUNCDEF
+%right &#x27;|&#x27;
+%left &#x27;,&#x27;
+%right &quot;//&quot;
+%nonassoc &#x27;=&#x27; SETPIPE SETPLUS SETMINUS SETMULT SETDIV SETMOD SETDEFINEDOR
+%left OR
+%left AND
+%nonassoc NEQ EQ &#x27;&lt;&#x27; &#x27;&gt;&#x27; LESSEQ GREATEREQ
+%left &#x27;+&#x27; &#x27;-&#x27;
+%left &#x27;*&#x27; &#x27;/&#x27; &#x27;%&#x27;
+%precedence NONOPT /* non-optional; rules for which a specialized
+                      &#x27;?&#x27; rule should be preferred over Expr &#x27;?&#x27; */
+%precedence &#x27;?&#x27; &#x27;.&#x27; &#x27;[&#x27; FIELD
+%precedence &quot;try&quot;
+%precedence &quot;catch&quot;
+
+
+%type &lt;blk&gt; Query Expr Term
+%type &lt;blk&gt; DictPairs DictPair DictExpr
+%type &lt;blk&gt; ElseBody
+%type &lt;blk&gt; String QQString
+%type &lt;blk&gt; FuncDef FuncDefs
+%type &lt;blk&gt; Module Import Imports ImportWhat ImportFrom
+%type &lt;blk&gt; Param Params Arg Args
+%type &lt;blk&gt; Patterns RepPatterns Pattern ArrayPats ObjPats ObjPat
+%type &lt;literal&gt; Keyword
+%type &lt;literal&gt; StringStart
+%{
+#include &quot;lexer.h&quot;
+struct lexer_param {
+  yyscan_t lexer;
+};
+#define FAIL(loc, msg)                                             \
+  do {                                                             \
+    location l = loc;                                              \
+    yyerror(&amp;l, answer, errors, locations, lexer_param_ptr, msg);  \
+    /*YYERROR*/;                                                   \
+  } while (0)
+
+void yyerror(YYLTYPE* loc, block* answer, int* errors,
+             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){
+  (*errors)++;
+  locfile_locate(locations, *loc, &quot;jq: error: %s&quot;, s);
+}
+
+int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, block* answer, int* errors,
+          struct locfile* locations, struct lexer_param* lexer_param_ptr) {
+  yyscan_t lexer = lexer_param_ptr-&gt;lexer;
+  int tok = jq_yylex(yylval, yylloc, lexer);
+  if ((tok == LITERAL || tok == QQSTRING_TEXT) &amp;&amp; !jv_is_valid(yylval-&gt;literal)) {
+    jv msg = jv_invalid_get_msg(jv_copy(yylval-&gt;literal));
+    if (jv_get_kind(msg) == JV_KIND_STRING) {
+      FAIL(*yylloc, jv_string_value(msg));
+    } else {
+      FAIL(*yylloc, &quot;Invalid literal&quot;);
+    }
+    jv_free(msg);
+    jv_free(yylval-&gt;literal);
+    yylval-&gt;literal = jv_null();
+  }
+  return tok;
+}
+
+/* Returns string message if the block is a constant that is not valid as an
+ * object key. */
+static jv check_object_key(block k) {
+  if (block_is_const(k) &amp;&amp; block_const_kind(k) != JV_KIND_STRING) {
+    char errbuf[30];
+    return jv_string_fmt(&quot;Cannot use %s (%s) as object key&quot;,
+        jv_kind_name(block_const_kind(k)),
+        jv_dump_string_trunc(block_const(k), errbuf, sizeof(errbuf)));
+  }
+  return jv_invalid();
+}
+
+static block gen_index(block obj, block key) {
+  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX));
+}
+
+static block gen_index_opt(block obj, block key) {
+  return BLOCK(gen_subexp(key), obj, gen_op_simple(INDEX_OPT));
+}
+
+static block gen_slice_index(block obj, block start, block end, opcode idx_op) {
+  block key = BLOCK(gen_subexp(gen_const(jv_object())),
+                    gen_subexp(gen_const(jv_string(&quot;start&quot;))),
+                    gen_subexp(start),
+                    gen_op_simple(INSERT),
+                    gen_subexp(gen_const(jv_string(&quot;end&quot;))),
+                    gen_subexp(end),
+                    gen_op_simple(INSERT));
+  return BLOCK(key, obj, gen_op_simple(idx_op));
+}
+
+static block constant_fold(block a, block b, int op) {
+  if (!block_is_single(a) || !block_is_const(a) ||
+      !block_is_single(b) || !block_is_const(b))
+    return gen_noop();
+
+  jv jv_a = block_const(a);
+  block_free(a);
+  jv jv_b = block_const(b);
+  block_free(b);
+
+  jv res = jv_invalid();
+  switch (op) {
+  case &#x27;+&#x27;: res = binop_plus(jv_a, jv_b); break;
+  case &#x27;-&#x27;: res = binop_minus(jv_a, jv_b); break;
+  case &#x27;*&#x27;: res = binop_multiply(jv_a, jv_b); break;
+  case &#x27;/&#x27;: res = binop_divide(jv_a, jv_b); break;
+  case &#x27;%&#x27;: res = binop_mod(jv_a, jv_b); break;
+  case EQ: res = binop_equal(jv_a, jv_b); break;
+  case NEQ: res = binop_notequal(jv_a, jv_b); break;
+  case &#x27;&lt;&#x27;: res = binop_less(jv_a, jv_b); break;
+  case &#x27;&gt;&#x27;: res = binop_greater(jv_a, jv_b); break;
+  case LESSEQ: res = binop_lesseq(jv_a, jv_b); break;
+  case GREATEREQ: res = binop_greatereq(jv_a, jv_b); break;
+  }
+
+  if (jv_is_valid(res))
+    return gen_const(res);
+
+  return gen_error(jv_invalid_get_msg(res));
+}
+
+static block gen_binop(block a, block b, int op) {
+  block folded = constant_fold(a, b, op);
+  if (!block_is_noop(folded))
+    return folded;
+
+  const char* funcname = 0;
+  switch (op) {
+  case &#x27;+&#x27;: funcname = &quot;_plus&quot;; break;
+  case &#x27;-&#x27;: funcname = &quot;_minus&quot;; break;
+  case &#x27;*&#x27;: funcname = &quot;_multiply&quot;; break;
+  case &#x27;/&#x27;: funcname = &quot;_divide&quot;; break;
+  case &#x27;%&#x27;: funcname = &quot;_mod&quot;; break;
+  case EQ: funcname = &quot;_equal&quot;; break;
+  case NEQ: funcname = &quot;_notequal&quot;; break;
+  case &#x27;&lt;&#x27;: funcname = &quot;_less&quot;; break;
+  case &#x27;&gt;&#x27;: funcname = &quot;_greater&quot;; break;
+  case LESSEQ: funcname = &quot;_lesseq&quot;; break;
+  case GREATEREQ: funcname = &quot;_greatereq&quot;; break;
+  }
+  assert(funcname);
+
+  return gen_call(funcname, BLOCK(gen_lambda(a), gen_lambda(b)));
+}
+
+static block gen_format(block a, jv fmt) {
+  return BLOCK(a, gen_call(&quot;format&quot;, gen_lambda(gen_const(fmt))));
+}
+
+static block gen_definedor_assign(block object, block val) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+  return BLOCK(gen_op_simple(DUP),
+               val, tmp,
+               gen_call(&quot;_modify&quot;, BLOCK(gen_lambda(object),
+                                         gen_lambda(gen_definedor(gen_noop(),
+                                                                  gen_op_bound(LOADV, tmp))))));
+}
+
+static block gen_update(block object, block val, int optype) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+  return BLOCK(gen_op_simple(DUP),
+               val,
+               tmp,
+               gen_call(&quot;_modify&quot;, BLOCK(gen_lambda(object),
+                                         gen_lambda(gen_binop(gen_noop(),
+                                                              gen_op_bound(LOADV, tmp),
+                                                              optype)))));
+}
+
+static block gen_loc_object(location *loc, struct locfile *locations) {
+  return gen_const(JV_OBJECT(jv_string(&quot;file&quot;), jv_copy(locations-&gt;fname),
+                             jv_string(&quot;line&quot;), jv_number(locfile_get_line(locations, loc-&gt;start) + 1)));
+}
+
+%}
+
+%%
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+
+Module:
+%empty {
+  $$ = gen_noop();
+} |
+&quot;module&quot; Query &#x27;;&#x27; {
+  if (!block_is_const($2)) {
+    FAIL(@2, &quot;Module metadata must be constant&quot;);
+    $$ = gen_noop();
+    block_free($2);
+  } else if (block_const_kind($2) != JV_KIND_OBJECT) {
+    FAIL(@2, &quot;Module metadata must be an object&quot;);
+    $$ = gen_noop();
+    block_free($2);
+  } else {
+    $$ = gen_module($2);
+  }
+}
+
+Imports:
+%empty {
+  $$ = gen_noop();
+} |
+Import Imports {
+  $$ = BLOCK($1, $2);
+}
+
+FuncDefs:
+%empty {
+  $$ = gen_noop();
+} |
+FuncDef FuncDefs {
+  $$ = block_join($1, $2);
+}
+
+
+Query:
+FuncDef Query %prec FUNCDEF {
+  $$ = block_bind_referenced($1, $2, OP_IS_CALL_PSEUDO);
+} |
+Expr &quot;as&quot; Patterns &#x27;|&#x27; Query {
+  $$ = gen_destructure($1, $3, $5);
+} |
+&quot;label&quot; BINDING &#x27;|&#x27; Query {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));
+  $$ = gen_location(@$, locations, gen_label(jv_string_value(v), $4));
+  jv_free($2);
+  jv_free(v);
+} |
+Query &#x27;|&#x27; Query {
+  $$ = block_join($1, $3);
+} |
+Query &#x27;,&#x27; Query {
+  $$ = gen_both($1, $3);
+} |
+Expr {
+  $$ = $1;
+}
+
+
+Expr:
+Expr &quot;//&quot; Expr {
+  $$ = gen_definedor($1, $3);
+} |
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;or&quot; Expr {
+  $$ = gen_or($1, $3);
+} |
+Expr &quot;and&quot; Expr {
+  $$ = gen_and($1, $3);
+} |
+Expr &quot;//=&quot; Expr {
+  $$ = gen_definedor_assign($1, $3);
+} |
+Expr &quot;|=&quot; Expr {
+  $$ = gen_call(&quot;_modify&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &#x27;+&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;+&#x27;);
+} |
+Expr &quot;+=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;+&#x27;);
+} |
+Expr &#x27;-&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;-&#x27;);
+} |
+Expr &quot;-=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;-&#x27;);
+} |
+Expr &#x27;*&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;*&#x27;);
+} |
+Expr &quot;*=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;*&#x27;);
+} |
+Expr &#x27;/&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;/&#x27;);
+} |
+Expr &#x27;%&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;%&#x27;);
+} |
+Expr &quot;/=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;/&#x27;);
+} |
+Expr SETMOD Expr {
+  $$ = gen_update($1, $3, &#x27;%&#x27;);
+} |
+Expr &quot;==&quot; Expr {
+  $$ = gen_binop($1, $3, EQ);
+} |
+Expr &quot;!=&quot; Expr {
+  $$ = gen_binop($1, $3, NEQ);
+} |
+Expr &#x27;&lt;&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;&lt;&#x27;);
+} |
+Expr &#x27;&gt;&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;&gt;&#x27;);
+} |
+Expr &quot;&lt;=&quot; Expr {
+  $$ = gen_binop($1, $3, LESSEQ);
+} |
+Expr &quot;&gt;=&quot; Expr {
+  $$ = gen_binop($1, $3, GREATEREQ);
+} |
+Term %prec NONOPT {
+  $$ = $1;
+}
+
+
+Import:
+ImportWhat &#x27;;&#x27; {
+  $$ = $1;
+} |
+ImportWhat Query &#x27;;&#x27; {
+  if (!block_is_const($2)) {
+    FAIL(@2, &quot;Module metadata must be constant&quot;);
+    $$ = gen_noop();
+    block_free($1);
+    block_free($2);
+  } else if (block_const_kind($2) != JV_KIND_OBJECT) {
+    FAIL(@2, &quot;Module metadata must be an object&quot;);
+    $$ = gen_noop();
+    block_free($1);
+    block_free($2);
+  } else {
+    $$ = gen_import_meta($1, $2);
+  }
+}
+
+ImportWhat:
+&quot;import&quot; ImportFrom &quot;as&quot; BINDING {
+  $$ = gen_import(block_const($2), $4, 1);
+  block_free($2);
+} |
+&quot;import&quot; ImportFrom &quot;as&quot; IDENT {
+  $$ = gen_import(block_const($2), $4, 0);
+  block_free($2);
+} |
+&quot;include&quot; ImportFrom {
+  $$ = gen_import(block_const($2), jv_invalid(), 0);
+  block_free($2);
+}
+
+ImportFrom:
+String {
+  if (!block_is_const($1)) {
+    FAIL(@1, &quot;Import path must be constant&quot;);
+    $$ = gen_const(jv_string(&quot;&quot;));
+    block_free($1);
+  } else {
+    $$ = $1;
+  }
+}
+
+FuncDef:
+&quot;def&quot; IDENT &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), gen_noop(), $4);
+  jv_free($2);
+} |
+
+&quot;def&quot; IDENT &#x27;(&#x27; Params &#x27;)&#x27; &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), $4, $7);
+  jv_free($2);
+}
+
+Params:
+Param {
+  $$ = $1;
+} |
+Params &#x27;;&#x27; Param {
+  $$ = BLOCK($1, $3);
+}
+
+Param:
+BINDING {
+  $$ = gen_param_regular(jv_string_value($1));
+  jv_free($1);
+} |
+IDENT {
+  $$ = gen_param(jv_string_value($1));
+  jv_free($1);
+}
+
+
+StringStart:
+FORMAT QQSTRING_START {
+  $$ = $1;
+} |
+QQSTRING_START {
+  $$ = jv_string(&quot;text&quot;);
+}
+
+
+String:
+StringStart QQString QQSTRING_END {
+  $$ = $2;
+  jv_free($1);
+};
+
+
+QQString:
+%empty {
+  $$ = gen_const(jv_string(&quot;&quot;));
+} |
+QQString QQSTRING_TEXT {
+  $$ = gen_binop($1, gen_const($2), &#x27;+&#x27;);
+} |
+QQString QQSTRING_INTERP_START Query QQSTRING_INTERP_END {
+  $$ = gen_binop($1, gen_format($3, jv_copy($&lt;literal&gt;0)), &#x27;+&#x27;);
+}
+
+
+ElseBody:
+&quot;elif&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;else&quot; Query &quot;end&quot; {
+  $$ = $2;
+} |
+&quot;end&quot; {
+  $$ = gen_noop();
+}
+
+
+Term:
+&#x27;.&#x27; {
+  $$ = gen_noop();
+} |
+REC {
+  $$ = gen_call(&quot;recurse&quot;, gen_noop());
+} |
+BREAK BINDING {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));     // impossible symbol
+  $$ = gen_location(@$, locations,
+                    BLOCK(gen_op_unbound(LOADV, jv_string_value(v)),
+                    gen_call(&quot;error&quot;, gen_noop())));
+  jv_free(v);
+  jv_free($2);
+} |
+BREAK error {
+  FAIL(@$, &quot;break requires a label to break to&quot;);
+  $$ = gen_noop();
+} |
+Term FIELD &#x27;?&#x27; {
+  $$ = gen_index_opt($1, gen_const($2));
+} |
+FIELD &#x27;?&#x27; {
+  $$ = gen_index_opt(gen_noop(), gen_const($1));
+} |
+Term &#x27;.&#x27; String &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $3);
+} |
+&#x27;.&#x27; String &#x27;?&#x27; {
+  $$ = gen_index_opt(gen_noop(), $2);
+} |
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+FIELD %prec NONOPT {
+  $$ = gen_index(gen_noop(), gen_const($1));
+} |
+Term &#x27;.&#x27; String %prec NONOPT {
+  $$ = gen_index($1, $3);
+} |
+&#x27;.&#x27; String %prec NONOPT {
+  $$ = gen_index(gen_noop(), $2);
+} |
+&#x27;.&#x27; error {
+  FAIL(@$, &quot;try .[\&quot;field\&quot;] instead of .field for unusually named fields&quot;);
+  $$ = gen_noop();
+} |
+&#x27;.&#x27; IDENT error {
+  jv_free($2);
+  FAIL(@$, &quot;try .[\&quot;field\&quot;] instead of .field for unusually named fields&quot;);
+  $$ = gen_noop();
+} |
+/* FIXME: string literals */
+Term &#x27;[&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $3);
+} |
+Term &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $3);
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_index_opt($1, $4);
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $4);
+} |
+Term &#x27;[&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = block_join($1, gen_op_simple(EACH_OPT));
+} |
+Term &#x27;[&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = block_join($1, gen_op_simple(EACH_OPT));
+} |
+Term &#x27;.&#x27; &#x27;[&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, $3, $5, INDEX_OPT);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, $3, gen_const(jv_null()), INDEX_OPT);
+} |
+Term &#x27;[&#x27; &#x27;:&#x27; Query &#x27;]&#x27; &#x27;?&#x27; {
+  $$ = gen_slice_index($1, gen_const(jv_null()), $4, INDEX_OPT);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, $3, $5, INDEX);
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, $3, gen_const(jv_null()), INDEX);
+} |
+Term &#x27;[&#x27; &#x27;:&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, gen_const(jv_null()), $4, INDEX);
+} |
+Term &#x27;?&#x27; {
+  $$ = gen_try($1, gen_op_simple(BACKTRACK));
+} |
+LITERAL {
+  $$ = gen_const($1);
+} |
+String {
+  $$ = $1;
+} |
+FORMAT {
+  $$ = gen_format(gen_noop(), $1);
+} |
+&#x27;-&#x27; Term {
+  $$ = BLOCK($2, gen_call(&quot;_negate&quot;, gen_noop()));
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; {
+  $$ = $2;
+} |
+&#x27;[&#x27; Query &#x27;]&#x27; {
+  $$ = gen_collect($2);
+} |
+&#x27;[&#x27; &#x27;]&#x27; {
+  $$ = gen_const(jv_array());
+} |
+&#x27;{&#x27; DictPairs &#x27;}&#x27; {
+  block o = gen_const_object($2);
+  if (o.first != NULL)
+    $$ = o;
+  else
+    $$ = BLOCK(gen_subexp(gen_const(jv_object())), $2, gen_op_simple(POP));
+} |
+&quot;reduce&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, gen_noop());
+} |
+&quot;if&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;if&quot; Query &quot;then&quot; error {
+  FAIL(@$, &quot;Possibly unterminated &#x27;if&#x27; statement&quot;);
+  $$ = $2;
+} |
+&quot;try&quot; Expr &quot;catch&quot; Expr {
+  $$ = gen_try($2, $4);
+} |
+&quot;try&quot; Expr &quot;catch&quot; error {
+  FAIL(@$, &quot;Possibly unterminated &#x27;try&#x27; statement&quot;);
+  $$ = $2;
+} |
+&quot;try&quot; Expr {
+  $$ = gen_try($2, gen_op_simple(BACKTRACK));
+} |
+/*
+ * This `$$$$varname` hack is strictly private to jq builtins.  DO NOT USE!!
+ *
+ * This is used in `_modify`, in src/builtin.jq, to avoid holding on to a
+ * reference to `.`.
+ *
+ * We could just have the compiler emit bytecode for `_modify` so it can use
+ * LOADVN w/o needing jq syntax for LOADVN.
+ *
+ * This syntax, `$$$$varname`, violates referential transparency: it has
+ * side-effects that are surprising.
+ *
+ * DO NOT USE!!  I will break your jq code if you do use this outside
+ * src/builtin.jq.
+ */
+&#x27;$&#x27; &#x27;$&#x27; &#x27;$&#x27; BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADVN, jv_string_value($4)));
+  jv_free($4);
+} |
+BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));
+  jv_free($1);
+} |
+&quot;$__loc__&quot; {
+  $$ = gen_loc_object(&amp;@$, locations);
+} |
+IDENT {
+  const char *s = jv_string_value($1);
+  if (strcmp(s, &quot;false&quot;) == 0)
+    $$ = gen_const(jv_false());
+  else if (strcmp(s, &quot;true&quot;) == 0)
+    $$ = gen_const(jv_true());
+  else if (strcmp(s, &quot;null&quot;) == 0)
+    $$ = gen_const(jv_null());
+  else
+    $$ = gen_location(@$, locations, gen_call(s, gen_noop()));
+  jv_free($1);
+} |
+IDENT &#x27;(&#x27; Args &#x27;)&#x27; {
+  $$ = gen_call(jv_string_value($1), $3);
+  $$ = gen_location(@1, locations, $$);
+  jv_free($1);
+} |
+&#x27;(&#x27; error &#x27;)&#x27; { $$ = gen_noop(); } |
+&#x27;[&#x27; error &#x27;]&#x27; { $$ = gen_noop(); } |
+Term &#x27;[&#x27; error &#x27;]&#x27; { $$ = $1; } |
+&#x27;{&#x27; error &#x27;}&#x27; { $$ = gen_noop(); }
+
+Args:
+Arg {
+  $$ = $1;
+} |
+Args &#x27;;&#x27; Arg {
+  $$ = BLOCK($1, $3);
+}
+
+Arg:
+Query {
+  $$ = gen_lambda($1);
+}
+
+RepPatterns:
+RepPatterns &quot;?//&quot; Pattern {
+  $$ = BLOCK($1, gen_destructure_alt($3));
+} |
+Pattern {
+  $$ = gen_destructure_alt($1);
+}
+
+Patterns:
+RepPatterns &quot;?//&quot; Pattern {
+  $$ = BLOCK($1, $3);
+} |
+Pattern {
+  $$ = $1;
+}
+
+Pattern:
+BINDING {
+  $$ = gen_op_unbound(STOREV, jv_string_value($1));
+  jv_free($1);
+} |
+&#x27;[&#x27; ArrayPats &#x27;]&#x27; {
+  $$ = BLOCK($2, gen_op_simple(POP));
+} |
+&#x27;{&#x27; ObjPats &#x27;}&#x27; {
+  $$ = BLOCK($2, gen_op_simple(POP));
+}
+
+ArrayPats:
+Pattern {
+  $$ = gen_array_matcher(gen_noop(), $1);
+} |
+ArrayPats &#x27;,&#x27; Pattern {
+  $$ = gen_array_matcher($1, $3);
+}
+
+ObjPats:
+ObjPat {
+  $$ = $1;
+} |
+ObjPats &#x27;,&#x27; ObjPat {
+  $$ = BLOCK($1, $3);
+}
+
+ObjPat:
+BINDING {
+  $$ = gen_object_matcher(gen_const($1), gen_op_unbound(STOREV, jv_string_value($1)));
+} |
+BINDING &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), BLOCK(gen_op_simple(DUP), gen_op_unbound(STOREV, jv_string_value($1)), $3));
+} |
+IDENT &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), $3);
+} |
+Keyword &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher(gen_const($1), $3);
+} |
+String &#x27;:&#x27; Pattern {
+  $$ = gen_object_matcher($1, $3);
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; &#x27;:&#x27; Pattern {
+  jv msg = check_object_key($2);
+  if (jv_is_valid(msg)) {
+    FAIL(@2, jv_string_value(msg));
+  }
+  jv_free(msg);
+  $$ = gen_object_matcher($2, $5);
+} |
+error &#x27;:&#x27; Pattern {
+  FAIL(@$, &quot;May need parentheses around object key expression&quot;);
+  $$ = $3;
+}
+
+Keyword:
+&quot;as&quot; {
+  $$ = jv_string(&quot;as&quot;);
+} |
+&quot;def&quot; {
+  $$ = jv_string(&quot;def&quot;);
+} |
+&quot;module&quot; {
+  $$ = jv_string(&quot;module&quot;);
+} |
+&quot;import&quot; {
+  $$ = jv_string(&quot;import&quot;);
+} |
+&quot;include&quot; {
+  $$ = jv_string(&quot;include&quot;);
+} |
+&quot;if&quot; {
+  $$ = jv_string(&quot;if&quot;);
+} |
+&quot;then&quot; {
+  $$ = jv_string(&quot;then&quot;);
+} |
+&quot;else&quot; {
+  $$ = jv_string(&quot;else&quot;);
+} |
+&quot;elif&quot; {
+  $$ = jv_string(&quot;elif&quot;);
+} |
+&quot;reduce&quot; {
+  $$ = jv_string(&quot;reduce&quot;);
+} |
+&quot;foreach&quot; {
+  $$ = jv_string(&quot;foreach&quot;);
+} |
+&quot;end&quot; {
+  $$ = jv_string(&quot;end&quot;);
+} |
+&quot;and&quot; {
+  $$ = jv_string(&quot;and&quot;);
+} |
+&quot;or&quot; {
+  $$ = jv_string(&quot;or&quot;);
+} |
+&quot;try&quot; {
+  $$ = jv_string(&quot;try&quot;);
+} |
+&quot;catch&quot; {
+  $$ = jv_string(&quot;catch&quot;);
+} |
+&quot;label&quot; {
+  $$ = jv_string(&quot;label&quot;);
+} |
+&quot;break&quot; {
+  $$ = jv_string(&quot;break&quot;);
+}
+
+
+DictPairs:
+%empty {
+  $$ = gen_noop();
+} |
+DictPair {
+  $$ = $1;
+} |
+DictPair &#x27;,&#x27; DictPairs {
+  $$ = block_join($1, $3);
+}
+
+DictPair:
+IDENT &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_const($1), $3);
+} |
+Keyword &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_const($1), $3);
+} |
+String &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair($1, $3);
+} |
+String {
+  $$ = gen_dictpair($1, BLOCK(gen_op_simple(POP), gen_op_simple(DUP2),
+                              gen_op_simple(DUP2), gen_op_simple(INDEX)));
+} |
+BINDING &#x27;:&#x27; DictExpr {
+  $$ = gen_dictpair(gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1))),
+                    $3);
+  jv_free($1);
+} |
+BINDING {
+  $$ = gen_dictpair(gen_const($1),
+                    gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1))));
+} |
+IDENT {
+  $$ = gen_dictpair(gen_const(jv_copy($1)),
+                    gen_index(gen_noop(), gen_const($1)));
+} |
+&quot;$__loc__&quot; {
+  $$ = gen_dictpair(gen_const(jv_string(&quot;__loc__&quot;)),
+                    gen_loc_object(&amp;@$, locations));
+} |
+Keyword {
+  $$ = gen_dictpair(gen_const(jv_copy($1)),
+                    gen_index(gen_noop(), gen_const($1)));
+} |
+&#x27;(&#x27; Query &#x27;)&#x27; &#x27;:&#x27; DictExpr {
+  jv msg = check_object_key($2);
+  if (jv_is_valid(msg)) {
+    FAIL(@2, jv_string_value(msg));
+  }
+  jv_free(msg);
+  $$ = gen_dictpair($2, $5);
+} |
+error &#x27;:&#x27; DictExpr {
+  FAIL(@1, &quot;May need parentheses around object key expression&quot;);
+  $$ = $3;
+}
+
+DictExpr:
+DictExpr &#x27;|&#x27; DictExpr {
+  $$ = block_join($1, $3);
+} |
+Expr {
+  $$ = $1;
+}
+%%
+
+int jq_parse(struct locfile* locations, block* answer) {
+  struct lexer_param scanner;
+  YY_BUFFER_STATE buf;
+  jq_yylex_init_extra(0, &amp;scanner.lexer);
+  buf = jq_yy_scan_bytes(locations-&gt;data, locations-&gt;length, scanner.lexer);
+  int errors = 0;
+  *answer = gen_noop();
+  yyparse(answer, &amp;errors, locations, &amp;scanner);
+  jq_yy_delete_buffer(buf, scanner.lexer);
+  jq_yylex_destroy(scanner.lexer);
+  if (errors &gt; 0) {
+    block_free(*answer);
+    *answer = gen_noop();
+  }
+  return errors;
+}
+
+int jq_parse_library(struct locfile* locations, block* answer) {
+  int errs = jq_parse(locations, answer);
+  if (errs) return errs;
+  if (block_has_main(*answer)) {
+    locfile_locate(locations, UNKNOWN_LOCATION, &quot;jq: error: library should only have function definitions, not a main expression&quot;);
+    return 1;
+  }
+  assert(block_has_only_binders_and_imports(*answer, OP_IS_CALL_PSEUDO));
+  return 0;
+}</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;lexer.l&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/lexer.l&quot;&gt;</p>
+<pre><code>%{
+#include &lt;assert.h&gt;
+#include &quot;jv_alloc.h&quot;
+#include &quot;compile.h&quot;
+
+struct lexer_param;
+
+#include &quot;parser.h&quot;  /* Generated by bison. */
+
+#define YY_USER_ACTION                           \
+  do {                                           \
+    yylloc-&gt;start = yyget_extra(yyscanner);      \
+    yylloc-&gt;end = yylloc-&gt;start + yyleng;        \
+    yyset_extra(yylloc-&gt;end, yyscanner);         \
+  } while (0);
+
+%}
+
+%s IN_PAREN
+%s IN_BRACKET
+%s IN_BRACE
+%s IN_QQINTERP
+%x IN_QQSTRING
+%x IN_COMMENT
+%{
+  static int enter(int opening, int state, yyscan_t yyscanner);
+  static int try_exit(int closing, int state, yyscan_t yyscanner);
+%}
+
+%option noyywrap nounput noinput nodefault
+%option noyyalloc noyyrealloc noyyfree
+%option reentrant
+%option extra-type=&quot;int&quot;
+%option bison-bridge bison-locations
+%option prefix=&quot;jq_yy&quot;
+%option stack
+
+
+%%
+
+&quot;#&quot; { yy_push_state(IN_COMMENT, yyscanner); }
+&lt;IN_COMMENT&gt;{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+&lt;IN_COMMENT&gt;&lt;&lt;EOF&gt;&gt; { yy_pop_state(yyscanner); }
+
+&quot;!=&quot; { return NEQ; }
+&quot;==&quot; { return EQ; }
+&quot;as&quot; { return AS; }
+&quot;import&quot; { return IMPORT; }
+&quot;include&quot; { return INCLUDE; }
+&quot;module&quot; { return MODULE; }
+&quot;def&quot; { return DEF; }
+&quot;if&quot; { return IF; }
+&quot;then&quot; { return THEN; }
+&quot;else&quot; { return ELSE; }
+&quot;elif&quot; { return ELSE_IF; }
+&quot;and&quot; { return AND; }
+&quot;or&quot; { return OR; }
+&quot;end&quot; { return END; }
+&quot;reduce&quot; { return REDUCE; }
+&quot;foreach&quot; { return FOREACH; }
+&quot;//&quot; { return DEFINEDOR; }
+&quot;try&quot; { return TRY; }
+&quot;catch&quot; { return CATCH; }
+&quot;label&quot; { return LABEL; }
+&quot;break&quot; { return BREAK; }
+&quot;$__loc__&quot; { return LOC; }
+&quot;|=&quot; { return SETPIPE; }
+&quot;+=&quot; { return SETPLUS; }
+&quot;-=&quot; { return SETMINUS; }
+&quot;*=&quot; { return SETMULT; }
+&quot;/=&quot; { return SETDIV; }
+&quot;%=&quot; { return SETMOD; }
+&quot;//=&quot; { return SETDEFINEDOR; }
+&quot;&lt;=&quot; { return LESSEQ; }
+&quot;&gt;=&quot; { return GREATEREQ; }
+&quot;..&quot; { return REC; }
+&quot;?//&quot; { return ALTERNATION; }
+&quot;.&quot;|&quot;?&quot;|&quot;=&quot;|&quot;;&quot;|&quot;,&quot;|&quot;:&quot;|&quot;|&quot;|&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;|&quot;%&quot;|&quot;\$&quot;|&quot;&lt;&quot;|&quot;&gt;&quot; { return yytext[0];}
+
+&quot;[&quot;|&quot;{&quot;|&quot;(&quot; {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+&quot;]&quot;|&quot;}&quot;|&quot;)&quot; {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+
+&quot;@&quot;[a-zA-Z0-9_]+ {
+  yylval-&gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval-&gt;literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+
+&quot;\&quot;&quot; {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+
+&lt;IN_QQSTRING&gt;{
+  &quot;\\(&quot; {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+  &quot;\&quot;&quot; {
+    yy_pop_state(yyscanner);
+    return QQSTRING_END;
+  }
+  (\\[^u(]|\\u[a-zA-Z0-9]{0,4})+ {
+    /* pass escapes to the json parser */
+    jv escapes = jv_string_fmt(&quot;\&quot;%.*s\&quot;&quot;, (int)yyleng, yytext);
+    yylval-&gt;literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));
+    jv_free(escapes);
+    return QQSTRING_TEXT;
+  }
+  [^\\\&quot;]+ {
+    yylval-&gt;literal = jv_string_sized(yytext, yyleng);
+    return QQSTRING_TEXT;
+  }
+  . {
+    return INVALID_CHARACTER;
+  }
+}
+
+
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&gt;literal = jv_string(yytext+1); return BINDING;}
+
+[ \r\n\t]+  {}
+
+. { return INVALID_CHARACTER; }
+
+%%
+/* perhaps these should be calls... */
+/*
+&quot;true&quot; { return TRUE; }
+&quot;false&quot; { return FALSE; }
+&quot;null&quot; { return NULL; }
+*/
+static int try_exit(int c, int state, yyscan_t yyscanner) {
+  char match = 0;
+  int ret;
+  switch (state) {
+  case IN_PAREN: match = ret = &#x27;)&#x27;; break;
+  case IN_BRACKET: match = ret = &#x27;]&#x27;; break;
+  case IN_BRACE: match = ret = &#x27;}&#x27;; break;
+
+  case IN_QQINTERP:
+    match = &#x27;)&#x27;;
+    ret = QQSTRING_INTERP_END;
+    break;
+
+  default:
+    // may not be the best error to give
+    return INVALID_CHARACTER;
+  }
+  assert(match);
+  if (match == c) {
+    yy_pop_state(yyscanner);
+    return ret;
+  } else {
+    // FIXME: should we pop? Give a better error at least
+    return INVALID_CHARACTER;
+  }
+}
+
+static int enter(int c, int currstate, yyscan_t yyscanner) {
+  int state = 0;
+  switch (c) {
+  case &#x27;(&#x27;: state = IN_PAREN; break;
+  case &#x27;[&#x27;: state = IN_BRACKET; break;
+  case &#x27;{&#x27;: state = IN_BRACE; break;
+  case QQSTRING_INTERP_START: state = IN_QQINTERP; break;
+  }
+  assert(state);
+  yy_push_state(state, yyscanner);
+  return c;
+}
+
+void* yyalloc(size_t sz, void* extra) {
+  return jv_mem_alloc(sz);
+}
+void* yyrealloc(void* p, size_t sz, void* extra) {
+  return jv_mem_realloc(p, sz);
+}
+void yyfree(void* p, void* extra) {
+  jv_mem_free(p);
+}</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;jq.test&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/jq.test&quot;&gt;</p>
+<pre><code># Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+
+#
+# Simple value tests to check parser. Input is irrelevant
+#
+
+true
+null
+true
+
+false
+null
+false
+
+null
+42
+null
+
+1
+null
+1
+
+
+-1
+null
+-1
+
+# FIXME: much more number testing needed
+
+{}
+null
+{}
+
+[]
+null
+[]
+
+{x:-1},{x:-.},{x:-.|abs}
+1
+{&quot;x&quot;:-1}
+{&quot;x&quot;:-1}
+{&quot;x&quot;:1}
+
+# The input line starts with a 0xFEFF (byte order mark) codepoint
+# No, there is no reason to have a byte order mark in UTF8 text.
+# But apparently people do, so jq shouldn&#x27;t break on it.
+.
+﻿&quot;byte order mark&quot;
+&quot;byte order mark&quot;
+
+# We test escapes by matching them against Unicode codepoints
+# FIXME: more tests needed for weird unicode stuff (e.g. utf16 pairs)
+&quot;Aa\r\n\t\b\f\u03bc&quot;
+null
+&quot;Aa\u000d\u000a\u0009\u0008\u000c\u03bc&quot;
+
+.
+&quot;Aa\r\n\t\b\f\u03bc&quot;
+&quot;Aa\u000d\u000a\u0009\u0008\u000c\u03bc&quot;
+
+%%FAIL
+&quot;u\vw&quot;
+jq: error: Invalid escape at line 1, column 4 (while parsing &#x27;&quot;\v&quot;&#x27;) at &lt;top-level&gt;, line 1, column 3:
+    &quot;u\vw&quot;
+      ^^
+
+&quot;inter\(&quot;pol&quot; + &quot;ation&quot;)&quot;
+null
+&quot;interpolation&quot;
+
+@text,@json,([1,.]|@csv,@tsv),@html,(@uri|.,@urid),@sh,(@base64|.,@base64d)
+&quot;!()&lt;&gt;&amp;&#x27;\&quot;\t&quot;
+&quot;!()&lt;&gt;&amp;&#x27;\&quot;\t&quot;
+&quot;\&quot;!()&lt;&gt;&amp;&#x27;\\\&quot;\\t\&quot;&quot;
+&quot;1,\&quot;!()&lt;&gt;&amp;&#x27;\&quot;\&quot;\t\&quot;&quot;
+&quot;1\t!()&lt;&gt;&amp;&#x27;\&quot;\\t&quot;
+&quot;!()&amp;lt;&amp;gt;&amp;amp;&amp;apos;&amp;quot;\t&quot;
+&quot;%21%28%29%3C%3E%26%27%22%09&quot;
+&quot;!()&lt;&gt;&amp;&#x27;\&quot;\t&quot;
+&quot;&#x27;!()&lt;&gt;&amp;&#x27;\\&#x27;&#x27;\&quot;\t&#x27;&quot;
+&quot;ISgpPD4mJyIJ&quot;
+&quot;!()&lt;&gt;&amp;&#x27;\&quot;\t&quot;
+
+# regression test for #436
+@base64
+&quot;foóbar\n&quot;
+&quot;Zm/Ds2Jhcgo=&quot;
+
+@base64d
+&quot;Zm/Ds2Jhcgo=&quot;
+&quot;foóbar\n&quot;
+
+@uri
+&quot;\u03bc&quot;
+&quot;%CE%BC&quot;
+
+@urid
+&quot;%CE%BC&quot;
+&quot;\u03bc&quot;
+
+@html &quot;&lt;b&gt;\(.)&lt;/b&gt;&quot;
+&quot;&lt;script&gt;hax&lt;/script&gt;&quot;
+&quot;&lt;b&gt;&amp;lt;script&amp;gt;hax&amp;lt;/script&amp;gt;&lt;/b&gt;&quot;
+
+[.[]|tojson|fromjson]
+[&quot;foo&quot;, 1, [&quot;a&quot;, 1, &quot;b&quot;, 2, {&quot;foo&quot;:&quot;bar&quot;}]]
+[&quot;foo&quot;,1,[&quot;a&quot;,1,&quot;b&quot;,2,{&quot;foo&quot;:&quot;bar&quot;}]]
+
+#
+# Dictionary construction syntax
+#
+
+{a: 1}
+null
+{&quot;a&quot;:1}
+
+{a,b,(.d):.a,e:.b}
+{&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;:3, &quot;d&quot;:&quot;c&quot;}
+{&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;:1, &quot;e&quot;:2}
+
+{&quot;a&quot;,b,&quot;a$\(1+1)&quot;}
+{&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;:3, &quot;a$2&quot;:4}
+{&quot;a&quot;:1, &quot;b&quot;:2, &quot;a$2&quot;:4}
+
+%%FAIL
+{(0):1}
+jq: error: Cannot use number (0) as object key at &lt;top-level&gt;, line 1, column 3:
+    {(0):1}
+      ^
+
+%%FAIL
+{1+2:3}
+jq: error: May need parentheses around object key expression at &lt;top-level&gt;, line 1, column 2:
+    {1+2:3}
+     ^^^
+
+%%FAIL
+{non_const:., (0):1}
+jq: error: Cannot use number (0) as object key at &lt;top-level&gt;, line 1, column 16:
+    {non_const:., (0):1}
+                   ^
+
+#
+# Field access, piping
+#
+
+.foo
+{&quot;foo&quot;: 42, &quot;bar&quot;: 43}
+42
+
+.foo | .bar
+{&quot;foo&quot;: {&quot;bar&quot;: 42}, &quot;bar&quot;: &quot;badvalue&quot;}
+42
+
+.foo.bar
+{&quot;foo&quot;: {&quot;bar&quot;: 42}, &quot;bar&quot;: &quot;badvalue&quot;}
+42
+
+.foo_bar
+{&quot;foo_bar&quot;: 2}
+2
+
+.[&quot;foo&quot;].bar
+{&quot;foo&quot;: {&quot;bar&quot;: 42}, &quot;bar&quot;: &quot;badvalue&quot;}
+42
+
+.&quot;foo&quot;.&quot;bar&quot;
+{&quot;foo&quot;: {&quot;bar&quot;: 20}}
+20
+
+.e0, .E1, .E-1, .E+1
+{&quot;e0&quot;: 1, &quot;E1&quot;: 2, &quot;E&quot;: 3}
+1
+2
+2
+4
+
+[.[]|.foo?]
+[1,[2],{&quot;foo&quot;:3,&quot;bar&quot;:4},{},{&quot;foo&quot;:5}]
+[3,null,5]
+
+[.[]|.foo?.bar?]
+[1,[2],[],{&quot;foo&quot;:3},{&quot;foo&quot;:{&quot;bar&quot;:4}},{}]
+[4,null]
+
+[..]
+[1,[[2]],{ &quot;a&quot;:[1]}]
+[[1,[[2]],{&quot;a&quot;:[1]}],1,[[2]],[2],2,{&quot;a&quot;:[1]},[1],1]
+
+[.[]|.[]?]
+[1,null,[],[1,[2,[[3]]]],[{}],[{&quot;a&quot;:[1,[2]]}]]
+[1,[2,[[3]]],{},{&quot;a&quot;:[1,[2]]}]
+
+[.[]|.[1:3]?]
+[1,null,true,false,&quot;abcdef&quot;,{},{&quot;a&quot;:1,&quot;b&quot;:2},[],[1,2,3,4,5],[1,2]]
+[null,&quot;bc&quot;,[],[2,3],[2]]
+
+# chaining/suffix-list, with and without dot
+map(try .a[] catch ., try .a.[] catch ., .a[]?, .a.[]?)
+[{&quot;a&quot;: [1,2]}, {&quot;a&quot;: 123}]
+[1,2,1,2,1,2,1,2,&quot;Cannot iterate over number (123)&quot;,&quot;Cannot iterate over number (123)&quot;]
+
+# oss-fuzz #66070: objects[] leaks if a non-last element throws an error
+try [&quot;OK&quot;, (.[] | error)] catch [&quot;KO&quot;, .]
+{&quot;a&quot;:[&quot;b&quot;],&quot;c&quot;:[&quot;d&quot;]}
+[&quot;KO&quot;,[&quot;b&quot;]]
+
+#
+# Negative array indices
+#
+
+try (.foo[-1] = 0) catch .
+null
+&quot;Out of bounds negative array index&quot;
+
+try (.foo[-2] = 0) catch .
+null
+&quot;Out of bounds negative array index&quot;
+
+.[-1] = 5
+[0,1,2]
+[0,1,5]
+
+.[-2] = 5
+[0,1,2]
+[0,5,2]
+
+try (.[999999999] = 0) catch .
+null
+&quot;Array index too large&quot;
+
+#
+# Multiple outputs, iteration
+#
+
+.[]
+[1,2,3]
+1
+2
+3
+
+1,1
+[]
+1
+1
+
+1,.
+[]
+1
+[]
+
+[.]
+[2]
+[[2]]
+
+[[2]]
+[3]
+[[2]]
+
+[{}]
+[2]
+[{}]
+
+[.[]]
+[&quot;a&quot;]
+[&quot;a&quot;]
+
+[(.,1),((.,.[]),(2,3))]
+[&quot;a&quot;,&quot;b&quot;]
+[[&quot;a&quot;,&quot;b&quot;],1,[&quot;a&quot;,&quot;b&quot;],&quot;a&quot;,&quot;b&quot;,2,3]
+
+[([5,5][]),.,.[]]
+[1,2,3]
+[5,5,[1,2,3],1,2,3]
+
+{x: (1,2)},{x:3} | .x
+null
+1
+2
+3
+
+[.[-4,-3,-2,-1,0,1,2,3]]
+[1,2,3]
+[null,1,2,3,1,2,3,null]
+
+[range(0;10)]
+null
+[0,1,2,3,4,5,6,7,8,9]
+
+[range(0,1;3,4)]
+null
+[0,1,2, 0,1,2,3, 1,2, 1,2,3]
+
+[range(0;10;3)]
+null
+[0,3,6,9]
+
+[range(0;10;-1)]
+null
+[]
+
+[range(0;-5;-1)]
+null
+[0,-1,-2,-3,-4]
+
+[range(0,1;4,5;1,2)]
+null
+[0,1,2,3,0,2, 0,1,2,3,4,0,2,4, 1,2,3,1,3, 1,2,3,4,1,3]
+
+[while(.&lt;100; .*2)]
+1
+[1,2,4,8,16,32,64]
+
+[(label $here | .[] | if .&gt;1 then break $here else . end), &quot;hi!&quot;]
+[0,1,2]
+[0,1,&quot;hi!&quot;]
+
+[(label $here | .[] | if .&gt;1 then break $here else . end), &quot;hi!&quot;]
+[0,2,1]
+[0,&quot;hi!&quot;]
+
+%%FAIL
+. as $foo | break $foo
+jq: error: $*label-foo is not defined at &lt;top-level&gt;, line 1, column 13:
+    . as $foo | break $foo
+                ^^^^^^^^^^
+
+[.[]|[.,1]|until(.[0] &lt; 1; [.[0] - 1, .[1] * .[0]])|.[1]]
+[1,2,3,4,5]
+[1,2,6,24,120]
+
+[label $out | foreach .[] as $item ([3, null]; if .[0] &lt; 1 then break $out else [.[0] -1, $item] end; .[1])]
+[11,22,33,44,55,66,77,88,99]
+[11,22,33]
+
+[foreach range(5) as $item (0; $item)]
+null
+[0,1,2,3,4]
+
+[foreach .[] as [$i, $j] (0; . + $i - $j)]
+[[2,1], [5,3], [6,4]]
+[1,3,5]
+
+[foreach .[] as {a:$a} (0; . + $a; -.)]
+[{&quot;a&quot;:1}, {&quot;b&quot;:2}, {&quot;a&quot;:3, &quot;b&quot;:4}]
+[-1, -1, -4]
+
+[-foreach -.[] as $x (0; . + $x)]
+[1,2,3]
+[1,3,6]
+
+[foreach .[] / .[] as $i (0; . + $i)]
+[1,2]
+[1,3,3.5,4.5]
+
+[foreach .[] as $x (0; . + $x) as $x | $x]
+[1,2,3]
+[1,3,6]
+
+[limit(3; .[])]
+[11,22,33,44,55,66,77,88,99]
+[11,22,33]
+
+[limit(0; error)]
+&quot;badness&quot;
+[]
+
+[limit(1; 1, error)]
+&quot;badness&quot;
+[1]
+
+try limit(-1; error) catch .
+null
+&quot;limit doesn&#x27;t support negative count&quot;
+
+[skip(3; .[])]
+[1,2,3,4,5,6,7,8,9]
+[4,5,6,7,8,9]
+
+[skip(0,2,3,4; .[])]
+[1,2,3]
+[1,2,3,3]
+
+[skip(3; .[])]
+[]
+[]
+
+try skip(-1; error) catch .
+null
+&quot;skip doesn&#x27;t support negative count&quot;
+
+nth(1; 0,1,error(&quot;foo&quot;))
+null
+1
+
+[first(range(.)), last(range(.))]
+10
+[0,9]
+
+[first(range(.)), last(range(.))]
+0
+[]
+
+[nth(0,5,9,10,15; range(.)), try nth(-1; range(.)) catch .]
+10
+[0,5,9,&quot;nth doesn&#x27;t support negative indices&quot;]
+
+# Check that first(g) does not extract more than one value from g
+first(1,error(&quot;foo&quot;))
+null
+1
+
+#
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+#
+
+# Check that limit does work for each value produced by n!
+[limit(5,7; range(9))]
+null
+[0,1,2,3,4,0,1,2,3,4,5,6]
+
+# Same check for nth
+[nth(5,7; range(9;0;-1))]
+null
+[4,2]
+
+# Same check for range/3
+[range(0,1,2;4,3,2;2,3)]
+null
+[0,2,0,3,0,2,0,0,0,1,3,1,1,1,1,1,2,2,2,2]
+
+# Same check for range/1
+[range(3,5)]
+null
+[0,1,2,0,1,2,3,4]
+
+# Same check for index/1, rindex/1, indices/1
+[(index(&quot;,&quot;,&quot;|&quot;), rindex(&quot;,&quot;,&quot;|&quot;)), indices(&quot;,&quot;,&quot;|&quot;)]
+&quot;a,b|c,d,e||f,g,h,|,|,i,j&quot;
+[1,3,22,19,[1,5,7,12,14,16,18,20,22],[3,9,10,17,19]]
+
+# Same check for join/1
+join(&quot;,&quot;,&quot;/&quot;)
+[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;]
+&quot;a,b,c,d&quot;
+&quot;a/b/c/d&quot;
+
+[.[]|join(&quot;a&quot;)]
+[[],[&quot;&quot;],[&quot;&quot;,&quot;&quot;],[&quot;&quot;,&quot;&quot;,&quot;&quot;]]
+[&quot;&quot;,&quot;&quot;,&quot;a&quot;,&quot;aa&quot;]
+
+# Same check for flatten/1
+flatten(3,2,1)
+[0, [1], [[2]], [[[3]]]]
+[0,1,2,3]
+[0,1,2,[3]]
+[0,1,[2],[[3]]]
+
+
+#
+# Slices
+#
+
+[.[3:2], .[-5:4], .[:-2], .[-2:], .[3:3][1:], .[10:]]
+[0,1,2,3,4,5,6]
+[[], [2,3], [0,1,2,3,4], [5,6], [], []]
+
+[.[3:2], .[-5:4], .[:-2], .[-2:], .[3:3][1:], .[10:]]
+&quot;abcdefghi&quot;
+[&quot;&quot;,&quot;&quot;,&quot;abcdefg&quot;,&quot;hi&quot;,&quot;&quot;,&quot;&quot;]
+
+del(.[2:4],.[0],.[-2:])
+[0,1,2,3,4,5,6,7]
+[1,4,5]
+
+.[2:4] = ([], [&quot;a&quot;,&quot;b&quot;], [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;])
+[0,1,2,3,4,5,6,7]
+[0,1,4,5,6,7]
+[0,1,&quot;a&quot;,&quot;b&quot;,4,5,6,7]
+[0,1,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,4,5,6,7]
+
+# Slices at large offsets (issue #1108)
+#
+# This is written this way because [range(&lt;large number&gt;)] is
+# significantly slower under valgrind than .[&lt;large number&gt;] = value.
+#
+# We range down rather than up so that we have just one realloc.
+reduce range(65540;65536;-1) as $i ([]; .[$i] = $i)|.[65536:]
+null
+[null,65537,65538,65539,65540]
+
+#
+# Variables
+#
+
+1 as $x | 2 as $y | [$x,$y,$x]
+null
+[1,2,1]
+
+[1,2,3][] as $x | [[4,5,6,7][$x]]
+null
+[5]
+[6]
+[7]
+
+42 as $x | . | . | . + 432 | $x + 1
+34324
+43
+
+1 + 2 as $x | -$x
+null
+-3
+
+&quot;x&quot; as $x | &quot;a&quot;+&quot;y&quot; as $y | $x+&quot;,&quot;+$y
+null
+&quot;x,ay&quot;
+
+1 as $x | [$x,$x,$x as $x | $x]
+null
+[1,1,1]
+
+[1, {c:3, d:4}] as [$a, {c:$b, b:$c}] | $a, $b, $c
+null
+1
+3
+null
+
+. as {as: $kw, &quot;str&quot;: $str, (&quot;e&quot;+&quot;x&quot;+&quot;p&quot;): $exp} | [$kw, $str, $exp]
+{&quot;as&quot;: 1, &quot;str&quot;: 2, &quot;exp&quot;: 3}
+[1, 2, 3]
+
+.[] as [$a, $b] | [$b, $a]
+[[1], [1, 2, 3]]
+[null, 1]
+[2, 1]
+
+. as $i | . as [$i] | $i
+[0]
+0
+
+. as [$i] | . as $i | $i
+[0]
+[0]
+
+%%FAIL
+. as [] | null
+jq: error: syntax error, unexpected &#x27;]&#x27;, expecting BINDING or &#x27;[&#x27; or &#x27;{&#x27; at &lt;top-level&gt;, line 1, column 7:
+    . as [] | null
+          ^
+
+%%FAIL
+. as {} | null
+jq: error: syntax error, unexpected &#x27;}&#x27; at &lt;top-level&gt;, line 1, column 7:
+    . as {} | null
+          ^
+
+%%FAIL
+. as $foo | [$foo, $bar]
+jq: error: $bar is not defined at &lt;top-level&gt;, line 1, column 20:
+    . as $foo | [$foo, $bar]
+                       ^^^^
+
+%%FAIL
+. as {(true):$foo} | $foo
+jq: error: Cannot use boolean (true) as object key at &lt;top-level&gt;, line 1, column 8:
+    . as {(true):$foo} | $foo
+           ^^^^
+
+# [.,(.[] | {x:.},.),.,.[]]
+
+#
+# Builtin functions
+#
+
+1+1
+null
+2
+
+1+1
+&quot;wtasdf&quot;
+2.0
+
+2-1
+null
+1
+
+2-(-1)
+null
+3
+
+1e+0+0.001e3
+&quot;I wonder what this will be?&quot;
+20e-1
+
+.+4
+15
+19.0
+
+.+null
+{&quot;a&quot;:42}
+{&quot;a&quot;:42}
+
+null+.
+null
+null
+
+.a+.b
+{&quot;a&quot;:42}
+42
+
+[1,2,3] + [.]
+null
+[1,2,3,null]
+
+{&quot;a&quot;:1} + {&quot;b&quot;:2} + {&quot;c&quot;:3}
+&quot;asdfasdf&quot;
+{&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;:3}
+
+&quot;asdf&quot; + &quot;jkl;&quot; + . + . + .
+&quot;some string&quot;
+&quot;asdfjkl;some stringsome stringsome string&quot;
+
+&quot;\u0000\u0020\u0000&quot; + .
+&quot;\u0000\u0020\u0000&quot;
+&quot;\u0000 \u0000\u0000 \u0000&quot;
+
+42 - .
+11
+31
+
+[1,2,3,4,1] - [.,3]
+1
+[2,4]
+
+[-1 as $x | 1,$x]
+null
+[1,-1]
+
+[10 * 20, 20 / .]
+4
+[200, 5]
+
+1 + 2 * 2 + 10 / 2
+null
+10
+
+[16 / 4 / 2, 16 / 4 * 2, 16 - 4 - 2, 16 - 4 + 2]
+null
+[2, 8, 10, 14]
+
+1e-19 + 1e-20 - 5e-21
+null
+1.05e-19
+
+1 / 1e-17
+null
+1e+17
+
+9E999999999, 9999999999E999999990, 1E-999999999, 0.000000001E-999999990
+null
+9E+999999999
+9.999999999E+999999999
+1E-999999999
+1E-999999999
+
+5E500000000 &gt; 5E-5000000000, 10000E500000000 &gt; 10000E-5000000000
+null
+true
+true
+
+# #2825
+(1e999999999, 10e999999999) &gt; (1e-1147483646, 0.1e-1147483646)
+null
+true
+true
+true
+true
+
+25 % 7
+null
+4
+
+49732 % 472
+null
+172
+
+[(infinite, -infinite) % (1, -1, infinite)]
+null
+[0,0,0,0,0,-1]
+
+[nan % 1, 1 % nan | isnan]
+null
+[true,true]
+
+1 + tonumber + (&quot;10&quot; | tonumber)
+4
+15
+
+&quot;123\u0000456&quot; | try tonumber catch .
+null
+&quot;string (\&quot;123\\u0000456\&quot;) cannot be parsed as a number&quot;
+
+map(toboolean)
+[&quot;false&quot;,&quot;true&quot;,false,true]
+[false,true,false,true]
+
+.[] | try toboolean catch .
+[null,0,&quot;tru&quot;,&quot;truee&quot;,&quot;fals&quot;,&quot;falsee&quot;,[],{}]
+&quot;null (null) cannot be parsed as a boolean&quot;
+&quot;number (0) cannot be parsed as a boolean&quot;
+&quot;string (\&quot;tru\&quot;) cannot be parsed as a boolean&quot;
+&quot;string (\&quot;truee\&quot;) cannot be parsed as a boolean&quot;
+&quot;string (\&quot;fals\&quot;) cannot be parsed as a boolean&quot;
+&quot;string (\&quot;falsee\&quot;) cannot be parsed as a boolean&quot;
+&quot;array ([]) cannot be parsed as a boolean&quot;
+&quot;object ({}) cannot be parsed as a boolean&quot;
+
+&quot;true\u0000x&quot;, &quot;false\u0000&quot; | try toboolean catch .
+null
+&quot;string (\&quot;true\\u0000x\&quot;) cannot be parsed as a boolean&quot;
+&quot;string (\&quot;false\\u0000\&quot;) cannot be parsed as a boolean&quot;
+
+[{&quot;a&quot;:42},.object,10,.num,false,true,null,&quot;b&quot;,[1,4]] | .[] as $x | [$x == .[]]
+{&quot;object&quot;: {&quot;a&quot;:42}, &quot;num&quot;:10.0}
+[true,  true,  false, false, false, false, false, false, false]
+[true,  true,  false, false, false, false, false, false, false]
+[false, false, true,  true,  false, false, false, false, false]
+[false, false, true,  true,  false, false, false, false, false]
+[false, false, false, false, true,  false, false, false, false]
+[false, false, false, false, false, true,  false, false, false]
+[false, false, false, false, false, false, true,  false, false]
+[false, false, false, false, false, false, false, true,  false]
+[false, false, false, false, false, false, false, false, true ]
+
+[.[] | length]
+[[], {}, [1,2], {&quot;a&quot;:42}, &quot;asdf&quot;, &quot;\u03bc&quot;]
+[0, 0, 2, 1, 4, 1]
+
+utf8bytelength
+&quot;asdf\u03bc&quot;
+6
+
+[.[] | try utf8bytelength catch .]
+[[], {}, [1,2], 55, true, false]
+[&quot;array ([]) only strings have UTF-8 byte length&quot;,&quot;object ({}) only strings have UTF-8 byte length&quot;,&quot;array ([1,2]) only strings have UTF-8 byte length&quot;,&quot;number (55) only strings have UTF-8 byte length&quot;,&quot;boolean (true) only strings have UTF-8 byte length&quot;,&quot;boolean (false) only strings have UTF-8 byte length&quot;]
+
+
+map(keys)
+[{}, {&quot;abcd&quot;:1,&quot;abc&quot;:2,&quot;abcde&quot;:3}, {&quot;x&quot;:1, &quot;z&quot;: 3, &quot;y&quot;:2}]
+[[], [&quot;abc&quot;,&quot;abcd&quot;,&quot;abcde&quot;], [&quot;x&quot;,&quot;y&quot;,&quot;z&quot;]]
+
+[1,2,empty,3,empty,4]
+null
+[1,2,3,4]
+
+map(add)
+[[], [1,2,3], [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;], [[3],[4,5],[6]], [{&quot;a&quot;:1}, {&quot;b&quot;:2}, {&quot;a&quot;:3}]]
+[null, 6, &quot;abc&quot;, [3,4,5,6], {&quot;a&quot;:3, &quot;b&quot;: 2}]
+
+map_values(.+1)
+[0,1,2]
+[1,2,3]
+
+[add(null), add(range(range(10))), add(empty), add(10,range(10))]
+null
+[null,120,null,55]
+
+# Real-world use case for add(empty)
+.sum = add(.arr[])
+{&quot;arr&quot;:[]}
+{&quot;arr&quot;:[],&quot;sum&quot;:null}
+
+add({(.[]):1}) | keys
+[&quot;a&quot;,&quot;a&quot;,&quot;b&quot;,&quot;a&quot;,&quot;d&quot;,&quot;b&quot;,&quot;d&quot;,&quot;a&quot;,&quot;d&quot;]
+[&quot;a&quot;,&quot;b&quot;,&quot;d&quot;]
+
+#
+# User-defined functions
+# Oh god.
+#
+
+def f: . + 1; def g: def g: . + 100; f | g | f; (f | g), g
+3.0
+106.0
+105.0
+
+def f: (1000,2000); f
+123412345
+1000
+2000
+
+def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0])
+[1,2]
+[2,2,1,1,1,1]
+
+def f: 1; def g: f, def f: 2; def g: 3; f, def f: g; f, g; def f: 4; [f, def f: g; def g: 5; f, g]+[f,g]
+null
+[4,1,2,3,3,5,4,1,2,3,3]
+
+# Test precedence of &#x27;def&#x27; vs &#x27;|&#x27;
+def a: 0; . | a
+null
+0
+
+# Many arguments
+def f(a;b;c;d;e;f;g;h;i;j): [j,i,h,g,f,e,d,c,b,a]; f(.[0];.[1];.[2];.[3];.[4];.[5];.[6];.[7];.[8];.[9])
+[0,1,2,3,4,5,6,7,8,9]
+[9,8,7,6,5,4,3,2,1,0]
+
+([1,2] + [4,5])
+[1,2,3]
+[1,2,4,5]
+
+true
+[1]
+true
+
+null,1,null
+&quot;hello&quot;
+null
+1
+null
+
+[1,2,3]
+[5,6]
+[1,2,3]
+
+[.[]|floor]
+[-1.1,1.1,1.9]
+[-2, 1, 1]
+
+[.[]|sqrt]
+[4,9]
+[2,3]
+
+(add / length) as $m | map((. - $m) as $d | $d * $d) | add / length | sqrt
+[2,4,4,4,5,5,7,9]
+2
+
+# Should write a test that calls the -lm function from C (or bc(1)) to
+# check that they match the corresponding jq functions.  However,
+# there&#x27;s so little template code standing between that it suffices to
+# test a handful of these.  The results were checked by eye against
+# bc(1).
+atan * 4 * 1000000|floor / 1000000
+1
+3.141592
+
+[(3.141592 / 2) * (range(0;20) / 20)|cos * 1000000|floor / 1000000]
+null
+[1,0.996917,0.987688,0.972369,0.951056,0.923879,0.891006,0.85264,0.809017,0.760406,0.707106,0.649448,0.587785,0.522498,0.45399,0.382683,0.309017,0.233445,0.156434,0.078459]
+
+[(3.141592 / 2) * (range(0;20) / 20)|sin * 1000000|floor / 1000000]
+null
+[0,0.078459,0.156434,0.233445,0.309016,0.382683,0.45399,0.522498,0.587785,0.649447,0.707106,0.760405,0.809016,0.85264,0.891006,0.923879,0.951056,0.972369,0.987688,0.996917]
+
+
+def f(x): x | x; f([.], . + [42])
+[1,2,3]
+[[[1,2,3]]]
+[[1,2,3],42]
+[[1,2,3,42]]
+[1,2,3,42,42]
+
+# test multiple function arities and redefinition
+def f: .+1; def g: f; def f: .+100; def f(a):a+.+11; [(g|f(20)), f]
+1
+[33,101]
+
+# test closures and lexical scoping
+def id(x):x; 2000 as $x | def f(x):1 as $x | id([$x, x, x]); def g(x): 100 as $x | f($x,$x+x); g($x)
+&quot;more testing&quot;
+[1,100,2100.0,100,2100.0]
+
+# test def f($a) syntax
+def x(a;b): a as $a | b as $b | $a + $b; def y($a;$b): $a + $b; def check(a;b): [x(a;b)] == [y(a;b)]; check(.[];.[]*2)
+[1,2,3]
+true
+
+# test backtracking through function calls and returns
+# this test is *evil*
+[[20,10][1,0] as $x | def f: (100,200) as $y | def g: [$x + $y, .]; . + $x | g; f[0] | [f][0][1] | f]
+999999999
+[[110.0, 130.0], [210.0, 130.0], [110.0, 230.0], [210.0, 230.0], [120.0, 160.0], [220.0, 160.0], [120.0, 260.0], [220.0, 260.0]]
+
+# test recursion
+def fac: if . == 1 then 1 else . * (. - 1 | fac) end; [.[] | fac]
+[1,2,3,4]
+[1,2,6,24]
+
+# test stack overflow and reallocation
+# this test is disabled for now, it takes a realllllly long time.
+# def f: if length &gt; 1000 then . else .+[1]|f end; f | length
+# []
+# 1001
+
+reduce .[] as $x (0; . + $x)
+[1,2,4]
+7
+
+reduce .[] as [$i, {j:$j}] (0; . + $i - $j)
+[[2,{&quot;j&quot;:1}], [5,{&quot;j&quot;:3}], [6,{&quot;j&quot;:4}]]
+5
+
+reduce [[1,2,10], [3,4,10]][] as [$i,$j] (0; . + $i * $j)
+null
+14
+
+[-reduce -.[] as $x (0; . + $x)]
+[1,2,3]
+[6]
+
+[reduce .[] / .[] as $i (0; . + $i)]
+[1,2]
+[4.5]
+
+reduce .[] as $x (0; . + $x) as $x | $x
+[1,2,3]
+6
+
+# This, while useless, should still compile.
+reduce . as $n (.; .)
+null
+null
+
+# Destructuring
+. as {$a, b: [$c, {$d}]} | [$a, $c, $d]
+{&quot;a&quot;:1, &quot;b&quot;:[2,{&quot;d&quot;:3}]}
+[1,2,3]
+
+. as {$a, $b:[$c, $d]}| [$a, $b, $c, $d]
+{&quot;a&quot;:1, &quot;b&quot;:[2,{&quot;d&quot;:3}]}
+[1,[2,{&quot;d&quot;:3}],2,{&quot;d&quot;:3}]
+
+# Destructuring with alternation
+.[] | . as {$a, b: [$c, {$d}]} ?// [$a, {$b}, $e] ?// $f | [$a, $b, $c, $d, $e, $f]
+[{&quot;a&quot;:1, &quot;b&quot;:[2,{&quot;d&quot;:3}]}, [4, {&quot;b&quot;:5, &quot;c&quot;:6}, 7, 8, 9], &quot;foo&quot;]
+[1, null, 2, 3, null, null]
+[4, 5, null, null, 7, null]
+[null, null, null, null, null, &quot;foo&quot;]
+
+# Destructuring DUP/POP issues
+.[] | . as {a:$a} ?// {a:$a} ?// {a:$a} | $a
+[[3],[4],[5],6]
+# Runtime error: &quot;jq: Cannot index array with string (\&quot;c\&quot;)&quot;
+
+.[] as {a:$a} ?// {a:$a} ?// {a:$a} | $a
+[[3],[4],[5],6]
+# Runtime error: &quot;jq: Cannot index array with string (\&quot;c\&quot;)&quot;
+
+[[3],[4],[5],6][] | . as {a:$a} ?// {a:$a} ?// {a:$a} | $a
+null
+# Runtime error: &quot;jq: Cannot index array with string (\&quot;c\&quot;)&quot;
+
+[[3],[4],[5],6] | .[] as {a:$a} ?// {a:$a} ?// {a:$a} | $a
+null
+# Runtime error: &quot;jq: Cannot index array with string (\&quot;c\&quot;)&quot;
+
+.[] | . as {a:$a} ?// {a:$a} ?// $a | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+.[] as {a:$a} ?// {a:$a} ?// $a | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6][] | . as {a:$a} ?// {a:$a} ?// $a | $a
+null
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6] | .[] as {a:$a} ?// {a:$a} ?// $a | $a
+null
+[3]
+[4]
+[5]
+6
+
+.[] | . as {a:$a} ?// $a ?// {a:$a} | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+.[] as {a:$a} ?// $a ?// {a:$a} | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6][] | . as {a:$a} ?// $a ?// {a:$a} | $a
+null
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6] | .[] as {a:$a} ?// $a ?// {a:$a} | $a
+null
+[3]
+[4]
+[5]
+6
+
+.[] | . as $a ?// {a:$a} ?// {a:$a} | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+.[] as $a ?// {a:$a} ?// {a:$a} | $a
+[[3],[4],[5],6]
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6][] | . as $a ?// {a:$a} ?// {a:$a} | $a
+null
+[3]
+[4]
+[5]
+6
+
+[[3],[4],[5],6] | .[] as $a ?// {a:$a} ?// {a:$a} | $a
+null
+[3]
+[4]
+[5]
+6
+
+. as $dot|any($dot[];not)
+[1,2,3,4,true,false,1,2,3,4,5]
+true
+
+. as $dot|any($dot[];not)
+[1,2,3,4,true]
+false
+
+. as $dot|all($dot[];.)
+[1,2,3,4,true,false,1,2,3,4,5]
+false
+
+. as $dot|all($dot[];.)
+[1,2,3,4,true]
+true
+
+# Check short-circuiting
+any(true, error; .)
+&quot;badness&quot;
+true
+
+all(false, error; .)
+&quot;badness&quot;
+false
+
+any(not)
+[]
+false
+
+all(not)
+[]
+true
+
+any(not)
+[false]
+true
+
+all(not)
+[false]
+true
+
+[any,all]
+[]
+[false,true]
+
+[any,all]
+[true]
+[true,true]
+
+[any,all]
+[false]
+[false,false]
+
+[any,all]
+[true,false]
+[true,false]
+
+[any,all]
+[null,null,true]
+[true,false]
+
+#
+# Paths
+#
+
+path(.foo[0,1])
+null
+[&quot;foo&quot;, 0]
+[&quot;foo&quot;, 1]
+
+path(.[] | select(.&gt;3))
+[1,5,3]
+[1]
+
+path(.)
+42
+[]
+
+try path(.a | map(select(.b == 0))) catch .
+{&quot;a&quot;:[{&quot;b&quot;:0}]}
+&quot;Invalid path expression with result [{\&quot;b\&quot;:0}]&quot;
+
+try path(.a | map(select(.b == 0)) | .[0]) catch .
+{&quot;a&quot;:[{&quot;b&quot;:0}]}
+&quot;Invalid path expression near attempt to access element 0 of [{\&quot;b\&quot;:0}]&quot;
+
+try path(.a | map(select(.b == 0)) | .c) catch .
+{&quot;a&quot;:[{&quot;b&quot;:0}]}
+&quot;Invalid path expression near attempt to access element \&quot;c\&quot; of [{\&quot;b\&quot;:0}]&quot;
+
+try path(.a | map(select(.b == 0)) | .[]) catch .
+{&quot;a&quot;:[{&quot;b&quot;:0}]}
+&quot;Invalid path expression near attempt to iterate through [{\&quot;b\&quot;:0}]&quot;
+
+path(.a[path(.b)[0]])
+{&quot;a&quot;:{&quot;b&quot;:0}}
+[&quot;a&quot;,&quot;b&quot;]
+
+[paths]
+[1,[[],{&quot;a&quot;:2}]]
+[[0],[1],[1,0],[1,1],[1,1,&quot;a&quot;]]
+
+[&quot;foo&quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]}
+&quot;b&quot;
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, 20, &quot;c&quot;, &quot;d&quot;]}
+{&quot;bar&quot;: 42, &quot;foo&quot;: [&quot;a&quot;, &quot;c&quot;, &quot;d&quot;]}
+
+map(getpath([2])), map(setpath([2]; 42)), map(delpaths([[2]]))
+[[0], [0,1], [0,1,2]]
+[null, null, 2]
+[[0,null,42], [0,1,42], [0,1,42]]
+[[0], [0,1], [0,1]]
+
+map(delpaths([[0,&quot;foo&quot;]]))
+[[{&quot;foo&quot;:2, &quot;x&quot;:1}], [{&quot;bar&quot;:2}]]
+[[{&quot;x&quot;:1}], [{&quot;bar&quot;:2}]]
+
+[&quot;foo&quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+{&quot;bar&quot;:false}
+null
+{&quot;bar&quot;:false, &quot;foo&quot;: [null, 20]}
+{&quot;bar&quot;:false}
+
+delpaths([[-200]])
+[1,2,3]
+[1,2,3]
+
+try delpaths(0) catch .
+{}
+&quot;Paths must be specified as an array&quot;
+
+del(.), del(empty), del((.foo,.bar,.baz) | .[2,3,0]), del(.foo[0], .bar[0], .foo, .baz.bar[0].x)
+{&quot;foo&quot;: [0,1,2,3,4], &quot;bar&quot;: [0,1]}
+null
+{&quot;foo&quot;: [0,1,2,3,4], &quot;bar&quot;: [0,1]}
+{&quot;foo&quot;: [1,4], &quot;bar&quot;: [1]}
+{&quot;bar&quot;: [1]}
+
+del(.[1], .[-6], .[2], .[-3:9])
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[0, 3, 5, 6, 9]
+
+del(.[nan])
+[1,2,3]
+[1,2,3]
+
+del(.[nan,nan])
+[1,2,3]
+[1,2,3]
+
+# negative index
+setpath([-1]; 1)
+[0]
+[1]
+
+pick(.a.b.c)
+null
+{&quot;a&quot;:{&quot;b&quot;:{&quot;c&quot;:null}}}
+
+pick(first)
+[1,2]
+[1]
+
+pick(first|first)
+[[10,20],30]
+[[10]]
+
+# negative indices in path expressions (since last/1 is .[-1])
+try pick(last) catch .
+[1,2]
+&quot;Out of bounds negative array index&quot;
+
+#
+# Assignment
+#
+.message = &quot;goodbye&quot;
+{&quot;message&quot;: &quot;hello&quot;}
+{&quot;message&quot;: &quot;goodbye&quot;}
+
+.foo = .bar
+{&quot;bar&quot;:42}
+{&quot;foo&quot;:42, &quot;bar&quot;:42}
+
+.foo |= .+1
+{&quot;foo&quot;: 42}
+{&quot;foo&quot;: 43}
+
+.[] += 2, .[] *= 2, .[] -= 2, .[] /= 2, .[] %=2
+[1,3,5]
+[3,5,7]
+[2,6,10]
+[-1,1,3]
+[0.5, 1.5, 2.5]
+[1,1,1]
+
+[.[] % 7]
+[-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7]
+[0,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,0]
+
+.foo += .foo
+{&quot;foo&quot;:2}
+{&quot;foo&quot;:4}
+
+.[0].a |= {&quot;old&quot;:., &quot;new&quot;:(.+1)}
+[{&quot;a&quot;:1,&quot;b&quot;:2}]
+[{&quot;a&quot;:{&quot;old&quot;:1, &quot;new&quot;:2},&quot;b&quot;:2}]
+
+def inc(x): x |= .+1; inc(.[].a)
+[{&quot;a&quot;:1,&quot;b&quot;:2},{&quot;a&quot;:2,&quot;b&quot;:4},{&quot;a&quot;:7,&quot;b&quot;:8}]
+[{&quot;a&quot;:2,&quot;b&quot;:2},{&quot;a&quot;:3,&quot;b&quot;:4},{&quot;a&quot;:8,&quot;b&quot;:8}]
+
+# #1358, getpath/1 should work in path expressions
+.[] | try (getpath([&quot;a&quot;,0,&quot;b&quot;]) |= 5) catch .
+[null,{&quot;b&quot;:0},{&quot;a&quot;:0},{&quot;a&quot;:null},{&quot;a&quot;:[0,1]},{&quot;a&quot;:{&quot;b&quot;:1}},{&quot;a&quot;:[{}]},{&quot;a&quot;:[{&quot;c&quot;:3}]}]
+{&quot;a&quot;:[{&quot;b&quot;:5}]}
+{&quot;b&quot;:0,&quot;a&quot;:[{&quot;b&quot;:5}]}
+&quot;Cannot index number with number (0)&quot;
+{&quot;a&quot;:[{&quot;b&quot;:5}]}
+&quot;Cannot index number with string (\&quot;b\&quot;)&quot;
+&quot;Cannot index object with number (0)&quot;
+{&quot;a&quot;:[{&quot;b&quot;:5}]}
+{&quot;a&quot;:[{&quot;c&quot;:3,&quot;b&quot;:5}]}
+
+# #2051, deletion using assigning empty against arrays
+(.[] | select(. &gt;= 2)) |= empty
+[1,5,3,0,7]
+[1,0]
+
+.[] |= select(. % 2 == 0)
+[0,1,2,3,4,5]
+[0,2,4]
+
+.foo[1,4,2,3] |= empty
+{&quot;foo&quot;:[0,1,2,3,4,5]}
+{&quot;foo&quot;:[0,5]}
+
+.[2][3] = 1
+[4]
+[4, null, [null, null, null, 1]]
+
+.foo[2].bar = 1
+{&quot;foo&quot;:[11], &quot;bar&quot;:42}
+{&quot;foo&quot;:[11,null,{&quot;bar&quot;:1}], &quot;bar&quot;:42}
+
+try ((map(select(.a == 1))[].b) = 10) catch .
+[{&quot;a&quot;:0},{&quot;a&quot;:1}]
+&quot;Invalid path expression near attempt to iterate through [{\&quot;a\&quot;:1}]&quot;
+
+try ((map(select(.a == 1))[].a) |= .+1) catch .
+[{&quot;a&quot;:0},{&quot;a&quot;:1}]
+&quot;Invalid path expression near attempt to iterate through [{\&quot;a\&quot;:1}]&quot;
+
+def x: .[1,2]; x=10
+[0,1,2]
+[0,10,10]
+
+try (def x: reverse; x=10) catch .
+[0,1,2]
+&quot;Invalid path expression with result [2,1,0]&quot;
+
+.[] = 1
+[1,null,Infinity,-Infinity,NaN,-NaN]
+[1,1,1,1,1,1]
+
+#
+# Conditionals
+#
+
+[.[] | if .foo then &quot;yep&quot; else &quot;nope&quot; end]
+[{&quot;foo&quot;:0},{&quot;foo&quot;:1},{&quot;foo&quot;:[]},{&quot;foo&quot;:true},{&quot;foo&quot;:false},{&quot;foo&quot;:null},{&quot;foo&quot;:&quot;foo&quot;},{}]
+[&quot;yep&quot;,&quot;yep&quot;,&quot;yep&quot;,&quot;yep&quot;,&quot;nope&quot;,&quot;nope&quot;,&quot;yep&quot;,&quot;nope&quot;]
+
+[.[] | if .baz then &quot;strange&quot; elif .foo then &quot;yep&quot; else &quot;nope&quot; end]
+[{&quot;foo&quot;:0},{&quot;foo&quot;:1},{&quot;foo&quot;:[]},{&quot;foo&quot;:true},{&quot;foo&quot;:false},{&quot;foo&quot;:null},{&quot;foo&quot;:&quot;foo&quot;},{}]
+[&quot;yep&quot;,&quot;yep&quot;,&quot;yep&quot;,&quot;yep&quot;,&quot;nope&quot;,&quot;nope&quot;,&quot;yep&quot;,&quot;nope&quot;]
+
+[if 1,null,2 then 3 else 4 end]
+null
+[3,4,3]
+
+[if empty then 3 else 4 end]
+null
+[]
+
+[if 1 then 3,4 else 5 end]
+null
+[3,4]
+
+[if null then 3 else 5,6 end]
+null
+[5,6]
+
+[if true then 3 end]
+7
+[3]
+
+[if false then 3 end]
+7
+[7]
+
+[if false then 3 else . end]
+7
+[7]
+
+[if false then 3 elif false then 4 end]
+7
+[7]
+
+[if false then 3 elif false then 4 else . end]
+7
+[7]
+
+[-if true then 1 else 2 end]
+null
+[-1]
+
+{x: if true then 1 else 2 end}
+null
+{&quot;x&quot;:1}
+
+if true then [.] else . end []
+null
+null
+
+[.[] | [.foo[] // .bar]]
+[{&quot;foo&quot;:[1,2], &quot;bar&quot;: 42}, {&quot;foo&quot;:[1], &quot;bar&quot;: null}, {&quot;foo&quot;:[null,false,3], &quot;bar&quot;: 18}, {&quot;foo&quot;:[], &quot;bar&quot;:42}, {&quot;foo&quot;: [null,false,null], &quot;bar&quot;: 41}]
+[[1,2], [1], [3], [42], [41]]
+
+.[] //= .[0]
+[&quot;hello&quot;,true,false,[false],null]
+[&quot;hello&quot;,true,&quot;hello&quot;,[false],&quot;hello&quot;]
+
+.[] | [.[0] and .[1], .[0] or .[1]]
+[[true,[]], [false,1], [42,null], [null,false]]
+[true,true]
+[false,true]
+[false,true]
+[false,false]
+
+[.[] | not]
+[1,0,false,null,true,&quot;hello&quot;]
+[false,false,true,true,false,false]
+
+# Check numeric comparison binops
+[10 &gt; 0, 10 &gt; 10, 10 &gt; 20, 10 &lt; 0, 10 &lt; 10, 10 &lt; 20]
+{}
+[true,false,false,false,false,true]
+
+[10 &gt;= 0, 10 &gt;= 10, 10 &gt;= 20, 10 &lt;= 0, 10 &lt;= 10, 10 &lt;= 20]
+{}
+[true,true,false,false,true,true]
+
+# And some in/equality tests
+[ 10 == 10, 10 != 10, 10 != 11, 10 == 11]
+{}
+[true,false,true,false]
+
+[&quot;hello&quot; == &quot;hello&quot;, &quot;hello&quot; != &quot;hello&quot;, &quot;hello&quot; == &quot;world&quot;, &quot;hello&quot; != &quot;world&quot; ]
+{}
+[true,false,false,true]
+
+[[1,2,3] == [1,2,3], [1,2,3] != [1,2,3], [1,2,3] == [4,5,6], [1,2,3] != [4,5,6]]
+{}
+[true,false,false,true]
+
+[{&quot;foo&quot;:42} == {&quot;foo&quot;:42},{&quot;foo&quot;:42} != {&quot;foo&quot;:42}, {&quot;foo&quot;:42} != {&quot;bar&quot;:42}, {&quot;foo&quot;:42} == {&quot;bar&quot;:42}]
+{}
+[true,false,true,false]
+
+# ugly complicated thing
+[{&quot;foo&quot;:[1,2,{&quot;bar&quot;:18},&quot;world&quot;]} == {&quot;foo&quot;:[1,2,{&quot;bar&quot;:18},&quot;world&quot;]},{&quot;foo&quot;:[1,2,{&quot;bar&quot;:18},&quot;world&quot;]} == {&quot;foo&quot;:[1,2,{&quot;bar&quot;:19},&quot;world&quot;]}]
+{}
+[true,false]
+
+# containment operator
+[(&quot;foo&quot; | contains(&quot;foo&quot;)), (&quot;foobar&quot; | contains(&quot;foo&quot;)), (&quot;foo&quot; | contains(&quot;foobar&quot;))]
+{}
+[true, true, false]
+
+# containment operator (embedded NULs!)
+[contains(&quot;&quot;), contains(&quot;\u0000&quot;)]
+&quot;\u0000&quot;
+[true, true]
+
+[contains(&quot;&quot;), contains(&quot;a&quot;), contains(&quot;ab&quot;), contains(&quot;c&quot;), contains(&quot;d&quot;)]
+&quot;ab\u0000cd&quot;
+[true, true, true, true, true]
+
+[contains(&quot;cd&quot;), contains(&quot;b\u0000&quot;), contains(&quot;ab\u0000&quot;)]
+&quot;ab\u0000cd&quot;
+[true, true, true]
+
+[contains(&quot;b\u0000c&quot;), contains(&quot;b\u0000cd&quot;), contains(&quot;b\u0000cd&quot;)]
+&quot;ab\u0000cd&quot;
+[true, true, true]
+
+[contains(&quot;@&quot;), contains(&quot;\u0000@&quot;), contains(&quot;\u0000what&quot;)]
+&quot;ab\u0000cd&quot;
+[false, false, false]
+
+
+# Try/catch and general `?` operator
+[.[]|try if . == 0 then error(&quot;foo&quot;) elif . == 1 then .a elif . == 2 then empty else . end catch .]
+[0,1,2,3]
+[&quot;foo&quot;,&quot;Cannot index number with string (\&quot;a\&quot;)&quot;,3]
+
+[.[]|(.a, .a)?]
+[null,true,{&quot;a&quot;:1}]
+[null,null,1,1]
+
+[[.[]|[.a,.a]]?]
+[null,true,{&quot;a&quot;:1}]
+[]
+
+[if error then 1 else 2 end?]
+&quot;foo&quot;
+[]
+
+try error(0) // 1
+null
+1
+
+1, try error(2), 3
+null
+1
+3
+
+1 + try 2 catch 3 + 4
+null
+7
+
+[-try .]
+1
+[-1]
+
+try -.? catch .
+&quot;foo&quot;
+&quot;string (\&quot;foo\&quot;) cannot be negated&quot;
+
+{x: try 1, y: try error catch 2, z: if true then 3 end}
+null
+{&quot;x&quot;:1,&quot;y&quot;:2,&quot;z&quot;:3}
+
+{x: 1 + 2, y: false or true, z: null // 3}
+null
+{&quot;x&quot;:3,&quot;y&quot;:true,&quot;z&quot;:3}
+
+.[] | try error catch .
+[1,null,2]
+1
+null
+2
+
+try error(&quot;\($__loc__)&quot;) catch .
+null
+&quot;{\&quot;file\&quot;:\&quot;&lt;top-level&gt;\&quot;,\&quot;line\&quot;:1}&quot;
+
+# string operations
+[.[]|startswith(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobar&quot;, &quot;barfoob&quot;]
+[false, true, false, true, false]
+
+[.[]|endswith(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobar&quot;, &quot;barfoob&quot;]
+[false, true, true, false, false]
+
+[.[] | split(&quot;, &quot;)]
+[&quot;a,b, c, d, e,f&quot;,&quot;, a,b, c, d, e,f, &quot;]
+[[&quot;a,b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e,f&quot;],[&quot;&quot;,&quot;a,b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e,f&quot;,&quot;&quot;]]
+
+split(&quot;&quot;)
+&quot;abc&quot;
+[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
+
+[.[]|ltrimstr(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobar&quot;, &quot;afoo&quot;]
+[&quot;fo&quot;,&quot;&quot;,&quot;barfoo&quot;,&quot;bar&quot;,&quot;afoo&quot;]
+
+[.[]|rtrimstr(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobar&quot;, &quot;foob&quot;]
+[&quot;fo&quot;,&quot;&quot;,&quot;bar&quot;,&quot;foobar&quot;,&quot;foob&quot;]
+
+[.[]|trimstr(&quot;foo&quot;)]
+[&quot;fo&quot;, &quot;foo&quot;, &quot;barfoo&quot;, &quot;foobarfoo&quot;, &quot;foob&quot;]
+[&quot;fo&quot;,&quot;&quot;,&quot;bar&quot;,&quot;bar&quot;,&quot;b&quot;]
+
+[.[]|ltrimstr(&quot;&quot;)]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+
+[.[]|rtrimstr(&quot;&quot;)]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+
+[.[]|trimstr(&quot;&quot;)]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+[&quot;a&quot;, &quot;xx&quot;, &quot;&quot;]
+
+[(index(&quot;,&quot;), rindex(&quot;,&quot;)), indices(&quot;,&quot;)]
+&quot;a,bc,def,ghij,klmno&quot;
+[1,13,[1,4,8,13]]
+
+[ index(&quot;aba&quot;), rindex(&quot;aba&quot;), indices(&quot;aba&quot;) ]
+&quot;xababababax&quot;
+[1,7,[1,3,5,7]]
+
+# _strindices is used by indices/1 but is callable
+try _strindices(&quot;abc&quot;) catch .
+123
+&quot;number (123) cannot be searched, as it is not a string&quot;
+
+try _strindices(123) catch .
+&quot;abc&quot;
+&quot;number (123) is not a string&quot;
+
+# trim
+# \u000b is vertical tab (\v not supported by json)
+map(trim), map(ltrim), map(rtrim)
+[&quot; \n\t\r\f\u000b&quot;, &quot;&quot;,&quot;  &quot;, &quot;a&quot;, &quot; a &quot;, &quot;abc&quot;, &quot;  abc  &quot;, &quot;  abc&quot;, &quot;abc  &quot;]
+[&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;a&quot;, &quot;a&quot;, &quot;abc&quot;, &quot;abc&quot;, &quot;abc&quot;, &quot;abc&quot;]
+[&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;a&quot;, &quot;a &quot;, &quot;abc&quot;, &quot;abc  &quot;, &quot;abc&quot;, &quot;abc  &quot;]
+[&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;a&quot;, &quot; a&quot;, &quot;abc&quot;, &quot;  abc&quot;, &quot;  abc&quot;, &quot;abc&quot;]
+
+trim, ltrim, rtrim
+&quot;\u0009\u000A\u000B\u000C\u000D\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000abc\u0009\u000A\u000B\u000C\u000D\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000&quot;
+&quot;abc&quot;
+&quot;abc\u0009\u000A\u000B\u000C\u000D\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000&quot;
+&quot;\u0009\u000A\u000B\u000C\u000D\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000abc&quot;
+
+try trim catch ., try ltrim catch ., try rtrim catch .
+123
+&quot;trim input must be a string&quot;
+&quot;trim input must be a string&quot;
+&quot;trim input must be a string&quot;
+
+indices(1)
+[0,1,1,2,3,4,1,5]
+[1,2,6]
+
+indices([1,2])
+[0,1,2,3,1,4,2,5,1,2,6,7]
+[1,8]
+
+indices([1,2])
+[1]
+[]
+
+indices(&quot;, &quot;)
+&quot;a,b, cd,e, fgh, ijkl&quot;
+[3,9,14]
+
+index(&quot;!&quot;)
+&quot;здравствуй мир!&quot;
+14
+
+.[:rindex(&quot;x&quot;)]
+&quot;正xyz&quot;
+&quot;正&quot;
+
+indices(&quot;o&quot;)
+&quot;🇬🇧oo&quot;
+[2,3]
+
+indices(&quot;o&quot;)
+&quot;ƒoo&quot;
+[1,2]
+
+[.[]|split(&quot;,&quot;)]
+[&quot;a, bc, def, ghij, jklmn, a,b, c,d, e,f&quot;, &quot;a,b,c,d, e,f,g,h&quot;]
+[[&quot;a&quot;,&quot; bc&quot;,&quot; def&quot;,&quot; ghij&quot;,&quot; jklmn&quot;,&quot; a&quot;,&quot;b&quot;,&quot; c&quot;,&quot;d&quot;,&quot; e&quot;,&quot;f&quot;],[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot; e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;]]
+
+[.[]|split(&quot;, &quot;)]
+[&quot;a, bc, def, ghij, jklmn, a,b, c,d, e,f&quot;, &quot;a,b,c,d, e,f,g,h&quot;]
+[[&quot;a&quot;,&quot;bc&quot;,&quot;def&quot;,&quot;ghij&quot;,&quot;jklmn&quot;,&quot;a,b&quot;,&quot;c,d&quot;,&quot;e,f&quot;],[&quot;a,b,c,d&quot;,&quot;e,f,g,h&quot;]]
+
+[.[] * 3]
+[&quot;a&quot;, &quot;ab&quot;, &quot;abc&quot;]
+[&quot;aaa&quot;, &quot;ababab&quot;, &quot;abcabcabc&quot;]
+
+[.[] * &quot;abc&quot;]
+[-1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 3.7, 10.0]
+[null,null,&quot;&quot;,&quot;&quot;,&quot;abc&quot;,&quot;abc&quot;,&quot;abcabcabc&quot;,&quot;abcabcabcabcabcabcabcabcabcabc&quot;]
+
+[. * (nan,-nan)]
+&quot;abc&quot;
+[null,null]
+
+. * 100000 | [.[:10],.[-10:]]
+&quot;abc&quot;
+[&quot;abcabcabca&quot;,&quot;cabcabcabc&quot;]
+
+. * 1000000000
+&quot;&quot;
+&quot;&quot;
+
+try (. * 1000000000) catch .
+&quot;abc&quot;
+&quot;Repeat string result too long&quot;
+
+[.[] / &quot;,&quot;]
+[&quot;a, bc, def, ghij, jklmn, a,b, c,d, e,f&quot;, &quot;a,b,c,d, e,f,g,h&quot;]
+[[&quot;a&quot;,&quot; bc&quot;,&quot; def&quot;,&quot; ghij&quot;,&quot; jklmn&quot;,&quot; a&quot;,&quot;b&quot;,&quot; c&quot;,&quot;d&quot;,&quot; e&quot;,&quot;f&quot;],[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot; e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;]]
+
+[.[] / &quot;, &quot;]
+[&quot;a, bc, def, ghij, jklmn, a,b, c,d, e,f&quot;, &quot;a,b,c,d, e,f,g,h&quot;]
+[[&quot;a&quot;,&quot;bc&quot;,&quot;def&quot;,&quot;ghij&quot;,&quot;jklmn&quot;,&quot;a,b&quot;,&quot;c,d&quot;,&quot;e,f&quot;],[&quot;a,b,c,d&quot;,&quot;e,f,g,h&quot;]]
+
+map(.[1] as $needle | .[0] | contains($needle))
+[[[],[]], [[1,2,3], [1,2]], [[1,2,3], [3,1]], [[1,2,3], [4]], [[1,2,3], [1,4]]]
+[true, true, true, false, false]
+
+map(.[1] as $needle | .[0] | contains($needle))
+[[[&quot;foobar&quot;, &quot;foobaz&quot;], [&quot;baz&quot;, &quot;bar&quot;]], [[&quot;foobar&quot;, &quot;foobaz&quot;], [&quot;foo&quot;]], [[&quot;foobar&quot;, &quot;foobaz&quot;], [&quot;blap&quot;]]]
+[true, true, false]
+
+[({foo: 12, bar:13} | contains({foo: 12})), ({foo: 12} | contains({})), ({foo: 12, bar:13} | contains({baz:14}))]
+{}
+[true, true, false]
+
+{foo: {baz: 12, blap: {bar: 13}}, bar: 14} | contains({bar: 14, foo: {blap: {}}})
+{}
+true
+
+{foo: {baz: 12, blap: {bar: 13}}, bar: 14} | contains({bar: 14, foo: {blap: {bar: 14}}})
+{}
+false
+
+sort
+[42,[2,5,3,11],10,{&quot;a&quot;:42,&quot;b&quot;:2},{&quot;a&quot;:42},true,2,[2,6],&quot;hello&quot;,null,[2,5,6],{&quot;a&quot;:[],&quot;b&quot;:1},&quot;abc&quot;,&quot;ab&quot;,[3,10],{},false,&quot;abcd&quot;,null]
+[null,null,false,true,2,10,42,&quot;ab&quot;,&quot;abc&quot;,&quot;abcd&quot;,&quot;hello&quot;,[2,5,3,11],[2,5,6],[2,6],[3,10],{},{&quot;a&quot;:42},{&quot;a&quot;:42,&quot;b&quot;:2},{&quot;a&quot;:[],&quot;b&quot;:1}]
+
+(sort_by(.b) | sort_by(.a)), sort_by(.a, .b), sort_by(.b, .c), group_by(.b), group_by(.a + .b - .c == 2)
+[{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}]
+[{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}]
+[{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}]
+[{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}]
+[[{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}], [{&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}], [{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}]]
+[[{&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 14}, {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 43}], [{&quot;a&quot;: 4, &quot;b&quot;: 1, &quot;c&quot;: 3}, {&quot;a&quot;: 1, &quot;b&quot;: 4, &quot;c&quot;: 3}]]
+
+unique
+[1,2,5,3,5,3,1,3]
+[1,2,3,5]
+
+unique
+[]
+[]
+
+[min, max, min_by(.[1]), max_by(.[1]), min_by(.[2]), max_by(.[2])]
+[[4,2,&quot;a&quot;],[3,1,&quot;a&quot;],[2,4,&quot;a&quot;],[1,3,&quot;a&quot;]]
+[[1,3,&quot;a&quot;],[4,2,&quot;a&quot;],[3,1,&quot;a&quot;],[2,4,&quot;a&quot;],[4,2,&quot;a&quot;],[1,3,&quot;a&quot;]]
+
+[min,max,min_by(.),max_by(.)]
+[]
+[null,null,null,null]
+
+.foo[.baz]
+{&quot;foo&quot;:{&quot;bar&quot;:4},&quot;baz&quot;:&quot;bar&quot;}
+4
+
+.[] | .error = &quot;no, it&#x27;s OK&quot;
+[{&quot;error&quot;:true}]
+{&quot;error&quot;: &quot;no, it&#x27;s OK&quot;}
+
+[{a:1}] | .[] | .a=999
+null
+{&quot;a&quot;: 999}
+
+to_entries
+{&quot;a&quot;: 1, &quot;b&quot;: 2}
+[{&quot;key&quot;:&quot;a&quot;, &quot;value&quot;:1}, {&quot;key&quot;:&quot;b&quot;, &quot;value&quot;:2}]
+
+from_entries
+[{&quot;key&quot;:&quot;a&quot;, &quot;value&quot;:1}, {&quot;Key&quot;:&quot;b&quot;, &quot;Value&quot;:2}, {&quot;name&quot;:&quot;c&quot;, &quot;value&quot;:3}, {&quot;Name&quot;:&quot;d&quot;, &quot;Value&quot;:4}]
+{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3, &quot;d&quot;: 4}
+
+with_entries(.key |= &quot;KEY_&quot; + .)
+{&quot;a&quot;: 1, &quot;b&quot;: 2}
+{&quot;KEY_a&quot;: 1, &quot;KEY_b&quot;: 2}
+
+map(has(&quot;foo&quot;))
+[{&quot;foo&quot;: 42}, {}]
+[true, false]
+
+map(has(2))
+[[0,1], [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]]
+[false, true]
+
+has(nan)
+[0,1,2]
+false
+
+keys
+[42,3,35]
+[0,1,2]
+
+[][.]
+1000000000000000000
+null
+
+map([1,2][0:.])
+[-1, 1, 2, 3, 1000000000000000000]
+[[1], [1], [1,2], [1,2], [1,2]]
+
+# Test recursive object merge
+
+{&quot;k&quot;: {&quot;a&quot;: 1, &quot;b&quot;: 2}} * .
+{&quot;k&quot;: {&quot;a&quot;: 0,&quot;c&quot;: 3}}
+{&quot;k&quot;: {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 3}}
+
+{&quot;k&quot;: {&quot;a&quot;: 1, &quot;b&quot;: 2}, &quot;hello&quot;: {&quot;x&quot;: 1}} * .
+{&quot;k&quot;: {&quot;a&quot;: 0,&quot;c&quot;: 3}, &quot;hello&quot;: 1}
+{&quot;k&quot;: {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 3}, &quot;hello&quot;: 1}
+
+{&quot;k&quot;: {&quot;a&quot;: 1, &quot;b&quot;: 2}, &quot;hello&quot;: 1} * .
+{&quot;k&quot;: {&quot;a&quot;: 0,&quot;c&quot;: 3}, &quot;hello&quot;: {&quot;x&quot;: 1}}
+{&quot;k&quot;: {&quot;a&quot;: 0, &quot;b&quot;: 2, &quot;c&quot;: 3}, &quot;hello&quot;: {&quot;x&quot;: 1}}
+
+{&quot;a&quot;: {&quot;b&quot;: 1}, &quot;c&quot;: {&quot;d&quot;: 2}, &quot;e&quot;: 5} * .
+{&quot;a&quot;: {&quot;b&quot;: 2}, &quot;c&quot;: {&quot;d&quot;: 3, &quot;f&quot;: 9}}
+{&quot;a&quot;: {&quot;b&quot;: 2}, &quot;c&quot;: {&quot;d&quot;: 3, &quot;f&quot;: 9}, &quot;e&quot;: 5}
+
+[.[]|arrays]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[[],[3,[]]]
+
+[.[]|objects]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[{}]
+
+[.[]|iterables]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[[],[3,[]],{}]
+
+[.[]|scalars]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[1,2,&quot;foo&quot;,true,false,null]
+
+[.[]|values]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false]
+
+[.[]|booleans]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[true,false]
+
+[.[]|nulls]
+[1,2,&quot;foo&quot;,[],[3,[]],{},true,false,null]
+[null]
+
+flatten
+[0, [1], [[2]], [[[3]]]]
+[0, 1, 2, 3]
+
+flatten(0)
+[0, [1], [[2]], [[[3]]]]
+[0, [1], [[2]], [[[3]]]]
+
+flatten(2)
+[0, [1], [[2]], [[[3]]]]
+[0, 1, 2, [3]]
+
+flatten(2)
+[0, [1, [2]], [1, [[3], 2]]]
+[0, 1, 2, 1, [3], 2]
+
+try flatten(-1) catch .
+[0, [1], [[2]], [[[3]]]]
+&quot;flatten depth must not be negative&quot;
+
+transpose
+[[1], [2,3]]
+[[1,2],[null,3]]
+
+transpose
+[]
+[]
+
+ascii_upcase
+&quot;useful but not for é&quot;
+&quot;USEFUL BUT NOT FOR é&quot;
+
+bsearch(0,1,2,3,4)
+[1,2,3]
+-1
+0
+1
+2
+-4
+
+bsearch({x:1})
+[{ &quot;x&quot;: 0 },{ &quot;x&quot;: 1 },{ &quot;x&quot;: 2 }]
+1
+
+try [&quot;OK&quot;, bsearch(0)] catch [&quot;KO&quot;,.]
+&quot;aa&quot;
+[&quot;KO&quot;,&quot;string (\&quot;aa\&quot;) cannot be searched from&quot;]
+
+strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)
+[2015,2,5,23,51,47,4,63]
+&quot;2015-03-05T23:51:47Z&quot;
+
+strftime(&quot;%A, %B %d, %Y&quot;)
+1435677542.822351
+&quot;Tuesday, June 30, 2015&quot;
+
+strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)
+[2024,2,15]
+&quot;2024-03-15T00:00:00Z&quot;
+
+mktime
+[2024,8,21]
+1726876800
+
+gmtime
+1425599507
+[2015,2,5,23,51,47,4,63]
+
+gmtime[5]
+1425599507.25
+47.25
+
+# test invalid tm input
+try strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;) catch .
+[&quot;a&quot;,1,2,3,4,5,6,7]
+&quot;strftime/1 requires parsed datetime inputs&quot;
+
+try strflocaltime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;) catch .
+[&quot;a&quot;,1,2,3,4,5,6,7]
+&quot;strflocaltime/1 requires parsed datetime inputs&quot;
+
+try mktime catch .
+[&quot;a&quot;,1,2,3,4,5,6,7]
+&quot;mktime requires parsed datetime inputs&quot;
+
+# oss-fuzz #67403: non-string argument with number input fails assert
+try [&quot;OK&quot;, strftime([])] catch [&quot;KO&quot;, .]
+0
+[&quot;KO&quot;,&quot;strftime/1 requires a string format&quot;]
+
+try [&quot;OK&quot;, strflocaltime({})] catch [&quot;KO&quot;, .]
+0
+[&quot;KO&quot;,&quot;strflocaltime/1 requires a string format&quot;]
+
+[strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|(.,mktime)]
+&quot;2015-03-05T23:51:47Z&quot;
+[[2015,2,5,23,51,47,4,63],1425599507]
+
+# Check day-of-week and day of year computations
+# (should trip an assert if this fails)
+last(range(365 * 67)|(&quot;1970-03-01T01:02:03Z&quot;|strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|mktime) + (86400 * .)|strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)|strptime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;))
+null
+[2037,1,11,1,2,3,3,41]
+
+# module system
+import &quot;a&quot; as foo; import &quot;b&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]
+null
+[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;a&quot;]
+
+import &quot;c&quot; as foo; [foo::a, foo::c]
+null
+[0,&quot;acmehbah&quot;]
+
+include &quot;c&quot;; [a, c]
+null
+[0,&quot;acmehbah&quot;]
+
+import &quot;data&quot; as $e; import &quot;data&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(&quot;;&quot;)
+null
+&quot;is a test;is too;is a test;is too&quot;
+
+# Regression test for #2000
+import &quot;data&quot; as $a; import &quot;data&quot; as $b; def f: {$a, $b}; f
+null
+{&quot;a&quot;:[{&quot;this&quot;:&quot;is a test&quot;,&quot;that&quot;:&quot;is too&quot;}],&quot;b&quot;:[{&quot;this&quot;:&quot;is a test&quot;,&quot;that&quot;:&quot;is too&quot;}]}
+
+include &quot;shadow1&quot;; e
+null
+2
+
+include &quot;shadow1&quot;; include &quot;shadow2&quot;; e
+null
+3
+
+import &quot;shadow1&quot; as f; import &quot;shadow2&quot; as f; import &quot;shadow1&quot; as e; [e::e, f::e]
+null
+[2,3]
+
+%%FAIL
+module (.+1); 0
+jq: error: Module metadata must be constant at &lt;top-level&gt;, line 1, column 8:
+    module (.+1); 0
+           ^^^^^
+
+%%FAIL
+module []; 0
+jq: error: Module metadata must be an object at &lt;top-level&gt;, line 1, column 8:
+    module []; 0
+           ^^
+
+%%FAIL
+include &quot;a&quot; (.+1); 0
+jq: error: Module metadata must be constant at &lt;top-level&gt;, line 1, column 13:
+    include &quot;a&quot; (.+1); 0
+                ^^^^^
+
+%%FAIL
+include &quot;a&quot; []; 0
+jq: error: Module metadata must be an object at &lt;top-level&gt;, line 1, column 13:
+    include &quot;a&quot; []; 0
+                ^^
+
+%%FAIL
+include &quot;\ &quot;; 0
+jq: error: Invalid escape at line 1, column 4 (while parsing &#x27;&quot;\ &quot;&#x27;) at &lt;top-level&gt;, line 1, column 10:
+    include &quot;\ &quot;; 0
+             ^^
+
+%%FAIL
+include &quot;\(a)&quot;; 0
+jq: error: Import path must be constant at &lt;top-level&gt;, line 1, column 9:
+    include &quot;\(a)&quot;; 0
+            ^^^^^^
+
+modulemeta
+&quot;c&quot;
+{&quot;whatever&quot;:null,&quot;deps&quot;:[{&quot;as&quot;:&quot;foo&quot;,&quot;is_data&quot;:false,&quot;relpath&quot;:&quot;a&quot;},{&quot;search&quot;:&quot;./&quot;,&quot;as&quot;:&quot;d&quot;,&quot;is_data&quot;:false,&quot;relpath&quot;:&quot;d&quot;},{&quot;search&quot;:&quot;./&quot;,&quot;as&quot;:&quot;d2&quot;,&quot;is_data&quot;:false,&quot;relpath&quot;:&quot;d&quot;},{&quot;search&quot;:&quot;./../lib/jq&quot;,&quot;as&quot;:&quot;e&quot;,&quot;is_data&quot;:false,&quot;relpath&quot;:&quot;e&quot;},{&quot;search&quot;:&quot;./../lib/jq&quot;,&quot;as&quot;:&quot;f&quot;,&quot;is_data&quot;:false,&quot;relpath&quot;:&quot;f&quot;},{&quot;as&quot;:&quot;d&quot;,&quot;is_data&quot;:true,&quot;relpath&quot;:&quot;data&quot;}],&quot;defs&quot;:[&quot;a/0&quot;,&quot;c/0&quot;]}
+
+modulemeta | .deps | length
+&quot;c&quot;
+6
+
+modulemeta | .defs | length
+&quot;c&quot;
+2
+
+%%FAIL IGNORE MSG
+import &quot;syntaxerror&quot; as e; .
+jq: error: syntax error, unexpected &#x27;;&#x27;, expecting end of file at tests/modules/syntaxerror/syntaxerror.jq, line 1, column 4:
+    wat;
+       ^
+
+%%FAIL
+%::wat
+jq: error: syntax error, unexpected &#x27;%&#x27;, expecting end of file at &lt;top-level&gt;, line 1, column 1:
+    %::wat
+    ^
+
+import &quot;test_bind_order&quot; as check; check::check
+null
+true
+
+try -. catch .
+&quot;very-long-long-long-long-string&quot;
+&quot;string (\&quot;very-long-long-long-long...\&quot;) cannot be negated&quot;
+
+try (.-.) catch .
+&quot;very-long-long-long-long-string&quot;
+&quot;string (\&quot;very-long-long-long-long...\&quot;) and string (\&quot;very-long-long-long-long...\&quot;) cannot be subtracted&quot;
+
+&quot;x&quot; * range(0; 12; 2) + &quot;☆&quot; * 8 | try -. catch .
+null
+&quot;string (\&quot;☆☆☆☆☆☆☆☆\&quot;) cannot be negated&quot;
+&quot;string (\&quot;xx☆☆☆☆☆☆☆☆\&quot;) cannot be negated&quot;
+&quot;string (\&quot;xxxx☆☆☆☆☆☆...\&quot;) cannot be negated&quot;
+&quot;string (\&quot;xxxxxx☆☆☆☆☆☆...\&quot;) cannot be negated&quot;
+&quot;string (\&quot;xxxxxxxx☆☆☆☆☆...\&quot;) cannot be negated&quot;
+&quot;string (\&quot;xxxxxxxxxx☆☆☆☆...\&quot;) cannot be negated&quot;
+
+try (. + &quot;x&quot;) catch . == if have_decnum then &quot;number (12345678901234567890123456...) and string (\&quot;x\&quot;) cannot be added&quot; else &quot;number (12345678901234568000000000...) and string (\&quot;x\&quot;) cannot be added&quot; end
+123456789012345678901234567890
+true
+
+join(&quot;,&quot;)
+[&quot;1&quot;,2,true,false,3.4]
+&quot;1,2,true,false,3.4&quot;
+
+.[] | join(&quot;,&quot;)
+[[], [null], [null,null], [null,null,null]]
+&quot;&quot;
+&quot;&quot;
+&quot;,&quot;
+&quot;,,&quot;
+
+.[] | join(&quot;,&quot;)
+[[&quot;a&quot;,null], [null,&quot;a&quot;]]
+&quot;a,&quot;
+&quot;,a&quot;
+
+try join(&quot;,&quot;) catch .
+[&quot;1&quot;,&quot;2&quot;,{&quot;a&quot;:{&quot;b&quot;:{&quot;c&quot;:33}}}]
+&quot;string (\&quot;1,2,\&quot;) and object ({\&quot;a\&quot;:{\&quot;b\&quot;:{\&quot;c\&quot;:33}}}) cannot be added&quot;
+
+try join(&quot;,&quot;) catch .
+[&quot;1&quot;,&quot;2&quot;,[3,4,5]]
+&quot;string (\&quot;1,2,\&quot;) and array ([3,4,5]) cannot be added&quot;
+
+{if:0,and:1,or:2,then:3,else:4,elif:5,end:6,as:7,def:8,reduce:9,foreach:10,try:11,catch:12,label:13,import:14,include:15,module:16}
+null
+{&quot;if&quot;:0,&quot;and&quot;:1,&quot;or&quot;:2,&quot;then&quot;:3,&quot;else&quot;:4,&quot;elif&quot;:5,&quot;end&quot;:6,&quot;as&quot;:7,&quot;def&quot;:8,&quot;reduce&quot;:9,&quot;foreach&quot;:10,&quot;try&quot;:11,&quot;catch&quot;:12,&quot;label&quot;:13,&quot;import&quot;:14,&quot;include&quot;:15,&quot;module&quot;:16}
+
+try (1/.) catch .
+0
+&quot;number (1) and number (0) cannot be divided because the divisor is zero&quot;
+
+try (1/0) catch .
+0
+&quot;number (1) and number (0) cannot be divided because the divisor is zero&quot;
+
+try (0/0) catch .
+0
+&quot;number (0) and number (0) cannot be divided because the divisor is zero&quot;
+
+try (1%.) catch .
+0
+&quot;number (1) and number (0) cannot be divided (remainder) because the divisor is zero&quot;
+
+try (1%0) catch .
+0
+&quot;number (1) and number (0) cannot be divided (remainder) because the divisor is zero&quot;
+
+# Basic numbers tests: integers, powers of two
+[range(-52;52;1)] as $powers | [$powers[]|pow(2;.)|log2|round] == $powers
+null
+true
+
+[range(-99/2;99/2;1)] as $orig | [$orig[]|pow(2;.)|log2] as $back | ($orig|keys)[]|. as $k | (($orig|.[$k])-($back|.[$k]))|if . &lt; 0 then . * -1 else . end|select(.&gt;.00005)
+null
+
+%%FAIL
+{
+jq: error: syntax error, unexpected end of file at &lt;top-level&gt;, line 1, column 1:
+    {
+    ^
+
+%%FAIL
+}
+jq: error: syntax error, unexpected INVALID_CHARACTER, expecting end of file at &lt;top-level&gt;, line 1, column 1:
+    }
+    ^
+
+(.[{}] = 0)?
+null
+
+INDEX(range(5)|[., &quot;foo\(.)&quot;]; .[0])
+null
+{&quot;0&quot;:[0,&quot;foo0&quot;],&quot;1&quot;:[1,&quot;foo1&quot;],&quot;2&quot;:[2,&quot;foo2&quot;],&quot;3&quot;:[3,&quot;foo3&quot;],&quot;4&quot;:[4,&quot;foo4&quot;]}
+
+JOIN({&quot;0&quot;:[0,&quot;abc&quot;],&quot;1&quot;:[1,&quot;bcd&quot;],&quot;2&quot;:[2,&quot;def&quot;],&quot;3&quot;:[3,&quot;efg&quot;],&quot;4&quot;:[4,&quot;fgh&quot;]}; .[0]|tostring)
+[[5,&quot;foo&quot;],[3,&quot;bar&quot;],[1,&quot;foobar&quot;]]
+[[[5,&quot;foo&quot;],null],[[3,&quot;bar&quot;],[3,&quot;efg&quot;]],[[1,&quot;foobar&quot;],[1,&quot;bcd&quot;]]]
+
+range(5;10)|IN(range(10))
+null
+true
+true
+true
+true
+true
+
+range(5;13)|IN(range(0;10;3))
+null
+false
+true
+false
+false
+true
+false
+false
+false
+
+range(10;12)|IN(range(10))
+null
+false
+false
+
+IN(range(10;20); range(10))
+null
+false
+
+IN(range(5;20); range(10))
+null
+true
+
+# Regression test for #1347
+(.a as $x | .b) = &quot;b&quot;
+{&quot;a&quot;:null,&quot;b&quot;:null}
+{&quot;a&quot;:null,&quot;b&quot;:&quot;b&quot;}
+
+# Regression test for #1368
+(.. | select(type == &quot;object&quot; and has(&quot;b&quot;) and (.b | type) == &quot;array&quot;)|.b) |= .[0]
+{&quot;a&quot;: {&quot;b&quot;: [1, {&quot;b&quot;: 3}]}}
+{&quot;a&quot;: {&quot;b&quot;: 1}}
+
+isempty(empty)
+null
+true
+
+isempty(range(3))
+null
+false
+
+isempty(1,error(&quot;foo&quot;))
+null
+false
+
+# Regression test for #1815
+index(&quot;&quot;)
+&quot;&quot;
+null
+
+# check that dead code removal occurs after builtin it generation
+builtins|length &gt; 10
+null
+true
+
+&quot;-1&quot;|IN(builtins[] / &quot;/&quot;|.[1])
+null
+false
+
+all(builtins[] / &quot;/&quot;; .[1]|tonumber &gt;= 0)
+null
+true
+
+builtins|any(.[:1] == &quot;_&quot;)
+null
+false
+
+## Test ability to use keywords (uncomment after eval is pushed)
+#(.[] as $kw | &quot;\&quot;{\($kw)} as $\($kw) | $\($kw) | {$\($kw)} | {\($kw):.\($kw)}\&quot;&quot;|eval|empty),null
+#[&quot;as&quot;,&quot;def&quot;,&quot;module&quot;,&quot;import&quot;,&quot;include&quot;,&quot;if&quot;,&quot;then&quot;,&quot;else&quot;,&quot;elif&quot;,&quot;end&quot;,&quot;reduce&quot;,&quot;foreach&quot;,&quot;and&quot;,&quot;or&quot;,&quot;try&quot;,&quot;catch&quot;,&quot;label&quot;,&quot;break&quot;,&quot;__loc__&quot;]
+#null
+#
+#(.[] as $kw | &quot;\&quot;def f($\($kw)): $\($kw); f(.)\&quot;&quot;|eval|empty),null
+#[&quot;as&quot;,&quot;def&quot;,&quot;module&quot;,&quot;import&quot;,&quot;include&quot;,&quot;if&quot;,&quot;then&quot;,&quot;else&quot;,&quot;elif&quot;,&quot;end&quot;,&quot;reduce&quot;,&quot;foreach&quot;,&quot;and&quot;,&quot;or&quot;,&quot;try&quot;,&quot;catch&quot;,&quot;label&quot;,&quot;break&quot;,&quot;__loc__&quot;]
+#null
+
+
+#
+# Tests to cover the new toliteral number functionality
+# For an example see #1652 and other linked issues
+#
+
+# We are backward and sanity compatible
+
+map(. == 1)
+[1, 1.0, 1.000, 100e-2, 1e+0, 0.0001e4]
+[true, true, true, true, true, true]
+
+# When no arithmetic is involved jq should preserve the literal value
+
+.[0] | tostring | . == if have_decnum then &quot;13911860366432393&quot; else &quot;13911860366432392&quot; end
+[13911860366432393]
+true
+
+.x | tojson | . == if have_decnum then &quot;13911860366432393&quot; else &quot;13911860366432392&quot; end
+{&quot;x&quot;:13911860366432393}
+true
+
+(13911860366432393 == 13911860366432392) | . == if have_decnum then false else true end
+null
+true
+
+
+# Applying arithmetic to the value will truncate the result to double
+
+. - 10
+13911860366432393
+13911860366432382
+
+.[0] - 10
+[13911860366432393]
+13911860366432382
+
+.x - 10
+{&quot;x&quot;:13911860366432393}
+13911860366432382
+
+# Unary negation preserves numerical precision
+-. | tojson == if have_decnum then &quot;-13911860366432393&quot; else &quot;-13911860366432392&quot; end
+13911860366432393
+true
+
+-. | tojson == if have_decnum then &quot;0.12345678901234567890123456789&quot; else &quot;0.12345678901234568&quot; end
+-0.12345678901234567890123456789
+true
+
+[1E+1000,-1E+1000 | tojson] == if have_decnum then [&quot;1E+1000&quot;,&quot;-1E+1000&quot;] else [&quot;1.7976931348623157e+308&quot;,&quot;-1.7976931348623157e+308&quot;] end
+null
+true
+
+. |= try . catch .
+1
+1
+
+# decnum to double conversion
+.[] as $n | $n+0 | [., tostring, . == $n]
+[-9007199254740993, -9007199254740992, 9007199254740992, 9007199254740993, 13911860366432393]
+[-9007199254740992,&quot;-9007199254740992&quot;,true]
+[-9007199254740992,&quot;-9007199254740992&quot;,true]
+[9007199254740992,&quot;9007199254740992&quot;,true]
+[9007199254740992,&quot;9007199254740992&quot;,true]
+[13911860366432392,&quot;13911860366432392&quot;,true]
+
+# abs, fabs, length
+abs
+&quot;abc&quot;
+&quot;abc&quot;
+
+map(abs)
+[-0, 0, -10, -1.1]
+[0,0,10,1.1]
+
+map(fabs)
+[-0, 0, -10, -1.1]
+[0,0,10,1.1]
+
+map(abs == length) | unique
+[-10, -1.1, -1e-1, 1000000000000000002]
+[true]
+
+# The following is NOT prescriptive:
+map(abs)
+[0.1,1000000000000000002]
+[1e-1, 1000000000000000002]
+
+[1E+1000,-1E+1000 | abs | tojson] | unique == if have_decnum then [&quot;1E+1000&quot;] else [&quot;1.7976931348623157e+308&quot;] end
+null
+true
+
+[1E+1000,-1E+1000 | length | tojson] | unique == if have_decnum then [&quot;1E+1000&quot;] else [&quot;1.7976931348623157e+308&quot;] end
+null
+true
+
+# Using a keyword as variable/label name
+
+123 as $label | $label
+null
+123
+
+[ label $if | range(10) | ., (select(. == 5) | break $if) ]
+null
+[0,1,2,3,4,5]
+
+reduce .[] as $then (4 as $else | $else; . as $elif | . + $then * $elif)
+[1,2,3]
+96
+
+1 as $foreach | 2 as $and | 3 as $or | { $foreach, $and, $or, a }
+{&quot;a&quot;:4,&quot;b&quot;:5}
+{&quot;foreach&quot;:1,&quot;and&quot;:2,&quot;or&quot;:3,&quot;a&quot;:4}
+
+[ foreach .[] as $try (1 as $catch | $catch - 1; . + $try; .) ]
+[10,9,8,7]
+[10,19,27,34]
+
+
+# Object construction
+
+{ a, $__loc__, c }
+{&quot;a&quot;:[1,2,3],&quot;b&quot;:&quot;foo&quot;,&quot;c&quot;:{&quot;hi&quot;:&quot;hey&quot;}}
+{&quot;a&quot;:[1,2,3],&quot;__loc__&quot;:{&quot;file&quot;:&quot;&lt;top-level&gt;&quot;,&quot;line&quot;:1},&quot;c&quot;:{&quot;hi&quot;:&quot;hey&quot;}}
+
+1 as $x | &quot;2&quot; as $y | &quot;3&quot; as $z | { $x, as, $y: 4, ($z): 5, if: 6, foo: 7 }
+{&quot;as&quot;:8}
+{&quot;x&quot;:1,&quot;as&quot;:8,&quot;2&quot;:4,&quot;3&quot;:5,&quot;if&quot;:6,&quot;foo&quot;:7}
+
+
+# nan is parsed as a valid NaN value from JSON
+
+fromjson | isnan
+&quot;nan&quot;
+true
+
+tojson | fromjson
+{&quot;a&quot;:nan}
+{&quot;a&quot;:null}
+
+# NaN with payload is not parsed
+.[] | try (fromjson | isnan) catch .
+[&quot;NaN&quot;,&quot;-NaN&quot;,&quot;NaN1&quot;,&quot;NaN10&quot;,&quot;NaN100&quot;,&quot;NaN1000&quot;,&quot;NaN10000&quot;,&quot;NaN100000&quot;]
+true
+true
+&quot;Invalid numeric literal at EOF at line 1, column 4 (while parsing &#x27;NaN1&#x27;)&quot;
+&quot;Invalid numeric literal at EOF at line 1, column 5 (while parsing &#x27;NaN10&#x27;)&quot;
+&quot;Invalid numeric literal at EOF at line 1, column 6 (while parsing &#x27;NaN100&#x27;)&quot;
+&quot;Invalid numeric literal at EOF at line 1, column 7 (while parsing &#x27;NaN1000&#x27;)&quot;
+&quot;Invalid numeric literal at EOF at line 1, column 8 (while parsing &#x27;NaN10000&#x27;)&quot;
+&quot;Invalid numeric literal at EOF at line 1, column 9 (while parsing &#x27;NaN100000&#x27;)&quot;
+
+# calling input/0, or debug/0 in a test doesn&#x27;t crash jq
+
+try input catch .
+null
+&quot;break&quot;
+
+debug
+1
+1
+
+# try/catch catches more than it should #1859
+&quot;foo&quot; | try ((try . catch &quot;caught too much&quot;) | error) catch &quot;caught just right&quot;
+null
+&quot;caught just right&quot;
+
+.[]|(try (if .==&quot;hi&quot; then . else error end) catch empty) | &quot;\(.) there!&quot;
+[&quot;hi&quot;,&quot;ho&quot;]
+&quot;hi there!&quot;
+
+try ([&quot;hi&quot;,&quot;ho&quot;]|.[]|(try . catch (if .==&quot;ho&quot; then &quot;BROKEN&quot;|error else empty end)) | if .==&quot;ho&quot; then error else &quot;\(.) there!&quot; end) catch &quot;caught outside \(.)&quot;
+null
+&quot;hi there!&quot;
+&quot;caught outside ho&quot;
+
+.[]|(try . catch (if .==&quot;ho&quot; then &quot;BROKEN&quot;|error else empty end)) | if .==&quot;ho&quot; then error else &quot;\(.) there!&quot; end
+[&quot;hi&quot;,&quot;ho&quot;]
+&quot;hi there!&quot;
+
+try (try error catch &quot;inner catch \(.)&quot;) catch &quot;outer catch \(.)&quot;
+&quot;foo&quot;
+&quot;inner catch foo&quot;
+
+try ((try error catch &quot;inner catch \(.)&quot;)|error) catch &quot;outer catch \(.)&quot;
+&quot;foo&quot;
+&quot;outer catch inner catch foo&quot;
+
+# Also #1859, but from #1885
+first(.?,.?)
+null
+null
+
+# Also #1859, but from #2140
+{foo: &quot;bar&quot;} | .foo |= .?
+null
+{&quot;foo&quot;: &quot;bar&quot;}
+
+# Also #1859, but from #2220
+. |= try 2
+1
+2
+
+. |= try 2 catch 3
+1
+2
+
+.[] |= try tonumber
+[&quot;1&quot;, &quot;2a&quot;, &quot;3&quot;, &quot; 4&quot;, &quot;5 &quot;, &quot;6.7&quot;, &quot;.89&quot;, &quot;-876&quot;, &quot;+5.43&quot;, 21]
+[1, 3, 6.7, 0.89, -876, 5.43, 21]
+
+# Also 1859, but from 2073
+any(keys[]|tostring?;true)
+{&quot;a&quot;:&quot;1&quot;,&quot;b&quot;:&quot;2&quot;,&quot;c&quot;:&quot;3&quot;}
+true
+
+
+# explode/implode
+# test replacement character (65533) for outside codepoint range and 0xd800 (55296) - 0xdfff (57343) utf16 surrogate pair range
+# 1.1 and 1.9 to test round down of non-ints
+implode|explode
+[-1,0,1,2,3,1114111,1114112,55295,55296,57343,57344,1.1,1.9]
+[65533,0,1,2,3,1114111,65533,55295,65533,65533,57344,1,1]
+
+map(try implode catch .)
+[123,[&quot;a&quot;],[nan]]
+[&quot;implode input must be an array&quot;,&quot;string (\&quot;a\&quot;) can&#x27;t be imploded, unicode codepoint needs to be numeric&quot;,&quot;number (null) can&#x27;t be imploded, unicode codepoint needs to be numeric&quot;]
+
+try 0[implode] catch .
+[]
+&quot;Cannot index number with string (\&quot;\&quot;)&quot;
+
+# walk
+walk(.)
+{&quot;x&quot;:0}
+{&quot;x&quot;:0}
+
+walk(1)
+{&quot;x&quot;:0}
+1
+
+# The following is a regression test, not a requirement:
+[walk(.,1)]
+{&quot;x&quot;:0}
+[{&quot;x&quot;:0},1]
+
+# Issue #2584
+walk(select(IN({}, []) | not))
+{&quot;a&quot;:1,&quot;b&quot;:[]}
+{&quot;a&quot;:1}
+
+# #2815
+[range(10)] | .[1.2:3.5]
+null
+[1,2,3]
+
+[range(10)] | .[1.5:3.5]
+null
+[1,2,3]
+
+[range(10)] | .[1.7:3.5]
+null
+[1,2,3]
+
+[range(10)] | .[1.7:4294967295]
+null
+[1,2,3,4,5,6,7,8,9]
+
+[range(10)] | .[1.7:-4294967296]
+null
+[]
+
+[[range(10)] | .[1.1,1.5,1.7]]
+null
+[1,1,1]
+
+[range(5)] | .[1.1] = 5
+null
+[0,5,2,3,4]
+
+[range(3)] | .[nan:1]
+null
+[0]
+
+[range(3)] | .[1:nan]
+null
+[1,2]
+
+[range(3)] | .[nan]
+null
+null
+
+try ([range(3)] | .[nan] = 9) catch .
+null
+&quot;Cannot set array element at NaN index&quot;
+
+try (&quot;foobar&quot; | .[1.5:3.5] = &quot;xyz&quot;) catch .
+null
+&quot;Cannot update string slices&quot;
+
+try ([range(10)] | .[1.5:3.5] = [&quot;xyz&quot;]) catch .
+null
+[0,&quot;xyz&quot;,4,5,6,7,8,9]
+
+try (&quot;foobar&quot; | .[1.5]) catch .
+null
+&quot;Cannot index string with number (1.5)&quot;
+
+
+# setpath/2 does not leak the input after an invalid get #2970
+
+try [&quot;ok&quot;, setpath([1]; 1)] catch [&quot;ko&quot;, .]
+{&quot;hi&quot;:&quot;hello&quot;}
+[&quot;ko&quot;,&quot;Cannot index object with number (1)&quot;]
+
+try fromjson catch .
+&quot;{&#x27;a&#x27;: 123}&quot;
+&quot;Invalid string literal; expected \&quot;, but got &#x27; at line 1, column 5 (while parsing &#x27;{&#x27;a&#x27;: 123}&#x27;)&quot;
+
+# ltrimstr/1 rtrimstr/1 don&#x27;t leak on invalid input #2977
+
+try ltrimstr(1) catch &quot;x&quot;, try rtrimstr(1) catch &quot;x&quot; | &quot;ok&quot;
+&quot;hi&quot;
+&quot;ok&quot;
+&quot;ok&quot;
+
+try ltrimstr(&quot;x&quot;) catch &quot;x&quot;, try rtrimstr(&quot;x&quot;) catch &quot;x&quot; | &quot;ok&quot;
+{&quot;hey&quot;:[]}
+&quot;ok&quot;
+&quot;ok&quot;
+
+# ltrimstr/1 and rtrimstr/1 return an error for non-strings. #2969
+
+.[] as [$x, $y] | try [&quot;ok&quot;, ($x | ltrimstr($y))] catch [&quot;ko&quot;, .]
+[[&quot;hi&quot;,1],[1,&quot;hi&quot;],[&quot;hi&quot;,&quot;hi&quot;],[1,1]]
+[&quot;ko&quot;,&quot;startswith() requires string inputs&quot;]
+[&quot;ko&quot;,&quot;startswith() requires string inputs&quot;]
+[&quot;ok&quot;,&quot;&quot;]
+[&quot;ko&quot;,&quot;startswith() requires string inputs&quot;]
+
+.[] as [$x, $y] | try [&quot;ok&quot;, ($x | rtrimstr($y))] catch [&quot;ko&quot;, .]
+[[&quot;hi&quot;,1],[1,&quot;hi&quot;],[&quot;hi&quot;,&quot;hi&quot;],[1,1]]
+[&quot;ko&quot;,&quot;endswith() requires string inputs&quot;]
+[&quot;ko&quot;,&quot;endswith() requires string inputs&quot;]
+[&quot;ok&quot;,&quot;&quot;]
+[&quot;ko&quot;,&quot;endswith() requires string inputs&quot;]
+
+
+# oss-fuzz #66061: setpath/2 leaks when indexing array with array
+
+try [&quot;OK&quot;, setpath([[1]]; 1)] catch [&quot;KO&quot;, .]
+[]
+[&quot;KO&quot;,&quot;Cannot update field at array index of array&quot;]
+
+# regression test for #3227
+foreach .[] as $x (0, 1; . + $x)
+[1, 2]
+1
+3
+2
+4
+
+# regression test for CVE-2025-49014 (use of fmt after free)
+# tests with both empty string literal and empty string created by function
+# as they seems to behave reference wise differently.
+strflocaltime(&quot;&quot; | ., @uri)
+0
+&quot;&quot;
+&quot;&quot;
+
+# regression tests for #3413
+# upper range bounds should be in sync with the constants defined at
+#   src/jv_parse.c:#define MAX_PARSING_DEPTH (N)
+#   src/jv_print.c:#define MAX_PRINT_DEPTH (N)
+# (N-1)
+reduce range(9999) as $_ ([];[.]) | tojson | fromjson | flatten
+null
+[]
+
+# (N)
+reduce range(10000) as $_ ([];[.]) | tojson | try (fromjson) catch . | (contains(&quot;&lt;skipped: too deep&gt;&quot;) | not) and contains(&quot;Exceeds depth limit for parsing&quot;)
+null
+true
+
+# (N+1)
+reduce range(10001) as $_ ([];[.]) | tojson | contains(&quot;&lt;skipped: too deep&gt;&quot;)
+null
+true
+
+# regression test for CVE-2026-33947
+setpath([range(10000) | 0]; 0) | flatten
+null
+[0]
+
+try setpath([range(10001) | 0]; 0) catch .
+null
+&quot;Path too deep&quot;
+
+getpath([range(10000) | 0])
+null
+null
+
+try getpath([range(10001) | 0]) catch .
+null
+&quot;Path too deep&quot;
+
+delpaths([[range(10000) | 0]])
+null
+null
+
+try delpaths([[range(10001) | 0]]) catch .
+null
+&quot;Path too deep&quot;
+
+# regression test for CVE-2026-40612
+reduce range(10000) as $_ ([]; [.]) | contains([[]])
+null
+true
+
+try (reduce range(10001) as $_ ([]; [.]) as $x | $x | contains($x)) catch .
+null
+&quot;Containment check too deep&quot;
+
+# regression test for CVE-2026-43896
+reduce range(10000) as $_ ({}; {a: .}) as $x | $x * $x | length
+null
+1
+
+try (reduce range(10001) as $_ ({}; {a: .}) as $x | $x * $x) catch .
+null
+&quot;Object merge too deep&quot;
+
+# regression test for deep structural equality recursion
+try ((reduce range(10001) as $_ ([]; [.])) as $x | (reduce range(10001) as $_ ([]; [.])) as $y | $x == $y) catch .
+null
+&quot;Equality check too deep&quot;
+
+# regression tests for deep ordering comparisons
+try ((reduce range(10001) as $_ ([]; [.])) as $x | [$x, $x] | sort) catch .
+null
+&quot;Comparison too deep&quot;
+
+try ((reduce range(10001) as $_ ([]; [.])) as $x | [$x, $x] | unique) catch .
+null
+&quot;Comparison too deep&quot;
+
+try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | sort) catch .
+null
+&quot;Comparison too deep&quot;
+
+try ((reduce range(10001) as $_ ({}; {a: .})) as $x | [$x, $x] | unique) catch .
+null
+&quot;Comparison too deep&quot;</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;ARCHITECTURE_compact.md&quot; role=&quot;context&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/ARCHITECTURE_compact.md&quot;&gt;</p>
+<pre><code>&lt;!-- Compacted from ARCHITECTURE.md sha256=f0e07d8104b7c23be2772201e83dfaf382f4c295492da7b8ec72b2a914af633b on 2026-08-22 by drydock build agent --&gt;
+
+- Executable: `./jq -c &#x27;&lt;program&gt;&#x27;`; compact JSON lines on stdout.
+- Exit codes: `0` success, `3` compile failure, `5` runtime failure; diagnostics on stderr.
+- Standard-library Python only; no external jq, dependencies, networking, or persistence.
+- Modules: CLI, lexer, parser/AST, evaluator streams, runtime values, builtins, paths/assignment, diagnostics.
+- Preserve generator ordering, multiplicity, backtracking, immutable transformations, and partial output.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<h2>IMPLEMENTS - Authoritative Step Specifications</h2>
+<p>&lt;pblock label=&quot;Implementation recency anchor&quot; kind=&quot;section&quot;&gt; The files in this section are the load-bearing specifications for this build block. Build these files exactly. Treat earlier sections as constraints and context.</p>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;FEATURE-PARSE-003.md&quot; role=&quot;implements&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/FEATURE-PARSE-003.md&quot; guidance=&quot;Feature Specification&quot;&gt;</p>
+<pre><code># FEATURE: jq Filter Expression Grammar
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse jq expressions with precedence, composition, accessors, collections, and operators. |
+| Depends On  | ARCHITECTURE.md, FEATURE-PARSE-002.md |
+| Provides    | expression AST, precedence, pipes, commas, indexing, slicing, arrays, objects, operators |
+| Consumes    | jq lexer and token stream |
+
+## Scope
+
+Implement the expression grammar and AST for pipes, commas, parentheses, unary operators, binary operators, field and index access, iteration, slices, arrays, objects, optional expressions, and assignment syntax. Operator precedence and associativity must follow `sources/parser.y`.
+
+## Programmatic Acceptance
+
+=== AC parse-003-conformance ===
+Intent: The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\.|\[|\{|\+|\-|\*|/|%&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve parser precedence and generator-producing expression structure.
+- Reject malformed delimiters and invalid object-key expressions at compile time.
+- Do not modify the supplied grammar or corpus.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock filename=&quot;FEATURE-PARSE-004.md&quot; role=&quot;implements&quot; path=&quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/FEATURE-PARSE-004.md&quot; guidance=&quot;Feature Specification&quot;&gt;</p>
+<pre><code># FEATURE: jq Declarations and Control Syntax
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse jq declarations, bindings, control constructs, and module grammar. |
+| Depends On  | ARCHITECTURE.md, FEATURE-PARSE-003.md |
+| Provides    | declarations, conditionals, try/catch, reductions, foreach, labels, bindings, modules grammar |
+| Consumes    | expression AST |
+
+## Scope
+
+Implement parsing for `def`, function parameters, `as` bindings, destructuring patterns, `if`/`elif`/`else`, `try`/`catch`, `reduce`, `foreach`, `label`/`break`, and module directives. Module syntax must be validated sufficiently to reject invalid metadata, interpolation in import paths, invalid escapes, and unsupported tokens without loading module files.
+
+## Programmatic Acceptance
+
+=== AC parse-004-conformance ===
+Intent: The executable passes every selected corpus case covering declarations, control syntax, bindings, reductions, labels, and required compile failures.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;%%FAIL|if |try |reduce |foreach |def | as |label |module|include&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures must exit 3 and runtime failures must remain distinct.
+- Do not resolve imports or read excluded module fixtures in this story.
+- Preserve lexical scope and syntax needed by later evaluator stories.</code></pre>
+<p>&lt;/pblock&gt;</p>
+<p>&lt;pblock label=&quot;Build instructions&quot; kind=&quot;instructions&quot;&gt;</p>
+<h3>Build instructions for this block</h3>
+<h4>Implement jq filter expression grammar. (PARSE-003)</h4>
+<p>Build the expression parser and AST for composition, precedence, indexing, slicing, arrays, objects, unary operators, arithmetic, comparison, optional access, and assignment syntax.</p>
+<h4>Implement declarations and control syntax parsing. (PARSE-004)</h4>
+<p>Parse defs, bindings, destructuring, conditionals, try/catch, reduce, foreach, labels, breaks, import/include/module grammar, and required compile-time rejection cases without loading excluded module fixtures.</p>
+<p>&lt;/pblock&gt;</p>
+<h1>Agent Task</h1>
+<p>You are a Drydock build agent implementing exactly one build step of a larger plan. The build job block below names the target, the build working directory, and the step. Everything you need is stacked into this prompt under role headings:</p>
+<ul><li><code>compass</code> — the Target&#x27;s COMPASS.md orientation.</li><li><code>implements</code> — the Typed Specification files this step builds. These are</li></ul>
+<p>authoritative; implement them exactly.</p>
+<ul><li><code>context</code> — read-only support specifications. Do not reimplement them.</li><li><code>stack</code> — enterprise stack and technology rules. Honor them.</li><li><code>rules</code> — governance and branding rules. Honor them.</li></ul>
+<p>Operating contract:</p>
+<ol><li>Follow the write authorization and protected paths in the stacked <code>COMPASS.md</code> exactly.</li></ol>
+<p>That persisted guardrail is the sole authority for paths this build may modify.</p>
+<ol><li>Start by inspecting the build working directory. Preserve existing application</li></ol>
+<p>files unless this step&#x27;s specifications require a change. Its <code>sources/</code> subdirectory holds staged build assets — imported test corpora, conformance harnesses, and fixtures — placed there for you. They are read-only inputs: run them, import them, and write code against them, but never create, rewrite, trim, regenerate, or substitute one, even to make a check pass. A step that modifies a staged asset fails and the asset is restored. If an asset you expect is absent, report that; do not author a replacement.</p>
+<ol><li>Implement only this step. Use <code>context</code>, <code>stack</code>, and <code>rules</code> as constraints,</li></ol>
+<p>not as additional work to perform.</p>
+<ol><li>Follow the stack and rules for languages, structure, naming, and branding.</li><li>The programmatic acceptance assertions in the <code>implements</code> specifications are</li></ol>
+<p>this step&#x27;s <strong>Definition of Done</strong> — human-owned, declared before the build, and fixed. Build the story and, in this same step, write the deterministic tests that prove each declared assertion, as a TDD master would; add finer tests for coverage. Every test you write follows the same rule the acceptance assertions do: <strong>act on the system, read the state back, compare to expected.</strong> The oracle is a return value, parsed JSON, a status code, a stored row, file contents read back, or an exit status — never a substring of captured stdout or stderr, a test-runner tally, or a log line. Write tests in the project&#x27;s own language using that language&#x27;s libraries; an in-language HTTP client yields a status code and a parsed body, where <code>curl</code> yields text to scrape. Round-trip anything that stores state: act, then read back through the public interface. Assert declared failure signals on negative paths, never message wording. You may add tests but must never remove, soften, or weaken a declared acceptance assertion. A <code>Suite: full</code> conformance check gates on the entire imported test suite: the step is done only when it passes in full, never on a representative subset — reproduce the standard exactly rather than wrapping a third-party library that approximates it. For a suite, the runner&#x27;s exit status is the verdict and the whole verdict: print its captured output for diagnosis, never assert on the text of its summary. When an assertion is a static or filesystem scan (import boundary, &quot;X never appears outside Y,&quot; grep/AST gate), honor the scope the specification states and never widen it: scan production source only, exclude <code>.venv/</code>, <code>site-packages</code>, and vendored or generated code, and do not flag test doubles or fixtures that use the guarded dependency. Run every declared acceptance assertion before returning. For a conformance suite, use its section or example filters to diagnose coherent root-cause clusters, but rerun the full declared scope before reporting the result. Treat failing examples as a work queue for fixing general behavior; never add example-specific exceptions.</p>
+<ol><li>Grow the project&#x27;s own test suite as you write the code, and treat it as the project&#x27;s</li></ol>
+<p>real coverage. The acceptance assertions in <code>implements</code> are gates: few, fixed, and written before any code existed, so every expectation in them is a prediction. The tests you write are written <em>beside</em> the finished code, so their expected values are observed rather than predicted — which is why exhaustive coverage belongs here and not there. Extend the suite in the project&#x27;s established location and runner, keep it runnable by the project&#x27;s declared test command, and leave it green when you return. Cover, at minimum: every public entry point and every verb it declares, including declared error paths; the boundaries — empty, exactly one, many, absent optional fields, declared maxima; declared idempotence, applied twice; one behavior per test, named for the behavior; and isolation — each test arranges its own data, with a fresh store or explicit teardown, so a run leaves no residue behind in the build directory. Where a staged authoritative suite already covers a surface, that suite is the coverage: run it, and do not restate its cases. Run it <strong>only through the invocation this step&#x27;s acceptance criteria declare</strong>. A criterion marked <code>Suite: scoped</code> names the whole of this step&#x27;s obligation to that suite; running the suite&#x27;s unscoped entry point instead is not extra rigor, it is a different step&#x27;s gate executed early. A partial capability fails most of an authoritative corpus by construction and its unimplemented cases exhaust the runner&#x27;s per-case timeout rather than returning, so the unscoped run costs the most where it teaches the least, and interrupting it forfeits the step. If no criterion in this step invokes the staged suite, do not invoke it. Report the pass/fail counts of the invocations you did run in your <code>SUMMARY</code> so a reader can see coverage moving across steps.</p>
+<ol><li>Treat <code>User Acceptance</code> entries as review evidence requirements. Implement</li></ol>
+<p>the supporting behavior, but do not claim to have performed human judgment.</p>
+<ol><li>The <code>implements</code> section is authoritative and intentionally stacked late in</li></ol>
+<p>the prompt as the recency anchor. Build that WHAT exactly; do not substitute generic framework defaults.</p>
+<ol><li>Before adding or installing Python dependencies, verify each package name</li></ol>
+<p>against the declared registry. Do not invent package names. If a needed package cannot be verified or appears newly published, fail explicitly instead of installing it.</p>
+<ol><li>Use the stack&#x27;s required package manager workflow for dependency changes.</li></ol>
+<p>When the stack requires <code>uv</code>, update manifests through <code>uv</code> conventions rather than bare <code>pip install</code>.</p>
+<ol><li>Do not claim success unless you actually created or modified project files in</li></ol>
+<p>the build working directory. If you cannot write files or cannot complete the step, report failure explicitly.</p>
+<ol><li>Do not run <code>git add</code>, <code>git commit</code>, create branches, create tags, rewrite</li></ol>
+<p>history, or otherwise mutate Git history. Drydock owns the final build directory commit after you return.</p>
+<ol><li>End your response with this exact closing structure:</li></ol>
+<pre><code>RESULT: SUCCESS | FAILED
+
+FILES CHANGED:
+- relative/path
+
+SUMMARY:
+&lt;brief reviewable summary&gt;
+
+BLOCKERS:
+- &lt;only if any&gt;</code></pre>
+<p>Before <code>RESULT</code>, you may emit one optional JSON payload when implementation required a bounded choice not already settled by the owning specification. This records what you did; it does not ask permission, create a questionnaire, or excuse incomplete work:</p>
+<pre><code>&lt;blueprint-decisions&gt;
+[{&quot;spec&quot;:&quot;FEATURE-Example.md&quot;,&quot;severity&quot;:&quot;Material&quot;,&quot;subject&quot;:&quot;Chosen behavior&quot;,&quot;decision&quot;:&quot;Options A and B were available. I implemented B because ... Is that acceptable, or should this change on replan?&quot;}]
+&lt;/blueprint-decisions&gt;</code></pre>
+<p>Name only a specification implemented by this build block. Use <code>Low</code> or <code>Material</code>; Build never emits a Blocking decision. Omit the payload when no implementation decision was necessary.</p>
+<ol><li><code>FILES CHANGED</code> must list only files actually written in the build working</li></ol>
+<p>directory. If no files were written, use <code>RESULT: FAILED</code>.</p>
+<ol><li>On <code>RESULT: FAILED</code>, append two additional lines so the failure is actionable</li></ol>
+<p>without opening logs. <code>FAILURE_SUMMARY</code> is one line naming the cause; <code>FAILURE_DETAIL</code> states what happened, why, and what to change before a rerun. Name concrete conditions when they apply: token or context limit exceeded, could not execute commands in this environment, a required input was missing, or a specific tool or command failed.</p>
+<pre><code>FAILURE_SUMMARY: &lt;one line naming the cause&gt;
+FAILURE_DETAIL: &lt;what happened, why, and what to change before rerunning&gt;</code></pre>
+<ol><li>When a declared acceptance criterion cannot pass no matter how the code is written,</li></ol>
+<p>say so with this exact token. You may not edit the criterion — it is staged and restored before grading:</p>
+<pre><code>AC_BROKEN: &lt;check-id&gt;[, &lt;check-id&gt;]</code></pre>
+<p>This is a report, not a verdict, and it stops nothing. A criterion reaches you only when its expected value is one its author could not have invented — a status code, a staged suite&#x27;s exit status, a value the criterion itself supplied as input — so your claim that the criterion rather than the code is at fault is the less likely explanation, and the budget is spent as it would be for any other failure. A criterion whose expectation <em>was</em> hand-typed already settles <code>DISPUTED</code> on its own, without you naming it. Emit the token only after running the criterion and confirming the underlying command succeeded while the assertion still failed. Name the affected check ids, emit it alongside your normal <code>RESULT</code> line, state the reasoning in <code>FAILURE_DETAIL</code>, and emit it even when <code>RESULT: SUCCESS</code>. Do not use it for a criterion you merely failed to satisfy.</p>
+<h1>Repair Feedback</h1>
+<h2>Repair pass</h2>
+<p>A previous build pass wrote partial work into BUILD_DIRECTORY and did not pass every deterministic acceptance check. Iterate the existing files in BUILD_DIRECTORY to make the checks below pass. Do not restart from scratch, do not weaken or remove any declared acceptance assertion, and keep every check that already passes green.</p>
+<p>The diagnostic excerpts below are truncated. Before editing, rerun each failing acceptance assertion from its authoritative specification and inspect the complete failure output. For a conformance suite, use its section or example filters to diagnose coherent root-cause clusters, then rerun the full declared scope. Fix the general parser or renderer behavior; do not add example-specific exceptions. Keep working through failing examples while the deterministic tally is improving.</p>
+<p>If a check below cannot pass however the code is written — the command it runs succeeds and the assertion still fails — do not keep repairing. Report it with <code>AC_BROKEN: &lt;check-id&gt;</code> and explain the contradiction in <code>FAILURE_DETAIL</code>. That ends the repair budget and sends the criterion back for repair in the Blueprint, which is where a broken assertion has to be fixed.</p>
+<h3>Still failing</h3>
+<ul><li>parse-003-conformance (story PARSE-003): The executable passes every selected corpus case exercising expression punctuation, accessors, collections, and operators.</li></ul>
+<p>assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError output: &quot;1&quot; ], &quot;actual&quot;: [] } ] }</p>
+<ul><li>parse-004-conformance (story PARSE-004): The executable passes every selected corpus case covering declarations, control syntax, bindings, reductions, labels, and required compile failures.</li></ul>
+<p>assertion: assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 → AssertionError output: &quot;1&quot; ], &quot;actual&quot;: [] } ] }</p>
+<h3>Previous agent note</h3>
+<ul><li>Scoped conformance gates remain red.</li></ul>
+<p>The interpreter still fails substantial authoritative corpus coverage; further evaluator implementation is required before rerunning this build block.</p>
+<h3>Files written so far</h3>
+<ul><li>jq_interpreter/evaluator.py</li></ul></article>
+</main>
+</body>
+</html>

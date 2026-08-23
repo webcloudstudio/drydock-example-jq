@@ -1,0 +1,15 @@
+2026-08-23T03:10:16.074110Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc "set +e
+printf 'null\\n' | ./jq -c 'break "'$out, label $out | 1'"' >/tmp/jq-flow-out 2>/tmp/jq-flow-err
+status="'$?
+printf '"'status=%s\\n' \""'$status"
+python3 - <<'"'PY'
+from jq_interpreter.parser import parse
+from jq_interpreter.errors import CompileError
+try:
+    parse('break "'$out, label $out | 1'"')
+except CompileError:
+    print('compile-validation=pass')
+else:
+    print('compile-validation=fail')
+PY
+rm -f /tmp/jq-flow-out /tmp/jq-flow-err"`: CreateProcess { message: "Rejected(\"`/bin/bash -lc \\\"set +e\\nprintf 'null\\\\\\\\n' | ./jq -c 'break \\\"'$out, label $out | 1'\\\"' >/tmp/jq-flow-out 2>/tmp/jq-flow-err\\nstatus=\\\"'$?\\nprintf '\\\"'status=%s\\\\\\\\n' \\\\\\\"\\\"'$status\\\"\\npython3 - <<'\\\"'PY'\\nfrom jq_interpreter.parser import parse\\nfrom jq_interpreter.errors import CompileError\\ntry:\\n    parse('break \\\"'$out, label $out | 1'\\\"')\\nexcept CompileError:\\n    print('compile-validation=pass')\\nelse:\\n    print('compile-validation=fail')\\nPY\\nrm -f /tmp/jq-flow-out /tmp/jq-flow-err\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\")" }

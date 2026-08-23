@@ -1,0 +1,28 @@
+2026-08-23T03:33:38.833890Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+        if w=='def':
+            name=self.take(); ps=[]
+            if self.p=='(': self.take();
+            while self.p() not in (')',':'):
+                ps.append(self.take().lstrip('$'))
+                if self.p()==';': self.take()
+2026-08-23T03:33:56.963211Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    function = env.get('__funcs__',{}).get((name, len(args)))
+    if function is not None:
+        params, body, *closure = function
+        local=dict(env)
+        if closure:
+            local['__funcs__'] = closure[0]
+        if not args:
+            yield from _node(body,value,local); return
+        # Function parameters are filters, not eagerly evaluated values.  A
+        # parameter can therefore produce multiple results every time its
+        # name is used, preserving jq's generator semantics.
+        parameters = dict(local.get('__params__', {}))
+        # Filter arguments are closures over the caller, not over the callee
+        # after its local parameter frame has been installed.  This is what
+        # makes `def f(x): 1 as $x | ...` preserve the caller's `x` filter.
+        captured = dict(env)
+        for param, arg in zip(params, args):
+            parameters[param] = (captured, arg)
+        local['__params__'] = parameters
+        yield from _node(body,value,local); return

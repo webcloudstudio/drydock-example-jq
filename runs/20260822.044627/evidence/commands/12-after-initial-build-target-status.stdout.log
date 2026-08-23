@@ -6,7 +6,7 @@ Drydock status
   Description     Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46
                   excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from…
   Phase           Implement
-  State           Failed: programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+  State           Failed: programmatic acceptance failed: text-003-regex-conformance, text-003-captures
   Metadata        building · running
   Sources         9 imported · 47 authored blueprint files
   Analysis        Ready · 42 stories · 0 questions · 0 blockers
@@ -38,12 +38,12 @@ Drydock status
     ⚠  Acceptance snippets: FEATURE-CORE-004.md [core-004-conformance]: expects 'false\n', a value re-typed rather than
        derived from the input or read back from the system. This criterion is reported but does not gate its
        story; bind the value to a name and use that name on both sides to make it binding
-  Plan            35 pending · 7 closed/implemented · 2 closed/failed
+  Plan            6 pending · 37 closed/implemented · 1 closed/failed
   Frontier        (none)
   Workflow        5 steps
                   Initialize         complete at 2026-08-22T04:46:29.469+00:00
                   Import             complete at 2026-08-22T04:46:33.960+00:00
                   Analyze            complete at 2026-08-22T04:48:42.765+00:00
                   Plan               complete at 2026-08-22T19:46:51.359+00:00
-                  Build              failed at 2026-08-22T23:25:11.028+00:00
+                  Build              failed at 2026-08-23T05:14:38.650+00:00
   Next step       drydock run quarterdeck jq

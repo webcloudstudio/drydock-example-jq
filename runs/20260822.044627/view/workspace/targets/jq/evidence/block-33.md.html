@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-33.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-33.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-33.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 33 · Service (block-33)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53757</li><li>execution id: 20260823.043810.706Z-eb6692b5</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement object-entry and containment builtins. (DATA-003) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-DATA-003.md#data-003-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-DATA-003.md (SP 447)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_data_003_entries_containment.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: data-003-conformance (FEATURE-DATA-003.md)</li></ul>
+<p>intent: The object-entry, key, membership, and containment slice executes matching corpus cases and passes all selected cases. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 24, &quot;fail&quot;: 2, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1713, &quot;program&quot;: &quot;to_entries&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;program did not compile: jq: compile error: unknown filter&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[{\&quot;key\&quot;:\&quot;a\&quot;, \&quot;value\&quot;:1}, {\&quot;key\&quot;:\&quot;b\&quot;, \&quot;value\&quot;:2}]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1717, &quot;program&quot;: &quot;from_entries&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;program did not compile: jq: compile error: unknown filter&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;{\&quot;a\&quot;: 1, \&quot;b\&quot;: 2, \&quot;c\&quot;: 3, \&quot;d\&quot;: 4}&quot; ], &quot;actual&quot;: [] } ] } stderr: --- drydock: progress --- cases: pass=24 fail=2 error=0 skip=0 total=26 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 24, &#x27;fail&#x27;: 2, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;data-003-conformance.py&quot;, line 18, in &lt;module&gt; assert summary[&quot;fail&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: data-003-conformance (FEATURE-DATA-003.md)</li></ul>
+<p>intent: The object-entry, key, membership, and containment slice executes matching corpus cases and passes all selected cases. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 26, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_data_003_entries_containment.py</li></ul>
+<p>SUMMARY: Implemented <code>keys_unsorted</code>, <code>in</code>, <code>inside</code>, <code>to_entries</code>, and <code>from_entries</code>; corrected key handling and builtin registration. Added focused tests.</p>
+<p>Verification: 149 tests passed; DATA-003 conformance passed 26/26 with zero failures/errors.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

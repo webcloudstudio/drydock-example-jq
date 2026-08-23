@@ -1,0 +1,14 @@
+AC_BROKEN: text-003-regex-conformance, text-003-captures
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_text_003_regex.py
+
+SUMMARY:
+Regex implementation and tests pass: `pytest -q` reports 167 passed. Both acceptance selectors match zero cases because the staged corpus contains no regex programs.
+
+BLOCKERS:
+- The staged `sources/jq.test` must include regex cases, or the selectors must be corrected in the specification.

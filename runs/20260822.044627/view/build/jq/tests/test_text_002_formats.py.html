@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_text_002_formats.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_text_002_formats.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_text_002_formats.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for JSON conversion and jq output format filters.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+EXECUTABLE = ROOT / &quot;jq&quot;
+
+
+def run_jq(program: str, value: object) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(EXECUTABLE), &quot;-c&quot;, program],
+        input=json.dumps(value, ensure_ascii=False) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def output(program: str, value: object) -&gt; object:
+    result = run_jq(program, value)
+    assert result.returncode == 0
+    return json.loads(result.stdout)
+
+
+def test_json_conversion_round_trip_and_tostring() -&gt; None:
+    assert output(&quot;[tostring, tojson | fromjson]&quot;, {&quot;a&quot;: [1, &quot;μ&quot;]}) == [
+        &#x27;{&quot;a&quot;:[1,&quot;μ&quot;]}&#x27;,
+        {&quot;a&quot;: [1, &quot;μ&quot;]},
+    ]
+
+
+def test_html_uri_and_uri_decode_escape_unicode_and_reserved_characters() -&gt; None:
+    assert output(&quot;@html&quot;, &quot;&lt;&amp;&gt;&#x27;\&quot;μ&quot;) == &quot;&amp;lt;&amp;amp;&amp;gt;&amp;apos;&amp;quot;μ&quot;
+    assert output(&quot;@uri&quot;, &quot;μ /?&quot;) == &quot;%CE%BC%20%2F%3F&quot;
+    assert output(&quot;@urid&quot;, &quot;%CE%BC%20%2F%3F&quot;) == &quot;μ /?&quot;
+
+
+def test_csv_and_tsv_handle_nulls_quotes_and_control_escapes() -&gt; None:
+    value = [None, False, 3, &#x27;a,&quot;b&#x27;, &quot;line\n tab\t\\&quot;]
+    assert output(&quot;@csv&quot;, value) == &#x27;,false,3,&quot;a,&quot;&quot;b&quot;,&quot;line\n tab\t\\&quot;&#x27;
+    assert output(&quot;@tsv&quot;, value) == &quot;\tfalse\t3\ta,\&quot;b\tline\\n tab\\t\\\\&quot;
+
+
+def test_shell_format_quotes_each_array_argument() -&gt; None:
+    assert output(&quot;@sh&quot;, [&quot;a&quot;, &quot;O&#x27;Hara&quot;, 2, None]) == &quot;&#x27;a&#x27; &#x27;O&#x27;\\&#x27;&#x27;Hara&#x27; &#x27;2&#x27; &#x27;&#x27;&quot;
+    assert output(&quot;@sh&quot;, &quot;hello world&quot;) == &quot;&#x27;hello world&#x27;&quot;
+
+
+def test_base64_round_trip_and_invalid_input_is_runtime_failure() -&gt; None:
+    encoded = output(&quot;@base64&quot;, &quot;foóbar\n&quot;)
+    assert encoded == &quot;Zm/Ds2Jhcgo=&quot;
+    assert output(&quot;@base64d&quot;, encoded) == &quot;foóbar\n&quot;
+
+    result = run_jq(&quot;@base64d&quot;, &quot;%not-base64&quot;)
+    assert result.returncode == 5
+
+
+def test_format_interpolation_escapes_only_interpolated_values() -&gt; None:
+    assert output(&#x27;@uri &quot;https://example.test/?q=\\(.)&quot;&#x27;, &quot;what is jq?&quot;) == (
+        &quot;https://example.test/?q=what%20is%20jq%3F&quot;
+    )
+</pre></article>
+</main>
+</body>
+</html>

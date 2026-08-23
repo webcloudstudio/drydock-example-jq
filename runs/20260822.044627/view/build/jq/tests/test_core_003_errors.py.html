@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_core_003_errors.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_core_003_errors.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_core_003_errors.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for CORE-003 runtime error and empty-stream semantics.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object = None) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def test_empty_produces_no_values_and_succeeds() -&gt; None:
+    result = run(&quot;empty&quot;)
+    assert result.returncode == 0
+    assert result.stdout == &quot;&quot;
+
+
+def test_optional_suppresses_runtime_error() -&gt; None:
+    result = run(&#x27;error(&quot;x&quot;)?&#x27;)
+    assert result.returncode == 0
+    assert result.stdout == &quot;&quot;
+
+
+def test_try_catch_turns_error_value_into_output() -&gt; None:
+    result = run(&#x27;try error(&quot;x&quot;) catch .&#x27;)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [&quot;x&quot;]
+
+
+def test_uncaught_runtime_error_has_runtime_exit_status() -&gt; None:
+    result = run(&#x27;error(&quot;x&quot;)&#x27;)
+    assert result.returncode == 5
+
+
+def test_values_before_runtime_error_are_preserved() -&gt; None:
+    result = run(&#x27;1, error(&quot;x&quot;), 2&#x27;)
+    assert result.returncode == 5
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [1]
+
+
+def test_nth_does_not_consume_unneeded_failing_generator_output() -&gt; None:
+    result = run(&#x27;nth(1; 0,1,error(&quot;foo&quot;))&#x27;)
+    assert result.returncode == 0
+    assert [json.loads(line) for line in result.stdout.splitlines()] == [1]
+</pre></article>
+</main>
+</body>
+</html>

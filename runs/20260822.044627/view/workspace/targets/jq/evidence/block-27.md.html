@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-27.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-27.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-27.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 27 · Service (block-27)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53766</li><li>execution id: 20260823.035101.009Z-f278c23c</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement path discovery and projection. (PATH-001) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-PATH-001.md#path-001-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-PATH-001.md (SP 464)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_path_001_discovery_projection.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): path-001-conformance (FEATURE-PATH-001.md)</li></ul>
+<p>intent: The authoritative corpus slice covering path discovery and projection executes and passes. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 29, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: path-001-conformance (FEATURE-PATH-001.md)</li></ul>
+<p>intent: The authoritative corpus slice covering path discovery and projection executes and passes. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 29, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>Implemented PATH-001 path discovery and projection improvements.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_path_001_discovery_projection.py</li></ul>
+<p>SUMMARY: Fixed filtered <code>paths(...)</code> traversal and added regression coverage for path ordering, recursive discovery, and <code>pick</code> projections.</p>
+<p>Verification: 125 tests passed; conformance slice passed 29 cases with zero failures/errors.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

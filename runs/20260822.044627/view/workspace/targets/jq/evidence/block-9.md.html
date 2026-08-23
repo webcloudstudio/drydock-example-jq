@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/evidence/block-9.md</title>
+<link rel="stylesheet" href="../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/evidence/block-9.md</h1><div class="filenav"><a href="../../../../../index.html">&larr; Report</a><a href="../../../../../workspace/targets/jq/evidence/block-9.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 9 · Service (block-9)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51280</li><li>execution id: 20260823.021651.942Z-9c6d4747</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement the stream-valued filter evaluator. (CORE-001) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-CORE-001.md#core-001-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-CORE-001.md (SP 381)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_stream_evaluator.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): core-001-conformance (FEATURE-CORE-001.md)</li></ul>
+<p>intent: The executable evaluates identity, empty, range, and generator ordering as ordered streams. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: core-001-conformance (FEATURE-CORE-001.md)</li></ul>
+<p>intent: The executable evaluates identity, empty, range, and generator ordering as ordered streams. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>Implemented CORE-001 stream evaluation support and regression coverage.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_stream_evaluator.py</li></ul>
+<p>SUMMARY:</p>
+<ul><li>Preserved lazy ordered iteration and generator multiplicity.</li><li>Added tests for identity, empty, iteration, pipelines, comma, and range.</li><li>All 39 project tests pass.</li><li>CORE-001 acceptance probes pass.</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

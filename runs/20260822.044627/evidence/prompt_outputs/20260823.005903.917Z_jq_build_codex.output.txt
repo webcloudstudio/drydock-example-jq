@@ -1,0 +1,14 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+
+SUMMARY:
+Improved NaN indexing, invalid object-key assignment handling, and added several builtins. Pytest passes: 32 tests. Scoped conformance still has failures in both PARSE-003 and PARSE-004.
+
+BLOCKERS:
+- Remaining evaluator and function-closure incompatibilities prevent the acceptance criteria from passing.
+
+FAILURE_SUMMARY: Scoped conformance remains failing
+FAILURE_DETAIL: PARSE-003 and PARSE-004 still report nonzero failures, including function closures, path assignments, numeric edge cases, and several builtins. Further evaluator work is required.

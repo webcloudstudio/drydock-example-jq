@@ -1,0 +1,17 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Improved shared operator error handling, defined-or fallback, unary negation, `nth`, `pick`, `input`, datetime diagnostics, `_strindices`, and `bsearch`. Project tests pass: 32 passed.
+
+Acceptance checks remain failing:
+- PARSE-003: 344 passed, 110 failed, 1 errored
+- PARSE-004: 156 passed, 54 failed, 1 errored
+
+BLOCKERS:
+- Broad evaluator gaps remain in assignments, closures, deep paths, numeric semantics, and additional builtins.
+
+FAILURE_SUMMARY: Scoped conformance gates remain red.
+FAILURE_DETAIL: The interpreter still fails substantial authoritative corpus coverage; further evaluator implementation is required before rerunning this build block.

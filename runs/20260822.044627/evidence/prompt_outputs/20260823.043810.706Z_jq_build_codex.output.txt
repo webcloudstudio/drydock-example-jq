@@ -1,0 +1,14 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- jq_interpreter/parser.py
+- tests/test_data_003_entries_containment.py
+
+SUMMARY:
+Implemented `keys_unsorted`, `in`, `inside`, `to_entries`, and `from_entries`; corrected key handling and builtin registration. Added focused tests.
+
+Verification: 149 tests passed; DATA-003 conformance passed 26/26 with zero failures/errors.
+
+BLOCKERS:
+- None

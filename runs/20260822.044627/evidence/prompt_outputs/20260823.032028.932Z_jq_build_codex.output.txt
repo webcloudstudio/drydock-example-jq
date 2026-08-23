@@ -1,0 +1,18 @@
+Implemented recursive generator primitives.
+
+- Added correct `while`, `until`, `repeat`, `recurse`, and recursive descent behavior.
+- Added focused FLOW-006 tests.
+- Tests: 106 passed.
+- Scoped conformance: 2 passed, 0 failed, 0 errored.
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_flow_006_recursive_generators.py
+
+SUMMARY:
+Recursive generators now preserve jq stream ordering, branching, termination, and partial output behavior.
+
+BLOCKERS:
+- None

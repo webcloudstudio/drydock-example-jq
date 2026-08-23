@@ -1,0 +1,17 @@
+RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+- Fixed slice-bound evaluation, NaN string multiplication, and deletion index normalization.
+- Local suite passes: 32 tests.
+- Scoped conformance gates still do not complete successfully.
+
+BLOCKERS:
+- parse-003-conformance timed out while running the declared selector.
+- parse-004-conformance was not completed.
+
+FAILURE_SUMMARY: Scoped conformance remains incomplete.
+FAILURE_DETAIL: The local tests pass, but the authoritative parse-003 gate exceeded the available execution window; further evaluator/parser optimization and failure clustering are required.

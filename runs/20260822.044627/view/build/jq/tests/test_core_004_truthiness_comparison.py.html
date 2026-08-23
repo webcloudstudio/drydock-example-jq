@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_core_004_truthiness_comparison.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_core_004_truthiness_comparison.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_core_004_truthiness_comparison.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for jq truthiness, equality, and total ordering.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object = None) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def outputs(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_only_false_and_null_are_falsey() -&gt; None:
+    result = run(&quot;false, null, 0, 1, \&quot;\&quot;, [], {} | if . then 1 else 0 end&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [0, 0, 1, 1, 1, 1, 1]
+
+
+def test_numeric_equality_ignores_integer_float_representation() -&gt; None:
+    result = run(&quot;1 == 1.0&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [True]
+
+
+def test_equality_is_strict_across_types() -&gt; None:
+    result = run(&quot;true == 1, 1 != \&quot;1\&quot;&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [False, True]
+
+
+def test_object_equality_ignores_insertion_order() -&gt; None:
+    result = run(&#x27;{&quot;a&quot;:1,&quot;b&quot;:{&quot;x&quot;:2,&quot;y&quot;:3}} == {&quot;b&quot;:{&quot;y&quot;:3,&quot;x&quot;:2},&quot;a&quot;:1}&#x27;)
+    assert result.returncode == 0
+    assert outputs(result) == [True]
+
+
+def test_comparison_uses_jq_total_type_order() -&gt; None:
+    result = run(&#x27;[null, false, true, 0, &quot;a&quot;, [], {}] | sort&#x27;)
+    assert result.returncode == 0
+    assert outputs(result) == [[None, False, True, 0, &quot;a&quot;, [], {}]]
+
+
+def test_arrays_and_objects_compare_lexicographically() -&gt; None:
+    result = run(&quot;[1,2] &lt; [1,3], {a:1} &lt; {a:2}, {b:1} &gt; {a:99}&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [True, True, True]
+
+
+def test_boolean_operators_are_generator_aware() -&gt; None:
+    result = run(&quot;(true, false) and (true, false), (true, false) or false&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [True, False, False, True, False]
+
+
+def test_not_condition_is_applied_to_each_array_member() -&gt; None:
+    result = run(&quot;[any(not), all(not)]&quot;, [])
+    assert result.returncode == 0
+    assert outputs(result) == [[False, True]]
+
+    result = run(&quot;[any(not), all(not)]&quot;, [False])
+    assert result.returncode == 0
+    assert outputs(result) == [[True, True]]
+</pre></article>
+</main>
+</body>
+</html>

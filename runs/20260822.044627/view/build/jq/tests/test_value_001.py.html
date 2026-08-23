@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_value_001.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_value_001.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_value_001.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for jq&#x27;s value and numeric boundary behavior.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+EXECUTABLE = ROOT / &quot;jq&quot;
+
+
+def run_jq(program: str, input_text: str = &quot;null\n&quot;) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(EXECUTABLE), &quot;-c&quot;, program],
+        input=input_text,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def json_lines(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_non_finite_values_are_null_at_the_json_output_boundary() -&gt; None:
+    result = run_jq(&quot;[nan, infinite, -infinite, {value: nan}]&quot;)
+    assert result.returncode == 0
+    assert json_lines(result) == [[None, None, None, {&quot;value&quot;: None}]]
+
+
+def test_tojson_and_fromjson_preserve_json_value_structure() -&gt; None:
+    result = run_jq(&quot;[.[] | tojson | fromjson]&quot;, &#x27;[&quot;text&quot;, 1, [true, null]]\n&#x27;)
+    assert result.returncode == 0
+    assert json_lines(result) == [[&quot;text&quot;, 1, [True, None]]]
+
+
+def test_fromjson_accepts_nan_and_serializes_it_as_null() -&gt; None:
+    result = run_jq(&quot;fromjson | [., isnan]&quot;, &#x27;&quot;nan&quot;\n&#x27;)
+    assert result.returncode == 0
+    assert json_lines(result) == [[None, True]]
+
+
+def test_nan_is_not_a_valid_array_key_for_has() -&gt; None:
+    result = run_jq(&quot;has(nan)&quot;, &quot;[0,1,2]\n&quot;)
+    assert result.returncode == 0
+    assert json_lines(result) == [False]
+
+
+def test_large_exponent_literal_remains_a_numeric_value() -&gt; None:
+    result = run_jq(&quot;[1E+1000, -1E+1000 | tojson]&quot;)
+    assert result.returncode == 0
+    assert json_lines(result) == [[
+        &quot;1.7976931348623157e+308&quot;,
+        &quot;-1.7976931348623157e+308&quot;,
+    ]]
+</pre></article>
+</main>
+</body>
+</html>

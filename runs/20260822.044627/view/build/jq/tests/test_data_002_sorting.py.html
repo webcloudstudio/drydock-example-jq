@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_data_002_sorting.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_data_002_sorting.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_data_002_sorting.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Coverage for jq collection ordering and keyed reductions.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object) -&gt; list[object]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_sort_uses_structural_jq_ordering() -&gt; None:
+    assert run(&quot;sort&quot;, [True, {}, &quot;a&quot;, None, [1], 2, False]) == [
+        [None, False, True, 2, &quot;a&quot;, [1], {}]
+    ]
+
+
+def test_unique_collapses_numeric_equivalents() -&gt; None:
+    assert run(&quot;unique&quot;, [2, 1.0, 1, 2.0, 3]) == [[1.0, 2, 3]]
+
+
+def test_sort_by_compares_all_values_generated_by_key_filter() -&gt; None:
+    value = [{&quot;a&quot;: 1, &quot;b&quot;: 2}, {&quot;a&quot;: 1, &quot;b&quot;: 1}, {&quot;a&quot;: 0, &quot;b&quot;: 9}]
+    assert run(&quot;sort_by(.a, .b)&quot;, value) == [[
+        {&quot;a&quot;: 0, &quot;b&quot;: 9}, {&quot;a&quot;: 1, &quot;b&quot;: 1}, {&quot;a&quot;: 1, &quot;b&quot;: 2}
+    ]]
+
+
+def test_group_by_keeps_equal_keys_together_and_input_order_stable() -&gt; None:
+    value = [{&quot;key&quot;: 2, &quot;id&quot;: &quot;a&quot;}, {&quot;key&quot;: 1, &quot;id&quot;: &quot;b&quot;}, {&quot;key&quot;: 2, &quot;id&quot;: &quot;c&quot;}]
+    assert run(&quot;group_by(.key)&quot;, value) == [[
+        [{&quot;key&quot;: 1, &quot;id&quot;: &quot;b&quot;}],
+        [{&quot;key&quot;: 2, &quot;id&quot;: &quot;a&quot;}, {&quot;key&quot;: 2, &quot;id&quot;: &quot;c&quot;}],
+    ]]
+
+
+def test_keyed_extrema_use_first_minimum_and_last_maximum_tie() -&gt; None:
+    value = [{&quot;key&quot;: 1, &quot;id&quot;: &quot;first&quot;}, {&quot;key&quot;: 1, &quot;id&quot;: &quot;last&quot;}]
+    assert run(&quot;[min_by(.key), max_by(.key)]&quot;, value) == [[
+        {&quot;key&quot;: 1, &quot;id&quot;: &quot;first&quot;}, {&quot;key&quot;: 1, &quot;id&quot;: &quot;last&quot;}
+    ]]
+
+
+def test_empty_extrema_return_null() -&gt; None:
+    assert run(&quot;[min, max, min_by(.), max_by(.)]&quot;, []) == [[None, None, None, None]]
+</pre></article>
+</main>
+</body>
+</html>

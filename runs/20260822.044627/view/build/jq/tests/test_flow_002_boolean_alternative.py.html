@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_flow_002_boolean_alternative.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_flow_002_boolean_alternative.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_flow_002_boolean_alternative.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused coverage for FLOW-002 boolean and alternative operators.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run(program: str, value: object = None) -&gt; tuple[int, list[object]]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode, [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_alternative_keeps_all_truthy_left_outputs_without_default() -&gt; None:
+    code, output = run(&quot;(null, false, 1, 2) // 9&quot;)
+    assert code == 0
+    assert output == [1, 2]
+
+
+def test_alternative_uses_right_generator_only_when_left_has_no_truthy_output() -&gt; None:
+    code, output = run(&quot;(null, false) // (1, 2)&quot;)
+    assert code == 0
+    assert output == [1, 2]
+
+
+def test_alternative_assignment_replaces_falsey_paths() -&gt; None:
+    code, output = run(&quot;.items[] //= 7&quot;, {&quot;items&quot;: [None, False, 2]})
+    assert code == 0
+    assert output == [{&quot;items&quot;: [7, 7, 2]}]
+
+
+def test_boolean_short_circuit_does_not_evaluate_unneeded_operand() -&gt; None:
+    code, output = run(&quot;false and error(\&quot;bad\&quot;), true or error(\&quot;bad\&quot;)&quot;)
+    assert code == 0
+    assert output == [False, True]
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_text_003_regex.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_text_003_regex.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_text_003_regex.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Focused tests for the TEXT-003 regular-expression filters.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run_jq(program: str, input_value: object) -&gt; tuple[int, list[object]]:
+    result = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(input_value, ensure_ascii=False) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.returncode, [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_test_maps_flags_and_global_match_emits_offsets() -&gt; None:
+    assert run_jq(&#x27;[test(&quot;foo&quot;), test(&quot;foo&quot;; &quot;i&quot;)]&#x27;, &quot;FOO&quot;) == (0, [[False, True]])
+    assert run_jq(&#x27;[match(&quot;foo&quot;; &quot;g&quot;)]&#x27;, &quot;foo bar foo&quot;) == (0, [[
+        {&quot;offset&quot;: 0, &quot;length&quot;: 3, &quot;string&quot;: &quot;foo&quot;, &quot;captures&quot;: []},
+        {&quot;offset&quot;: 8, &quot;length&quot;: 3, &quot;string&quot;: &quot;foo&quot;, &quot;captures&quot;: []},
+    ]])
+
+
+def test_named_and_unnamed_captures_are_preserved() -&gt; None:
+    assert run_jq(&#x27;match(&quot;(?&lt;word&gt;[a-z]+)-(\\\\d+)&quot;)&#x27;, &quot;abc-12&quot;) == (0, [{
+        &quot;offset&quot;: 0, &quot;length&quot;: 6, &quot;string&quot;: &quot;abc-12&quot;,
+        &quot;captures&quot;: [
+            {&quot;offset&quot;: 0, &quot;length&quot;: 3, &quot;string&quot;: &quot;abc&quot;, &quot;name&quot;: &quot;word&quot;},
+            {&quot;offset&quot;: 4, &quot;length&quot;: 2, &quot;string&quot;: &quot;12&quot;, &quot;name&quot;: None},
+        ],
+    }])
+    assert run_jq(&#x27;capture(&quot;(?&lt;word&gt;[a-z]+)-(?&lt;number&gt;\\\\d+)&quot;)&#x27;, &quot;abc-12&quot;) == (0, [{&quot;word&quot;: &quot;abc&quot;, &quot;number&quot;: &quot;12&quot;}])
+
+
+def test_scan_and_regex_split_preserve_stream_order() -&gt; None:
+    assert run_jq(&#x27;[scan(&quot;(a+)(b+)&quot;)]&#x27;, &quot;abaabbaaabbb&quot;) == (0, [[[&#x27;a&#x27;, &#x27;b&#x27;], [&#x27;aa&#x27;, &#x27;bb&#x27;], [&#x27;aaa&#x27;, &#x27;bbb&#x27;]]])
+    assert run_jq(&#x27;split(&quot;, *&quot;; null)&#x27;, &quot;ab,cd, ef&quot;) == (0, [[&quot;ab&quot;, &quot;cd&quot;, &quot;ef&quot;]])
+    assert run_jq(&#x27;[splits(&quot;, *&quot;)]&#x27;, &quot;ab,cd,   ef&quot;) == (0, [[&quot;ab&quot;, &quot;cd&quot;, &quot;ef&quot;]])
+
+
+def test_substitution_interpolates_named_captures_and_supports_streams() -&gt; None:
+    assert run_jq(&#x27;gsub(&quot;(?&lt;x&gt;.)[^a]*&quot;; &quot;+\\(.x)-&quot;)&#x27;, &quot;Abcabc&quot;) == (0, [&quot;+A-+a-&quot;])
+    assert run_jq(&#x27;[sub(&quot;(?&lt;a&gt;.)&quot;; &quot;\\(.a|ascii_upcase)&quot;, &quot;\\(.a|ascii_downcase)&quot;)]&#x27;, &quot;aB&quot;) == (0, [[&quot;AB&quot;, &quot;aB&quot;]])
+
+
+def test_regex_filters_reject_non_string_input() -&gt; None:
+    assert run_jq(&#x27;test(&quot;x&quot;)&#x27;, 3)[0] == 5
+</pre></article>
+</main>
+</body>
+</html>

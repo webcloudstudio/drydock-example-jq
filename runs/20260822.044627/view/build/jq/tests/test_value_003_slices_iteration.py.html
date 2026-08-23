@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_value_003_slices_iteration.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_value_003_slices_iteration.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_value_003_slices_iteration.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Executable coverage for VALUE-003 slices and collection iteration.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+EXECUTABLE = ROOT / &quot;jq&quot;
+
+
+def run_jq(program: str, value: object) -&gt; subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(EXECUTABLE), &quot;-c&quot;, program],
+        input=json.dumps(value) + &quot;\n&quot;,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def outputs(result: subprocess.CompletedProcess[str]) -&gt; list[object]:
+    return [json.loads(line) for line in result.stdout.splitlines()]
+
+
+def test_array_slices_round_fractional_and_negative_bounds() -&gt; None:
+    result = run_jq(&quot;.[1.2:4.1], .[-3:], .[99:]&quot;, [0, 1, 2, 3, 4])
+    assert result.returncode == 0
+    assert outputs(result) == [[1, 2, 3, 4], [2, 3, 4], []]
+
+
+def test_string_slices_use_unicode_codepoints_and_clamp_bounds() -&gt; None:
+    result = run_jq(&quot;.[1:3], .[:-2], .[20:]&quot;, &quot;a😀bcde&quot;)
+    assert result.returncode == 0
+    assert outputs(result) == [&quot;😀b&quot;, &quot;a😀bc&quot;, &quot;&quot;]
+
+
+def test_slicing_null_is_null_and_empty_ranges_are_empty() -&gt; None:
+    result = run_jq(&quot;.[:3], .[3:2]&quot;, None)
+    assert result.returncode == 0
+    assert outputs(result) == [None, None]
+
+
+def test_array_and_object_iteration_preserves_order_and_multiplicity() -&gt; None:
+    result = run_jq(&quot;.[], .obj[]&quot;, {&quot;obj&quot;: {&quot;a&quot;: 1, &quot;b&quot;: 1}})
+    assert result.returncode == 0
+    assert outputs(result) == [{&quot;a&quot;: 1, &quot;b&quot;: 1}, 1, 1]
+
+    result = run_jq(&quot;.items[] | .name&quot;, {&quot;items&quot;: [{&quot;name&quot;: &quot;a&quot;}, {&quot;name&quot;: &quot;b&quot;}]})
+    assert result.returncode == 0
+    assert outputs(result) == [&quot;a&quot;, &quot;b&quot;]
+
+    result = run_jq(&quot;.[]&quot;, {&quot;a&quot;: 1, &quot;b&quot;: 1})
+    assert result.returncode == 0
+    assert outputs(result) == [1, 1]
+
+
+def test_optional_iteration_suppresses_invalid_inputs() -&gt; None:
+    result = run_jq(&quot;[.[] | .[]?]&quot;, [1, None, [], {&quot;x&quot;: 2}, True])
+    assert result.returncode == 0
+    assert outputs(result) == [[2]]
+</pre></article>
+</main>
+</body>
+</html>

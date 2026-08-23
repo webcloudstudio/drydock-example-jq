@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build/jq/tests/test_value_004.py</title>
+<link rel="stylesheet" href="../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>build/jq/tests/test_value_004.py</h1><div class="filenav"><a href="../../../../index.html">&larr; Report</a><a href="../../../../build/jq/tests/test_value_004.py">Raw file</a></div></header>
+<article class="doc"><pre>&quot;&quot;&quot;Deterministic coverage for type, numeric, conversion, and math primitives.&quot;&quot;&quot;
+
+import json
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).parents[1]
+
+
+def run_jq(program: str, input_value: object = None) -&gt; tuple[int, list[object]]:
+    process = subprocess.run(
+        [str(ROOT / &quot;jq&quot;), &quot;-c&quot;, program],
+        input=json.dumps(input_value) + &quot;\n&quot;,
+        capture_output=True,
+        text=True,
+    )
+    outputs = [json.loads(line) for line in process.stdout.splitlines()]
+    return process.returncode, outputs
+
+
+def test_type_length_and_utf8_byte_length() -&gt; None:
+    code, output = run_jq(&quot;[type, length, \&quot;μ\&quot; | utf8bytelength]&quot;, [&quot;a&quot;, &quot;b&quot;])
+    assert code == 0
+    assert output == [[&quot;array&quot;, 2, 2]]
+
+
+def test_numeric_predicates_and_conversions() -&gt; None:
+    programs = [
+        (&quot;infinite|isinfinite&quot;, None, [True]),
+        (&quot;nan|isnan&quot;, None, [True]),
+        (&quot;1|isfinite&quot;, None, [True]),
+        (&quot;1|isnormal&quot;, None, [True]),
+        (&#x27;&quot;true&quot;|toboolean&#x27;, None, [True]),
+        (&#x27;&quot;1.5&quot;|tonumber&#x27;, None, [1.5]),
+        (&quot;4|tostring&quot;, None, [&quot;4&quot;]),
+    ]
+    for program, input_value, expected in programs:
+        code, output = run_jq(program, input_value)
+        assert code == 0
+        assert output == expected
+
+
+def test_math_functions_and_invalid_conversion_exit_runtime() -&gt; None:
+    code, output = run_jq(&quot;[sqrt, floor, sin, pow(2; 3)]&quot;, 9.9)
+    assert code == 0
+    assert output == [[3.146426544510455, 9, -0.45753589377532133, 8]]
+
+    code, output = run_jq(&quot;tonumber&quot;, &quot;not-a-number&quot;)
+    assert code == 5
+    assert output == []
+</pre></article>
+</main>
+</body>
+</html>

@@ -5,7 +5,11 @@ from collections.abc import Iterable, Iterator
 
 from .evaluator import evaluate
 from .parser import parse
-from .runtime import JsonValue
+from .runtime import InputNumber, JsonValue
+
+
+class _InputInteger(int):
+    """An input integer whose literal spelling remains available to jq."""
 
 
 class Interpreter:
@@ -32,7 +36,25 @@ def parse_inputs(text: str) -> Iterator[JsonValue]:
     span multiple physical lines.  ``raw_decode`` preserves the boundary
     between successive values without requiring a non-standard JSON parser.
     """
-    decoder = json.JSONDecoder(parse_constant=_parse_json_constant)
+    # jq accepts its non-standard constants in lower case as well.  The
+    # standard decoder only dispatches parse_constant for JSON's capitalized
+    # spellings, so normalize standalone bare constants before decoding.
+    import re
+    text = re.sub(r'(?<![A-Za-z_])-(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])', lambda m: '-NaN' if 'nan' in m.group(0).lower() else '-Infinity', text)
+    text = re.sub(r'(?<![A-Za-z_])(?:nan|infinite|NaN|Infinity)(?![A-Za-z_])', lambda m: 'NaN' if m.group(0).lower() == 'nan' else 'Infinity', text)
+    text = re.sub(r'(?<![A-Za-z_])-NaN(?![A-Za-z_])', 'NaN', text)
+    def parse_integer(text: str) -> int | float:
+        integer = int(text)
+        # Retain spelling only where the configured double representation can
+        # no longer represent the integer exactly.  Ordinary integers remain
+        # ints so diagnostics and compact structural values keep jq's shape.
+        return InputNumber(text) if abs(integer) > 2**53 else _InputInteger(integer)
+
+    decoder = json.JSONDecoder(
+        parse_constant=_parse_json_constant,
+        parse_int=parse_integer,
+        parse_float=InputNumber,
+    )
     position = 0
     while True:
         while position < len(text) and text[position].isspace():
@@ -48,5 +70,7 @@ def parse_inputs(text: str) -> Iterator[JsonValue]:
 
 def _parse_json_constant(value: str) -> float:
     """Decode jq's accepted non-standard numeric constants."""
-    return {"NaN": float("nan"), "Infinity": float("inf"),
-            "-Infinity": float("-inf")}[value]
+    return {"NaN": float("nan"), "nan": float("nan"),
+            "Infinity": float("inf"), "infinite": float("inf"),
+            "-Infinity": float("-inf"), "-infinite": float("-inf"),
+            "-NaN": float("nan"), "-nan": float("nan")} [value]

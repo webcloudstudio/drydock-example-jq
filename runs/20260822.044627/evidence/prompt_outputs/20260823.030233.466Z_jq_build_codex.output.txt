@@ -1,0 +1,15 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/errors.py
+- jq_interpreter/evaluator.py
+- jq_interpreter/cli.py
+- tests/test_flow_003_conditionals_exceptions.py
+
+SUMMARY:
+Implemented robust conditional and exception-flow handling with runtime error propagation, partial-output preservation, and optional suppression.
+
+Verification: scoped conformance passed 147/147; pytest passed 92 tests.
+
+BLOCKERS:
+- None

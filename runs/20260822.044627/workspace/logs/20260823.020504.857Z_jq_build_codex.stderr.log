@@ -1,0 +1,4 @@
+2026-08-23T02:11:03.243315Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+        if isinstance(k, bool) or not isinstance(k, (int, float)) or int(k) != k:
+            raise RuntimeError(f"Cannot index array with string ({json.dumps(k)})")
+        index = int(k)

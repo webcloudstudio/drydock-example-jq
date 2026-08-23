@@ -1,0 +1,11 @@
+RESULT: SUCCESS
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+- tests/test_service_lexical_bindings.py
+
+SUMMARY:
+Implemented `?//` backtracking through continuation errors while preserving final-alternative failures. Added regression tests. Pytest: 122 passed; scoped conformance: 23 passed, 0 failed, 0 errored.
+
+BLOCKERS:
+- None

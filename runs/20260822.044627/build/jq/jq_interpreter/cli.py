@@ -7,7 +7,7 @@ import sys
 from collections.abc import Iterator
 
 from .diagnostics import report_compile_error, report_runtime_error
-from .errors import CompileError, RuntimeError
+from .errors import CompileError, FLOW_RUNTIME_ERRORS, RuntimeError
 from .interpreter import Interpreter, parse_inputs
 
 # The conformance corpus deliberately exercises jq's deep-value limit with
@@ -49,6 +49,6 @@ def main(argv: list[str] | None = None) -> int:
         for output in interpreter.run(_inputs()):
             from .evaluator import _deep_json_dumps
             print(_deep_json_dumps(output), flush=True)
-    except (RuntimeError, ValueError, TypeError, json.JSONDecodeError) as error:
+    except FLOW_RUNTIME_ERRORS + (json.JSONDecodeError,) as error:
         return report_runtime_error(RuntimeError(str(error)))
     return 0

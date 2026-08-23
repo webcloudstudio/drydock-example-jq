@@ -3,12 +3,12 @@
   "assertions": {
     "failed": 2,
     "harness_defects": 0,
-    "passed": 15,
+    "passed": 46,
     "product_defects": 2,
     "unverified": 0
   },
   "attestations": [],
-  "build_passes": 3,
+  "build_passes": 4,
   "commands": [
     {
       "argv": [
@@ -104,7 +104,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1952,
+      "elapsed_ms": 1657,
       "label": "05-plan-verify",
       "llm_executions": [],
       "returncode": 0,
@@ -121,7 +121,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 3051,
+      "elapsed_ms": 4088,
       "label": "06-after-plan-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -137,7 +137,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1445,
+      "elapsed_ms": 1087,
       "label": "07-after-plan-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -152,7 +152,7 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 495,
+      "elapsed_ms": 496,
       "label": "08-after-plan-workspace-status",
       "llm_executions": [],
       "returncode": 0,
@@ -169,7 +169,7 @@
         "--ready"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 493,
+      "elapsed_ms": 342,
       "label": "09-initial-ready",
       "llm_executions": [],
       "returncode": 0,
@@ -185,19 +185,58 @@
         "jq",
         "--override",
         "--repair-attempts",
-        "6"
+        "15"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 4896574,
+      "elapsed_ms": 19526187,
       "label": "10-initial-build-1",
       "llm_executions": [
-        "20260822.220746.747Z-525f03f6",
-        "20260822.222140.216Z-50c59f2d",
-        "20260822.223147.922Z-75b9cff2",
-        "20260822.224330.910Z-6102de7b",
-        "20260822.225404.795Z-9d946a42",
-        "20260822.230353.199Z-399c8a04",
-        "20260822.231236.324Z-ca97b585"
+        "20260822.235339.932Z-4de96731",
+        "20260823.000143.358Z-bf6da6b1",
+        "20260823.001232.569Z-0f28cedb",
+        "20260823.002204.979Z-c838b1c2",
+        "20260823.003038.923Z-cf0bf882",
+        "20260823.004037.072Z-5412cbba",
+        "20260823.005049.805Z-cb2d06fb",
+        "20260823.005903.917Z-34989652",
+        "20260823.010841.589Z-02f53a81",
+        "20260823.011808.307Z-f32ef2f1",
+        "20260823.013010.037Z-f5e23d3d",
+        "20260823.014128.073Z-613a1d60",
+        "20260823.015653.931Z-3e0de83b",
+        "20260823.020504.857Z-c6c1a57e",
+        "20260823.021651.942Z-9c6d4747",
+        "20260823.022052.850Z-bef4ad90",
+        "20260823.022510.696Z-432b7141",
+        "20260823.022843.056Z-464edb0b",
+        "20260823.023237.129Z-a6819c83",
+        "20260823.023629.826Z-b996dd45",
+        "20260823.024036.322Z-8ffc2035",
+        "20260823.024538.026Z-0ab32bd1",
+        "20260823.025144.476Z-1fca168c",
+        "20260823.025726.811Z-1a745c35",
+        "20260823.030233.466Z-9b5cdcb2",
+        "20260823.030840.777Z-b10f3c99",
+        "20260823.031407.736Z-316a0d1a",
+        "20260823.032028.932Z-a3770ea3",
+        "20260823.032616.141Z-64a1b0fb",
+        "20260823.033302.960Z-9f231ffc",
+        "20260823.033926.906Z-4e4c50bc",
+        "20260823.034534.124Z-9931947b",
+        "20260823.035101.009Z-f278c23c",
+        "20260823.035649.869Z-75289107",
+        "20260823.040344.251Z-86ae74fe",
+        "20260823.041112.257Z-5b803ab1",
+        "20260823.041750.880Z-11477ccd",
+        "20260823.042455.513Z-305e685e",
+        "20260823.043147.349Z-0a77f7d7",
+        "20260823.043810.706Z-eb6692b5",
+        "20260823.044517.300Z-207a6942",
+        "20260823.045149.005Z-117c6dab",
+        "20260823.045829.748Z-fc12eacc",
+        "20260823.050643.757Z-9a5171fd",
+        "20260823.051211.244Z-d8e948ad",
+        "20260823.051322.004Z-76747529"
       ],
       "returncode": 1,
       "stderr_path": "evidence/commands/10-initial-build-1.stderr.log",
@@ -213,7 +252,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1225,
+      "elapsed_ms": 2175,
       "label": "11-after-initial-build-build-status",
       "llm_executions": [],
       "returncode": 0,
@@ -229,7 +268,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 1383,
+      "elapsed_ms": 1557,
       "label": "12-after-initial-build-target-status",
       "llm_executions": [],
       "returncode": 0,
@@ -244,7 +283,7 @@
         "status"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 518,
+      "elapsed_ms": 420,
       "label": "13-after-initial-build-workspace-status",
       "llm_executions": [],
       "returncode": 0,
@@ -255,17 +294,17 @@
   "degraded": [
     "initial-build-1 exited 1"
   ],
-  "elapsed_ms": 4937229,
+  "elapsed_ms": 19610619,
   "environment": {
     "drydock_version": "0.2.0",
     "effort": "",
-    "finished_at": "2026-08-22T23:25:45.165283Z",
+    "finished_at": "2026-08-23T05:15:58.117981Z",
     "git_commit": "b6180cf90d8f416e778a09e787101cfc5e91831d",
     "model": "gpt-5.6-luna",
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "provider": "codex",
     "python_version": "3.12.13",
-    "started_at": "2026-08-22T22:03:27.867908Z"
+    "started_at": "2026-08-22T23:49:07.351627Z"
   },
   "error": "jq: stopped at initial-build-1: The build exited 1 with work still on the frontier. Diagnose the failing block from its evidence before rerunning; a score taken over a partial build grades the absence, not the product.",
   "evidence_dir": "evidence",
@@ -281,12 +320,12 @@
   "status": "failed",
   "target": "jq",
   "usage": {
-    "cached_input_tokens": 43618304,
-    "calls": 134,
-    "fresh_input_tokens": 7831128,
-    "input_tokens": 51449432,
+    "cached_input_tokens": 131998720,
+    "calls": 180,
+    "fresh_input_tokens": 13179094,
+    "input_tokens": 145177814,
     "invalid_records": 0,
-    "llm_elapsed_ms": 13746709,
-    "output_tokens": 465982
+    "llm_elapsed_ms": 25809466,
+    "output_tokens": 775850
   }
 }
