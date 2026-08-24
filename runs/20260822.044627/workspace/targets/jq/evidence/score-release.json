@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "recorded_at": "2026-08-24T02:14:12+00:00",
+  "recorded_at": "2026-08-24T02:43:11+00:00",
   "target": "jq",
   "verdict": "PASSED",
   "verdict_line": "jq: PASSED \u2014 1 of 1",
@@ -14,7 +14,7 @@
       "sources/full_test.sh"
     ],
     "return_code": 0,
-    "duration_ms": 113534,
+    "duration_ms": 91165,
     "detail": "",
     "timed_out": false,
     "build_identity": "eb6ad4593ef8a567",
@@ -25,7 +25,7 @@
     {
       "criterion_id": "st-001",
       "verdict": "MET",
-      "rationale": "The supplied scoring script exited zero with 537 passed, 0 failed, 0 errored, and 13 skipped tests.",
+      "rationale": "The supplied scoring script exited zero and reported 537 passed, 0 failed, and 0 errored tests.",
       "evidence": [
         "[\"sh\", \"sources/full_test.sh\"] exited 0",
         "sh sources/full_test.sh exited 0",
@@ -51,9 +51,11 @@
   "warnings": [
     "Build directory has uncommitted changes"
   ],
-  "improvements": [],
+  "improvements": [
+    "Review the build directory\u2019s uncommitted changes before release."
+  ],
   "identities": {
-    "code": "5556632e4c4944ecc70166d6590810904a4d742c",
+    "code": "fbd3e2ed64c30766af76e72742ca3d3697bf8487",
     "sea_trials": "9942ff77e4696824d18588e9287c9724537fa39545a344e2e9f2bad6bbcd8c12",
     "blueprint": {
       "ARCHITECTURE.md": "804f795bcb5936ed9308172bfc354af1341b7ac3f836bc04948b5e4308da2eae",
@@ -114,5 +116,5 @@
       "run_conformance_compact.md": "29ae1b251944769b74a3dd6bf29c1c9f1f94995502713e311803de926410550e"
     }
   },
-  "execution_id": "20260824.021404.594Z-a550f350"
+  "execution_id": "20260824.024305.095Z-a7704d1b"
 }

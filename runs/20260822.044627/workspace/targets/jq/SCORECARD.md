@@ -28,7 +28,7 @@ Tokens: 103,535,036 (cached 97,192,704, output 364,320)   Cache hit rate: 94.2%
 ## Release
 
 > **RELEASED**
-> drydock score release jq · 2026-08-24T02:14:13.585+00:00
+> drydock score release jq · 2026-08-24T02:43:11.900+00:00
 
 - Verdict: PASSED
 
@@ -45,3 +45,6 @@ jq: PASSED — 1 of 1
 
 **Advisory warnings:**
 - Build directory has uncommitted changes
+
+**Ranked improvements:**
+1. Review the build directory’s uncommitted changes before release.

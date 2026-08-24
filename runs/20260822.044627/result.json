@@ -290,7 +290,7 @@
         "sources/full_test.sh"
       ],
       "cwd": "build/jq",
-      "elapsed_ms": 105363,
+      "elapsed_ms": 107411,
       "label": "16-test",
       "llm_executions": [],
       "returncode": 0,
@@ -307,7 +307,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 15932,
+      "elapsed_ms": 16046,
       "label": "17-score-acceptance",
       "llm_executions": [],
       "returncode": 1,
@@ -324,7 +324,7 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 15531,
+      "elapsed_ms": 15540,
       "label": "18-score-build-report",
       "llm_executions": [],
       "returncode": 1,
@@ -341,10 +341,10 @@
         "jq"
       ],
       "cwd": "workspace",
-      "elapsed_ms": 256457,
+      "elapsed_ms": 215334,
       "label": "19-score-release",
       "llm_executions": [
-        "20260824.021404.594Z-a550f350"
+        "20260824.024305.095Z-a7704d1b"
       ],
       "returncode": 1,
       "stderr_path": "evidence/commands/19-score-release.stderr.log",
@@ -352,17 +352,17 @@
     }
   ],
   "degraded": [],
-  "elapsed_ms": 472651,
+  "elapsed_ms": 403858,
   "environment": {
     "drydock_version": "0.2.0",
     "effort": "",
-    "finished_at": "2026-08-24T02:15:48.861466Z",
-    "git_commit": "23e60265a3ea5630f70363378f1aac610da09b97",
+    "finished_at": "2026-08-24T02:44:16.713791Z",
+    "git_commit": "dd0f062954d29dadd8e695cb5ddd7768fe8c2218",
     "model": "gpt-5.6-luna",
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "provider": "codex",
     "python_version": "3.12.13",
-    "started_at": "2026-08-24T02:07:56.038502Z"
+    "started_at": "2026-08-24T02:37:32.730621Z"
   },
   "error": "",
   "evidence_dir": "evidence",
@@ -382,12 +382,12 @@
   "status": "passed",
   "target": "jq",
   "usage": {
-    "cached_input_tokens": 140962048,
-    "calls": 188,
-    "fresh_input_tokens": 13722404,
-    "input_tokens": 154684452,
+    "cached_input_tokens": 140971008,
+    "calls": 189,
+    "fresh_input_tokens": 13727704,
+    "input_tokens": 154698712,
     "invalid_records": 0,
-    "llm_elapsed_ms": 27679699,
-    "output_tokens": 813916
+    "llm_elapsed_ms": 27686084,
+    "output_tokens": 814078
   }
 }
