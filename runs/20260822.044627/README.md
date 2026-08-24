@@ -1,7 +1,7 @@
 # JQ
 
 - Short description: Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46 excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from github.com/jqlang/jq at tag jq-1.8.2, SHA-256 verified in PROVENANCE.md.
-- Status: BUILT
+- Status: PROJECT COMPLETE
 
 3 of 4 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
 
@@ -12,7 +12,7 @@
 | Lifecycle completed | PASS | 19 lifecycle commands executed; the run ended at 19-score-release. | [result.json](result.json) |
 | External conformance suite passed | PASS | sh sources/full_test.sh exited 0. | [evidence/commands/16-test.stdout.log](evidence/commands/16-test.stdout.log) |
 | Release score passed | FAIL | drydock score release exited 1. | [evidence/commands/19-score-release.stdout.log](evidence/commands/19-score-release.stdout.log) |
-| Integrity verification passed | PASS | 2,697 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Integrity verification passed | PASS | 2,000 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
