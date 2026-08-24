@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/logs/20260823.050643.757Z_jq_build_codex.stderr.log</title>
+<link rel="stylesheet" href="../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/logs/20260823.050643.757Z_jq_build_codex.stderr.log</h1><div class="filenav"><a href="../../../../../../index.html">&larr; Report</a><a href="../../../../../../workspace/targets/jq/drydock_receipt/logs/20260823.050643.757Z_jq_build_codex.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>2026-08-23T05:08:21.737227Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+def _match_object(match: re.Match[str]) -&gt; dict[str, object]:
+    captures = []
+    for index, name in enumerate(match.re.groupindex, 1):
+        start, end = match.span(name)
+        captures.append({&#x27;offset&#x27;: start if start &gt;= 0 else -1,
+                         &#x27;length&#x27;: end - start if start &gt;= 0 else 0,
+                         &#x27;string&#x27;: match.group(name) if start &gt;= 0 else None,
+                         &#x27;name&#x27;: name})
+    named = set(match.re.groupindex)
+    for index in range(1, match.re.groups + 1):
+        if index not in [match.re.groupindex[name] for name in named]:
+            start, end = match.span(index)
+            captures.append({&#x27;offset&#x27;: start if start &gt;= 0 else -1,
+                             &#x27;length&#x27;: end - start if start &gt;= 0 else 0,
+                             &#x27;string&#x27;: match.group(index) if start &gt;= 0 else None,
+                             &#x27;name&#x27;: None})
+    captures.sort(key=lambda item: (item[&#x27;offset&#x27;] &lt; 0, item[&#x27;offset&#x27;]))
+</pre></article>
+</main>
+</body>
+</html>

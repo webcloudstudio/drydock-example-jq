@@ -1,0 +1,5 @@
+2026-08-22T22:57:26.418675Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/cli.py:
+            print(
+                json.dumps(_json_output(output), separators=(',', ':'), ensure_ascii=False),
+                flush=True,
+            )

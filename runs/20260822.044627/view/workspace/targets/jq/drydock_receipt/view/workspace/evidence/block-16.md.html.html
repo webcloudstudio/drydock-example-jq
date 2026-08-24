@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-16.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-16.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-16.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-16.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-16.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-16.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 16 · Service (block-16)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-22&lt;/li&gt;&lt;li&gt;resulting state: closed/verified&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 51353&lt;/li&gt;&lt;li&gt;execution id: 20260823.024538.026Z-0ab32bd1&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement type, length, numeric predicates, conversions, and math. (VALUE-004) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Acceptance tooling authorization&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;FEATURE-VALUE-004.md#value-004-conformance: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-VALUE-004.md (SP 451)&lt;/li&gt;&lt;li&gt;context: jq-manual.txt (SP 32696)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python_compact.md (SP 1534)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Build directory changes&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;tests/test_value_004.py&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;RED: value-004-conformance (FEATURE-VALUE-004.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The implementation passes the authoritative corpus slice covering type, length, numeric predicates, conversions, and math functions. return code: 1 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 17, &amp;quot;fail&amp;quot;: 1, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 2 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 741, &amp;quot;program&amp;quot;: &amp;quot;utf8bytelength&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;fail&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;program did not compile: jq: compile error: unknown filter&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;6&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1973, &amp;quot;program&amp;quot;: &amp;quot;modulemeta | .deps | length&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;6&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1977, &amp;quot;program&amp;quot;: &amp;quot;modulemeta | .defs | length&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;2&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] } stderr: --- drydock: progress --- cases: pass=17 fail=1 error=0 skip=2 total=20 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 17, &amp;#x27;fail&amp;#x27;: 1, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 2} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;value-004-conformance.py&amp;quot;, line 18, in &amp;lt;module&amp;gt; assert summary[&amp;quot;fail&amp;quot;] == 0 and summary[&amp;quot;error&amp;quot;] == 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;PASS: value-004-conformance (FEATURE-VALUE-004.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The implementation passes the authoritative corpus slice covering type, length, numeric predicates, conversions, and math functions. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 18, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 2 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 1973, &amp;quot;program&amp;quot;: &amp;quot;modulemeta | .deps | length&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;6&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1977, &amp;quot;program&amp;quot;: &amp;quot;modulemeta | .defs | length&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;2&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] }&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;RESULT: SUCCESS&lt;/p&gt;
+&lt;p&gt;FILES CHANGED:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_value_004.py&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;SUMMARY: Implemented VALUE-004 type, length, UTF-8 length, conversions, numeric predicates, and math builtins. Scoped conformance: 18 passed, 0 failed, 0 errored. Tests: 76 passed.&lt;/p&gt;
+&lt;p&gt;BLOCKERS:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;None&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

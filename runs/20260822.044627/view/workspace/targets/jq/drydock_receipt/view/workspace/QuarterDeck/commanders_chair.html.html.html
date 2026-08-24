@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/QuarterDeck/commanders_chair.html.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/QuarterDeck/commanders_chair.html.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/QuarterDeck/commanders_chair.html.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/QuarterDeck/commanders_chair.html&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/QuarterDeck/commanders_chair.html&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/QuarterDeck/commanders_chair.html&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&amp;quot;en&amp;quot;&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;meta charset=&amp;quot;UTF-8&amp;quot;&amp;gt;
+&amp;lt;meta name=&amp;quot;viewport&amp;quot; content=&amp;quot;width=device-width, initial-scale=1.0&amp;quot;&amp;gt;
+&amp;lt;title&amp;gt;Commanders Chair - jq&amp;lt;/title&amp;gt;
+&amp;lt;style&amp;gt;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, system-ui, sans-serif;
+  background: #10201A;
+  color: #e2e8f0;
+  padding: 2rem;
+  min-height: 80vh;
+}
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2C4A3B;
+}
+.target-line,
+.chair-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+.label { color: #8FB3A2; }
+.header-meta {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+.header-meta li {
+  color: #C9D8CF;
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+}
+.question-lead {
+  margin: 2rem 0;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #2C4A3B;
+}
+.question-lead h2 {
+  color: #f8fafc;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.question-status {
+  color: #C9D8CF;
+  font-size: 1rem;
+  margin-bottom: 0.9rem;
+}
+.next-step {
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+}
+.next-step strong {
+  color: #8FB3A2;
+  font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+}
+.big-error-panel {
+  margin-top: 1rem;
+  background: #7f1d1d;
+  border: 2px solid #f87171;
+  border-radius: 0.5rem;
+  color: #fee2e2;
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 1rem;
+}
+.big-error-panel strong { color: #fff; font-size: 1.15rem; }
+.running-panel {
+  margin-top: 1rem;
+  background: #172554;
+  border: 2px solid #60a5fa;
+  border-radius: 0.5rem;
+  color: #dbeafe;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+}
+.running-panel strong { color: #fff; letter-spacing: 0.08em; }
+.running-panel span:last-child { margin-left: auto; color: #bfdbfe; }
+.running-pulse {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: #60a5fa;
+  box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7);
+  animation: running-pulse 1.5s infinite;
+}
+@keyframes running-pulse {
+  70% { box-shadow: 0 0 0 0.6rem rgba(96, 165, 250, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+}
+.state-panel {
+  margin-top: 1rem;
+  background: #10231b;
+  border: 1px solid #2C4A3B;
+  border-radius: 0.5rem;
+  padding: 0.9rem 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+  color: #cbd5e1;
+}
+.state-panel strong {
+  color: #fff;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.state-verdict {
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+.state-verdict.state-pass { background: #14532d; color: #86efac; }
+.state-verdict.state-fail { background: #7f1d1d; color: #fecaca; }
+.state-when { margin-left: auto; color: #94a3b8; font-size: 0.8rem; }
+.state-ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.state-step {
+  border: 1px solid #2C4A3B;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+/* Held: reached and still standing. A state the machine dropped is indistinguishable from
+   one never reached, so both render as pending — the ladder never implies a lost pass. */
+.state-step.state-held { border-color: #14532d; color: #86efac; }
+.state-step.state-current { font-weight: 700; }
+.state-step.state-current.state-pass { background: #14532d; border-color: #22c55e; color: #dcfce7; }
+.state-step.state-current.state-fail,
+.state-step.state-fail { background: #7f1d1d; border-color: #ef4444; color: #fee2e2; }
+.chair-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin: 1.25rem 0 0;
+  border-bottom: 1px solid #2C4A3B;
+}
+.chair-tab {
+  appearance: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #8FB3A2;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  padding: 0.7rem 1rem;
+}
+.chair-tab:hover { color: #e2e8f0; }
+.chair-tab.active {
+  border-bottom-color: #60a5fa;
+  color: #f8fafc;
+}
+.chair-pane[hidden] { display: none; }
+.live-pane {
+  min-height: 18rem;
+  padding: 1.5rem 0;
+}
+.live-pane table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.live-pane th,
+.live-pane td {
+  border-bottom: 1px solid #2C4A3B;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.live-pane th { color: #8FB3A2; text-transform: uppercase; letter-spacing: 0.05em; }
+.live-pane code { color: #dbeafe; white-space: normal; overflow-wrap: anywhere; }
+.run-history-summary { color: #8FB3A2; margin-bottom: 1rem; }
+.run-history-scroll { overflow-x: auto; border: 1px solid #2C4A3B; border-radius: 0.6rem; }
+.run-history-table { min-width: 760px; background: #142820; }
+.run-history-table th { background: #1B2E25; font-size: 0.72rem; }
+.run-history-table tbody tr { transition: background 120ms ease; }
+.run-history-table tbody tr:hover { background: #1B352A; }
+.run-history-table td { padding: 0.8rem 0.9rem; }
+.run-time { color: #C9D8CF; font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace; white-space: nowrap; }
+.run-status,
+.run-phase {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.run-status-success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
+.run-status-failed { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+.run-status-recorded { background: #78350f; color: #fef3c7; border: 1px solid #fbbf24; }
+.run-phase { background: #172554; color: #bfdbfe; border: 1px solid #3b82f6; }
+.run-command {
+  display: inline-block;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid #315443;
+  border-radius: 0.35rem;
+  background: #0F1D17;
+  color: #C9D8CF;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.run-command-tool { color: #5eead4; font-weight: 750; }
+.llm-table { min-width: 1180px; }
+.llm-table td.num,
+.llm-table th.num {
+  text-align: right;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+  white-space: nowrap;
+}
+.llm-muted { color: #7F9E8E; }
+.llm-detail {
+  color: #8FB3A2;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+  font-size: 0.76rem;
+  margin-top: 0.35rem;
+}
+.llm-provider {
+  color: #C9D8CF;
+  font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.llm-stats { grid-template-columns: repeat(4, minmax(120px, 1fr)); margin-bottom: 1.25rem; }
+.llm-stats .stat-value { font-size: 1.6rem; }
+.llm-heading {
+  color: #f8fafc;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 1.75rem 0 0.75rem;
+  text-transform: uppercase;
+}
+.llm-note {
+  background: #142820;
+  border: 1px solid #2C4A3B;
+  border-left: 3px solid #60a5fa;
+  border-radius: 0.5rem;
+  color: #C9D8CF;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  padding: 0.9rem 1.1rem;
+}
+.llm-note strong { color: #f8fafc; }
+.llm-note em { color: #8FB3A2; font-style: normal; font-weight: 650; }
+.llm-note code { color: #dbeafe; font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;Cascadia Code&amp;quot;, monospace; }
+.llm-rate-limit { color: #fde68a; font-size: 0.85rem; margin-bottom: 1rem; }
+.llm-failures { color: #C9D8CF; font-size: 0.85rem; line-height: 1.7; padding-left: 1.25rem; }
+.llm-failures code { color: #5eead4; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat {
+  display: block;
+  background: #1B2E25;
+  border: 1px solid #2C4A3B;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  color: inherit;
+  text-decoration: none;
+}
+.stat[href]:hover {
+  border-color: #3E6B54;
+  background: #234534;
+}
+.stat-value {
+  color: #f8fafc;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-label {
+  color: #8FB3A2;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  margin-top: 0.45rem;
+  text-transform: uppercase;
+}
+.story-list { display: grid; gap: 0.35rem; margin: 0; }
+.story-feature {
+  color: #8FB3A2;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+.story-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: #C9D8CF;
+  line-height: 1.5;
+}
+.story-name { flex: 1; }
+.badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.badge-pending  { background: #2C4A3B; color: #8FB3A2; }
+.badge-review   { background: #78350f; color: #fde68a; }
+.badge-verified { background: #14532d; color: #86efac; }
+.badge-failed   { background: #7f1d1d; color: #fca5a5; }
+.details {
+  display: grid;
+  gap: 1.25rem;
+}
+.detail-section {
+  border-top: 1px solid #2C4A3B;
+  padding-top: 1rem;
+}
+.detail-section h2 {
+  color: #f8fafc;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+.detail-section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.detail-section li {
+  color: #C9D8CF;
+  line-height: 1.5;
+  margin: 0.25rem 0;
+}
+.empty {
+  color: #8FB3A2;
+  font-style: italic;
+}
+@media (max-width: 760px) {
+  body { padding: 1.25rem; }
+  .header { grid-template-columns: 1fr; }
+  .stats,
+  .llm-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .running-panel { align-items: flex-start; flex-direction: column; }
+  .running-panel span:last-child { margin-left: 0; }
+  .state-panel { align-items: flex-start; flex-direction: column; }
+  .state-when { margin-left: 0; }
+}
+&amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+&amp;lt;div class=&amp;quot;header&amp;quot;&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div class=&amp;quot;target-line&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;label&amp;quot;&amp;gt;Target:&amp;lt;/span&amp;gt; jq&amp;lt;/div&amp;gt;
+    &amp;lt;ul class=&amp;quot;header-meta&amp;quot;&amp;gt;
+      &amp;lt;li&amp;gt;- Building: 2026-08-23&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;img src=&amp;quot;/logo.png&amp;quot; alt=&amp;quot;Drydock&amp;quot; style=&amp;quot;height:64px;display:block;&amp;quot;&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;section class=&amp;quot;state-panel&amp;quot;&amp;gt;&amp;lt;strong&amp;gt;STATE: SCORE AC&amp;lt;span class=&amp;quot;state-verdict state-fail&amp;quot;&amp;gt;FAIL&amp;lt;/span&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;span&amp;gt;3 of 57 failed&amp;lt;/span&amp;gt;&amp;lt;span class=&amp;quot;state-when&amp;quot;&amp;gt;2026-08-23 08:29&amp;lt;/span&amp;gt;&amp;lt;ol class=&amp;quot;state-ladder&amp;quot;&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;INITIALIZED&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;IMPORTED&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;ANALYZED&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;PLAN CREATED&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step&amp;quot;&amp;gt;PLAN REPAIRED&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;BUILDING&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-held&amp;quot;&amp;gt;BUILT&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-current state-fail&amp;quot;&amp;gt;SCORE AC&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step state-fail&amp;quot;&amp;gt;SCORE BUILD&amp;lt;/li&amp;gt;&amp;lt;li class=&amp;quot;state-step&amp;quot;&amp;gt;SCORE RELEASE&amp;lt;/li&amp;gt;&amp;lt;/ol&amp;gt;&amp;lt;/section&amp;gt;
+&amp;lt;nav class=&amp;quot;chair-tabs&amp;quot; aria-label=&amp;quot;Commanders Chair views&amp;quot;&amp;gt;
+  &amp;lt;button class=&amp;quot;chair-tab active&amp;quot; type=&amp;quot;button&amp;quot; data-chair-tab=&amp;quot;overview&amp;quot;&amp;gt;Overview&amp;lt;/button&amp;gt;
+  &amp;lt;button class=&amp;quot;chair-tab&amp;quot; type=&amp;quot;button&amp;quot; data-chair-tab=&amp;quot;build&amp;quot;&amp;gt;Build Report&amp;lt;/button&amp;gt;
+  &amp;lt;button class=&amp;quot;chair-tab&amp;quot; type=&amp;quot;button&amp;quot; data-chair-tab=&amp;quot;history&amp;quot;&amp;gt;Run History&amp;lt;/button&amp;gt;
+  &amp;lt;button class=&amp;quot;chair-tab&amp;quot; type=&amp;quot;button&amp;quot; data-chair-tab=&amp;quot;llm&amp;quot;&amp;gt;LLM Usage&amp;lt;/button&amp;gt;
+&amp;lt;/nav&amp;gt;
+
+&amp;lt;main id=&amp;quot;chair-overview&amp;quot; class=&amp;quot;chair-pane&amp;quot;&amp;gt;
+&amp;lt;section class=&amp;quot;question-lead&amp;quot;&amp;gt;
+  &amp;lt;div class=&amp;quot;question-status question-status-inline&amp;quot;&amp;gt;&amp;lt;strong&amp;gt;Questionnaires:&amp;lt;/strong&amp;gt; No open questionnaires&amp;lt;/div&amp;gt;
+  &amp;lt;div class=&amp;quot;next-step&amp;quot;&amp;gt;&amp;lt;strong&amp;gt;Next Step:&amp;lt;/strong&amp;gt; drydock build jq  (44 steps remaining)&amp;lt;/div&amp;gt;
+&amp;lt;/section&amp;gt;
+
+&amp;lt;div class=&amp;quot;stats&amp;quot;&amp;gt;
+&amp;lt;div class=&amp;quot;stat&amp;quot;&amp;gt;&amp;lt;div class=&amp;quot;stat-value&amp;quot;&amp;gt;0%&amp;lt;/div&amp;gt;&amp;lt;div class=&amp;quot;stat-label&amp;quot;&amp;gt;Complete&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;stat&amp;quot;&amp;gt;&amp;lt;div class=&amp;quot;stat-value&amp;quot;&amp;gt;0&amp;lt;/div&amp;gt;&amp;lt;div class=&amp;quot;stat-label&amp;quot;&amp;gt;Verified&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;stat&amp;quot;&amp;gt;&amp;lt;div class=&amp;quot;stat-value&amp;quot;&amp;gt;0&amp;lt;/div&amp;gt;&amp;lt;div class=&amp;quot;stat-label&amp;quot;&amp;gt;In Review&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;stat&amp;quot;&amp;gt;&amp;lt;div class=&amp;quot;stat-value&amp;quot;&amp;gt;0&amp;lt;/div&amp;gt;&amp;lt;div class=&amp;quot;stat-label&amp;quot;&amp;gt;Failed&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;div class=&amp;quot;details&amp;quot;&amp;gt;
+  &amp;lt;section id=&amp;quot;stories&amp;quot; class=&amp;quot;detail-section&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Stories&amp;lt;/h2&amp;gt;
+    &amp;lt;div class=&amp;quot;story-list&amp;quot;&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 1 · Foundational&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Define the standalone jq interpreter architecture and module boundaries.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 2 · Foundational&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement the executable jq entry point.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 3 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement jq process exit and diagnostic behavior.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 4 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement JSON input and compact output handling.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 5 · Foundational&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Stage and validate immutable conformance assets.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 6 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement jq lexical scanning.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 7 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement literals, strings, escapes, and interpolation.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 8 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement jq filter expression grammar.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement declarations and control syntax parsing.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 9 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement the stream-valued filter evaluator.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 10 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement composition and Cartesian generator evaluation.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 11 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement empty, runtime errors, optional evaluation, and try.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 12 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement jq truthiness, equality, and ordering.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 13 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement the jq value and numeric model.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 14 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement field and index access.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 15 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement slices and collection iteration.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 16 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement type, length, numeric predicates, conversions, and math.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 17 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement arithmetic and structural operators.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 18 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement boolean and alternative operators.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 19 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement conditionals and exception flow.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 20 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement lexical labels and breaks.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 21 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement reductions and iteration controls.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 22 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement recursive generator primitives.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 23 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement lexical variable bindings.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 24 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement filter and value function parameters.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 25 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement function definitions, scope, and recursion.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 26 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement destructuring patterns and alternatives.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 27 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement path discovery and projection.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 28 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement path access and mutation primitives.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 29 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement deletion and assignment operators.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 30 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement complex assignment edge cases.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 31 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement collection transformation builtins.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 32 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement sorting and grouping builtins.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 33 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement object-entry and containment builtins.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 34 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement index and membership utilities.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 35 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement string manipulation builtins.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 36 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement JSON and output format filters.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 37 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement regular-expression filters.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 38 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement date and time filters.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 39 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement input stream controls.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 40 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement diagnostics and stderr output.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 41 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Implement streaming transformations.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 42 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Provide scoped conformance verification.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-feature&amp;quot;&amp;gt;Build Block 43 · Service&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;story-row&amp;quot;&amp;gt;&amp;lt;span class=&amp;quot;story-name&amp;quot;&amp;gt;Run the complete jq conformance corpus.&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;badge badge-review&amp;quot;&amp;gt;built&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+  &amp;lt;/section&amp;gt;
+  &amp;lt;section id=&amp;quot;questions&amp;quot; class=&amp;quot;detail-section&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Questionnaires&amp;lt;/h2&amp;gt;
+    
+  &amp;lt;/section&amp;gt;
+  &amp;lt;section id=&amp;quot;blockers&amp;quot; class=&amp;quot;detail-section&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Blockers&amp;lt;/h2&amp;gt;
+    
+  &amp;lt;/section&amp;gt;
+  &amp;lt;section id=&amp;quot;features&amp;quot; class=&amp;quot;detail-section&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Features&amp;lt;/h2&amp;gt;
+    
+  &amp;lt;/section&amp;gt;
+  &amp;lt;section id=&amp;quot;scorecard&amp;quot; class=&amp;quot;detail-section&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Scorecard&amp;lt;/h2&amp;gt;
+    &amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Not yet scored. Run drydock score release.&amp;lt;/p&amp;gt;
+  &amp;lt;/section&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;/main&amp;gt;
+
+&amp;lt;section id=&amp;quot;chair-build&amp;quot; class=&amp;quot;chair-pane live-pane&amp;quot; hidden&amp;gt;
+  &amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Loading build report…&amp;lt;/p&amp;gt;
+&amp;lt;/section&amp;gt;
+
+&amp;lt;section id=&amp;quot;chair-history&amp;quot; class=&amp;quot;chair-pane live-pane&amp;quot; hidden&amp;gt;
+  &amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Loading run history…&amp;lt;/p&amp;gt;
+&amp;lt;/section&amp;gt;
+
+&amp;lt;section id=&amp;quot;chair-llm&amp;quot; class=&amp;quot;chair-pane live-pane&amp;quot; hidden&amp;gt;
+  &amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Loading LLM usage…&amp;lt;/p&amp;gt;
+&amp;lt;/section&amp;gt;
+
+&amp;lt;script&amp;gt;
+(() =&amp;gt; {
+  const tabs = document.querySelectorAll(&amp;quot;[data-chair-tab]&amp;quot;);
+  const panes = document.querySelectorAll(&amp;quot;.chair-pane&amp;quot;);
+
+  const NAMES = [&amp;quot;overview&amp;quot;, &amp;quot;build&amp;quot;, &amp;quot;history&amp;quot;, &amp;quot;llm&amp;quot;];
+  // Panes that read files the CLI keeps rewriting, so a left-open tab stays current.
+  const REFRESH_MS = 15000;
+  let refreshTimer = null;
+
+  async function loadLivePane(name, { showLoading = true } = {}) {
+    if (name === &amp;quot;overview&amp;quot;) return;
+    const pane = document.getElementById(`chair-${name}`);
+    if (showLoading) pane.innerHTML = &amp;#x27;&amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Loading…&amp;lt;/p&amp;gt;&amp;#x27;;
+    try {
+      const response = await fetch(`/api/chair/${name}`, { cache: &amp;quot;no-store&amp;quot; });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const markup = await response.text();
+      // A silent refresh only repaints on change, so it never interrupts a selection or
+      // scroll position while the reader is looking at the pane.
+      if (pane.innerHTML !== markup) pane.innerHTML = markup;
+    } catch (error) {
+      if (showLoading) {
+        pane.innerHTML = `&amp;lt;p class=&amp;quot;empty&amp;quot;&amp;gt;Unable to load ${name}: ${error.message}&amp;lt;/p&amp;gt;`;
+      }
+    }
+  }
+
+  function scheduleRefresh(name) {
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = null;
+    if (name === &amp;quot;overview&amp;quot;) return;
+    refreshTimer = setInterval(() =&amp;gt; {
+      // A background tab costs nothing: the browser throttles it anyway, and a hidden pane
+      // has no reader to serve.
+      if (document.hidden) return;
+      loadLivePane(name, { showLoading: false });
+    }, REFRESH_MS);
+  }
+
+  function activate(name, updateHash = true) {
+    tabs.forEach(tab =&amp;gt; {
+      const selected = tab.dataset.chairTab === name;
+      tab.classList.toggle(&amp;quot;active&amp;quot;, selected);
+      tab.setAttribute(&amp;quot;aria-selected&amp;quot;, selected ? &amp;quot;true&amp;quot; : &amp;quot;false&amp;quot;);
+    });
+    panes.forEach(pane =&amp;gt; { pane.hidden = pane.id !== `chair-${name}`; });
+    if (updateHash) history.replaceState(null, &amp;quot;&amp;quot;, `#chair-${name}`);
+    loadLivePane(name);
+    scheduleRefresh(name);
+  }
+
+  tabs.forEach(tab =&amp;gt; tab.addEventListener(&amp;quot;click&amp;quot;, () =&amp;gt; activate(tab.dataset.chairTab)));
+  const requested = location.hash.replace(&amp;quot;#chair-&amp;quot;, &amp;quot;&amp;quot;);
+  activate(NAMES.includes(requested) ? requested : &amp;quot;overview&amp;quot;, false);
+})();
+&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

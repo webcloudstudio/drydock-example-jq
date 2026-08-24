@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CONF-002.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CONF-002.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CONF-002.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-CONF-002.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-CONF-002.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-CONF-002.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: Scoped Conformance Verification&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Provides executable, machine-readable scoped conformance verification.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;ARCHITECTURE.md, FEATURE-CONF-001.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;scoped conformance execution with JQ candidate binding&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;./jq, sources/run_conformance.py&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Workflow&lt;/h2&gt;
+&lt;p&gt;Scoped verification invokes the supplied runner against a construct selector, extends the inherited environment with the candidate executable through &lt;code&gt;JQ&lt;/code&gt;, parses the runner&amp;#x27;s JSON report, and requires every selected case to pass without errors.&lt;/p&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC conf-002-scoped-run ===&lt;br&gt;Intent: The scoped verification assets expose the candidate binding and machine-readable selector contracts.&lt;br&gt;Suite: scoped&lt;/p&gt;
+&lt;p&gt;from pathlib import Path&lt;/p&gt;
+&lt;p&gt;runner = Path(&amp;quot;sources/run_conformance.py&amp;quot;) assert runner.is_file() source = runner.read_text(encoding=&amp;quot;utf-8&amp;quot;) assert &amp;quot;JQ&amp;quot; in source and &amp;quot;--select&amp;quot; in source and &amp;quot;--json&amp;quot; in source === END AC conf-002-scoped-run ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Scoped verification must execute selected cases and must never use enumeration, dry-run, or unscoped execution as its product verdict.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

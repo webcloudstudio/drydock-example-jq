@@ -1,0 +1,8 @@
+2026-08-23T00:05:12.476404Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+        elif op=='-':
+            if not isinstance(x,(int,float)) or not isinstance(y,(int,float)):
+2026-08-23T00:06:03.459420Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq_interpreter/evaluator.py: No such file or directory (os error 2)
+2026-08-23T00:06:12.945165Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if op in ('=', '|=', '+=', '-=', '*=', '/=', '%=', '//='):
+        paths = _paths(left, value, env)
+2026-08-23T00:08:04.545740Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/jq_interpreter/evaluator.py: No such file or directory (os error 2)

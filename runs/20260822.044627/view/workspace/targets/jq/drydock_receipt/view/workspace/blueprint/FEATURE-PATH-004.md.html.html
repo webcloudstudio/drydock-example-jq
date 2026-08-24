@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-PATH-004.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-PATH-004.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-PATH-004.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-PATH-004.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-PATH-004.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-PATH-004.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: Complex Assignment Edge Cases&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Completes jq assignment behavior for iterated, invalid, and deep paths.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;FEATURE-PATH-003.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;iterated assignment, empty updates, array expansion, invalid and deep paths&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;deletion and assignment operators&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Purpose&lt;/h2&gt;
+&lt;p&gt;Handle complex assignment cases involving iterated paths, empty updates, array expansion, invalid indices, NaN indices, string slices, and depth limits.&lt;/p&gt;
+&lt;h2&gt;Behavior&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Assignments through iterated and filtered paths update every selected location in jq order.&lt;/li&gt;&lt;li&gt;Empty updates remove selected array or object members.&lt;/li&gt;&lt;li&gt;Assignments beyond an array&amp;#x27;s current length expand it with &lt;code&gt;null&lt;/code&gt; values where specified.&lt;/li&gt;&lt;li&gt;Negative, fractional, and NaN indices follow jq&amp;#x27;s access and mutation rules.&lt;/li&gt;&lt;li&gt;String slices cannot be updated when jq forbids string mutation.&lt;/li&gt;&lt;li&gt;Path, containment, comparison, serialization, and merge depth limits are enforced.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC path-004-conformance ===&lt;br&gt;Intent: The authoritative corpus slice covering complex assignment edge cases executes and passes.&lt;br&gt;Suite: scoped&lt;br&gt;Requires: executable=python3; scope=test&lt;/p&gt;
+&lt;p&gt;import json import os import subprocess import sys&lt;/p&gt;
+&lt;p&gt;select = r&amp;quot;negative|NaN|depth|empty&amp;quot; result = subprocess.run( [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;], capture_output=True, text=True, env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&amp;quot;summary&amp;quot;] assert sum(summary.values()) &amp;gt; 0 assert summary[&amp;quot;fail&amp;quot;] == 0 assert summary[&amp;quot;error&amp;quot;] == 0 assert result.returncode == 0 === END AC path-004-conformance ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Reject invalid mutations with runtime errors rather than corrupting values.&lt;/li&gt;&lt;li&gt;Preserve partial output before runtime failure.&lt;/li&gt;&lt;li&gt;Enforce documented depth limits without recursion runaway.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

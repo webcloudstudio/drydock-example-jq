@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-Process-Contract.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-Process-Contract.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-Process-Contract.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Process Contract</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Defines jq compilation, runtime failure, success, partial-output, and diagnostic process behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-Executable-Entry-Point.md</td></tr><tr><td>Provides</td><td>compile exit 3, runtime exit 5, success exit 0, stderr diagnostics</td></tr><tr><td>Consumes</td><td>./jq -c program execution</td></tr></tbody></table></div>
+<h2>Compile and Runtime Outcomes</h2>
+<div class="scroll"><table><thead><tr><th>Condition</th><th>Exit</th></tr></thead><tbody><tr><td>Program compiles and finishes</td><td><code>0</code></td></tr><tr><td>Program is rejected during compilation</td><td><code>3</code></td></tr><tr><td>Program compiles and raises during evaluation</td><td><code>5</code></td></tr></tbody></table></div>
+<p>A compile failure must not be reported as a runtime failure. A runtime failure may occur after values have already been emitted; those values remain observable on stdout. Diagnostics go to stderr and are not part of the value stream.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC exec-002-compile-runtime ===<br>Intent: The executable distinguishes compile failures, runtime failures, and successful completion.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>compile_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;,], input=&quot;null\n&quot;, capture_output=True, text=True, ) runtime_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) success_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert compile_result.returncode == 3 assert runtime_result.returncode == 5 assert success_result.returncode == 0 assert compile_result.stderr != &quot;&quot; assert runtime_result.stderr != &quot;&quot; === END AC exec-002-compile-runtime ===</p>
+<p>=== AC exec-002-statuses ===<br>Intent: The executable exposes distinct compile, runtime, and successful completion statuses.</p>
+<p>import subprocess</p>
+<p>compile_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;,], input=&quot;null\n&quot;, capture_output=True, text=True, ) runtime_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) success_result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert compile_result.returncode == 3 assert runtime_result.returncode == 5 assert success_result.returncode == 0 === END AC exec-002-statuses ===</p>
+<p>=== AC exec-002-partial-output ===<br>Intent: A runtime failure preserves values emitted before the failure and keeps diagnostics off standard output.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 5 assert result.stdout.splitlines() == [&quot;1&quot;] assert result.stderr != &quot;&quot; === END AC exec-002-partial-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Compile failures exit <code>3</code>.</li><li>Runtime failures exit <code>5</code>.</li><li>Successful completion exits <code>0</code>.</li><li>Runtime output produced before failure is preserved.</li><li>Diagnostics are written to stderr only.</li></ul></article>
+</main>
+</body>
+</html>

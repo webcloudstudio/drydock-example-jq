@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.203559.802Z_jq_build_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.203559.802Z_jq_build_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.203559.802Z_jq_build_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.203559.802Z_jq_build_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.203559.802Z_jq_build_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.203559.802Z_jq_build_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Implemented `unique` parsing/evaluation with jq-style sorting and deduplication. Focused `unique` cases pass; all 32 project tests pass. Declared PARSE-003 and PARSE-004 conformance checks still fail due broader evaluator/parser gaps.
+
+BLOCKERS:
+- Remaining failures include generator semantics, builtins, destructuring, assignments, and control syntax.
+
+FAILURE_SUMMARY: Scoped conformance criteria remain failing.
+
+FAILURE_DETAIL: The existing interpreter passes local tests and focused unique cases, but the required PARSE-003 and PARSE-004 corpus selections still report many failures. Further evaluator and parser implementation is required.&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

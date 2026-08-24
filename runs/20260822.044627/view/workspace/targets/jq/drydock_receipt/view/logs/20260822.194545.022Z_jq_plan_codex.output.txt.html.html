@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.194545.022Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.194545.022Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.194545.022Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.194545.022Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.194545.022Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.194545.022Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-CONF-002.md ===
+# FEATURE: Scoped Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides executable, machine-readable scoped conformance verification. |
+| Depends On  | ARCHITECTURE.md, FEATURE-CONF-001.md |
+| Provides    | scoped conformance execution with JQ candidate binding |
+| Consumes    | ./jq, sources/run_conformance.py |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Scoped verification invokes the supplied runner against a construct selector, extends the inherited environment with the candidate executable through `JQ`, parses the runner&amp;#x27;s JSON report, and requires every selected case to pass without errors.
+
+## Programmatic Acceptance
+
+=== AC conf-002-scoped-run ===
+Intent: The scoped verification assets expose the candidate binding and machine-readable selector contracts.
+Suite: scoped
+
+from pathlib import Path
+
+runner = Path(&amp;quot;sources/run_conformance.py&amp;quot;)
+assert runner.is_file()
+source = runner.read_text(encoding=&amp;quot;utf-8&amp;quot;)
+assert &amp;quot;JQ&amp;quot; in source and &amp;quot;--select&amp;quot; in source and &amp;quot;--json&amp;quot; in source
+=== END AC conf-002-scoped-run ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Scoped verification must execute selected cases and must never use enumeration, dry-run, or unscoped execution as its product verdict.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-DATA-001.md ===
+# FEATURE: Collection Transformation Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq collection transformation builtins with generator-preserving semantics. |
+| Depends On  | ARCHITECTURE.md, FEATURE-PATH-004.md |
+| Provides    | map, map_values, select, add, flatten, transpose, combinations, walk |
+| Consumes    | ordered generator evaluator, assignment operators |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Collection filters transform arrays, objects, and nested values while preserving jq stream ordering and multiplicity. Implement `map`, `map_values`, `select`, `add`, `flatten`, `transpose`, `combinations`, and `walk`, including empty streams, bounded flattening, recursive traversal, and immutable updates.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+Intent: The collection transformation slice executes matching corpus cases and passes all selected cases.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;map|flatten|transpose|combinations|walk&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC data-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, backtracking, and immutable-value semantics.
+- Use only Python standard-library facilities.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-DATA-002.md ===
+# FEATURE: Sorting and Grouping Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq sorting, grouping, uniqueness, and extrema builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-DATA-001.md |
+| Provides    | sort, sort_by, group_by, unique, unique_by, min, max, min_by, max_by |
+| Consumes    | jq comparison and ordering |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement collection ordering according to jq&amp;#x27;s total value ordering: null, booleans, numbers, strings, arrays, and objects. Support key-generating filters, grouping, duplicate removal, minimum, maximum, and keyed extrema while retaining generator-derived key ordering.
+
+## Programmatic Acceptance
+
+=== AC data-002-conformance ===
+Intent: The sorting, grouping, uniqueness, and extrema slice executes matching corpus cases and passes all selected cases.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;sort|group_by|unique|min|max&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC data-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Comparisons must follow jq&amp;#x27;s structural type ordering and numeric equivalence.
+- Keyed operations must evaluate their filter arguments with jq generator semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-DATA-003.md ===
+# FEATURE: Object Entry and Containment Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq object-key, entry-conversion, and containment builtins. |
+| Depends On  | ARCHITECTURE.md, FEATURE-DATA-002.md |
+| Provides    | keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries |
+| Consumes    | jq value model, comparison and ordering |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement key enumeration for arrays and objects, membership predicates, recursive containment and inverse containment, object-to-entry and entry-to-object conversion, and `with_entries` transformations. Preserve jq&amp;#x27;s key ordering and handling of supported key aliases.
+
+## Programmatic Acceptance
+
+=== AC data-003-conformance ===
+Intent: The object-entry, key, membership, and containment slice executes matching corpus cases and passes all selected cases.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;keys|has\(|contains|inside|to_entries|from_entries&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC data-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- `keys` must use Unicode codepoint ordering; `keys_unsorted` must preserve insertion-oriented ordering.
+- Containment must recurse structurally and must not confuse booleans with numbers.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-DATA-004.md ===
+# FEATURE: Index and Membership Utilities
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq index-search, binary-search, quantifier, and SQL-style membership utilities. |
+| Depends On  | ARCHITECTURE.md, FEATURE-DATA-003.md |
+| Provides    | indices, index, rindex, bsearch, all, any, isempty, IN |
+| Consumes    | collection transformations, comparison and generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Implement substring and subarray occurrence searches, first and last index lookup, binary search insertion results, stream-aware `all` and `any`, emptiness detection, and SQL-style `IN` variants. Preserve short-circuiting and Cartesian generator behavior.
+
+## Programmatic Acceptance
+
+=== AC data-004-conformance ===
+Intent: The index, membership, quantifier, and emptiness slice executes matching corpus cases and passes all selected cases.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;indices|index\(|rindex|bsearch|any|all|IN\(&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC data-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- `all` and `any` must short-circuit without consuming unnecessary generator outputs.
+- Index utilities must preserve jq&amp;#x27;s behavior for overlapping matches, empty matches, and insertion points.
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

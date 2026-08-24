@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-37.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-37.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-37.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-37.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-37.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-37.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 37 · Service (block-37)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-23&lt;/li&gt;&lt;li&gt;resulting state: closed/implemented&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 56291&lt;/li&gt;&lt;li&gt;execution id: -&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement regular-expression filters. (TEXT-003) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Acceptance tooling authorization&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;FEATURE-TEXT-003.md#text-003-regex-conformance: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;li&gt;FEATURE-TEXT-003.md#text-003-captures: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-TEXT-003.md (SP 622)&lt;/li&gt;&lt;li&gt;context: builtin.jq (SP 2408)&lt;/li&gt;&lt;li&gt;context: jq-manual.txt (SP 32696)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python.md (SP 3892)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;RED: text-003-regex-conformance (FEATURE-TEXT-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The authoritative corpus cases covering regular-expression filters execute and pass. return code: 1 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 0, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 0, &amp;#x27;fail&amp;#x27;: 0, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;text-003-regex-conformance.py&amp;quot;, line 17, in &amp;lt;module&amp;gt; assert sum(summary.values()) &amp;gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;RED: text-003-captures (FEATURE-TEXT-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The selected corpus includes matching, named capture, and replacement behavior. return code: 1 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 0, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 0, &amp;#x27;fail&amp;#x27;: 0, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;text-003-captures.py&amp;quot;, line 17, in &amp;lt;module&amp;gt; assert sum(summary.values()) &amp;gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;UNVERIFIED: text-003-regex-conformance (FEATURE-TEXT-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The authoritative corpus cases covering regular-expression filters execute and pass. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not requested return code: 1 error: unverified acceptance: selector matched zero cases stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 0, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 0, &amp;#x27;fail&amp;#x27;: 0, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;text-003-regex-conformance.py&amp;quot;, line 17, in &amp;lt;module&amp;gt; assert sum(summary.values()) &amp;gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;UNVERIFIED: text-003-captures (FEATURE-TEXT-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The selected corpus includes matching, named capture, and replacement behavior. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not requested return code: 1 error: unverified acceptance: selector matched zero cases stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 0, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] } stderr: --- drydock: progress --- cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 0, &amp;#x27;fail&amp;#x27;: 0, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;text-003-captures.py&amp;quot;, line 17, in &amp;lt;module&amp;gt; assert sum(summary.values()) &amp;gt; 0 ^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;(no summary returned)&lt;/p&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

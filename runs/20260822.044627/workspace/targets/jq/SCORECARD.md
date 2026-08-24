@@ -28,7 +28,7 @@ Tokens: 103,535,036 (cached 97,192,704, output 364,320)   Cache hit rate: 94.2%
 ## Release
 
 > **RELEASED**
-> drydock score release jq · 2026-08-23T12:33:02.229+00:00
+> drydock score release jq · 2026-08-24T02:14:13.585+00:00
 
 - Verdict: PASSED
 

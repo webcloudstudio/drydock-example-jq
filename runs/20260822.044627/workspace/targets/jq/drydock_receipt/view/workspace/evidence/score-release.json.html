@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/score-release.json</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/score-release.json</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/score-release.json">Raw file</a></div></header>
+<article class="doc"><pre>{
+  &quot;schema_version&quot;: 5,
+  &quot;recorded_at&quot;: &quot;2026-08-23T12:32:58+00:00&quot;,
+  &quot;target&quot;: &quot;jq&quot;,
+  &quot;verdict&quot;: &quot;PASSED&quot;,
+  &quot;verdict_line&quot;: &quot;jq: PASSED \u2014 1 of 1&quot;,
+  &quot;statement&quot;: &quot;jq: PASSED \u2014 1 of 1\n\n  st-001  MET       [\&quot;sh\&quot;, \&quot;sources/full_test.sh\&quot;] exited 0; sh sources/full_test.sh exited 0; jq conformance: 537 passed, 0 failed, 0 errored, 13 skipped\n  reported: Build directory has uncommitted changes&quot;,
+  &quot;complete&quot;: true,
+  &quot;governed_gate&quot;: {
+    &quot;name&quot;: &quot;full&quot;,
+    &quot;outcome&quot;: &quot;PASS&quot;,
+    &quot;argv&quot;: [
+      &quot;sh&quot;,
+      &quot;sources/full_test.sh&quot;
+    ],
+    &quot;return_code&quot;: 0,
+    &quot;duration_ms&quot;: 104409,
+    &quot;detail&quot;: &quot;&quot;,
+    &quot;timed_out&quot;: false,
+    &quot;build_identity&quot;: &quot;eb6ad4593ef8a567&quot;,
+    &quot;stdout&quot;: &quot;jq conformance: 537 passed, 0 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)\n&quot;,
+    &quot;stderr&quot;: &quot;&quot;
+  },
+  &quot;criteria&quot;: [
+    {
+      &quot;criterion_id&quot;: &quot;st-001&quot;,
+      &quot;verdict&quot;: &quot;MET&quot;,
+      &quot;rationale&quot;: &quot;The supplied scoring script exited zero with 537 passed, 0 failed, and 0 errored tests.&quot;,
+      &quot;evidence&quot;: [
+        &quot;[\&quot;sh\&quot;, \&quot;sources/full_test.sh\&quot;] exited 0&quot;,
+        &quot;sh sources/full_test.sh exited 0&quot;,
+        &quot;jq conformance: 537 passed, 0 failed, 0 errored, 13 skipped&quot;
+      ]
+    }
+  ],
+  &quot;guardrail_ids&quot;: [],
+  &quot;observations&quot;: [
+    {
+      &quot;criterion_id&quot;: &quot;st-001&quot;,
+      &quot;kind&quot;: &quot;command&quot;,
+      &quot;source&quot;: &quot;[\&quot;sh\&quot;, \&quot;sources/full_test.sh\&quot;]&quot;,
+      &quot;return_code&quot;: 0,
+      &quot;pinned&quot;: &quot;MET&quot;,
+      &quot;detail&quot;: &quot;[\&quot;sh\&quot;, \&quot;sources/full_test.sh\&quot;] exited 0&quot;,
+      &quot;output&quot;: &quot;jq conformance: 537 passed, 0 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)&quot;
+    }
+  ],
+  &quot;blockers&quot;: [],
+  &quot;attestations&quot;: [],
+  &quot;kit_faults&quot;: [],
+  &quot;warnings&quot;: [
+    &quot;Build directory has uncommitted changes&quot;
+  ],
+  &quot;improvements&quot;: [],
+  &quot;identities&quot;: {
+    &quot;code&quot;: &quot;66872a4c753756e2deaecfc5eaf01a45252a9d6b&quot;,
+    &quot;sea_trials&quot;: &quot;9942ff77e4696824d18588e9287c9724537fa39545a344e2e9f2bad6bbcd8c12&quot;,
+    &quot;blueprint&quot;: {
+      &quot;ARCHITECTURE.md&quot;: &quot;804f795bcb5936ed9308172bfc354af1341b7ac3f836bc04948b5e4308da2eae&quot;,
+      &quot;ARCHITECTURE_compact.md&quot;: &quot;1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6&quot;,
+      &quot;FEATURE-CONF-001.md&quot;: &quot;c634bd9f1cd543ea1b8152a21e0b077b520a2f989c050d15037015e151bebc26&quot;,
+      &quot;FEATURE-CONF-002.md&quot;: &quot;2f8a839b3ba0a50a0860da6fa0e650928442ac5f787ebf079a57649523c60994&quot;,
+      &quot;FEATURE-CONF-003.md&quot;: &quot;bb20be3246e9ab219f93759368ca61ad4d20564cb3792b2f9bf6874e5a38d31d&quot;,
+      &quot;FEATURE-CORE-001.md&quot;: &quot;2093027cf769a2249afd777cb175da2d183f72db572dde1d187799ef25f1ed40&quot;,
+      &quot;FEATURE-CORE-002.md&quot;: &quot;dae33f65d485a584052a3d16f4949fdb6970421983956b44c454fec55aa88abb&quot;,
+      &quot;FEATURE-CORE-003.md&quot;: &quot;d0a35f2f0e37e03ed674463b77d6546f81a3c5980d11a6efbecc70a1d3aea5d4&quot;,
+      &quot;FEATURE-CORE-004.md&quot;: &quot;a0c8d5b7e9ebc2c32de3fd93752ad142307405d6a0dabff4c82ee505fd879528&quot;,
+      &quot;FEATURE-DATA-001.md&quot;: &quot;b8279db771d4cbeba5c967940d8aad882f5bf2a800f6724c7c7af2acfba67650&quot;,
+      &quot;FEATURE-DATA-002.md&quot;: &quot;46771bd3d05c2d3472bdf40662851b17f49e40fe8567cd9491423c118bf7a9c3&quot;,
+      &quot;FEATURE-DATA-003.md&quot;: &quot;276acd2cf57eada4a4b04a9407f0c23b4fde5603908e452bfad64aed78e988bf&quot;,
+      &quot;FEATURE-DATA-004.md&quot;: &quot;9e980e6f32e1d15fc27d0e71850806226907cad3afb6e1cba0b6a642c1625420&quot;,
+      &quot;FEATURE-EXEC-001.md&quot;: &quot;cfd75627ebc9e8cc231f5cbbea34af08e6d364162f5661688d0c6458ea9324f8&quot;,
+      &quot;FEATURE-EXEC-002.md&quot;: &quot;4a28559694b0301553201a1fc1e0cf644d24b5ea0b1095679918cc101a4849c5&quot;,
+      &quot;FEATURE-EXEC-003.md&quot;: &quot;fce2f4f8f648d0684612a36b128622c3aafa91d4106955519c7c4f51e2fde0e4&quot;,
+      &quot;FEATURE-Executable-Entry-Point.md&quot;: &quot;3ba06ca6b0767fcc60122f6041d47c42c5b62ef9af4f1ce50e54c70c62035056&quot;,
+      &quot;FEATURE-FLOW-001.md&quot;: &quot;bd9f9be353d1d322f66a3e20663251352843cdd97c7989885488a73a4cded386&quot;,
+      &quot;FEATURE-FLOW-002.md&quot;: &quot;c2c695c5b364d1f6ed34fa038eea76a4f7cfe82d254b1a78605833139d5898c4&quot;,
+      &quot;FEATURE-FLOW-003.md&quot;: &quot;4c2d3845dacf436a5eb37759d21998ca05c94c014b7321aec4b39cdd256c9742&quot;,
+      &quot;FEATURE-FLOW-004.md&quot;: &quot;c6200f244c2a02b3b345ce71564ddfec946538ab1a5eafe611427460ff39ea5d&quot;,
+      &quot;FEATURE-FLOW-005.md&quot;: &quot;10c95b3afabb86257fa5ebc27152be77dcc3f2138a364ec5eace24c857be2be5&quot;,
+      &quot;FEATURE-FLOW-006.md&quot;: &quot;29b5639cc880aa7b363892eb37887da95c813d7248c878cb9ab672378f1f2424&quot;,
+      &quot;FEATURE-FUNC-001.md&quot;: &quot;26faccdac427148e502c069d919042089faa7da4ef143c194327d05392510829&quot;,
+      &quot;FEATURE-FUNC-002.md&quot;: &quot;273775cd2bbf9b3fe4538c1e0d4e80c197fd5e5b9b6e515fda4158e5fc3fb6cf&quot;,
+      &quot;FEATURE-FUNC-003.md&quot;: &quot;793e652654dc7740b1a4b6eb6dfcb749dd74f5246b49ec92929e1b05eab0f7b9&quot;,
+      &quot;FEATURE-FUNC-004.md&quot;: &quot;1826c0cd09c6d2097bcd8ca60f370dc3d9610dfc4a2bc91b1a1eba24459c0ce5&quot;,
+      &quot;FEATURE-IO-001.md&quot;: &quot;1ded0b97c10c955e03a384956779cbc162d703410676506c2c6e598a2f9f0465&quot;,
+      &quot;FEATURE-IO-002.md&quot;: &quot;80ddd83b6bcaa58563c13b65941834fb5905c817a6c261dc142997def2157bf3&quot;,
+      &quot;FEATURE-IO-003.md&quot;: &quot;97b41eb9d6e95b80f726fcbbc2db1658351ab2fc20d26b0753e364b76601b45f&quot;,
+      &quot;FEATURE-Json-IO.md&quot;: &quot;b53fb24c9294612630c2043fe71a4ed7a4c57edebd64f3343cd3844019df54e0&quot;,
+      &quot;FEATURE-PARSE-001.md&quot;: &quot;98e8d8ad7372a72ab6110f6213eada45188ccecaaf6f8bac0ba5d7bc54236db0&quot;,
+      &quot;FEATURE-PARSE-002.md&quot;: &quot;00b9ba80ba69e5afbb7248ffe43ece325b6ec88d0fd1aa842f0789df08fd2ec8&quot;,
+      &quot;FEATURE-PARSE-003.md&quot;: &quot;f3634a964cf55ca8795ae5e557e7621af81f2baa09eed93d0d31a3a817394269&quot;,
+      &quot;FEATURE-PARSE-004.md&quot;: &quot;2ad327877e7bf6eeb7bd3e987b003213691ef55cdcff6267276bd10387deb3c2&quot;,
+      &quot;FEATURE-PATH-001.md&quot;: &quot;47227a770fc14a57c02ee788b46ae65b8adf10ab58d06a1c89cddc18cc27d9f1&quot;,
+      &quot;FEATURE-PATH-002.md&quot;: &quot;ce12632cbd6d82da1cf73546737a646c03a2eaac64b99a495524accb614ad415&quot;,
+      &quot;FEATURE-PATH-003.md&quot;: &quot;ba16f0568b59d773f9417e23052f2b27cdfa01cc64cbf9144baa3681aaeaf526&quot;,
+      &quot;FEATURE-PATH-004.md&quot;: &quot;c7da09bd8a8d38dffd3e61165d016b71642428c3564233262c362ce1ac842163&quot;,
+      &quot;FEATURE-Process-Contract.md&quot;: &quot;b52f3427527125a46e8704b90ba4a2318c1c0d930818142fe7e7265034a00cbc&quot;,
+      &quot;FEATURE-TEXT-001.md&quot;: &quot;4495f77e17235c016d99c020ed2463220bdf571a11038c0f4dd95d6fa531f11a&quot;,
+      &quot;FEATURE-TEXT-002.md&quot;: &quot;3173aa0142dd47f253c36734ddf49c392f080cdc5fff5fc86440ef633d32cdcb&quot;,
+      &quot;FEATURE-TEXT-003.md&quot;: &quot;1b5b689b9492dea27017fbc5248eaace3542c4ae73236ded0f285ce5d244a34c&quot;,
+      &quot;FEATURE-TEXT-004.md&quot;: &quot;0b42202d9abf982069c897d8c6ff6417555aef658f477c2d04a31efd9e31e735&quot;,
+      &quot;FEATURE-VALUE-001.md&quot;: &quot;2236dc509b59427b8b587756ada8b8eb1bb9ac8dd65300c394ff2e3a68ff15c3&quot;,
+      &quot;FEATURE-VALUE-002.md&quot;: &quot;15d912ab5c5ea9208974390a15db9172b610bf448fda72d31acf34a9a7befbd3&quot;,
+      &quot;FEATURE-VALUE-003.md&quot;: &quot;567865f1649cba6545abbbafc67328f689dcd18bc12100e56f4bdd207874141b&quot;,
+      &quot;FEATURE-VALUE-004.md&quot;: &quot;eacd7e627e0d069f120ce5d8e3d45eccac0afc68c8c802ab4ac5dc4ff930abba&quot;,
+      &quot;builtin_compact.md&quot;: &quot;2ffea56cceb086a8aae15734fe8bae6bb5cf95c7124cb70bfeaacd6d5bbc3c44&quot;,
+      &quot;exclusions_compact.md&quot;: &quot;5aa31ce7d14597dce68d3f8ae3c62920cb56521d5c845a9f2e048d1c636ca1f3&quot;,
+      &quot;full_test_compact.md&quot;: &quot;0a2a6138803214322a13ffd2cacb1dde1251f87271c9b637d967534b6a522c76&quot;,
+      &quot;jq-manual_compact.md&quot;: &quot;5f941b734e5927e191725d1caa005685cd07e2afeb8b83bd46e2ffb67dc2d4dc&quot;,
+      &quot;jq_compact.md&quot;: &quot;8029afc65331a94cd4487bcb8256f0900004cbd5e7882dee5a06b24413ceaee1&quot;,
+      &quot;lexer_compact.md&quot;: &quot;f3ca916b4dd363b1a53b86da1ae37255f84b9b3aedf7a228cdc49bf51805a8e0&quot;,
+      &quot;parser_compact.md&quot;: &quot;d440a12c8d8ba9feec642847bf52c2bb143c67720f3aa1f9d00f2420f3c7706e&quot;,
+      &quot;run_conformance_compact.md&quot;: &quot;29ae1b251944769b74a3dd6bf29c1c9f1f94995502713e311803de926410550e&quot;
+    }
+  },
+  &quot;execution_id&quot;: &quot;20260823.123250.704Z-3ddb06e6&quot;
+}
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260823.030840.777Z_jq_build_codex.stderr.log</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260823.030840.777Z_jq_build_codex.stderr.log</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260823.030840.777Z_jq_build_codex.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>2026-08-23T03:10:16.074110Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc &quot;set +e
+printf &#x27;null\\n&#x27; | ./jq -c &#x27;break &quot;&#x27;$out, label $out | 1&#x27;&quot;&#x27; &gt;/tmp/jq-flow-out 2&gt;/tmp/jq-flow-err
+status=&quot;&#x27;$?
+printf &#x27;&quot;&#x27;status=%s\\n&#x27; \&quot;&quot;&#x27;$status&quot;
+python3 - &lt;&lt;&#x27;&quot;&#x27;PY&#x27;
+from jq_interpreter.parser import parse
+from jq_interpreter.errors import CompileError
+try:
+    parse(&#x27;break &quot;&#x27;$out, label $out | 1&#x27;&quot;&#x27;)
+except CompileError:
+    print(&#x27;compile-validation=pass&#x27;)
+else:
+    print(&#x27;compile-validation=fail&#x27;)
+PY
+rm -f /tmp/jq-flow-out /tmp/jq-flow-err&quot;`: CreateProcess { message: &quot;Rejected(\&quot;`/bin/bash -lc \\\&quot;set +e\\nprintf &#x27;null\\\\\\\\n&#x27; | ./jq -c &#x27;break \\\&quot;&#x27;$out, label $out | 1&#x27;\\\&quot;&#x27; &gt;/tmp/jq-flow-out 2&gt;/tmp/jq-flow-err\\nstatus=\\\&quot;&#x27;$?\\nprintf &#x27;\\\&quot;&#x27;status=%s\\\\\\\\n&#x27; \\\\\\\&quot;\\\&quot;&#x27;$status\\\&quot;\\npython3 - &lt;&lt;&#x27;\\\&quot;&#x27;PY&#x27;\\nfrom jq_interpreter.parser import parse\\nfrom jq_interpreter.errors import CompileError\\ntry:\\n    parse(&#x27;break \\\&quot;&#x27;$out, label $out | 1&#x27;\\\&quot;&#x27;)\\nexcept CompileError:\\n    print(&#x27;compile-validation=pass&#x27;)\\nelse:\\n    print(&#x27;compile-validation=fail&#x27;)\\nPY\\nrm -f /tmp/jq-flow-out /tmp/jq-flow-err\\\&quot;` rejected: rm -f style commands are not permitted. Use a safer approach\&quot;)&quot; }
+</pre></article>
+</main>
+</body>
+</html>

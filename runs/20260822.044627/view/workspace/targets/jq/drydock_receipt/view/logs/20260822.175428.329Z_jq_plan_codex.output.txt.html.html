@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.175428.329Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.175428.329Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.175428.329Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.175428.329Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.175428.329Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.175428.329Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-Destructuring.md ===
+# FEATURE: Destructuring Patterns and Alternatives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Supports array and object destructuring bindings and the ?// alternative operator. |
+| Depends On  | FEATURE-Function-Definitions.md, FEATURE-Variable-Bindings.md |
+| Provides    | array/object patterns, missing bindings, ?// alternatives |
+| Consumes    | function definitions and lexical bindings |
+
+## Questions
+
+- None.
+
+## Scope
+
+Destructuring binds values from arrays and objects to lexical variables, supplying null for missing positions or fields. The `?//` operator selects fallback patterns when a prior pattern cannot match or its downstream evaluation raises an eligible error. Patterns support nested arrays, objects, shorthand bindings, explicit keys, and multiple alternatives.
+
+## Programmatic Acceptance
+
+=== AC func-004-conformance ===
+Intent: Destructuring bindings and alternatives execute successfully.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;. as {$x} | $x&amp;quot;],
+    input=&amp;#x27;{&amp;quot;x&amp;quot;:1}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&amp;quot;1&amp;quot;]
+
+alternative = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.a? // .b&amp;quot;],
+    input=&amp;#x27;{&amp;quot;b&amp;quot;:2}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert alternative.returncode == 0
+assert alternative.stdout.splitlines() == [&amp;quot;2&amp;quot;]
+=== END AC func-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Pattern alternatives must preserve generator ordering and lexical variable scope.
+- Module loading is not required for this capability.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Diagnostics.md ===
+# FEATURE: Diagnostics
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide jq diagnostic, stderr, and halt-error filters. |
+| Depends On  | FEATURE-Input-Streams.md, FEATURE-Process-Contract.md |
+| Provides    | debug, stderr, halt_error |
+| Consumes    | process exit and diagnostic behavior |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement diagnostic filters that write to stderr, preserve stdout values, and terminate with the required status behavior. `debug` must retain the input stream, `stderr` must emit raw diagnostic data, and `halt_error` must stop processing with its requested exit code.
+
+## Programmatic Acceptance
+
+=== AC io-002-conformance ===
+Intent: Diagnostic filters preserve stdout values and write diagnostics to stderr.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+debug = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;debug&amp;quot;],
+    input=&amp;#x27;&amp;quot;value&amp;quot;\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert debug.returncode == 0
+assert debug.stdout.splitlines() == [&amp;#x27;&amp;quot;value&amp;quot;&amp;#x27;]
+assert debug.stderr
+
+stderr = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;stderr&amp;quot;],
+    input=&amp;#x27;&amp;quot;value&amp;quot;\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert stderr.returncode == 0
+assert stderr.stdout == &amp;quot;&amp;quot;
+assert stderr.stderr
+=== END AC io-002-conformance ===
+
+=== AC io-002-execution ===
+Intent: halt_error terminates execution with a runtime failure status.
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;halt_error(5)&amp;quot;],
+    input=&amp;#x27;&amp;quot;value&amp;quot;\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 5
+assert result.stdout == &amp;quot;&amp;quot;
+=== END AC io-002-execution ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics must not be used as the output oracle.
+- Preserve stdout values emitted before runtime termination.
+- Keep diagnostic output on stderr and use only standard-library facilities.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Error-and-Optional-Evaluation.md ===
+# FEATURE: Error and Optional Evaluation
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines jq runtime errors, optional evaluation, suppression, and try/catch behavior. |
+| Depends On  | FEATURE-Composition.md |
+| Provides    | empty, error, runtime failure, optional operator, try/catch |
+| Consumes    | ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+Runtime errors propagate with exit status 5 after preserving values already emitted. `empty` emits no values. The optional suffix suppresses errors, while `try ... catch ...` evaluates a handler with the error value.
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+Intent: Runtime errors, optional evaluation, and try/catch behave as declared.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+optional = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.foo?&amp;quot;],
+    input=&amp;quot;1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert optional.returncode == 0
+assert optional.stdout.splitlines() == [&amp;quot;null&amp;quot;]
+
+caught = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;#x27;-c&amp;#x27;, &amp;#x27;try error(&amp;quot;x&amp;quot;) catch .&amp;#x27;],
+    input=&amp;quot;null\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert caught.returncode == 0
+assert caught.stdout.splitlines() == [&amp;#x27;&amp;quot;x&amp;quot;&amp;#x27;]
+=== END AC core-003-conformance ===
+
+=== AC core-003-runtime-contract ===
+Intent: Compile errors, runtime errors, and successful execution retain their distinct exit statuses.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+valid = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=&amp;quot;1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+compile_error = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;[&amp;quot;],
+    input=&amp;quot;1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+runtime_error = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;error&amp;quot;],
+    input=&amp;quot;1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert valid.returncode == 0
+assert compile_error.returncode == 3
+assert runtime_error.returncode == 5
+=== END AC core-003-runtime-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Diagnostics are written to stderr and are not used as the behavioral oracle.
+- Partial stdout emitted before a runtime error is preserved.
+- Optional evaluation must not suppress compile-time errors.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Executable-Entry-Point.md ===
+# FEATURE: Executable jq Entry Point
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides the executable jq command and its basic stdin-to-stdout filter interface. |
+| Depends On  | ARCHITECTURE.md |
+| Provides    | ./jq -c program execution |
+| Consumes    | interpreter parser and evaluator |
+
+## Questions
+
+- None.
+
+## Workflow
+
+1. Start the executable at the application root as `./jq`.
+2. Accept the exercised `-c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;` interface.
+3. Read JSON input from standard input.
+4. Compile and evaluate the jq program for each input value.
+5. Emit each generated result as one compact JSON line.
+6. Exit successfully after all inputs complete.
+
+The implementation must support multiple input values and preserve output order. The executable may delegate to modular Python files beside it, but the delivered command remains the root-level executable named `jq`.
+
+## Interface
+
+| Input | Contract |
+|---|---|
+| Arguments | `-c` followed by one jq program string. |
+| Standard input | JSON values in the corpus input format. |
+| Standard output | One compact JSON value per generated result line. |
+| Standard error | Diagnostics only. |
+| Success status | `0`. |
+
+## Programmatic Acceptance
+
+=== AC exec-001-conformance ===
+Intent: The executable runs the basic identity interface successfully.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=&amp;quot;true\nfalse\nnull\n1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&amp;quot;true&amp;quot;, &amp;quot;false&amp;quot;, &amp;quot;null&amp;quot;, &amp;quot;1&amp;quot;]
+
+=== END AC exec-001-conformance ===
+
+=== AC exec-001-process ===
+Intent: The executable accepts the declared -c interface and completes a supplied identity filter successfully.
+
+import json
+import subprocess
+
+payload = &amp;quot;null\n&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&amp;quot;sys&amp;quot;).stderr)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [payload.strip()]
+=== END AC exec-001-process ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- The delivered command is exactly `jq` at the application root.
+- The implementation accepts the exercised `-c` interface.
+- Output is compact and line-oriented.
+- The executable does not invoke another jq implementation.
+- Diagnostics are not written to standard output.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Filter-Parser.md ===
+# FEATURE: Filter Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse jq filter expressions, precedence, accessors, collections, and operators. |
+| Depends On  | FEATURE-Strings-and-Interpolation-Parser.md |
+| Provides    | AST for pipes, commas, precedence, indexing, slices, arrays, objects, operators |
+| Consumes    | jq tokenization |
+
+## Questions
+
+- None.
+
+The parser shall implement the expression grammar defined by `sources/parser.y`, including pipes, commas, precedence and associativity, parenthesized expressions, field and index access, slices, arrays, objects, unary operators, binary operators, and optional expressions. Syntax failures must be reported as compile failures with exit code 3.
+
+## Programmatic Acceptance
+
+=== AC parse-003-expression-grammar ===
+Intent: Expression grammar and precedence execute successfully.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;. + 2 * 3&amp;quot;],
+    input=&amp;quot;4\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&amp;quot;10&amp;quot;]
+
+literal = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;[.foo, .bar]&amp;quot;],
+    input=&amp;#x27;{&amp;quot;foo&amp;quot;:1,&amp;quot;bar&amp;quot;:2}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert literal.returncode == 0
+assert literal.stdout.splitlines() == [&amp;quot;[1,2]&amp;quot;]
+=== END AC parse-003-expression-grammar ===
+
+=== AC parse-003-composition-syntax ===
+Intent: Collection, object, indexing, and composition syntax execute successfully.
+Requires: executable=python3; scope=test
+
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.items | .[0]&amp;quot;],
+    input=&amp;#x27;{&amp;quot;items&amp;quot;:[&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;]}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+assert result.stdout.splitlines() == [&amp;#x27;&amp;quot;a&amp;quot;&amp;#x27;]
+
+composed = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;[.a, .b]&amp;quot;],
+    input=&amp;#x27;{&amp;quot;a&amp;quot;:1,&amp;quot;b&amp;quot;:2}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert composed.returncode == 0
+assert composed.stdout.splitlines() == [&amp;quot;[1,2]&amp;quot;]
+=== END AC parse-003-composition-syntax ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Follow the precedence and associativity specified by `sources/parser.y`.
+- Preserve generator-valued expressions in the AST.
+- Do not modify files under `sources/`.
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

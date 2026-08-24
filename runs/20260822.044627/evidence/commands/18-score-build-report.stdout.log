@@ -61,35 +61,35 @@ Build report: jq
   Repairs
     Block 8 · Service [block-8]
       initial build  incomplete 0/2 AC · 507/688 cases · 2,561,054 in · 95.5% hit · 6m 04s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 1       incomplete 0/2 AC · 527/688 cases · 3,722,966 in · 96.9% hit · 8m 55s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 2       incomplete 0/2 AC · 546/688 cases · 3,324,985 in · 96.7% hit · 8m 08s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 3       incomplete 0/2 AC · 558/688 cases · 2,681,270 in · 96.0% hit · 7m 09s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 4       incomplete 0/2 AC · 567/688 cases · 2,923,658 in · 96.3% hit · 8m 35s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 5       incomplete 0/2 AC · 573/688 cases · 3,310,823 in · 96.6% hit · 8m 48s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 6       incomplete 0/2 AC · 591/688 cases · 2,297,067 in · 95.5% hit · 6m 04s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 7       incomplete 0/2 AC · 594/688 cases · 2,740,501 in · 96.2% hit · 7m 50s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 8       incomplete 0/2 AC · 617/688 cases · 3,616,376 in · 96.7% hit · 7m 44s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 9       incomplete 0/2 AC · 619/688 cases · 2,892,104 in · 96.4% hit · 9m 58s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 10      incomplete 0/2 AC · 627/688 cases · 3,133,465 in · 96.5% hit · 9m 35s
-                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+                     not yet passing: parse-003-conformance, parse-004-conformance
       repair 11      incomplete 1/2 AC · 435/464 cases · 6,243,850 in · 97.6% hit · 13m 48s
-                     programmatic acceptance failed: parse-003-conformance
+                     not yet passing: parse-003-conformance
       repair 12      incomplete 1/2 AC · 446/464 cases · 2,657,110 in · 95.9% hit · 6m 36s
-                     programmatic acceptance failed: parse-003-conformance
+                     not yet passing: parse-003-conformance
       repair 13      built      2/2 AC · 3,726,290 in · 97.0% hit · 10m 04s
     Block 31 · Service [block-31]
       initial build  incomplete 1/1 AC · 2,258,868 in · 94.6% hit · 2m 52s
-                     acceptance regression: parse-003-conformance, parse-004-conformance, value-001-conformance, value-002-conformance, value-003-conformance, flow-001-conformance,…
+                     not yet passing: parse-003-conformance, parse-004-conformance, value-001-conformance, value-002-conformance, value-003-conformance, flow-001-conformance,…
       repair 1       built      1/1 AC · 1,415,557 in · 92.0% hit · 2m 53s
 
   Not verified
@@ -97,4 +97,4 @@ Build report: jq
 
   Note: 1 execution(s) have no usage record; their tokens read as zero.
 
-Target - committed project workspace git store
+Target - cleared stale git lock index.lock

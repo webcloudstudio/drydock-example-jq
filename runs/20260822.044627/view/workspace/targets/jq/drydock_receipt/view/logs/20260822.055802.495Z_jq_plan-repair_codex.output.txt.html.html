@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.055802.495Z_jq_plan-repair_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN REPAIRED SPECIFICATION ===
+# FEATURE: JSON Input and Output
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Handles JSON input streams and compact one-value-per-line output. |
+| Depends On  | FEATURE-Process-Contract.md |
+| Provides    | JSON input stream and compact JSON output |
+| Consumes    | compile and runtime exit contract |
+
+## Capability
+
+The command reads multiple JSON values from standard input and applies the filter independently to each value in input order. Every generated result is written as one compact JSON value per line, preserving Unicode and structural value semantics.
+
+## Serialization
+
+Output is compact JSON without pretty-print indentation. Structural comparison, not key order or numeric spelling, defines conformance. Special numeric values required by jq are represented according to the supplied corpus behavior.
+
+## Programmatic Acceptance
+
+=== AC json-stream-slice ===
+Intent: The supplied corpus verifies JSON input handling and compact output behavior for foundational identity and literal cases.
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;^\.$|^null$&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0 and summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC json-stream-slice ===
+
+=== AC json-multiple-inputs ===
+Intent: Multiple JSON input values are processed in order and produce one output line per value.
+
+import json
+import subprocess
+
+source = &amp;quot;1\n2\n&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == len(source.splitlines())
+values = [json.loads(line) for line in lines]
+assert values == [1, 2]
+=== END AC json-multiple-inputs ===
+
+=== AC json-compact-line ===
+Intent: Compact serialization emits each generated value on its own line.
+
+import json
+import subprocess
+
+value = {&amp;quot;a&amp;quot;: [1, 2], &amp;quot;b&amp;quot;: &amp;quot;text&amp;quot;}
+source = json.dumps(value) + &amp;quot;\n&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=source,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == 1
+decoded = json.loads(lines[0])
+assert decoded == value
+assert &amp;quot;\n&amp;quot; not in lines[0]
+=== END AC json-compact-line ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Output ordering and multiplicity must match generator evaluation.
+- Diagnostics and debug output must not contaminate JSON standard output.
+=== END REPAIRED SPECIFICATION ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

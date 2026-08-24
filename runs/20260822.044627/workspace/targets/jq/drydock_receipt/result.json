@@ -1,0 +1,954 @@
+{
+  "acceptance": {
+    "failed": 3,
+    "failures": [
+      "text-003-regex-conformance",
+      "text-003-captures",
+      "io-003-conformance"
+    ],
+    "passed": 18,
+    "prepassed": 36,
+    "recorded": true,
+    "total": 57,
+    "unrecognized": 0,
+    "unverified": 0,
+    "verified_at": "2026-08-23T12:21:00+00:00"
+  },
+  "build": {
+    "blocks": 43,
+    "calls": 57,
+    "failed": [
+      "block-37"
+    ],
+    "recorded": true,
+    "repaired": [
+      "block-8",
+      "block-31"
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "drydock",
+        "init",
+        "jq"
+      ],
+      "elapsed_ms": 2121,
+      "label": "01-init",
+      "returncode": 0,
+      "stamp": "20260822.044628.383Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.044628.383Z_jq_init.log",
+      "time": "2026-08-22 04:46"
+    },
+    {
+      "argv": [
+        "drydock",
+        "import",
+        "jq",
+        "/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/sources",
+        "--format",
+        "markdown"
+      ],
+      "elapsed_ms": 3604,
+      "label": "02-import",
+      "returncode": 0,
+      "stamp": "20260822.044630.923Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.044630.923Z_jq_import_codex.log",
+      "time": "2026-08-22 04:46"
+    },
+    {
+      "argv": [
+        "drydock",
+        "analyze",
+        "jq"
+      ],
+      "elapsed_ms": 129468,
+      "label": "03-analyze",
+      "returncode": 0,
+      "stamp": "20260822.044634.751Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.044634.751Z_jq_analyze_codex.log",
+      "time": "2026-08-22 04:48"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "jq",
+        "--override"
+      ],
+      "elapsed_ms": 1356731,
+      "label": "04-plan",
+      "returncode": 0,
+      "stamp": "20260822.044844.592Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.044844.592Z_jq_plan_codex.log",
+      "time": "2026-08-22 05:11"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1775,
+      "label": "05-plan",
+      "returncode": 1,
+      "stamp": "20260822.051121.561Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:11"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "repair",
+        "jq"
+      ],
+      "elapsed_ms": 303064,
+      "label": "06-plan",
+      "returncode": 1,
+      "stamp": "20260822.051123.558Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:16"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 2732,
+      "label": "07-plan",
+      "returncode": 1,
+      "stamp": "20260822.051626.849Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:16"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1043,
+      "label": "08-build",
+      "returncode": 0,
+      "stamp": "20260822.051629.928Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.051629.928Z_jq_build.log",
+      "time": "2026-08-22 05:16"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 3808,
+      "label": "09-plan",
+      "returncode": 1,
+      "stamp": "20260822.055334.797Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:53"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "repair",
+        "jq"
+      ],
+      "elapsed_ms": 99332,
+      "label": "10-plan",
+      "returncode": 1,
+      "stamp": "20260822.055339.024Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:55"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1282,
+      "label": "11-plan",
+      "returncode": 1,
+      "stamp": "20260822.055518.690Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:55"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 5531,
+      "label": "12-build",
+      "returncode": 0,
+      "stamp": "20260822.055520.613Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.055520.613Z_jq_build.log",
+      "time": "2026-08-22 05:55"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 2180,
+      "label": "13-plan",
+      "returncode": 1,
+      "stamp": "20260822.055710.711Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:57"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "repair",
+        "jq"
+      ],
+      "elapsed_ms": 68443,
+      "label": "14-plan",
+      "returncode": 1,
+      "stamp": "20260822.055713.218Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:58"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 4242,
+      "label": "15-plan",
+      "returncode": 1,
+      "stamp": "20260822.055821.941Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 05:58"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 368,
+      "label": "16-build",
+      "returncode": 0,
+      "stamp": "20260822.055826.504Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.055826.504Z_jq_build.log",
+      "time": "2026-08-22 05:58"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 5808,
+      "label": "17-plan",
+      "returncode": 1,
+      "stamp": "20260822.141911.933Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 14:19"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "repair",
+        "jq"
+      ],
+      "elapsed_ms": 72520,
+      "label": "18-plan",
+      "returncode": 1,
+      "stamp": "20260822.141918.435Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 14:20"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1334,
+      "label": "19-plan",
+      "returncode": 1,
+      "stamp": "20260822.142031.176Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 14:20"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 5475,
+      "label": "20-build",
+      "returncode": 0,
+      "stamp": "20260822.142032.769Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.142032.769Z_jq_build.log",
+      "time": "2026-08-22 14:20"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "jq",
+        "--override"
+      ],
+      "elapsed_ms": 1206917,
+      "label": "21-plan",
+      "returncode": 0,
+      "stamp": "20260822.153144.789Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.153144.789Z_jq_plan_codex.log",
+      "time": "2026-08-22 15:51"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 3700,
+      "label": "22-plan",
+      "returncode": 0,
+      "stamp": "20260822.155152.000Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 15:51"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 505,
+      "label": "23-build",
+      "returncode": 0,
+      "stamp": "20260822.155156.068Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.155156.068Z_jq_build.log",
+      "time": "2026-08-22 15:51"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 3027,
+      "label": "24-plan",
+      "returncode": 0,
+      "stamp": "20260822.174047.625Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 17:40"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 3672,
+      "label": "25-build",
+      "returncode": 0,
+      "stamp": "20260822.174050.989Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.174050.989Z_jq_build.log",
+      "time": "2026-08-22 17:40"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "jq",
+        "--override"
+      ],
+      "elapsed_ms": 1505910,
+      "label": "26-plan",
+      "returncode": 0,
+      "stamp": "20260822.174113.385Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.174113.385Z_jq_plan_codex.log",
+      "time": "2026-08-22 18:06"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1741,
+      "label": "27-plan",
+      "returncode": 0,
+      "stamp": "20260822.180619.515Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 18:06"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 545,
+      "label": "28-build",
+      "returncode": 0,
+      "stamp": "20260822.180621.466Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.180621.466Z_jq_build.log",
+      "time": "2026-08-22 18:06"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "6"
+      ],
+      "elapsed_ms": 636978,
+      "label": "29-build",
+      "returncode": 1,
+      "stamp": "20260822.180624.912Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.180624.912Z_jq_build_codex.log",
+      "time": "2026-08-22 18:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1121,
+      "label": "30-build",
+      "returncode": 0,
+      "stamp": "20260822.181702.245Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.181702.245Z_jq_build.log",
+      "time": "2026-08-22 18:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "jq",
+        "--override"
+      ],
+      "elapsed_ms": 818280,
+      "label": "31-plan",
+      "returncode": 0,
+      "stamp": "20260822.193319.568Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.193319.568Z_jq_plan_codex.log",
+      "time": "2026-08-22 19:46"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 5839,
+      "label": "32-plan",
+      "returncode": 0,
+      "stamp": "20260822.194658.624Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 19:47"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1067,
+      "label": "33-build",
+      "returncode": 0,
+      "stamp": "20260822.194704.870Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.194704.870Z_jq_build.log",
+      "time": "2026-08-22 19:47"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "6"
+      ],
+      "elapsed_ms": 5392896,
+      "label": "34-build",
+      "returncode": 1,
+      "stamp": "20260822.194712.269Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.194712.269Z_jq_build_codex.log",
+      "time": "2026-08-22 21:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1600,
+      "label": "35-build",
+      "returncode": 0,
+      "stamp": "20260822.211705.705Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.211705.705Z_jq_build.log",
+      "time": "2026-08-22 21:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1685,
+      "label": "36-plan",
+      "returncode": 0,
+      "stamp": "20260822.220328.244Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 22:03"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 2881,
+      "label": "37-build",
+      "returncode": 0,
+      "stamp": "20260822.220330.156Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.220330.156Z_jq_build.log",
+      "time": "2026-08-22 22:03"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "6"
+      ],
+      "elapsed_ms": 4896270,
+      "label": "38-build",
+      "returncode": 1,
+      "stamp": "20260822.220335.776Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.220335.776Z_jq_build_codex.log",
+      "time": "2026-08-22 23:25"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1008,
+      "label": "39-build",
+      "returncode": 0,
+      "stamp": "20260822.232512.456Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.232512.456Z_jq_build.log",
+      "time": "2026-08-22 23:25"
+    },
+    {
+      "argv": [
+        "drydock",
+        "plan",
+        "verify",
+        "jq"
+      ],
+      "elapsed_ms": 1386,
+      "label": "40-plan",
+      "returncode": 0,
+      "stamp": "20260822.234907.752Z",
+      "stderr_path": "",
+      "stdout_path": "",
+      "time": "2026-08-22 23:49"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 3825,
+      "label": "41-build",
+      "returncode": 0,
+      "stamp": "20260822.234909.429Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.234909.429Z_jq_build.log",
+      "time": "2026-08-22 23:49"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "15"
+      ],
+      "elapsed_ms": 19525993,
+      "label": "42-build",
+      "returncode": 1,
+      "stamp": "20260822.234915.446Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260822.234915.446Z_jq_build_codex.log",
+      "time": "2026-08-23 05:14"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1588,
+      "label": "43-build",
+      "returncode": 0,
+      "stamp": "20260823.051442.143Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.051442.143Z_jq_build.log",
+      "time": "2026-08-23 05:14"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "jq",
+        "--override",
+        "--repair-attempts",
+        "15"
+      ],
+      "elapsed_ms": 2337582,
+      "label": "44-build",
+      "returncode": 0,
+      "stamp": "20260823.113803.929Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.113803.929Z_jq_build_codex.log",
+      "time": "2026-08-23 12:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 1291,
+      "label": "45-build",
+      "returncode": 0,
+      "stamp": "20260823.121704.647Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.121704.647Z_jq_build.log",
+      "time": "2026-08-23 12:17"
+    },
+    {
+      "argv": [
+        "drydock",
+        "score",
+        "ac",
+        "jq"
+      ],
+      "elapsed_ms": 498370,
+      "label": "46-score",
+      "returncode": 1,
+      "stamp": "20260823.122059.517Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.122059.517Z_jq_score.log",
+      "time": "2026-08-23 12:29"
+    },
+    {
+      "argv": [
+        "drydock",
+        "score",
+        "build",
+        "jq"
+      ],
+      "elapsed_ms": 1848,
+      "label": "47-score",
+      "returncode": 1,
+      "stamp": "20260823.122918.258Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.122918.258Z_jq_score.log",
+      "time": "2026-08-23 12:29"
+    },
+    {
+      "argv": [
+        "drydock",
+        "score",
+        "release",
+        "jq"
+      ],
+      "elapsed_ms": 223513,
+      "label": "48-score",
+      "returncode": 0,
+      "stamp": "20260823.122920.469Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.122920.469Z_jq_score_codex.log",
+      "time": "2026-08-23 12:33"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 7148,
+      "label": "49-build",
+      "returncode": 0,
+      "stamp": "20260823.131209.080Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.131209.080Z_jq_build.log",
+      "time": "2026-08-23 13:12"
+    },
+    {
+      "argv": [
+        "drydock",
+        "build",
+        "status",
+        "jq"
+      ],
+      "elapsed_ms": 2194,
+      "label": "50-build",
+      "returncode": 0,
+      "stamp": "20260823.133429.576Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.133429.576Z_jq_build.log",
+      "time": "2026-08-23 13:34"
+    },
+    {
+      "argv": [
+        "drydock",
+        "score",
+        "build",
+        "jq"
+      ],
+      "elapsed_ms": 1525,
+      "label": "51-score",
+      "returncode": 0,
+      "stamp": "20260823.142737.053Z",
+      "stderr_path": "",
+      "stdout_path": "logs/20260823.142737.053Z_jq_score.log",
+      "time": "2026-08-23 14:27"
+    }
+  ],
+  "elapsed_ms": 39162766,
+  "environment": {
+    "drydock_version": "0.2.0",
+    "finished_at": "2026-08-23T14:27:37.053Z",
+    "model": "gpt-5.6-luna",
+    "provider": "codex",
+    "started_at": "2026-08-22T04:46:28.383Z"
+  },
+  "run_id": "20260822.044628.383Z",
+  "score_exit_codes": {
+    "ac": 1,
+    "build": 0,
+    "release": 0
+  },
+  "score_summary": [
+    {
+      "at": "",
+      "note": "not written",
+      "output": "SPECIFICATION_SCORECARD.md",
+      "output_at": "",
+      "result": "not run",
+      "verb": "spec"
+    },
+    {
+      "at": "2026-08-23 08:20",
+      "note": "57 criteria: 18 passed, 36 prepassed, 3 failed",
+      "output": "SOUNDINGS.md",
+      "output_at": "2026-08-23 08:29",
+      "result": "fail",
+      "verb": "ac"
+    },
+    {
+      "at": "2026-08-23 10:27",
+      "note": "console report; writes no file",
+      "output": "",
+      "output_at": "",
+      "result": "pass",
+      "verb": "build"
+    },
+    {
+      "at": "2026-08-23 08:29",
+      "note": "",
+      "output": "SCORECARD.md",
+      "output_at": "2026-08-23 08:33",
+      "result": "pass",
+      "verb": "release"
+    },
+    {
+      "at": "",
+      "note": "not written",
+      "output": "drydock_receipt/index.html",
+      "output_at": "",
+      "result": "not run",
+      "verb": "report"
+    }
+  ],
+  "state": {
+    "at": "2026-08-23T12:33:02.229+00:00",
+    "attempts": 1,
+    "command": "drydock score release jq",
+    "detail": "",
+    "label": "SCORE RELEASE",
+    "passed": true
+  },
+  "status": "passed",
+  "target": "jq",
+  "usage": {
+    "cached_input_tokens": 140953088,
+    "calls": 187,
+    "fresh_input_tokens": 13717106,
+    "input_tokens": 154670194,
+    "llm_elapsed_ms": 27672339,
+    "output_tokens": 813760
+  },
+  "workflow": [
+    {
+      "at": "2026-08-22T04:46:29.469+00:00",
+      "attempts": 1,
+      "command": "drydock init jq",
+      "detail": "",
+      "label": "INITIALIZED",
+      "passed": true
+    },
+    {
+      "at": "2026-08-22T04:46:33.960+00:00",
+      "attempts": 1,
+      "command": "drydock import jq",
+      "detail": "",
+      "label": "IMPORTED",
+      "passed": true
+    },
+    {
+      "at": "2026-08-22T04:48:42.765+00:00",
+      "attempts": 1,
+      "command": "drydock analyze jq",
+      "detail": "",
+      "label": "ANALYZED",
+      "passed": true
+    },
+    {
+      "at": "2026-08-22T19:46:51.359+00:00",
+      "attempts": 5,
+      "command": "drydock plan jq",
+      "detail": "",
+      "label": "PLAN CREATED",
+      "passed": true
+    },
+    {
+      "at": "2026-08-23T11:38:11.262+00:00",
+      "attempts": 4,
+      "command": "drydock build jq",
+      "detail": "",
+      "label": "BUILDING",
+      "passed": true
+    },
+    {
+      "at": "2026-08-23T12:16:58.422+00:00",
+      "attempts": 1,
+      "command": "drydock build jq",
+      "detail": "",
+      "label": "BUILT",
+      "passed": true
+    },
+    {
+      "at": "2026-08-23T12:29:16.640+00:00",
+      "attempts": 1,
+      "command": "drydock score ac jq",
+      "detail": "3 of 57 failed",
+      "label": "SCORE AC",
+      "passed": false
+    },
+    {
+      "at": "2026-08-23T12:29:18.889+00:00",
+      "attempts": 1,
+      "command": "drydock score build jq",
+      "detail": "1 block(s) unverified",
+      "label": "SCORE BUILD",
+      "passed": false
+    },
+    {
+      "at": "2026-08-23T12:33:02.229+00:00",
+      "attempts": 1,
+      "command": "drydock score release jq",
+      "detail": "",
+      "label": "SCORE RELEASE",
+      "passed": true
+    }
+  ]
+}

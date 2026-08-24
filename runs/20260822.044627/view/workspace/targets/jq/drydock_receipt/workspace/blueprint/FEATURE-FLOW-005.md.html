@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-005.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-005.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-005.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Reductions and Iteration Controls</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq reductions and generator iteration-control builtins.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FLOW-004.md</td></tr><tr><td>Provides</td><td>reduce, foreach, range, limit, skip, first, last, nth</td></tr><tr><td>Consumes</td><td>ordered generator evaluator, lexical labels, variable bindings</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Reduction and iteration controls consume ordered generator streams and preserve jq&#x27;s state, ordering, Cartesian argument, backtracking, and short-circuit semantics.</p>
+<ul><li><code>reduce EXP as $var (INIT; UPDATE)</code> accumulates each generated value.</li><li><code>foreach EXP as $var (INIT; UPDATE; EXTRACT)</code> emits intermediate extracted values.</li><li><code>range</code> supports one, two, and three argument forms.</li><li><code>limit</code>, <code>skip</code>, <code>first</code>, <code>last</code>, and <code>nth</code> operate on generated streams.</li><li>Invalid negative counts for <code>limit</code>, <code>skip</code>, and <code>nth</code> raise runtime errors.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-005-conformance ===<br>Intent: The executable passes the authoritative conformance cases exercising reductions and iteration controls.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;reduce|foreach|limit|skip|nth|first|last&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-005-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Reduction and iteration filters preserve output ordering and generator multiplicity.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not replace generator evaluation with single-value evaluation.</li><li>Preserve runtime errors and partial output semantics.</li></ul></article>
+</main>
+</body>
+</html>

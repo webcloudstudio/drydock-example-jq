@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-22.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-22.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-22.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-22.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-22.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-22.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 22 · Service (block-22)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-22&lt;/li&gt;&lt;li&gt;resulting state: closed/verified&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 53781&lt;/li&gt;&lt;li&gt;execution id: 20260823.032028.932Z-a3770ea3&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement recursive generator primitives. (FLOW-006) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Acceptance tooling authorization&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;FEATURE-FLOW-006.md#flow-006-conformance: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-FLOW-006.md (SP 481)&lt;/li&gt;&lt;li&gt;context: builtin.jq (SP 2408)&lt;/li&gt;&lt;li&gt;context: jq-manual.txt (SP 32696)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python_compact.md (SP 1534)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Build directory changes&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_flow_006_recursive_generators.py&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;GREEN (prepassed): flow-006-conformance (FEATURE-FLOW-006.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The executable passes the authoritative conformance cases exercising recursive generators and recursive descent. return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 2, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] }&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;PASS: flow-006-conformance (FEATURE-FLOW-006.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The executable passes the authoritative conformance cases exercising recursive generators and recursive descent. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 2, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 0 }, &amp;quot;cases&amp;quot;: [] }&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;Implemented recursive generator primitives.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Added correct &lt;code&gt;while&lt;/code&gt;, &lt;code&gt;until&lt;/code&gt;, &lt;code&gt;repeat&lt;/code&gt;, &lt;code&gt;recurse&lt;/code&gt;, and recursive descent behavior.&lt;/li&gt;&lt;li&gt;Added focused FLOW-006 tests.&lt;/li&gt;&lt;li&gt;Tests: 106 passed.&lt;/li&gt;&lt;li&gt;Scoped conformance: 2 passed, 0 failed, 0 errored.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;RESULT: SUCCESS&lt;/p&gt;
+&lt;p&gt;FILES CHANGED:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_flow_006_recursive_generators.py&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;SUMMARY: Recursive generators now preserve jq stream ordering, branching, termination, and partial output behavior.&lt;/p&gt;
+&lt;p&gt;BLOCKERS:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;None&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

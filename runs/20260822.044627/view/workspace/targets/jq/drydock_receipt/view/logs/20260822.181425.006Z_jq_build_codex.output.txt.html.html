@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.181425.006Z_jq_build_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.181425.006Z_jq_build_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.181425.006Z_jq_build_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.181425.006Z_jq_build_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.181425.006Z_jq_build_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.181425.006Z_jq_build_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;reusable-compact filename=&amp;quot;exclusions.txt&amp;quot;&amp;gt;
+Lists 13 verbatim module-loader programs excluded from scoring. Entries must match corpus program lines exactly; stale entries are harness errors. Module grammar failures remain scored.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;full_test.sh&amp;quot;&amp;gt;
+Requires executable ./jq, sets JQ to it, and runs the complete conformance corpus via sources/run_conformance.py. Exit status is the scoring verdict.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;parser.y&amp;quot;&amp;gt;
+Defines jq grammar for filters, operators, functions, modules, patterns, assignments, reductions, iteration, conditionals, errors, and interpolation. Compile failures must remain distinct from runtime failures.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;lexer.l&amp;quot;&amp;gt;
+Tokenizes jq syntax, literals, identifiers, fields, bindings, operators, comments, strings, interpolation, formats, and delimiters. Invalid syntax must reach compile-error handling.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;builtin.jq&amp;quot;&amp;gt;
+Defines jq standard-library filters for generators, reductions, paths, transformations, strings, regex, dates, streaming, assignments, SQL-style operations, and type utilities.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;jq-manual.txt&amp;quot;&amp;gt;
+Normative jq 1.8.2 language contract: filters are ordered generators; JSON values flow through composition, collection, builtins, variables, functions, errors, assignments, regex, dates, modules, and streaming.
+&amp;lt;/reusable-compact&amp;gt;
+
+AC_BROKEN: conformance-source-integrity
+
+RESULT: SUCCESS
+
+FILES CHANGED:
+- tests/test_conformance_assets.py
+
+SUMMARY:
+Staged assets validated in process: 550 corpus cases and 13 exclusions. All 12 project tests pass. No conformance harness was launched, as required for this staging story.
+
+BLOCKERS:
+- The supplied source-integrity criterion compares absolute harness paths with relative `Path(&amp;quot;sources/...&amp;quot;)` values and cannot pass without modifying the immutable harness.
+
+FAILURE_SUMMARY: Source-integrity acceptance criterion has an absolute-versus-relative path mismatch.
+FAILURE_DETAIL: The harness imports and required files exist, but `Path(__file__).resolve().parent` makes CORPUS and EXCLUSIONS absolute while the criterion expects relative paths. The criterion must be corrected upstream.&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

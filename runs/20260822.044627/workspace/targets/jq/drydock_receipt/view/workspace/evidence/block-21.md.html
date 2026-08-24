@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-21.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-21.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-21.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 21 · Service (block-21)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53812</li><li>execution id: 20260823.031407.736Z-316a0d1a</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement reductions and iteration controls. (FLOW-005) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-FLOW-005.md#flow-005-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-FLOW-005.md (SP 503)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_flow_005_reductions_iteration.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: flow-005-conformance (FEATURE-FLOW-005.md)</li></ul>
+<p>intent: The executable passes the authoritative conformance cases exercising reductions and iteration controls. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 50, &quot;fail&quot;: 2, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1205, &quot;program&quot;: &quot;pick(first)&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[1]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1209, &quot;program&quot;: &quot;pick(first|first)&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[[10]]&quot; ], &quot;actual&quot;: [] } ] } stderr: --- drydock: progress --- cases: pass=50 fail=2 error=0 skip=0 total=52 from=tally --- drydock: end progress --- --- drydock: values at failure --- tally = {&#x27;pass&#x27;: 50, &#x27;fail&#x27;: 2, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;flow-005-conformance.py&quot;, line 18, in &lt;module&gt; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: flow-005-conformance (FEATURE-FLOW-005.md)</li></ul>
+<p>intent: The executable passes the authoritative conformance cases exercising reductions and iteration controls. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 52, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_flow_005_reductions_iteration.py</li></ul>
+<p>SUMMARY: Implemented projection-aware <code>first</code> path handling for <code>pick</code>, with reduction/iteration regression coverage.</p>
+<p>Verification:</p>
+<ul><li>FLOW-005 conformance: 52 passed, 0 failed, 0 errored</li><li>Pytest: 101 passed</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,3 @@
+2026-08-23T01:45:31.285406Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if op == "literal":
+        text=a[0]; special={"true":True,"false":False,"null":None,"nan":float("nan"),"infinite":float("inf"),"-infinite":float("-inf"),"-nan":float("nan")}; yield special[text] if text in special else json.loads(text)

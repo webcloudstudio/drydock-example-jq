@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-EXEC-003.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-EXEC-003.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-EXEC-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: JSON Input and Compact Output</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Reads JSON input streams and serializes generated values as ordered compact lines.</td></tr><tr><td>Depends On</td><td>FEATURE-EXEC-002.md</td></tr><tr><td>Provides</td><td>JSON stdin reader, ordered JSON-lines serializer</td></tr><tr><td>Consumes</td><td>./jq -c &#x27;&lt;program&gt;&#x27;</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Read JSON values from standard input in the format exercised by the supplied corpus. Evaluate each input in order and emit every generated output as one compact JSON value per line, preserving order and multiplicity.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC multiple-input-values ===<br>Intent: Multiple JSON input values are processed in order and emitted one per line.</p>
+<p>import subprocess</p>
+<p>inputs = &quot;1\n2\n3\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=inputs, capture_output=True, text=True, ) expected = inputs.splitlines() actual = result.stdout.splitlines() assert result.returncode == 0 assert actual == expected === END AC multiple-input-values ===</p>
+<p>=== AC generator-line-output ===<br>Intent: Multiple outputs generated from one input preserve order and multiplicity.</p>
+<p>import subprocess</p>
+<p>input_text = &quot;[1,2,3]\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.[]&quot;], input=input_text, capture_output=True, text=True, ) expected = [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;] assert result.returncode == 0 assert result.stdout.splitlines() == expected === END AC generator-line-output ===</p>
+<p>=== AC compact-json-output ===<br>Intent: Generated objects are serialized as single-line JSON values.</p>
+<p>import json import subprocess</p>
+<p>input_text = &#x27;{&quot;a&quot;: 1, &quot;b&quot;: [2, 3]}\n&#x27; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=input_text, capture_output=True, text=True, ) decoded = json.loads(input_text) actual = json.loads(result.stdout) assert result.returncode == 0 assert actual == decoded assert len(result.stdout.splitlines()) == 1 === END AC compact-json-output ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Emit one JSON value per output line.</li><li>Preserve generator order and multiplicity.</li><li>Do not pretty-print or combine separate generated values.</li></ul></article>
+</main>
+</body>
+</html>

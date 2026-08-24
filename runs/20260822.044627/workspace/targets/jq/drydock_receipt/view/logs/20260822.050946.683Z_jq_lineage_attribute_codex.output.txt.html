@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.050946.683Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.050946.683Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.050946.683Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;lexical-scanning&quot; stories=&quot;PARSE-001&quot;&gt;
+%token INVALID_CHARACTER
+%token &lt;literal&gt; IDENT
+%token &lt;literal&gt; FIELD
+%token &lt;literal&gt; BINDING
+%token &lt;literal&gt; LITERAL
+%token &lt;literal&gt; FORMAT
+&lt;/requirement&gt;
+&lt;requirement name=&quot;literals-strings-interpolation&quot; stories=&quot;PARSE-002&quot;&gt;
+String:
+StringStart QQString QQSTRING_END {
+  $$ = $2;
+  jv_free($1);
+};
+&lt;/requirement&gt;
+&lt;requirement name=&quot;core-filter-grammar&quot; stories=&quot;PARSE-003&quot;&gt;
+Expr:
+Expr &quot;//&quot; Expr {
+  $$ = gen_definedor($1, $3);
+} |
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Term %prec NONOPT {
+  $$ = $1;
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;declarations-control-rejection&quot; stories=&quot;PARSE-004&quot;&gt;
+TopLevel:
+Module Imports Query {
+  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);
+} |
+Module Imports FuncDefs {
+  *answer = BLOCK($1, $2, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stream-valued-filters&quot; stories=&quot;CORE-001&quot;&gt;
+Query:
+FuncDef Query %prec FUNCDEF {
+  $$ = block_bind_referenced($1, $2, OP_IS_CALL_PSEUDO);
+} |
+Expr {
+  $$ = $1;
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;filter-composition&quot; stories=&quot;CORE-002&quot;&gt;
+Query &#x27;|&#x27; Query {
+  $$ = block_join($1, $3);
+} |
+Query &#x27;,&#x27; Query {
+  $$ = gen_both($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;errors-and-optional-evaluation&quot; stories=&quot;CORE-003&quot;&gt;
+Term FIELD &#x27;?&#x27; {
+  $$ = gen_index_opt($1, gen_const($2));
+} |
+Term &#x27;?&#x27; {
+  $$ = gen_try($1, gen_op_simple(BACKTRACK));
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;truthiness-comparison&quot; stories=&quot;CORE-004&quot;&gt;
+Expr &quot;or&quot; Expr {
+  $$ = gen_or($1, $3);
+} |
+Expr &quot;and&quot; Expr {
+  $$ = gen_and($1, $3);
+} |
+Expr &quot;==&quot; Expr {
+  $$ = gen_binop($1, $3, EQ);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;value-constants&quot; stories=&quot;VALUE-001&quot;&gt;
+LITERAL {
+  $$ = gen_const($1);
+} |
+IDENT {
+  const char *s = jv_string_value($1);
+  if (strcmp(s, &quot;false&quot;) == 0)
+    $$ = gen_const(jv_false());
+  else if (strcmp(s, &quot;true&quot;) == 0)
+    $$ = gen_const(jv_true());
+  else if (strcmp(s, &quot;null&quot;) == 0)
+    $$ = gen_const(jv_null());
+&lt;/requirement&gt;
+&lt;requirement name=&quot;field-index-access&quot; stories=&quot;VALUE-002&quot;&gt;
+Term FIELD %prec NONOPT {
+  $$ = gen_index($1, gen_const($2));
+} |
+Term &#x27;[&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_index($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;slices-and-iteration&quot; stories=&quot;VALUE-003&quot;&gt;
+Term &#x27;[&#x27; &#x27;]&#x27; %prec NONOPT {
+  $$ = block_join($1, gen_op_simple(EACH));
+} |
+Term &#x27;[&#x27; Query &#x27;:&#x27; Query &#x27;]&#x27; %prec NONOPT {
+  $$ = gen_slice_index($1, $3, $5, INDEX);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;arithmetic-structural-operators&quot; stories=&quot;FLOW-001&quot;&gt;
+Expr &#x27;+&#x27; Expr {
+  $$ = gen_binop($1, $3, &#x27;+&#x27;);
+} |
+Expr &quot;+=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;+&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;boolean-alternative-operators&quot; stories=&quot;FLOW-002&quot;&gt;
+Expr &quot;//&quot; Expr {
+  $$ = gen_definedor($1, $3);
+} |
+Expr &quot;//=&quot; Expr {
+  $$ = gen_definedor_assign($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;conditionals-exception-flow&quot; stories=&quot;FLOW-003&quot;&gt;
+&quot;if&quot; Query &quot;then&quot; Query ElseBody {
+  $$ = gen_cond($2, $4, $5);
+} |
+&quot;try&quot; Expr &quot;catch&quot; Expr {
+  $$ = gen_try($2, $4);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;labels-and-breaks&quot; stories=&quot;FLOW-004&quot;&gt;
+&quot;label&quot; BINDING &#x27;|&#x27; Query {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));
+  $$ = gen_location(@$, locations, gen_label(jv_string_value(v), $4));
+} |
+BREAK BINDING {
+  jv v = jv_string_fmt(&quot;*label-%s&quot;, jv_string_value($2));
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reductions-and-iteration-control&quot; stories=&quot;FLOW-005&quot;&gt;
+&quot;reduce&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_reduce($2, $4, $6, $8);
+} |
+&quot;foreach&quot; Expr &quot;as&quot; Patterns &#x27;(&#x27; Query &#x27;;&#x27; Query &#x27;;&#x27; Query &#x27;)&#x27; {
+  $$ = gen_foreach($2, $4, $6, $8, $10);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recursive-generators&quot; stories=&quot;FLOW-006&quot;&gt;
+REC {
+  $$ = gen_call(&quot;recurse&quot;, gen_noop());
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;variable-bindings&quot; stories=&quot;FUNC-001&quot;&gt;
+Expr &quot;as&quot; Patterns &#x27;|&#x27; Query {
+  $$ = gen_destructure($1, $3, $5);
+} |
+BINDING {
+  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));
+  jv_free($1);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-parameters&quot; stories=&quot;FUNC-002&quot;&gt;
+Params:
+Param {
+  $$ = $1;
+} |
+Params &#x27;;&#x27; Param {
+  $$ = BLOCK($1, $3);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-definitions&quot; stories=&quot;FUNC-003&quot;&gt;
+FuncDef:
+&quot;def&quot; IDENT &#x27;:&#x27; Query &#x27;;&#x27; {
+  $$ = gen_function(jv_string_value($2), gen_noop(), $4);
+  jv_free($2);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;destructuring-alternatives&quot; stories=&quot;FUNC-004&quot;&gt;
+RepPatterns:
+RepPatterns &quot;?//&quot; Pattern {
+  $$ = BLOCK($1, gen_destructure_alt($3));
+} |
+Pattern {
+  $$ = gen_destructure_alt($1);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-access-mutation&quot; stories=&quot;PATH-002&quot;&gt;
+static block gen_update(block object, block val, int optype) {
+  block tmp = gen_op_var_fresh(STOREV, &quot;tmp&quot;);
+  return BLOCK(gen_op_simple(DUP),
+               val,
+               tmp,
+               gen_call(&quot;_modify&quot;, BLOCK(gen_lambda(object),
+                                         gen_lambda(gen_binop(gen_noop(),
+                                                              gen_op_bound(LOADV, tmp),
+                                                              optype)))));
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;assignment-operators&quot; stories=&quot;PATH-003&quot;&gt;
+Expr &quot;|=&quot; Expr {
+  $$ = gen_call(&quot;_modify&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr &quot;+=&quot; Expr {
+  $$ = gen_update($1, $3, &#x27;+&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;complex-assignments&quot; stories=&quot;PATH-004&quot;&gt;
+Expr &#x27;=&#x27; Expr {
+  $$ = gen_call(&quot;_assign&quot;, BLOCK(gen_lambda($1), gen_lambda($3)));
+} |
+Expr SETMOD Expr {
+  $$ = gen_update($1, $3, &#x27;%&#x27;);
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;formats-and-serialization&quot; stories=&quot;TEXT-002&quot;&gt;
+static block gen_format(block a, jv fmt) {
+  return BLOCK(a, gen_call(&quot;format&quot;, gen_lambda(gen_const(fmt))));
+}
+&lt;/requirement&gt;
+&lt;requirement name=&quot;parser-diagnostics&quot; stories=&quot;IO-002&quot;&gt;
+void yyerror(YYLTYPE* loc, block* answer, int* errors,
+             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){
+  (*errors)++;
+  locfile_locate(locations, *loc, &quot;jq: error: %s&quot;, s);
+}
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture-foundation&quot;/&gt;
+&lt;unattached story=&quot;EXEC-001&quot;/&gt;
+&lt;unattached story=&quot;EXEC-002&quot;/&gt;
+&lt;unattached story=&quot;EXEC-003&quot;/&gt;
+&lt;unattached story=&quot;VALUE-004&quot;/&gt;
+&lt;unattached story=&quot;CONF-001&quot;/&gt;
+&lt;unattached story=&quot;PATH-001&quot;/&gt;
+&lt;unattached story=&quot;DATA-001&quot;/&gt;
+&lt;unattached story=&quot;DATA-002&quot;/&gt;
+&lt;unattached story=&quot;DATA-003&quot;/&gt;
+&lt;unattached story=&quot;DATA-004&quot;/&gt;
+&lt;unattached story=&quot;TEXT-001&quot;/&gt;
+&lt;unattached story=&quot;TEXT-003&quot;/&gt;
+&lt;unattached story=&quot;TEXT-004&quot;/&gt;
+&lt;unattached story=&quot;IO-001&quot;/&gt;
+&lt;unattached story=&quot;IO-003&quot;/&gt;
+&lt;unattached story=&quot;CONF-002&quot;/&gt;
+&lt;unattached story=&quot;CONF-003&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

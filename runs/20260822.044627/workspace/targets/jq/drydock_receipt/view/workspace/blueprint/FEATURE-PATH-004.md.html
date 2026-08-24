@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-PATH-004.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-PATH-004.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-PATH-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Complex Assignment Edge Cases</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Completes jq assignment behavior for iterated, invalid, and deep paths.</td></tr><tr><td>Depends On</td><td>FEATURE-PATH-003.md</td></tr><tr><td>Provides</td><td>iterated assignment, empty updates, array expansion, invalid and deep paths</td></tr><tr><td>Consumes</td><td>deletion and assignment operators</td></tr></tbody></table></div>
+<h2>Purpose</h2>
+<p>Handle complex assignment cases involving iterated paths, empty updates, array expansion, invalid indices, NaN indices, string slices, and depth limits.</p>
+<h2>Behavior</h2>
+<ul><li>Assignments through iterated and filtered paths update every selected location in jq order.</li><li>Empty updates remove selected array or object members.</li><li>Assignments beyond an array&#x27;s current length expand it with <code>null</code> values where specified.</li><li>Negative, fractional, and NaN indices follow jq&#x27;s access and mutation rules.</li><li>String slices cannot be updated when jq forbids string mutation.</li><li>Path, containment, comparison, serialization, and merge depth limits are enforced.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC path-004-conformance ===<br>Intent: The authoritative corpus slice covering complex assignment edge cases executes and passes.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;negative|NaN|depth|empty&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC path-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Reject invalid mutations with runtime errors rather than corrupting values.</li><li>Preserve partial output before runtime failure.</li><li>Enforce documented depth limits without recursion runaway.</li></ul></article>
+</main>
+</body>
+</html>

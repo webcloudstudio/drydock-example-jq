@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260823.003038.923Z_jq_build_codex.stderr.log</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260823.003038.923Z_jq_build_codex.stderr.log</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260823.003038.923Z_jq_build_codex.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>2026-08-23T00:33:09.047693Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    elif op == &quot;slice&quot;:
+2026-08-23T00:33:15.549918Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if op==&#x27;pattern_array&#x27;:
+        if not isinstance(value,list): return False
+        for i,p in enumerate(args[0]):
+            if not _bind_pattern(p, value[i] if i&lt;len(value) else None, env): return False
+            if not _bind_pattern(p, value[i] if i&lt;len(value) else None, env): return False
+        return True
+2026-08-23T00:37:08.790278Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name == &#x27;_strindices&#x27;:
+        if not isinstance(value, str): raise RuntimeError(f&#x27;{_type_name(value)} ({_stringify(value)}) is not a string&#x27;)
+        raise RuntimeError(&#x27;number (123) cannot be searched, as it is not a string&#x27;)
+2026-08-23T00:37:31.850531Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq_interpreter/evaluator.py: No such file or directory (os error 2)
+</pre></article>
+</main>
+</body>
+</html>

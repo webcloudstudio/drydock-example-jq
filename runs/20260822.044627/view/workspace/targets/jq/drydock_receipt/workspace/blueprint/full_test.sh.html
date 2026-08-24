@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/full_test.sh</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/full_test.sh</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/full_test.sh">Raw file</a></div></header>
+<article class="doc"><pre>#!/bin/sh
+# full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.
+#
+# `drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its
+# exit code and output as the score. The interface check is separate from the conformance run so
+# that a missing or non-executable program and a genuine conformance failure are distinguishable
+# in the evidence. JQ is the harness&#x27;s only knowledge of the implementation language; the
+# harness itself is language-neutral.
+set -eu
+if [ ! -x ./jq ]; then
+    echo &quot;error: no executable ./jq at the application root.&quot; &gt;&amp;2
+    echo &quot;The deliverable is an executable named jq that reads JSON on stdin.&quot; &gt;&amp;2
+    exit 1
+fi
+JQ=&quot;$PWD/jq&quot; exec python3 sources/run_conformance.py
+</pre></article>
+</main>
+</body>
+</html>

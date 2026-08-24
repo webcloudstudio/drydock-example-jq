@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.194125.678Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.194125.678Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.194125.678Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.194125.678Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.194125.678Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.194125.678Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-FUNC-004.md ===
+# FEATURE: Destructuring Patterns and Alternatives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq destructuring patterns and alternative bindings. |
+| Depends On  | FEATURE-FUNC-003.md |
+| Provides    | array patterns, object patterns, missing bindings, ?// alternatives |
+| Consumes    | lexical bindings, function evaluator |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Support array and object destructuring in `as` bindings, bind absent members as `null`, and backtrack through `?//` alternatives when a pattern or subsequent expression fails.
+
+## Behavior
+
+- Array patterns bind positional elements and use `null` for missing positions.
+- Object patterns bind named fields and nested patterns.
+- Alternative patterns try later alternatives when an earlier binding fails.
+- Variables introduced by successful alternatives remain available to the following filter.
+- Errors from the final alternative propagate as runtime errors.
+
+## Programmatic Acceptance
+
+=== AC func-004-conformance ===
+Intent: The authoritative corpus slice covering destructuring patterns and alternative bindings executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;\?//| as \{&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC func-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve lexical scope and generator backtracking.
+- Do not silently convert a final alternative error into a successful value.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATH-001.md ===
+# FEATURE: Path Discovery and Projection
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq path discovery and projection filters. |
+| Depends On  | FEATURE-FUNC-004.md |
+| Provides    | path, paths, pick |
+| Consumes    | field and index access, recursive generators, destructuring |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement filters that discover paths through JSON values and construct projections from selected paths.
+
+## Behavior
+
+- `path` emits path arrays for exact and filtered path expressions.
+- `paths` emits non-empty paths to values, optionally filtered by a predicate.
+- Recursive descent preserves traversal order.
+- `pick` creates a projection containing the requested paths and preserves missing branches as `null` where jq specifies.
+- Invalid path expressions raise runtime errors.
+
+## Programmatic Acceptance
+
+=== AC path-001-conformance ===
+Intent: The authoritative corpus slice covering path discovery and projection executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;path\(|paths|pick\(&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC path-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Path arrays contain only valid string keys and numeric indices.
+- Path discovery must preserve generator ordering and multiplicity.
+- Projection and discovery must not mutate the source value.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATH-002.md ===
+# FEATURE: Path Access and Mutation Primitives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq nested path access, update, and deletion primitives. |
+| Depends On  | FEATURE-PATH-001.md |
+| Provides    | getpath, setpath, delpaths |
+| Consumes    | path discovery, jq value model |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement immutable access and mutation of nested arrays and objects through explicit path arrays.
+
+## Behavior
+
+- `getpath` reads values at supplied paths and returns `null` for absent paths where specified.
+- `setpath` creates missing object and array structure and updates existing values.
+- `delpaths` removes all requested paths without mutating the original input.
+- Multiple path expressions preserve their generator order.
+- Invalid path types, negative indices, and excessive path depth produce jq runtime errors or no-ops according to the specification.
+
+## Programmatic Acceptance
+
+=== AC path-002-conformance ===
+Intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;getpath|setpath|delpaths&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC path-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Values remain immutable from the filter author&amp;#x27;s perspective.
+- Do not treat invalid paths as valid object keys or array indices.
+- Enforce the supplied depth and indexing semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATH-003.md ===
+# FEATURE: Deletion and Assignment Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq deletion and assignment operators over path expressions. |
+| Depends On  | FEATURE-PATH-002.md |
+| Provides    | del, =, |=, +=, -=, *=, /=, %=, //=
+| Consumes    | path discovery, getpath, setpath, delpaths |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement jq&amp;#x27;s immutable deletion, plain assignment, update assignment, and arithmetic assignment semantics.
+
+## Behavior
+
+- `del` removes values selected by one or more path expressions.
+- Plain assignment evaluates the right-hand side against the original input and uses every produced value.
+- Update assignment evaluates the right-hand side against each selected value and uses the first result.
+- Arithmetic assignments apply the corresponding operator to selected values.
+- Defined-or assignment replaces false or null values with the right-hand result.
+- Multi-path assignments preserve jq&amp;#x27;s output ordering and multiplicity.
+
+## Programmatic Acceptance
+
+=== AC path-003-conformance ===
+Intent: The authoritative corpus slice covering deletion and assignment operators executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;=|\|=|\+=&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC path-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Assignment must produce immutable values and must not leak mutations between outputs.
+- Preserve the distinction between `=` and `|=`.
+- Empty update streams delete the selected path.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-PATH-004.md ===
+# FEATURE: Complex Assignment Edge Cases
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Completes jq assignment behavior for iterated, invalid, and deep paths. |
+| Depends On  | FEATURE-PATH-003.md |
+| Provides    | iterated assignment, empty updates, array expansion, invalid and deep paths |
+| Consumes    | deletion and assignment operators |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Handle complex assignment cases involving iterated paths, empty updates, array expansion, invalid indices, NaN indices, string slices, and depth limits.
+
+## Behavior
+
+- Assignments through iterated and filtered paths update every selected location in jq order.
+- Empty updates remove selected array or object members.
+- Assignments beyond an array&amp;#x27;s current length expand it with `null` values where specified.
+- Negative, fractional, and NaN indices follow jq&amp;#x27;s access and mutation rules.
+- String slices cannot be updated when jq forbids string mutation.
+- Path, containment, comparison, serialization, and merge depth limits are enforced.
+
+## Programmatic Acceptance
+
+=== AC path-004-conformance ===
+Intent: The authoritative corpus slice covering complex assignment edge cases executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;negative|NaN|depth|empty&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC path-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Reject invalid mutations with runtime errors rather than corrupting values.
+- Preserve partial output before runtime failure.
+- Enforce documented depth limits without recursion runaway.
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

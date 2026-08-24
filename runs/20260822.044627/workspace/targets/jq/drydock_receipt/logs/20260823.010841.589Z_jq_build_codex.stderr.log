@@ -1,0 +1,5 @@
+2026-08-23T01:12:33.162000Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+        if op=='*':
+            if isinstance(x, str) and isinstance(y, (int,float)):
+2026-08-23T01:14:36.606444Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if op == 'call' and len(args) == 2 and not args[1] and node.arguments[0] in env.get('__params__', {}):

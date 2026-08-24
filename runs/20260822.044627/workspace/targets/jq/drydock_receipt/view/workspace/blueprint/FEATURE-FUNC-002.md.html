@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-FUNC-002.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-FUNC-002.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-FUNC-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Function Parameters</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq filter parameters, value parameters, and multi-arity calls.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FUNC-001.md</td></tr><tr><td>Provides</td><td>filter parameters, value parameters, function arities, Cartesian function calls</td></tr><tr><td>Consumes</td><td>lexical variable bindings, generator evaluator</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>User-defined functions accept filter parameters as reusable generators and value parameters as captured values.</p>
+<ul><li>Regular identifiers in parameter lists represent filter parameters.</li><li><code>$</code>-prefixed parameters represent value parameters.</li><li>Arguments preserve jq&#x27;s generator and Cartesian-product semantics.</li><li>Functions support multiple arities and repeated parameter invocation.</li><li>Closures retain the lexical environment active at definition and call sites.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-002-conformance ===<br>Intent: The executable passes the authoritative conformance cases exercising filter and value function parameters.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;def .*\(&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC func-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Function arguments behave as filters or values according to their declaration form.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not eagerly collapse filter arguments to one value.</li><li>Preserve repeated invocation and Cartesian output behavior.</li></ul></article>
+</main>
+</body>
+</html>

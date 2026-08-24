@@ -398,7 +398,7 @@ body {
   <img src="/logo.png" alt="Drydock" style="height:64px;display:block;">
 </div>
 
-<section class="state-panel"><strong>STATE: SCORE AC<span class="state-verdict state-fail">FAIL</span></strong><span>3 of 57 failed</span><span class="state-when">2026-08-23 08:29</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-held">BUILDING</li><li class="state-step state-held">BUILT</li><li class="state-step state-current state-fail">SCORE AC</li><li class="state-step state-fail">SCORE BUILD</li><li class="state-step">SCORE RELEASE</li></ol></section>
+<section class="state-panel"><strong>STATE: SCORE RELEASE<span class="state-verdict state-pass">PASS</span></strong><span class="state-when">2026-08-23 08:33</span><ol class="state-ladder"><li class="state-step state-held">INITIALIZED</li><li class="state-step state-held">IMPORTED</li><li class="state-step state-held">ANALYZED</li><li class="state-step state-held">PLAN CREATED</li><li class="state-step">PLAN REPAIRED</li><li class="state-step state-held">BUILDING</li><li class="state-step state-held">BUILT</li><li class="state-step state-fail">SCORE AC</li><li class="state-step state-fail">SCORE BUILD</li><li class="state-step state-current state-pass">SCORE RELEASE</li></ol></section>
 <nav class="chair-tabs" aria-label="Commanders Chair views">
   <button class="chair-tab active" type="button" data-chair-tab="overview">Overview</button>
   <button class="chair-tab" type="button" data-chair-tab="build">Build Report</button>
@@ -526,7 +526,10 @@ body {
   </section>
   <section id="scorecard" class="detail-section">
     <h2>Scorecard</h2>
-    <p class="empty">Not yet scored. Run drydock score release.</p>
+    <div class="question-status">PASSED</div>
+<div class="story-list">
+<div class="story-row"><span class="story-name">st-001 — The completed interpreter shall make sh sources/full_test.sh exit zero; that script&#x27;s exit status is the sole acceptance verdict.</span> <span class="badge badge-verified">✓ MET</span></div>
+</div>
   </section>
 </div>
 </main>

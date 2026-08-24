@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FUNC-001.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FUNC-001.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FUNC-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Lexical Variable Bindings</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq lexical value bindings and variable lookup.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FLOW-006.md</td></tr><tr><td>Provides</td><td>as bindings, variable lookup, lexical scope, shadowing</td></tr><tr><td>Consumes</td><td>generator evaluator, parser AST</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Bindings evaluate the left-hand filter as a generator, bind each produced value lexically, and run the remainder of the expression with the original input and the active binding environment.</p>
+<ul><li><code>EXP as $name | REST</code> supports multiple generated bindings.</li><li>Bindings are immutable and lexically scoped.</li><li>Nested bindings may shadow outer names without mutating them.</li><li>Keyword identifiers may be used as binding names.</li><li>Array and object patterns bind missing members as <code>null</code>.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC func-001-conformance ===<br>Intent: The executable passes the authoritative conformance cases exercising lexical bindings and variable lookup.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot; as \$|\$[A-Za-z]&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC func-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Variable values remain available only within their lexical scope and preserve generator backtracking.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not implement bindings as mutable global variables.</li><li>Do not leak nested or out-of-scope bindings.</li></ul></article>
+</main>
+</body>
+</html>

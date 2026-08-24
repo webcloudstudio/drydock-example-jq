@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;requirement name=&amp;quot;test-input-output-contract&amp;quot; stories=&amp;quot;EXEC-003&amp;quot;&amp;gt;
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;lexical-scanning&amp;quot; stories=&amp;quot;PARSE-001&amp;quot;&amp;gt;
+# The input line starts with a 0xFEFF (byte order mark) codepoint
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;literals-strings-interpolation&amp;quot; stories=&amp;quot;PARSE-002&amp;quot;&amp;gt;
+# We test escapes by matching them against Unicode codepoints
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;core-filter-grammar&amp;quot; stories=&amp;quot;PARSE-003&amp;quot;&amp;gt;
+# Field access, piping
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;advanced-filter-grammar&amp;quot; stories=&amp;quot;PARSE-004&amp;quot;&amp;gt;
+# module system
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;stream-evaluation&amp;quot; stories=&amp;quot;CORE-001&amp;quot;&amp;gt;
+# Multiple outputs, iteration
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;composition-cartesian-evaluation&amp;quot; stories=&amp;quot;CORE-002&amp;quot;&amp;gt;
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;errors-and-optional-evaluation&amp;quot; stories=&amp;quot;CORE-003&amp;quot;&amp;gt;
+# Try/catch and general `?` operator
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;truthiness-comparison&amp;quot; stories=&amp;quot;CORE-004&amp;quot;&amp;gt;
+# And some in/equality tests
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;value-model-numeric-edge-cases&amp;quot; stories=&amp;quot;VALUE-001&amp;quot;&amp;gt;
+# Basic numbers tests: integers, powers of two
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;field-index-access&amp;quot; stories=&amp;quot;VALUE-002&amp;quot;&amp;gt;
+# Negative array indices
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;slices-and-iteration&amp;quot; stories=&amp;quot;VALUE-003&amp;quot;&amp;gt;
+# Slices
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;type-length-math-primitives&amp;quot; stories=&amp;quot;VALUE-004&amp;quot;&amp;gt;
+# abs, fabs, length
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;arithmetic-structural-operators&amp;quot; stories=&amp;quot;FLOW-001&amp;quot;&amp;gt;
+# Builtin functions
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;boolean-alternative-operators&amp;quot; stories=&amp;quot;FLOW-002&amp;quot;&amp;gt;
+# containment operator
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;conditionals-exception-flow&amp;quot; stories=&amp;quot;FLOW-003&amp;quot;&amp;gt;
+# Conditionals
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;labels-and-breaks&amp;quot; stories=&amp;quot;FLOW-004&amp;quot;&amp;gt;
+[label $out | foreach .[] as $item ([3, null]; if .[0] &amp;lt; 1 then break $out else [.[0] -1, $item] end; .[1])]
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;reductions-iteration-control&amp;quot; stories=&amp;quot;FLOW-005&amp;quot;&amp;gt;
+[foreach .[] as $x (0; . + $x) as $x | $x]
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;recursive-generators&amp;quot; stories=&amp;quot;FLOW-006&amp;quot;&amp;gt;
+# test recursion
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;variable-bindings&amp;quot; stories=&amp;quot;FUNC-001&amp;quot;&amp;gt;
+# Variables
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;function-parameters&amp;quot; stories=&amp;quot;FUNC-002&amp;quot;&amp;gt;
+def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0])
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;function-definitions-scope&amp;quot; stories=&amp;quot;FUNC-003&amp;quot;&amp;gt;
+# test multiple function arities and redefinition
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;destructuring-alternatives&amp;quot; stories=&amp;quot;FUNC-004&amp;quot;&amp;gt;
+# Destructuring with alternation
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;path-discovery-projection&amp;quot; stories=&amp;quot;PATH-001&amp;quot;&amp;gt;
+# Paths
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;path-access-mutation&amp;quot; stories=&amp;quot;PATH-002&amp;quot;&amp;gt;
+[&amp;quot;foo&amp;quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;deletion-assignment&amp;quot; stories=&amp;quot;PATH-003&amp;quot;&amp;gt;
+#
+# Assignment
+#
+.message = &amp;quot;goodbye&amp;quot;
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;complex-assignment-edge-cases&amp;quot; stories=&amp;quot;PATH-004&amp;quot;&amp;gt;
+# #1358, getpath/1 should work in path expressions
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;collection-transformations&amp;quot; stories=&amp;quot;DATA-001&amp;quot;&amp;gt;
+# Collection transformations
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;sorting-grouping-extrema&amp;quot; stories=&amp;quot;DATA-002&amp;quot;&amp;gt;
+sort
+[42,[2,5,3,11],10,{&amp;quot;a&amp;quot;:42,&amp;quot;b&amp;quot;:2},{&amp;quot;a&amp;quot;:42},true,2,[2,6],&amp;quot;hello&amp;quot;,null,[2,5,6],{&amp;quot;a&amp;quot;:[],&amp;quot;b&amp;quot;:1},&amp;quot;abc&amp;quot;,&amp;quot;ab&amp;quot;,[3,10],{},false,&amp;quot;abcd&amp;quot;,null]
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;object-entries-containment&amp;quot; stories=&amp;quot;DATA-003&amp;quot;&amp;gt;
+to_entries
+{&amp;quot;a&amp;quot;: 1, &amp;quot;b&amp;quot;: 2}
+[{&amp;quot;key&amp;quot;:&amp;quot;a&amp;quot;, &amp;quot;value&amp;quot;:1}, {&amp;quot;key&amp;quot;:&amp;quot;b&amp;quot;, &amp;quot;value&amp;quot;:2}]
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;index-membership-search&amp;quot; stories=&amp;quot;DATA-004&amp;quot;&amp;gt;
+# check that dead code removal occurs after builtin it generation
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;string-manipulation&amp;quot; stories=&amp;quot;TEXT-001&amp;quot;&amp;gt;
+# string operations
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;formats-serialization&amp;quot; stories=&amp;quot;TEXT-002&amp;quot;&amp;gt;
+[.[]|tojson|fromjson]
+[&amp;quot;foo&amp;quot;, 1, [&amp;quot;a&amp;quot;, 1, &amp;quot;b&amp;quot;, 2, {&amp;quot;foo&amp;quot;:&amp;quot;bar&amp;quot;}]]
+[&amp;quot;foo&amp;quot;,1,[&amp;quot;a&amp;quot;,1,&amp;quot;b&amp;quot;,2,{&amp;quot;foo&amp;quot;:&amp;quot;bar&amp;quot;}]]
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;regular-expression-filters&amp;quot; stories=&amp;quot;TEXT-003&amp;quot;&amp;gt;
+# string operations
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;date-time-filters&amp;quot; stories=&amp;quot;TEXT-004&amp;quot;&amp;gt;
+# module system
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;input-stream-controls&amp;quot; stories=&amp;quot;IO-001&amp;quot;&amp;gt;
+# calling input/0, or debug/0 in a test doesn&amp;#x27;t crash jq
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;diagnostics-stderr-filters&amp;quot; stories=&amp;quot;IO-002&amp;quot;&amp;gt;
+debug
+1
+1
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;streaming-transformations&amp;quot; stories=&amp;quot;IO-003&amp;quot;&amp;gt;
+# Multiple outputs, iteration
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;full-conformance-verification&amp;quot; stories=&amp;quot;CONF-001,CONF-002,CONF-003&amp;quot;&amp;gt;
+# Tests are groups of three lines: program, input, expected output
+&amp;lt;/requirement&amp;gt;
+&amp;lt;unattached story=&amp;quot;architecture-foundation&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-002&amp;quot;/&amp;gt;&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

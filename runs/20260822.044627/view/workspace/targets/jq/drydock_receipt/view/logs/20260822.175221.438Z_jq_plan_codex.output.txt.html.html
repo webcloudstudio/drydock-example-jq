@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.175221.438Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.175221.438Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.175221.438Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.175221.438Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.175221.438Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.175221.438Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-Accessors.md ===
+# FEATURE: Accessors
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines object-field access, array indexing, optional access, and negative-index behavior. |
+| Depends On  | FEATURE-Value-Model.md |
+| Provides    | object fields, array indices, optional access, negative indices |
+| Consumes    | jq value model |
+
+## Questions
+
+- None.
+
+## Access Semantics
+
+Object fields return the matching value or null when absent. Array indices are zero-based and support negative indices. Invalid access raises a jq runtime error unless the expression is optional, in which case the error is suppressed according to jq semantics.
+
+## Programmatic Acceptance
+
+=== AC value-002-conformance ===
+Intent: Field access, negative indexing, and optional access produce the supplied jq behavior.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+payload = &amp;#x27;{&amp;quot;field&amp;quot;:[10,20,30]}\n&amp;#x27;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.field[-1], .missing?, .field[0]&amp;quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [30, None, 10]
+assert actual == expected
+=== END AC value-002-conformance ===
+
+=== AC value-002-access-contract ===
+Intent: Field access, negative indexing, and optional access produce the supplied jq behavior.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+payload = &amp;#x27;{&amp;quot;field&amp;quot;:[10,20,30]}\n&amp;#x27;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.field[-1], .missing?, .field[0]&amp;quot;],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [30, None, 10]
+assert actual == expected
+=== END AC value-002-access-contract ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Missing fields yield null rather than Python exceptions.
+- Negative array indices follow jq indexing rules.
+- Optional access suppresses only the applicable runtime access error.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Arithmetic-Operators.md ===
+# FEATURE: Arithmetic Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq arithmetic, structural combination, repetition, splitting, and negation operators. |
+| Depends On  | FEATURE-Type-and-Numeric-Builtins.md |
+| Provides    | plus, minus, multiply, divide, modulo, negation, recursive object merge, string repetition and splitting |
+| Consumes    | type and numeric builtins, jq generator evaluation |
+
+## Questions
+
+- None.
+
+## Intent
+
+Arithmetic operators apply jq&amp;#x27;s type-directed operations while preserving generator Cartesian products, immutable values, and runtime error behavior.
+
+## Behavior
+
+- Numeric operators perform arithmetic with jq-compatible numeric handling.
+- `+` combines numbers, arrays, strings, objects, and null as specified.
+- `-` subtracts numbers or removes matching array elements.
+- `*` supports numeric multiplication, string repetition, and recursive object merge.
+- `/` supports numeric division and string splitting.
+- `%` performs numeric remainder.
+- Unary negation applies only to numbers.
+- Division, remainder, invalid combinations, and excessive string repetition raise runtime errors with exit status 5 when uncaught.
+
+## Programmatic Acceptance
+
+=== AC flow-001-conformance ===
+Intent: Numeric and structural arithmetic operators produce jq-compatible results.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;1+2, 7-3, 4*5, 7/2, 7%4, -6, [1,2]+[3], \&amp;quot;ab\&amp;quot;*2, \&amp;quot;a,b\&amp;quot;/\&amp;quot;,\&amp;quot;&amp;quot;],
+    input=&amp;quot;null\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [3, 4, 20, 3.5, 3, -6, [1, 2, 3], &amp;quot;abab&amp;quot;, [&amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;]]
+assert actual == expected
+=== END AC flow-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Operators must preserve output order and multiplicity.
+- Values remain immutable; assignment semantics are outside this capability.
+- Do not implement structural operations through implicit Python type coercion.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Assignment-Operators.md ===
+# FEATURE: Deletion and Assignment Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implements jq deletion, plain assignment, update assignment, and arithmetic assignment. |
+| Depends On  | FEATURE-Path-Primitives.md |
+| Provides    | del, =, |=, arithmetic assignments, defined-or assignment |
+| Consumes    | getpath, setpath, delpaths |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement immutable deletion and assignment over exact and iterated path expressions. Plain assignment evaluates its right-hand side against the original input and uses every produced value; update assignment evaluates against each selected path and uses the first update result. Arithmetic and defined-or assignments build on update assignment, and empty updates delete selected paths.
+
+## Programmatic Acceptance
+
+=== AC path-003-conformance ===
+Intent: Deletion, plain assignment, update assignment, and arithmetic assignment preserve immutable jq semantics.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;del(.obsolete), (.count = 2), (.count |= . + 3), (.count += 4)&amp;quot;],
+    input=&amp;#x27;{&amp;quot;count&amp;quot;:1,&amp;quot;obsolete&amp;quot;:true}\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [
+    {&amp;quot;count&amp;quot;: 1},
+    {&amp;quot;count&amp;quot;: 2, &amp;quot;obsolete&amp;quot;: True},
+    {&amp;quot;count&amp;quot;: 4, &amp;quot;obsolete&amp;quot;: True},
+    {&amp;quot;count&amp;quot;: 5, &amp;quot;obsolete&amp;quot;: True},
+]
+assert actual == expected
+=== END AC path-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Assignments must preserve jq&amp;#x27;s immutable snapshot semantics.
+- Multi-path and generator-valued assignments must preserve output multiplicity and order.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Boolean-and-Alternative-Operators.md ===
+# FEATURE: Boolean and Alternative Operators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq boolean, negation, defined-or, and defined-or assignment semantics. |
+| Depends On  | FEATURE-Arithmetic-Operators.md, FEATURE-Truthiness-and-Comparison.md |
+| Provides    | and, or, not, defined-or, defined-or assignment |
+| Consumes    | jq truthiness, comparison, and generator evaluation |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability implements jq&amp;#x27;s boolean and fallback operators with false/null truthiness, generator-aware output, and short-circuit behavior.
+
+## Behavior
+
+- Only `false` and `null` are falsey.
+- `and` and `or` produce boolean results for each relevant generator combination.
+- `not` produces the inverse truth value.
+- `//` emits non-false/non-null left outputs, otherwise all right outputs.
+- `//=` updates defined-or paths while preserving immutable assignment behavior.
+- Boolean and alternative expressions preserve generator ordering and short-circuit errors where jq requires them.
+
+## Programmatic Acceptance
+
+=== AC flow-002-conformance ===
+Intent: Boolean, negation, and defined-or operators follow jq truthiness and fallback semantics.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;(true and false), (true or false), (false|not), (null // 7), (3 // 7)&amp;quot;],
+    input=&amp;quot;null\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [False, True, True, 7, 3]
+assert actual == expected
+=== END AC flow-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not use Python truthiness in place of jq truthiness.
+- `//` must not be reduced to ordinary boolean `or`.
+- Preserve generator multiplicity and fallback evaluation semantics.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Collection-Transforms.md ===
+# FEATURE: Collection Transforms
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq collection transformation builtins with generator-aware recursive behavior. |
+| Depends On  | FEATURE-Complex-Assignments.md, FEATURE-Generator-Core.md |
+| Provides    | map, map_values, select, add, flatten, transpose, combinations, walk |
+| Consumes    | assignment operators, ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements collection transformation filters over arrays and objects. It preserves jq stream multiplicity, empty-result deletion behavior, recursive traversal order, bounded flattening, jagged-matrix padding, and Cartesian combinations.
+
+## Behavior
+
+- `map` collects all outputs produced for each input element.
+- `map_values` updates each element or object value using the first produced result and removes values producing `empty`.
+- `select` preserves the input only for truthy predicates.
+- `add` reduces array or generated values using jq addition.
+- `flatten` supports unlimited and bounded depth, rejecting negative depth.
+- `transpose` pads jagged rows with `null`.
+- `combinations` produces ordered Cartesian combinations.
+- `walk` transforms children before their containing array or object.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+Intent: Collection transformation builtins preserve collection shape, ordering, and Cartesian behavior.
+Requires: executable=python3; scope=test
+
+import json
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;map(. * 2), map_values(. + 1), select(length == 2), add, flatten(1), transpose, combinations&amp;quot;],
+    input=&amp;#x27;[1,2]\n&amp;#x27;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+assert actual[0] == [2, 4]
+assert actual[1] == [2, 3]
+=== END AC data-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Preserve generator ordering and multiplicity.
+- Do not modify files under `sources/`.
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CORE-004.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CORE-004.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-CORE-004.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-CORE-004.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-CORE-004.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-CORE-004.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: Truthiness and Comparison Semantics&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Define jq truthiness, equality, inequality, and total value ordering.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;ARCHITECTURE.md, FEATURE-CORE-003.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;truthiness, equality, inequality, comparison ordering&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;ordered generator evaluator&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC core-004-conformance ===&lt;br&gt;Intent: The executable evaluates jq truthiness, equality, inequality, and ordering semantics.&lt;br&gt;Suite: scoped&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;def run(program, input_text=&amp;quot;null\n&amp;quot;): return subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, program], input=input_text, capture_output=True, text=True, )&lt;/p&gt;
+&lt;p&gt;assert run(&amp;quot;false, null, 0, 1 | if . then 1 else 0 end&amp;quot;).stdout == &amp;quot;0\n0\n1\n1\n&amp;quot; assert run(&amp;quot;1 == 1.0&amp;quot;).stdout == &amp;quot;true\n&amp;quot; assert run(&amp;quot;true == 1&amp;quot;).stdout == &amp;quot;false\n&amp;quot; assert run(&amp;quot;[1,2] &amp;lt; [1,3]&amp;quot;).stdout == &amp;quot;true\n&amp;quot; === END AC core-004-conformance ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Only &lt;code&gt;false&lt;/code&gt; and &lt;code&gt;null&lt;/code&gt; are falsey.&lt;/li&gt;&lt;li&gt;Structural comparisons must be independent of object key insertion order.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

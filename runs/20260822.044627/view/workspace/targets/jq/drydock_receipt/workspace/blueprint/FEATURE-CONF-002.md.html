@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-002.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-002.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Scoped Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides executable, machine-readable scoped conformance verification.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CONF-001.md</td></tr><tr><td>Provides</td><td>scoped conformance execution with JQ candidate binding</td></tr><tr><td>Consumes</td><td>./jq, sources/run_conformance.py</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Scoped verification invokes the supplied runner against a construct selector, extends the inherited environment with the candidate executable through <code>JQ</code>, parses the runner&#x27;s JSON report, and requires every selected case to pass without errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conf-002-scoped-run ===<br>Intent: The scoped verification assets expose the candidate binding and machine-readable selector contracts.<br>Suite: scoped</p>
+<p>from pathlib import Path</p>
+<p>runner = Path(&quot;sources/run_conformance.py&quot;) assert runner.is_file() source = runner.read_text(encoding=&quot;utf-8&quot;) assert &quot;JQ&quot; in source and &quot;--select&quot; in source and &quot;--json&quot; in source === END AC conf-002-scoped-run ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Scoped verification must execute selected cases and must never use enumeration, dry-run, or unscoped execution as its product verdict.</li></ul></article>
+</main>
+</body>
+</html>

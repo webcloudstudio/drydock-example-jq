@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.231236.324Z_jq_build_codex.stderr.log.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.231236.324Z_jq_build_codex.stderr.log.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.231236.324Z_jq_build_codex.stderr.log.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.231236.324Z_jq_build_codex.stderr.log&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.231236.324Z_jq_build_codex.stderr.log&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.231236.324Z_jq_build_codex.stderr.log&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;2026-08-22T23:12:39.568033Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 503 Service Unavailable, url: wss://chatgpt.com/backend-api/codex/responses
+2026-08-22T23:16:31.936435Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name == &amp;#x27;range&amp;#x27;:
+        if len(args) == 1:
+            start, end, step = 0, _one(args[0], value, env), 1
+        else:
+            start=_one(args[0],value,env); end=_one(args[1],value,env) if len(args)&amp;gt;1 else start; step=_one(args[2],value,env) if len(args)&amp;gt;2 else 1
+        yield from range(int(start),int(end),int(step)); return
+2026-08-22T23:17:07.033533Z ERROR codex_core::tools::router: error=apply_patch verification failed: invalid hunk at line 2, Update file hunk for path &amp;#x27;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/build/jq_interpreter/parser.py&amp;#x27; is empty
+2026-08-22T23:19:37.713456Z ERROR codex_core::tools::router: error=apply_patch verification failed: invalid hunk at line 2, Update file hunk for path &amp;#x27;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/jq_interpreter/evaluator.py&amp;#x27; is empty
+2026-08-22T23:20:14.493290Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if isinstance(v,list):
+2026-08-22T23:20:20.615251Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+            raise RuntimeError(&amp;quot;cannot index array with string&amp;quot;)
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

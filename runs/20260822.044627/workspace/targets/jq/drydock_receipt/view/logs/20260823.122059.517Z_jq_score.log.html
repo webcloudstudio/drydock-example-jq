@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260823.122059.517Z_jq_score.log</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260823.122059.517Z_jq_score.log</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260823.122059.517Z_jq_score.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+  ✓ PASS        [1/57]  architecture-runtime            architecture-foundation  ARCHITECTURE.md
+  ✓ PASS        [2/57]  architecture-contract           architecture-foundation  ARCHITECTURE.md
+  ✓ PASS        [3/57]  exec-entry-conformance          EXEC-001                 FEATURE-EXEC-001.md
+  ✓ PASS        [4/57]  exec-is-runnable                EXEC-001                 FEATURE-EXEC-001.md
+  ✓ PASS        [5/57]  compile-exit-code               EXEC-002                 FEATURE-EXEC-002.md
+  ✓ PASS        [6/57]  runtime-exit-code               EXEC-002                 FEATURE-EXEC-002.md
+  ✓ PASS        [7/57]  partial-runtime-output          EXEC-002                 FEATURE-EXEC-002.md
+  ✓ PASS        [8/57]  multiple-input-values           EXEC-003                 FEATURE-EXEC-003.md
+  ✓ PASS        [9/57]  generator-line-output           EXEC-003                 FEATURE-EXEC-003.md
+  ✓ PASS        [10/57]  compact-json-output             EXEC-003                 FEATURE-EXEC-003.md
+  ✓ PASS        [11/57]  conf-001-assets                 CONF-001                 FEATURE-CONF-001.md
+  ✓ PASS        [12/57]  lexer-conformance               PARSE-001                FEATURE-PARSE-001.md
+  ✓ PASS        [13/57]  lexer-rejects-invalid-source    PARSE-001                FEATURE-PARSE-001.md
+  ✓ PASS        [14/57]  lexer-comments                  PARSE-001                FEATURE-PARSE-001.md
+  ✓ PASS        [15/57]  parse-002-conformance           PARSE-002                FEATURE-PARSE-002.md
+  ✓ PASS        [16/57]  parse-003-conformance           PARSE-003                FEATURE-PARSE-003.md
+  ✓ PASS        [17/57]  parse-004-conformance           PARSE-004                FEATURE-PARSE-004.md
+  ✓ PASS        [18/57]  core-001-conformance            CORE-001                 FEATURE-CORE-001.md
+  ✓ PASS        [19/57]  core-002-conformance            CORE-002                 FEATURE-CORE-002.md
+  ✓ PASS        [20/57]  core-003-conformance            CORE-003                 FEATURE-CORE-003.md
+  ✓ PASS        [21/57]  core-004-conformance            CORE-004                 FEATURE-CORE-004.md
+  ✓ PASS        [22/57]  value-001-conformance           VALUE-001                FEATURE-VALUE-001.md
+  ✓ PASS        [23/57]  value-002-conformance           VALUE-002                FEATURE-VALUE-002.md
+  ✓ PASS        [24/57]  value-003-conformance           VALUE-003                FEATURE-VALUE-003.md
+  ✓ PASS        [25/57]  value-004-conformance           VALUE-004                FEATURE-VALUE-004.md
+  ✓ PASS        [26/57]  flow-001-conformance            FLOW-001                 FEATURE-FLOW-001.md
+  ✓ PASS        [27/57]  flow-002-conformance            FLOW-002                 FEATURE-FLOW-002.md
+  ✓ PASS        [28/57]  flow-003-conformance            FLOW-003                 FEATURE-FLOW-003.md
+  ✓ PASS        [29/57]  flow-004-conformance            FLOW-004                 FEATURE-FLOW-004.md
+  ✓ PASS        [30/57]  flow-005-conformance            FLOW-005                 FEATURE-FLOW-005.md
+  ✓ PASS        [31/57]  flow-006-conformance            FLOW-006                 FEATURE-FLOW-006.md
+  ✓ PASS        [32/57]  func-001-conformance            FUNC-001                 FEATURE-FUNC-001.md
+  ✓ PASS        [33/57]  func-002-conformance            FUNC-002                 FEATURE-FUNC-002.md
+  ✓ PASS        [34/57]  func-003-conformance            FUNC-003                 FEATURE-FUNC-003.md
+  ✓ PASS        [35/57]  func-004-conformance            FUNC-004                 FEATURE-FUNC-004.md
+  ✓ PASS        [36/57]  path-001-conformance            PATH-001                 FEATURE-PATH-001.md
+  ✓ PASS        [37/57]  path-002-conformance            PATH-002                 FEATURE-PATH-002.md
+  ✓ PASS        [38/57]  path-003-conformance            PATH-003                 FEATURE-PATH-003.md
+  ✓ PASS        [39/57]  path-004-conformance            PATH-004                 FEATURE-PATH-004.md
+  ✓ PASS        [40/57]  data-001-conformance            DATA-001                 FEATURE-DATA-001.md
+  ✓ PASS        [41/57]  data-002-conformance            DATA-002                 FEATURE-DATA-002.md
+  ✓ PASS        [42/57]  data-003-conformance            DATA-003                 FEATURE-DATA-003.md
+  ✓ PASS        [43/57]  data-004-conformance            DATA-004                 FEATURE-DATA-004.md
+  ✓ PASS        [44/57]  text-001-conformance            TEXT-001                 FEATURE-TEXT-001.md
+  ✓ PASS        [45/57]  text-002-scoped-conformance     TEXT-002                 FEATURE-TEXT-002.md
+  ✓ PASS        [46/57]  text-002-formats                TEXT-002                 FEATURE-TEXT-002.md
+  ✗ FAIL        [47/57]  text-003-regex-conformance      TEXT-003                 FEATURE-TEXT-003.md
+  ✗ FAIL        [48/57]  text-003-captures               TEXT-003                 FEATURE-TEXT-003.md
+  ✓ PASS        [49/57]  text-004-date-conformance       TEXT-004                 FEATURE-TEXT-004.md
+  ✓ PASS        [50/57]  text-004-utc                    TEXT-004                 FEATURE-TEXT-004.md
+  ✓ PASS        [51/57]  io-001-input-conformance        IO-001                   FEATURE-IO-001.md
+  ✓ PASS        [52/57]  io-001-streams                  IO-001                   FEATURE-IO-001.md
+  ✓ PASS        [53/57]  io-002-diagnostics-conformance  IO-002                   FEATURE-IO-002.md
+  ✓ PASS        [54/57]  io-002-channels                 IO-002                   FEATURE-IO-002.md
+  ✗ FAIL        [55/57]  io-003-conformance              IO-003                   FEATURE-IO-003.md
+  ✓ PASS        [56/57]  conf-002-scoped-run             CONF-002                 FEATURE-CONF-002.md
+  ✓ PASS        [57/57]  conf-003-full-suite             CONF-003                 FEATURE-CONF-003.md
+
+Acceptance verification: jq  (2026-08-23T12:21:00+00:00)
+  PASS 18   FAIL 3   UNVERIFIED 0   PREPASSED 36   (57 AC)
+
+  ~ PREPASSED   architecture-runtime            architecture-foundation  ARCHITECTURE.md
+  ~ PREPASSED   architecture-contract           architecture-foundation  ARCHITECTURE.md
+  ~ PREPASSED   exec-entry-conformance          EXEC-001                 FEATURE-EXEC-001.md
+  ~ PREPASSED   exec-is-runnable                EXEC-001                 FEATURE-EXEC-001.md
+  ~ PREPASSED   compile-exit-code               EXEC-002                 FEATURE-EXEC-002.md
+  ~ PREPASSED   runtime-exit-code               EXEC-002                 FEATURE-EXEC-002.md
+  ~ PREPASSED   partial-runtime-output          EXEC-002                 FEATURE-EXEC-002.md
+  ~ PREPASSED   multiple-input-values           EXEC-003                 FEATURE-EXEC-003.md
+  ✓ PASS        generator-line-output           EXEC-003                 FEATURE-EXEC-003.md
+  ~ PREPASSED   compact-json-output             EXEC-003                 FEATURE-EXEC-003.md
+  ~ PREPASSED   conf-001-assets                 CONF-001                 FEATURE-CONF-001.md
+  ~ PREPASSED   lexer-conformance               PARSE-001                FEATURE-PARSE-001.md
+  ~ PREPASSED   lexer-rejects-invalid-source    PARSE-001                FEATURE-PARSE-001.md
+  ✓ PASS        lexer-comments                  PARSE-001                FEATURE-PARSE-001.md
+  ✓ PASS        parse-002-conformance           PARSE-002                FEATURE-PARSE-002.md
+  ✓ PASS        parse-003-conformance           PARSE-003                FEATURE-PARSE-003.md
+  ✓ PASS        parse-004-conformance           PARSE-004                FEATURE-PARSE-004.md
+  ~ PREPASSED   core-001-conformance            CORE-001                 FEATURE-CORE-001.md
+  ~ PREPASSED   core-002-conformance            CORE-002                 FEATURE-CORE-002.md
+  ~ PREPASSED   core-003-conformance            CORE-003                 FEATURE-CORE-003.md
+  ~ PREPASSED   core-004-conformance            CORE-004                 FEATURE-CORE-004.md
+  ✓ PASS        value-001-conformance           VALUE-001                FEATURE-VALUE-001.md
+  ~ PREPASSED   value-002-conformance           VALUE-002                FEATURE-VALUE-002.md
+  ~ PREPASSED   value-003-conformance           VALUE-003                FEATURE-VALUE-003.md
+  ✓ PASS        value-004-conformance           VALUE-004                FEATURE-VALUE-004.md
+  ~ PREPASSED   flow-001-conformance            FLOW-001                 FEATURE-FLOW-001.md
+  ✓ PASS        flow-002-conformance            FLOW-002                 FEATURE-FLOW-002.md
+  ~ PREPASSED   flow-003-conformance            FLOW-003                 FEATURE-FLOW-003.md
+  ~ PREPASSED   flow-004-conformance            FLOW-004                 FEATURE-FLOW-004.md
+  ✓ PASS        flow-005-conformance            FLOW-005                 FEATURE-FLOW-005.md
+  ~ PREPASSED   flow-006-conformance            FLOW-006                 FEATURE-FLOW-006.md
+  ~ PREPASSED   func-001-conformance            FUNC-001                 FEATURE-FUNC-001.md
+  ~ PREPASSED   func-002-conformance            FUNC-002                 FEATURE-FUNC-002.md
+  ~ PREPASSED   func-003-conformance            FUNC-003                 FEATURE-FUNC-003.md
+  ~ PREPASSED   func-004-conformance            FUNC-004                 FEATURE-FUNC-004.md
+  ~ PREPASSED   path-001-conformance            PATH-001                 FEATURE-PATH-001.md
+  ~ PREPASSED   path-002-conformance            PATH-002                 FEATURE-PATH-002.md
+  ~ PREPASSED   path-003-conformance            PATH-003                 FEATURE-PATH-003.md
+  ~ PREPASSED   path-004-conformance            PATH-004                 FEATURE-PATH-004.md
+  ✓ PASS        data-001-conformance            DATA-001                 FEATURE-DATA-001.md
+  ~ PREPASSED   data-002-conformance            DATA-002                 FEATURE-DATA-002.md
+  ✓ PASS        data-003-conformance            DATA-003                 FEATURE-DATA-003.md
+  ✓ PASS        data-004-conformance            DATA-004                 FEATURE-DATA-004.md
+  ✓ PASS        text-001-conformance            TEXT-001                 FEATURE-TEXT-001.md
+  ~ PREPASSED   text-002-scoped-conformance     TEXT-002                 FEATURE-TEXT-002.md
+  ~ PREPASSED   text-002-formats                TEXT-002                 FEATURE-TEXT-002.md
+  ✗ FAIL        text-003-regex-conformance      TEXT-003                 FEATURE-TEXT-003.md
+  ✗ FAIL        text-003-captures               TEXT-003                 FEATURE-TEXT-003.md
+  ✓ PASS        text-004-date-conformance       TEXT-004                 FEATURE-TEXT-004.md
+  ✓ PASS        text-004-utc                    TEXT-004                 FEATURE-TEXT-004.md
+  ~ PREPASSED   io-001-input-conformance        IO-001                   FEATURE-IO-001.md
+  ~ PREPASSED   io-001-streams                  IO-001                   FEATURE-IO-001.md
+  ✓ PASS        io-002-diagnostics-conformance  IO-002                   FEATURE-IO-002.md
+  ✓ PASS        io-002-channels                 IO-002                   FEATURE-IO-002.md
+  ✗ FAIL        io-003-conformance              IO-003                   FEATURE-IO-003.md
+  ~ PREPASSED   conf-002-scoped-run             CONF-002                 FEATURE-CONF-002.md
+  ✓ PASS        conf-003-full-suite             CONF-003                 FEATURE-CONF-003.md
+
+  ~ PREPASSED   architecture-runtime
+        intent: The declared runtime stack is available using only Python standard-library modules.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   architecture-contract
+        intent: The staged conformance runner exposes the process exit-code contract required by the architecture.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   exec-entry-conformance
+        intent: The executable entry point passes the corpus slice containing the primitive interface programs.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   exec-is-runnable
+        intent: The deliverable is directly executable at the application root.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   compile-exit-code
+        intent: A syntactically invalid jq program returns the compile-failure status.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   runtime-exit-code
+        intent: A compiled jq program that raises returns the runtime-failure status.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   partial-runtime-output
+        intent: Values emitted before a runtime error remain available on stdout.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   multiple-input-values
+        intent: Multiple JSON input values are processed in order and emitted one per line.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   compact-json-output
+        intent: Generated objects are serialized as single-line JSON values.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   conf-001-assets
+        intent: The staged corpus parses into the authoritative case set and all declared exclusions match cases.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   lexer-conformance
+        intent: The lexer and front end pass the corpus slice containing primitive literals and identity syntax.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   lexer-rejects-invalid-source
+        intent: An invalid lexical character is rejected with the compile-failure status.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   core-001-conformance
+        intent: The executable evaluates identity, empty, range, and generator ordering as ordered streams.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   core-002-conformance
+        intent: The executable evaluates pipes, commas, arrays, objects, and composed operators.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   core-003-conformance
+        intent: The executable evaluates optional errors and try/catch while preserving runtime failure distinction.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   core-004-conformance
+        intent: The executable evaluates jq truthiness, equality, inequality, and ordering semantics.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   value-002-conformance
+        intent: The authoritative corpus cases exercising field and index access execute successfully.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   value-003-conformance
+        intent: The authoritative corpus cases exercising slices and collection iteration execute successfully.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   flow-001-conformance
+        intent: The implementation passes the authoritative corpus slice covering arithmetic and structural operators.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   flow-003-conformance
+        intent: The implementation passes the authoritative corpus slice covering conditionals, try/catch, and optional evaluation.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   flow-004-conformance
+        intent: The implementation passes the authoritative corpus slice covering labels and breaks.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   flow-006-conformance
+        intent: The executable passes the authoritative conformance cases exercising recursive generators and recursive descent.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   func-001-conformance
+        intent: The executable passes the authoritative conformance cases exercising lexical bindings and variable lookup.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   func-002-conformance
+        intent: The executable passes the authoritative conformance cases exercising filter and value function parameters.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   func-003-conformance
+        intent: The executable passes the authoritative conformance cases exercising function definitions, scope, redefinition, and recursion.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   func-004-conformance
+        intent: The authoritative corpus slice covering destructuring patterns and alternative bindings executes and passes.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   path-001-conformance
+        intent: The authoritative corpus slice covering path discovery and projection executes and passes.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   path-002-conformance
+        intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   path-003-conformance
+        intent: The authoritative corpus slice covering deletion and assignment operators executes and passes.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   path-004-conformance
+        intent: The authoritative corpus slice covering complex assignment edge cases executes and passes.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   data-002-conformance
+        intent: The sorting, grouping, uniqueness, and extrema slice executes matching corpus cases and passes all selected cases.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   text-002-scoped-conformance
+        intent: The authoritative corpus cases covering JSON conversion and output formats execute and pass.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   text-002-formats
+        intent: The corpus exercises the declared format families rather than an empty selector.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✗ FAIL        text-003-regex-conformance
+        intent: The authoritative corpus cases covering regular-expression filters execute and pass.
+        assertion: assert sum(summary.values()) &gt; 0 → AssertionError
+        cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary
+        raised at: text-003-regex-conformance.py:17
+        process exit code: 1
+        values at failure:
+          summary = {&#x27;pass&#x27;: 0, &#x27;fail&#x27;: 0, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0}
+        criterion code:
+             1 | import json
+             2 | import os
+             3 | import subprocess
+             4 | import sys
+             5 |
+             6 | selector = r&quot;test\(|match\(|capture\(|scan\(|sub\(|gsub\(|splits\(&quot;
+             7 | result = subprocess.run(
+             8 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+             9 |     capture_output=True,
+            10 |     text=True,
+            11 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            12 | )
+            13 | print(result.stdout)
+            14 | print(result.stderr, file=sys.stderr)
+            15 | report = json.loads(result.stdout)
+            16 | summary = report[&quot;summary&quot;]
+          &gt; 17 | assert sum(summary.values()) &gt; 0
+            18 | assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+            19 | assert result.returncode == 0
+        observed output:
+            &quot;candidate&quot;: [
+              &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot;
+            ],
+            &quot;corpus&quot;: &quot;jq.test&quot;,
+            &quot;summary&quot;: {
+              &quot;pass&quot;: 0,
+              &quot;fail&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;skip&quot;: 0
+            },
+            &quot;cases&quot;: []
+          }
+          … 1 earlier line(s) omitted, --full for all
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;text-003-regex-conformance.py&quot;, line 17, in &lt;module&gt;
+              assert sum(summary.values()) &gt; 0
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ✗ FAIL        text-003-captures
+        intent: The selected corpus includes matching, named capture, and replacement behavior.
+        assertion: assert sum(summary.values()) &gt; 0 → AssertionError
+        cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary
+        raised at: text-003-captures.py:17
+        process exit code: 1
+        values at failure:
+          summary = {&#x27;pass&#x27;: 0, &#x27;fail&#x27;: 0, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0}
+        criterion code:
+             1 | import json
+             2 | import os
+             3 | import subprocess
+             4 | import sys
+             5 |
+             6 | selector = r&quot;match\(|capture\(|sub\(|gsub\(&quot;
+             7 | result = subprocess.run(
+             8 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+             9 |     capture_output=True,
+            10 |     text=True,
+            11 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            12 | )
+            13 | print(result.stdout)
+            14 | print(result.stderr, file=sys.stderr)
+            15 | report = json.loads(result.stdout)
+            16 | summary = report[&quot;summary&quot;]
+          &gt; 17 | assert sum(summary.values()) &gt; 0
+            18 | assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+            19 | assert result.returncode == 0
+        observed output:
+            &quot;candidate&quot;: [
+              &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot;
+            ],
+            &quot;corpus&quot;: &quot;jq.test&quot;,
+            &quot;summary&quot;: {
+              &quot;pass&quot;: 0,
+              &quot;fail&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;skip&quot;: 0
+            },
+            &quot;cases&quot;: []
+          }
+          … 1 earlier line(s) omitted, --full for all
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;text-003-captures.py&quot;, line 17, in &lt;module&gt;
+              assert sum(summary.values()) &gt; 0
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ~ PREPASSED   io-001-input-conformance
+        intent: The authoritative corpus cases covering input stream controls execute and pass.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ~ PREPASSED   io-001-streams
+        intent: The selected corpus includes both single-next-input and remaining-input stream behavior.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  ✗ FAIL        io-003-conformance
+        intent: The streaming transformation cases selected from the authoritative corpus execute and pass.
+        assertion: assert sum(summary.values()) &gt; 0 → AssertionError
+        cases: pass=0 fail=0 error=0 skip=0 total=0 from=summary
+        raised at: io-003-conformance.py:17
+        process exit code: 1
+        values at failure:
+          summary = {&#x27;pass&#x27;: 0, &#x27;fail&#x27;: 0, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0}
+        criterion code:
+             1 | import json
+             2 | import os
+             3 | import subprocess
+             4 | import sys
+             5 |
+             6 | selector = r&quot;tostream|fromstream|truncate_stream&quot;
+             7 | result = subprocess.run(
+             8 |     [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+             9 |     capture_output=True,
+            10 |     text=True,
+            11 |     env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+            12 | )
+            13 | print(result.stdout)
+            14 | print(result.stderr, file=sys.stderr)
+            15 | report = json.loads(result.stdout)
+            16 | summary = report[&quot;summary&quot;]
+          &gt; 17 | assert sum(summary.values()) &gt; 0
+            18 | assert summary[&quot;fail&quot;] == 0
+            19 | assert summary[&quot;error&quot;] == 0
+            20 | assert result.returncode == 0
+        observed output:
+            &quot;candidate&quot;: [
+              &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot;
+            ],
+            &quot;corpus&quot;: &quot;jq.test&quot;,
+            &quot;summary&quot;: {
+              &quot;pass&quot;: 0,
+              &quot;fail&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;skip&quot;: 0
+            },
+            &quot;cases&quot;: []
+          }
+          … 1 earlier line(s) omitted, --full for all
+        check stderr:
+          Traceback (most recent call last):
+            File &quot;io-003-conformance.py&quot;, line 17, in &lt;module&gt;
+              assert sum(summary.values()) &gt; 0
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+          AssertionError
+
+  ~ PREPASSED   conf-002-scoped-run
+        intent: The scoped verification assets expose the candidate binding and machine-readable selector contracts.
+        green at this block&#x27;s baseline too, before its code existed — confirm the criterion exercises the story&#x27;s work
+
+  Run `drydock score ac jq --full` for untruncated output per failure.
+
+
+  Proof coverage: 18 of 57 criteria are proof — green here, and observed red before the work that turned them green.
+    36 are not. Each names a story whose acceptance did not test it.
+
+    PREPASSED  architecture-runtime  architecture-foundation  ARCHITECTURE.md
+               green before its block built
+    PREPASSED  architecture-contract  architecture-foundation  ARCHITECTURE.md
+               green before its block built
+    PREPASSED  exec-entry-conformance  EXEC-001  FEATURE-EXEC-001.md
+               green before its block built
+    PREPASSED  exec-is-runnable  EXEC-001  FEATURE-EXEC-001.md
+               green before its block built
+    PREPASSED  compile-exit-code  EXEC-002  FEATURE-EXEC-002.md
+               green before its block built
+    PREPASSED  runtime-exit-code  EXEC-002  FEATURE-EXEC-002.md
+               green before its block built
+    PREPASSED  partial-runtime-output  EXEC-002  FEATURE-EXEC-002.md
+               green before its block built
+    PREPASSED  multiple-input-values  EXEC-003  FEATURE-EXEC-003.md
+               green before its block built
+    PREPASSED  compact-json-output  EXEC-003  FEATURE-EXEC-003.md
+               green before its block built
+    PREPASSED  conf-001-assets  CONF-001  FEATURE-CONF-001.md
+               green before its block built
+    PREPASSED  lexer-conformance  PARSE-001  FEATURE-PARSE-001.md
+               green before its block built
+    PREPASSED  lexer-rejects-invalid-source  PARSE-001  FEATURE-PARSE-001.md
+               green before its block built
+    PREPASSED  core-001-conformance  CORE-001  FEATURE-CORE-001.md
+               green before its block built
+    PREPASSED  core-002-conformance  CORE-002  FEATURE-CORE-002.md
+               green before its block built
+    PREPASSED  core-003-conformance  CORE-003  FEATURE-CORE-003.md
+               green before its block built
+    PREPASSED  core-004-conformance  CORE-004  FEATURE-CORE-004.md
+               green before its block built
+    PREPASSED  value-002-conformance  VALUE-002  FEATURE-VALUE-002.md
+               green before its block built
+    PREPASSED  value-003-conformance  VALUE-003  FEATURE-VALUE-003.md
+               green before its block built
+    PREPASSED  flow-001-conformance  FLOW-001  FEATURE-FLOW-001.md
+               green before its block built
+    PREPASSED  flow-003-conformance  FLOW-003  FEATURE-FLOW-003.md
+               green before its block built
+    PREPASSED  flow-004-conformance  FLOW-004  FEATURE-FLOW-004.md
+               green before its block built
+    PREPASSED  flow-006-conformance  FLOW-006  FEATURE-FLOW-006.md
+               green before its block built
+    PREPASSED  func-001-conformance  FUNC-001  FEATURE-FUNC-001.md
+               green before its block built
+    PREPASSED  func-002-conformance  FUNC-002  FEATURE-FUNC-002.md
+               green before its block built
+    PREPASSED  func-003-conformance  FUNC-003  FEATURE-FUNC-003.md
+               green before its block built
+    PREPASSED  func-004-conformance  FUNC-004  FEATURE-FUNC-004.md
+               green before its block built
+    PREPASSED  path-001-conformance  PATH-001  FEATURE-PATH-001.md
+               green before its block built
+    PREPASSED  path-002-conformance  PATH-002  FEATURE-PATH-002.md
+               green before its block built
+    PREPASSED  path-003-conformance  PATH-003  FEATURE-PATH-003.md
+               green before its block built
+    PREPASSED  path-004-conformance  PATH-004  FEATURE-PATH-004.md
+               green before its block built
+    PREPASSED  data-002-conformance  DATA-002  FEATURE-DATA-002.md
+               green before its block built
+    PREPASSED  text-002-scoped-conformance  TEXT-002  FEATURE-TEXT-002.md
+               green before its block built
+    PREPASSED  text-002-formats  TEXT-002  FEATURE-TEXT-002.md
+               green before its block built
+    PREPASSED  io-001-input-conformance  IO-001  FEATURE-IO-001.md
+               green before its block built
+    PREPASSED  io-001-streams  IO-001  FEATURE-IO-001.md
+               green before its block built
+    PREPASSED  conf-002-scoped-run  CONF-002  FEATURE-CONF-002.md
+               green before its block built
+
+Soundings: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/SOUNDINGS.md
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

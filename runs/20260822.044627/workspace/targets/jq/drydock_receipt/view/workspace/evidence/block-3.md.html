@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-3.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-3.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-3.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 3 · Service (block-3)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 11182</li><li>execution id: 20260822.195011.791Z-7425cbae</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement jq process exit and diagnostic behavior. (EXEC-002) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-EXEC-002.md (SP 494)</li><li>context: run_conformance.py (SP 4354)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li><li>stack: common_compact.md (SP 1179)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/cli.py</li><li>tests/test_architecture.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): compile-exit-code (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: A syntactically invalid jq program returns the compile-failure status. return code: 0</p>
+<ul><li>GREEN (prepassed): runtime-exit-code (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: A compiled jq program that raises returns the runtime-failure status. return code: 0</p>
+<ul><li>GREEN (prepassed): partial-runtime-output (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: Values emitted before a runtime error remain available on stdout. return code: 0</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: compile-exit-code (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: A syntactically invalid jq program returns the compile-failure status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: runtime-exit-code (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: A compiled jq program that raises returns the runtime-failure status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<ul><li>PASS: partial-runtime-output (FEATURE-EXEC-002.md)</li></ul>
+<p>intent: Values emitted before a runtime error remain available on stdout. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0</p>
+<h2>Build summary</h2>
+<p>Implemented EXEC-002 process behavior.</p>
+<ul><li>Compile failures exit <code>3</code>.</li><li>Runtime failures exit <code>5</code>.</li><li>Success exits <code>0</code>.</li><li>Diagnostics remain on stderr.</li><li>Partial output is flushed and preserved before runtime errors.</li></ul>
+<p>All 16 unit tests and three acceptance checks pass.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/cli.py</li><li>tests/test_architecture.py</li></ul>
+<p>SUMMARY: Added immediate output flushing and regression coverage for stderr-only runtime diagnostics.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

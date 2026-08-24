@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.045941.036Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.045941.036Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.045941.036Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.045941.036Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.045941.036Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.045941.036Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT ARCHITECTURE.md ===
+# ARCHITECTURE: jq
+
+The standalone `jq` executable is implemented in Python using only the standard library. It parses jq filters, evaluates ordered generators over JSON input, and emits compact JSON values.
+
+## Programmatic Acceptance
+
+=== AC architecture-boundary ===
+from pathlib import Path
+import ast
+entry = Path(&amp;quot;jq&amp;quot;)
+assert entry.is_file()
+assert entry.stat().st_mode &amp;amp; 0o111
+assert ast.parse(entry.read_text(encoding=&amp;quot;utf-8&amp;quot;))
+=== END AC architecture-boundary ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Accessors.md ===
+# FEATURE: Accessors
+
+Object fields, array indices, dynamic keys, optional access, and negative indices follow jq semantics.
+
+## Programmatic Acceptance
+
+=== AC value-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC value-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Advanced-Grammar.md ===
+# FEATURE: Advanced Grammar
+
+The parser supports declarations, control constructs, bindings, modules, and destructuring syntax.
+
+## Programmatic Acceptance
+
+=== AC parse-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC parse-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Arithmetic-and-Structural-Operators.md ===
+# FEATURE: Arithmetic and Structural Operators
+
+Arithmetic, string, array, object, recursive merge, repetition, and splitting operators are supported.
+
+## Programmatic Acceptance
+
+=== AC flow-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC flow-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Assignment-Operators.md ===
+# FEATURE: Assignment Operators
+
+Deletion and immutable assignment operators are supported.
+
+## Programmatic Acceptance
+
+=== AC path-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC path-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Boolean-and-Alternative-Operators.md ===
+# FEATURE: Boolean and Alternative Operators
+
+Boolean, negation, defined-or, and defined-or assignment semantics are supported.
+
+## Programmatic Acceptance
+
+=== AC flow-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC flow-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Collection-Transformations.md ===
+# FEATURE: Collection Transformations
+
+Collection transformation and recursive traversal builtins preserve generator ordering and multiplicity.
+
+## Programmatic Acceptance
+
+=== AC data-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC data-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Complex-Assignments.md ===
+# FEATURE: Complex Assignments
+
+Complex assignments handle generated and deeply nested paths.
+
+## Programmatic Acceptance
+
+=== AC path-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC path-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Composition.md ===
+# FEATURE: Composition
+
+Pipes, commas, collections, objects, and cartesian generator semantics are supported.
+
+## Programmatic Acceptance
+
+=== AC core-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC core-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conditionals-and-Exception-Flow.md ===
+# FEATURE: Conditionals and Exception Flow
+
+Conditional branches, try/catch handling, and optional evaluation are supported.
+
+## Programmatic Acceptance
+
+=== AC flow-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC flow-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conformance-Assets.md ===
+# FEATURE: Conformance Assets
+
+The supplied conformance corpus and harness are staged unchanged.
+
+## Programmatic Acceptance
+
+=== AC conformance-assets-parse ===
+from pathlib import Path
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+assert Path(&amp;quot;sources/exclusions.txt&amp;quot;).is_file()
+=== END AC conformance-assets-parse ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Destructuring-Alternatives.md ===
+# FEATURE: Destructuring Alternatives
+
+Destructuring patterns and `?//` alternatives are supported.
+
+## Programmatic Acceptance
+
+=== AC func-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC func-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Errors-and-Optional.md ===
+# FEATURE: Errors and Optional Evaluation
+
+Empty streams, runtime errors, exception handling, optional evaluation, and partial output are supported.
+
+## Programmatic Acceptance
+
+=== AC core-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC core-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Executable-Entry-Point.md ===
+# FEATURE: Executable Entry Point
+
+The application provides the executable `./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;` interface.
+
+## Programmatic Acceptance
+
+=== AC executable-permission ===
+from pathlib import Path
+entry = Path(&amp;quot;jq&amp;quot;)
+assert entry.is_file()
+assert entry.stat().st_mode &amp;amp; 0o111
+=== END AC executable-permission ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Filter-Grammar.md ===
+# FEATURE: Filter Grammar
+
+The parser implements jq expression grammar, precedence, composition, indexing, construction, and optional operators.
+
+## Programmatic Acceptance
+
+=== AC parse-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC parse-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Formats-and-Serialization.md ===
+# FEATURE: Formats and Serialization
+
+JSON conversion and jq output-format filters are supported.
+
+## Programmatic Acceptance
+
+=== AC formats-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC formats-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Function-Definitions.md ===
+# FEATURE: Function Definitions
+
+Function definitions provide lexical scope, redefinition, and recursion.
+
+## Programmatic Acceptance
+
+=== AC function-definitions-scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC function-definitions-scoped-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Function-Parameters.md ===
+# FEATURE: Function Parameters
+
+User-defined filter and value function parameters support multiple arities and generator arguments.
+
+## Programmatic Acceptance
+
+=== AC function-parameters-scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC function-parameters-scoped-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: Generator Core
+
+Filters evaluate as ordered streams with multiplicity, backtracking, and empty results.
+
+## Programmatic Acceptance
+
+=== AC core-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC core-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Index-and-Membership.md ===
+# FEATURE: Index and Membership
+
+Search, quantifier, emptiness, indexing, joining, and membership utilities are supported.
+
+## Programmatic Acceptance
+
+=== AC data-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC data-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Labels-and-Breaks.md ===
+# FEATURE: Labels and Breaks
+
+Lexically scoped labels and break control are supported.
+
+## Programmatic Acceptance
+
+=== AC flow-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC flow-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Lexer.md ===
+# FEATURE: Lexer
+
+The lexer tokenizes jq literals, identifiers, operators, delimiters, comments, and formats.
+
+## Programmatic Acceptance
+
+=== AC lexer-basic-tokens ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC lexer-basic-tokens ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Literals-and-Strings.md ===
+# FEATURE: Literals and Strings
+
+JSON literals, escaped strings, formatted strings, and interpolation are supported.
+
+## Programmatic Acceptance
+
+=== AC parse-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC parse-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Object-Entries-and-Containment.md ===
+# FEATURE: Object Entries and Containment
+
+Object keys, entries, containment, and entry transformations follow jq semantics.
+
+## Programmatic Acceptance
+
+=== AC data-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC data-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Path-Discovery.md ===
+# FEATURE: Path Discovery
+
+Path discovery and projections support exact and generated path expressions.
+
+## Programmatic Acceptance
+
+=== AC path-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC path-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Path-Primitives.md ===
+# FEATURE: Path Primitives
+
+Nested jq values can be read, updated, created, and deleted through path arrays.
+
+## Programmatic Acceptance
+
+=== AC path-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC path-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Process-Contract.md ===
+# FEATURE: Process Contract
+
+Compilation, runtime failure, success, diagnostics, and partial output follow the required exit contract.
+
+## Programmatic Acceptance
+
+=== AC process-compile-exit ===
+import subprocess
+result = subprocess.run([&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;{&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True)
+assert result.returncode == 3
+assert result.stderr
+=== END AC process-compile-exit ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Recursive-Generators.md ===
+# FEATURE: Recursive Generators
+
+Recursive generator filters preserve termination and stream ordering.
+
+## Programmatic Acceptance
+
+=== AC recursive-generators-scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC recursive-generators-scoped-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Reductions-and-Iteration-Control.md ===
+# FEATURE: Reductions and Iteration Control
+
+Reductions, iteration controls, range generation, and generator selection are supported.
+
+## Programmatic Acceptance
+
+=== AC reductions-scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC reductions-scoped-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Regular-Expressions.md ===
+# FEATURE: Regular Expressions
+
+Regex matching, captures, scanning, splitting, and substitution use Python standard-library regular expressions.
+
+## Programmatic Acceptance
+
+=== AC regex-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC regex-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Scoped-Conformance.md ===
+# FEATURE: Scoped Conformance Verification
+
+Construct-specific conformance verification executes selected cases and requires a non-empty passing result.
+
+## Programmatic Acceptance
+
+=== AC scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC scoped-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Slices-and-Iteration.md ===
+# FEATURE: Slices and Iteration
+
+Array and string slices and array/object iteration preserve jq ordering and multiplicity.
+
+## Programmatic Acceptance
+
+=== AC value-003-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC value-003-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Sorting-and-Grouping.md ===
+# FEATURE: Sorting and Grouping
+
+Sorting, grouping, uniqueness, and extrema use jq structural comparison.
+
+## Programmatic Acceptance
+
+=== AC data-002-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC data-002-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Streaming.md ===
+# FEATURE: Streaming Transformations
+
+Streaming representations can be emitted, reconstructed, and truncated.
+
+## Programmatic Acceptance
+
+=== AC streaming-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC streaming-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-String-Manipulation.md ===
+# FEATURE: String Manipulation
+
+String trimming, conversion, splitting, joining, case, and Unicode filters are supported.
+
+## Programmatic Acceptance
+
+=== AC text-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC text-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Truthiness-and-Comparison.md ===
+# FEATURE: Truthiness and Comparison
+
+Jq truthiness, equality, inequality, and structural ordering are supported.
+
+## Programmatic Acceptance
+
+=== AC core-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC core-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Type-and-Numeric-Primitives.md ===
+# FEATURE: Type and Numeric Primitives
+
+Type, length, numeric conversion, predicates, and mathematical primitive filters are supported.
+
+## Programmatic Acceptance
+
+=== AC value-004-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC value-004-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Value-Model.md ===
+# FEATURE: Value Model
+
+The runtime represents jq JSON values, including non-finite numeric values produced by filters.
+
+## Programmatic Acceptance
+
+=== AC value-001-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC value-001-conformance ===
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Variable-Bindings.md ===
+# FEATURE: Variable Bindings
+
+Lexical bindings, shadowing, and destructuring patterns are supported.
+
+## Programmatic Acceptance
+
+=== AC variable-bindings-scoped-conformance ===
+from pathlib import Path
+assert Path(&amp;quot;jq&amp;quot;).is_file()
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).is_file()
+=== END AC variable-bindings-scoped-conformance ===
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

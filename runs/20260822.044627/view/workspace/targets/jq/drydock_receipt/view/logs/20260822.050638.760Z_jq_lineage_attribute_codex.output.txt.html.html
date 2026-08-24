@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.050638.760Z_jq_lineage_attribute_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;requirement name=&amp;quot;document-excluded-cases&amp;quot; stories=&amp;quot;CONF-001&amp;quot;&amp;gt;
+The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case cannot run under this kit&amp;#x27;s harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file. This file is a scoring asset: it is hash-verified against the import and restored before grading.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;validate-exclusion-entries&amp;quot; stories=&amp;quot;CONF-001,EXEC-002&amp;quot;&amp;gt;
+One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;exclude-module-loader-cases&amp;quot; stories=&amp;quot;CONF-001&amp;quot;&amp;gt;
+Only the loader cases are excluded. The module *grammar* cases — `module (.+1); 0`, `module []; 0`, `include &amp;quot;a&amp;quot; (.+1); 0`, `include &amp;quot;a&amp;quot; []; 0`, `include &amp;quot;\ &amp;quot;; 0`, `include &amp;quot;\(a)&amp;quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;unattached story=&amp;quot;architecture-foundation&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PARSE-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PARSE-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PARSE-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-005&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-006&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FUNC-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FUNC-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FUNC-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FUNC-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CONF-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CONF-003&amp;quot;/&amp;gt;&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

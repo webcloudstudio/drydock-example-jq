@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/STORY_GUIDANCE.json.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/STORY_GUIDANCE.json.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/STORY_GUIDANCE.json.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/STORY_GUIDANCE.json&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/STORY_GUIDANCE.json&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../workspace/STORY_GUIDANCE.json&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;{
+  &amp;quot;stories&amp;quot;: [
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;EXEC-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;^(true|false|null|1)$&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;Build Instructions: interface contract&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PARSE-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;^(true|false|null|1|\\.)$&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;lexer.l&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PARSE-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;interpolation|@base64|@uri&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;lexer.l and jq.test string/format cases&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PARSE-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\.|\\[|\\{|\\+|\\-|\\*|/|%&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;parser.y expression grammar&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PARSE-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;%%FAIL|if |try |reduce |foreach |def | as |label |module|include&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;parser.y declarations and control grammar&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CORE-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\.|,|\\[\\.\\]|range|empty&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;Build Instructions: generator core&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CORE-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\||,|\\[|\\{&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt generator semantics&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CORE-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;try|error|\\?&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt error and optional semantics&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CORE-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;==|!=|&amp;lt;=|&amp;gt;=|&amp;lt;|&amp;gt;&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt comparison and truthiness&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;VALUE-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;nan|infinite|tojson|fromjson&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt types and numeric values&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;VALUE-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\.[A-Za-z]|\\[[-0-9]&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt accessors&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;VALUE-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\[.*:|\\.\\[\\]&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt slices and iteration&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;VALUE-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;length|type|sqrt|floor|tonumber&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt types and numeric builtins&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\+|\\-|\\*|/|%&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt builtin operators&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;and|or|not|//&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt conditionals and comparisons&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;if |try |\\?&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt conditionals and try-catch&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;label|break&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt breaking out of control structures&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-005&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;reduce|foreach|limit|skip|nth|first|last&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt advanced generators&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FLOW-006&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;while|until|recurse|repeat&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt recursive generators&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FUNC-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot; as \\$|\\$[A-Za-z]&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt variable binding&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FUNC-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;def .*\\(&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt defining functions&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FUNC-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;def &amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt function scoping and recursion&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;FUNC-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;\\?//| as \\{&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt destructuring alternatives&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PATH-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;path\\(|paths|pick\\(&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt paths&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PATH-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;getpath|setpath|delpaths&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt path primitives&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PATH-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;=|\\|=|\\+=&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt assignment&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;PATH-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;negative|NaN|depth|empty&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq.test assignment edge cases&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;DATA-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;map|flatten|transpose|combinations|walk&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;builtin.jq collection utilities&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;DATA-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;sort|group_by|unique|min|max&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt collection ordering&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;DATA-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;keys|has\\(|contains|inside|to_entries|from_entries&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt object and containment builtins&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;DATA-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;indices|index\\(|rindex|bsearch|any|all|IN\\(&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;builtin.jq generic iterator and membership utilities&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;TEXT-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;split|join|trim|ascii_|explode|implode|startswith|endswith&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt string builtins&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;TEXT-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;@text|@json|@html|@uri|@csv|@tsv|@sh|@base64&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt format strings and escaping&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;TEXT-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;test\\(|match\\(|capture\\(|scan\\(|sub\\(|gsub\\(&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt regular expressions&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;TEXT-004&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;date|strftime|strptime|gmtime|mktime&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt dates&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;IO-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;input|inputs&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt I/O&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;IO-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;debug|stderr|halt_error&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt diagnostics&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;IO-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;tostream|fromstream|truncate_stream&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;jq-manual.txt streaming&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CONF-001&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--list&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;Build Instructions: source roles and staged assets&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CONF-002&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;python3&amp;quot;,
+        &amp;quot;sources/run_conformance.py&amp;quot;,
+        &amp;quot;--select&amp;quot;,
+        &amp;quot;reduce&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;Build Instructions: scoped verification&amp;quot;
+    },
+    {
+      &amp;quot;id&amp;quot;: &amp;quot;CONF-003&amp;quot;,
+      &amp;quot;provenance&amp;quot;: &amp;quot;plan&amp;quot;,
+      &amp;quot;gate&amp;quot;: [
+        &amp;quot;sh&amp;quot;,
+        &amp;quot;sources/full_test.sh&amp;quot;
+      ],
+      &amp;quot;note&amp;quot;: &amp;quot;Sea Trials and definition of done&amp;quot;
+    }
+  ]
+}
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-Executable-Entry-Point.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-Executable-Entry-Point.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-Executable-Entry-Point.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Executable jq Entry Point</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides the executable jq command and its basic stdin-to-stdout filter interface.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>./jq -c program execution</td></tr><tr><td>Consumes</td><td>interpreter parser and evaluator</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<ol><li>Start the executable at the application root as <code>./jq</code>.</li><li>Accept the exercised <code>-c &#x27;&lt;program&gt;&#x27;</code> interface.</li><li>Read JSON input from standard input.</li><li>Compile and evaluate the jq program for each input value.</li><li>Emit each generated result as one compact JSON line.</li><li>Exit successfully after all inputs complete.</li></ol>
+<p>The implementation must support multiple input values and preserve output order. The executable may delegate to modular Python files beside it, but the delivered command remains the root-level executable named <code>jq</code>.</p>
+<h2>Interface</h2>
+<div class="scroll"><table><thead><tr><th>Input</th><th>Contract</th></tr></thead><tbody><tr><td>Arguments</td><td><code>-c</code> followed by one jq program string.</td></tr><tr><td>Standard input</td><td>JSON values in the corpus input format.</td></tr><tr><td>Standard output</td><td>One compact JSON value per generated result line.</td></tr><tr><td>Standard error</td><td>Diagnostics only.</td></tr><tr><td>Success status</td><td><code>0</code>.</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC exec-001-conformance ===<br>Intent: The executable runs the basic identity interface successfully.<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=&quot;true\nfalse\nnull\n1\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.splitlines() == [&quot;true&quot;, &quot;false&quot;, &quot;null&quot;, &quot;1&quot;]</p>
+<p>=== END AC exec-001-conformance ===</p>
+<p>=== AC exec-001-process ===<br>Intent: The executable accepts the declared -c interface and completes a supplied identity filter successfully.</p>
+<p>import json import subprocess</p>
+<p>payload = &quot;null\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;], input=payload, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 assert result.stdout.splitlines() == [payload.strip()] === END AC exec-001-process ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The delivered command is exactly <code>jq</code> at the application root.</li><li>The implementation accepts the exercised <code>-c</code> interface.</li><li>Output is compact and line-oriented.</li><li>The executable does not invoke another jq implementation.</li><li>Diagnostics are not written to standard output.</li></ul></article>
+</main>
+</body>
+</html>

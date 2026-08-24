@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-PARSE-001.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-PARSE-001.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-PARSE-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Lexical Scanner</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Tokenizes jq literals, identifiers, operators, delimiters, comments, and bindings.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>jq lexer and token stream</td></tr><tr><td>Consumes</td><td>JSON input and filter source</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement lexical scanning according to the supplied <code>sources/lexer.l</code> and <code>sources/parser.y</code> references. The scanner recognizes numeric literals, identifiers, field selectors, variable bindings, keywords, operators, delimiters, comments, and format tokens, while preserving source locations needed for diagnostics.</p>
+<p>Lexical errors must be reported as compile failures and must not be confused with runtime errors.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC lexer-conformance ===<br>Intent: The lexer and front end pass the corpus slice containing primitive literals and identity syntax.</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;^(true|false|null|1|\.)$&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC lexer-conformance ===</p>
+<p>=== AC lexer-rejects-invalid-source ===<br>Intent: An invalid lexical character is rejected with the compile-failure status.</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, &quot;%::wat&quot;], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC lexer-rejects-invalid-source ===</p>
+<p>=== AC lexer-comments ===<br>Intent: Comments do not alter evaluation of the surrounding jq program.</p>
+<p>import subprocess</p>
+<p>program = &quot;1 # comment\n&quot; result = subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=&quot;null\n&quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.splitlines() == [&quot;1&quot;] === END AC lexer-comments ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Follow the token forms and delimiter behavior defined by <code>sources/lexer.l</code>.</li><li>Preserve comments as non-semantic input.</li><li>Reject invalid characters at compile time.</li><li>Do not modify the supplied lexer or parser reference files.</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.204217.533Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.204217.533Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.204217.533Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Improved bindings, generator-preserving objects, function parameters, callable assignment paths, dynamic keys, and `break` parsing. Local tests pass: 32 passed. Scoped conformance checks still fail, primarily due to function-definition scoping and broader evaluator gaps.
+
+BLOCKERS:
+- PARSE-003 and PARSE-004 conformance criteria remain failing.
+- Function lexical scoping and several evaluator/builtin behaviors require further implementation.
+
+FAILURE_SUMMARY: Scoped conformance remains incomplete
+FAILURE_DETAIL: Local tests pass, but authoritative PARSE-003/PARSE-004 corpus selections still report failures; continue with function scoping and evaluator coverage.</pre></article>
+</main>
+</body>
+</html>

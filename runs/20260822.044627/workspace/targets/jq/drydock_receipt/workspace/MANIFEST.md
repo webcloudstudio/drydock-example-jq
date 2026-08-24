@@ -1,0 +1,1108 @@
+# MANIFEST: jq
+updated: 2026-08-22T19:46:37+00:00
+state: approved
+blocks: 43
+applied_specs: |
+  ARCHITECTURE.md sha256=804f795bcb5936ed9308172bfc354af1341b7ac3f836bc04948b5e4308da2eae commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-1 applied_at=2026-08-22T19:49:06+00:00 build_sha256=3b3a42c00117ba97d1370f8302c9ae4e17b24a50bf7118f6d7d0edbb947983c7
+  ARCHITECTURE_compact.md sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=1c5462f82420f37cd579c1663fbdf0658badd0bf19592251f931996376eb6ac6
+  FEATURE-CONF-001.md sha256=c634bd9f1cd543ea1b8152a21e0b077b520a2f989c050d15037015e151bebc26 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-5 applied_at=2026-08-22T19:54:30+00:00 build_sha256=a92a983b09d4f4abd687d9dc869a8bcbcb8bfa0d8f45b72d84a16259a7702fbb
+  FEATURE-CONF-002.md sha256=2f8a839b3ba0a50a0860da6fa0e650928442ac5f787ebf079a57649523c60994 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-42 applied_at=2026-08-23T11:57:52+00:00 build_sha256=64b568b9f136eb79dd7944bb632f9adc983157ba54ba8d9d26fb4199f240ed1d
+  FEATURE-CONF-003.md sha256=bb20be3246e9ab219f93759368ca61ad4d20564cb3792b2f9bf6874e5a38d31d commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=dba783eecf6e57f412e8567a73e7048b88eb401fad192411f69273d2d2fd31e1
+  FEATURE-CORE-001.md sha256=2093027cf769a2249afd777cb175da2d183f72db572dde1d187799ef25f1ed40 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-9 applied_at=2026-08-23T02:20:49+00:00 build_sha256=46080600359116d964d3f709bd25c4f6eaa062d495f2bbd978331cf2f7a34d21
+  FEATURE-CORE-002.md sha256=dae33f65d485a584052a3d16f4949fdb6970421983956b44c454fec55aa88abb commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-10 applied_at=2026-08-23T02:25:09+00:00 build_sha256=8c07eafa49b1aaf10a26b47c04d565d3a3260fa2a6409b2856fca86e21a0939b
+  FEATURE-CORE-003.md sha256=d0a35f2f0e37e03ed674463b77d6546f81a3c5980d11a6efbecc70a1d3aea5d4 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-11 applied_at=2026-08-23T02:28:41+00:00 build_sha256=7e76f381159750755ff135097b53eef89090f50a97dce82643c81a11e52ef138
+  FEATURE-CORE-004.md sha256=a0c8d5b7e9ebc2c32de3fd93752ad142307405d6a0dabff4c82ee505fd879528 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-12 applied_at=2026-08-23T02:32:32+00:00 build_sha256=d50172efedf8272413b5008272ad676efd348bb1713be38c62b89b32d09bf589
+  FEATURE-DATA-001.md sha256=b8279db771d4cbeba5c967940d8aad882f5bf2a800f6724c7c7af2acfba67650 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-31 applied_at=2026-08-23T04:31:43+00:00 build_sha256=1c98f1200034e9de52b7c04e3faf8cd9e05e245f249f73e596869a64bb55d5b9
+  FEATURE-DATA-002.md sha256=46771bd3d05c2d3472bdf40662851b17f49e40fe8567cd9491423c118bf7a9c3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-32 applied_at=2026-08-23T04:38:05+00:00 build_sha256=c6175692a002a01661ccf901c10c5175c5f2a20d7d98566f5758d188f49bbde0
+  FEATURE-DATA-003.md sha256=276acd2cf57eada4a4b04a9407f0c23b4fde5603908e452bfad64aed78e988bf commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-33 applied_at=2026-08-23T04:45:10+00:00 build_sha256=d9501f55a394a5d51b021fc849926bae4224f304767c048f654b7e1e78a2739f
+  FEATURE-DATA-004.md sha256=9e980e6f32e1d15fc27d0e71850806226907cad3afb6e1cba0b6a642c1625420 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-34 applied_at=2026-08-23T04:51:43+00:00 build_sha256=85890241ecdc883ca5ea70364f8ac20cda61d71aa4da46cc5f2274e31fdef912
+  FEATURE-EXEC-001.md sha256=cfd75627ebc9e8cc231f5cbbea34af08e6d364162f5661688d0c6458ea9324f8 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-2 applied_at=2026-08-22T19:50:09+00:00 build_sha256=de79ef1a705696d405a9bbc5a9bdbf22f54fb221b9a305c5d48df892c27913d7
+  FEATURE-EXEC-002.md sha256=4a28559694b0301553201a1fc1e0cf644d24b5ea0b1095679918cc101a4849c5 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-3 applied_at=2026-08-22T19:51:18+00:00 build_sha256=b29b55cc03ec8acb1ba7de127e5a6fe723255cbedd4dc623fddc9fb163cf2cd7
+  FEATURE-EXEC-003.md sha256=fce2f4f8f648d0684612a36b128622c3aafa91d4106955519c7c4f51e2fde0e4 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-4 applied_at=2026-08-22T19:53:16+00:00 build_sha256=a31591e7b34e8f071fc911e3ca854c9fae4841becbb90bbe39de32d4cfaca087
+  FEATURE-Executable-Entry-Point.md sha256=3ba06ca6b0767fcc60122f6041d47c42c5b62ef9af4f1ce50e54c70c62035056 commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-2 applied_at=2026-08-22T18:11:32+00:00 build_sha256=3cf647d038b2c37ee633761dcb42619cc49047fc213f2c458f836b2d9b39fc71
+  FEATURE-FLOW-001.md sha256=bd9f9be353d1d322f66a3e20663251352843cdd97c7989885488a73a4cded386 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-17 applied_at=2026-08-23T02:57:15+00:00 build_sha256=d790356b6707aca966ed3a33b69a39ddced6d2f3ce30df9b853356c5fb22c648
+  FEATURE-FLOW-002.md sha256=c2c695c5b364d1f6ed34fa038eea76a4f7cfe82d254b1a78605833139d5898c4 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-18 applied_at=2026-08-23T03:02:14+00:00 build_sha256=1ca7991cc6f000a93154e0cccdfaa85f3c0b345628c91645f5c3e2c6e5b415e6
+  FEATURE-FLOW-003.md sha256=4c2d3845dacf436a5eb37759d21998ca05c94c014b7321aec4b39cdd256c9742 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-19 applied_at=2026-08-23T03:08:38+00:00 build_sha256=747f5b49272b4b947c83512879e97a6b371b7326106a7e81c2923796b73e588f
+  FEATURE-FLOW-004.md sha256=c6200f244c2a02b3b345ce71564ddfec946538ab1a5eafe611427460ff39ea5d commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-20 applied_at=2026-08-23T03:13:49+00:00 build_sha256=1204832a45bdb306e788f811f3c93a2d3cefe4b00bde6a56d2f33231b3f18864
+  FEATURE-FLOW-005.md sha256=10c95b3afabb86257fa5ebc27152be77dcc3f2138a364ec5eace24c857be2be5 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-21 applied_at=2026-08-23T03:20:27+00:00 build_sha256=33860d680745422e88761f5292ab6cbc361c2b108a1e7cc5dc1bdfde8b2f6313
+  FEATURE-FLOW-006.md sha256=29b5639cc880aa7b363892eb37887da95c813d7248c878cb9ab672378f1f2424 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-22 applied_at=2026-08-23T03:26:03+00:00 build_sha256=d3a30eb2daa43a469f718493ed6c18948dba3771661d5d9c4e4b05929b747c9c
+  FEATURE-FUNC-001.md sha256=26faccdac427148e502c069d919042089faa7da4ef143c194327d05392510829 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-23 applied_at=2026-08-23T03:32:58+00:00 build_sha256=82aa721143fd87289cb9fa69e79e1e676f23223c6f95fb18c10bd6a032f9f9ae
+  FEATURE-FUNC-002.md sha256=273775cd2bbf9b3fe4538c1e0d4e80c197fd5e5b9b6e515fda4158e5fc3fb6cf commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-24 applied_at=2026-08-23T03:39:24+00:00 build_sha256=611ba927725e778a96e74d2d5cfd5a07d537533e679099d899c8e076ad715813
+  FEATURE-FUNC-003.md sha256=793e652654dc7740b1a4b6eb6dfcb749dd74f5246b49ec92929e1b05eab0f7b9 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-25 applied_at=2026-08-23T03:45:29+00:00 build_sha256=d2c8ddfc9ef0eb3627a5e4276977673ae14dc029ad8bdb054f2dc142300462f9
+  FEATURE-FUNC-004.md sha256=1826c0cd09c6d2097bcd8ca60f370dc3d9610dfc4a2bc91b1a1eba24459c0ce5 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-26 applied_at=2026-08-23T03:50:50+00:00 build_sha256=6e0197159bd2eadf79928ba2225a7ccdb8d36b2410a0c437ce71bd8c37305f9f
+  FEATURE-IO-001.md sha256=1ded0b97c10c955e03a384956779cbc162d703410676506c2c6e598a2f9f0465 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-39 applied_at=2026-08-23T11:49:07+00:00 build_sha256=cdafc279ab6b8e6450f7d69e852bab39bf9bd74e53d1017dbf97340381189e5e
+  FEATURE-IO-002.md sha256=80ddd83b6bcaa58563c13b65941834fb5905c817a6c261dc142997def2157bf3 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-40 applied_at=2026-08-23T11:52:44+00:00 build_sha256=90128f940748080d70007bdf0f4996284f35fb10bd03c1d2c094515167cfe35d
+  FEATURE-IO-003.md sha256=97b41eb9d6e95b80f726fcbbc2db1658351ab2fc20d26b0753e364b76601b45f commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=1c819234ad8d053951c06476470df77659104025034e189e3648a1b18d6a41a2
+  FEATURE-Json-IO.md sha256=b53fb24c9294612630c2043fe71a4ed7a4c57edebd64f3343cd3844019df54e0 commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-3 applied_at=2026-08-22T18:14:22+00:00 build_sha256=6add55349a875de1033db60ec668d4cdd214e75d0966df04cfaba467a0799526
+  FEATURE-PARSE-001.md sha256=98e8d8ad7372a72ab6110f6213eada45188ccecaaf6f8bac0ba5d7bc54236db0 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-6 applied_at=2026-08-22T19:58:27+00:00 build_sha256=473d7b652d420756de904cced1b6fcd8a09218080716535b02a4872b9bf005d1
+  FEATURE-PARSE-002.md sha256=00b9ba80ba69e5afbb7248ffe43ece325b6ec88d0fd1aa842f0789df08fd2ec8 commit=9cf25f3b7ff0eb042c7c75239ed4c8d0f601a942 applied_by=block-7 applied_at=2026-08-22T20:02:37+00:00 build_sha256=8e25d3c11864553872e1479878675f36c5dee34b98bd5dcbe109a6b154cb0bd8
+  FEATURE-PARSE-003.md sha256=f3634a964cf55ca8795ae5e557e7621af81f2baa09eed93d0d31a3a817394269 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-8 applied_at=2026-08-23T02:16:48+00:00 build_sha256=4eecaf89b97765a82fc7a9caca2a2db176aadc9b3ab4f8ac93246ff343da6a28
+  FEATURE-PARSE-004.md sha256=2ad327877e7bf6eeb7bd3e987b003213691ef55cdcff6267276bd10387deb3c2 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-8 applied_at=2026-08-23T02:16:48+00:00 build_sha256=d156f394e102cecb93bcdf06b42168d3bc21cf4a53c740acaec620ff26da7b24
+  FEATURE-PATH-001.md sha256=47227a770fc14a57c02ee788b46ae65b8adf10ab58d06a1c89cddc18cc27d9f1 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-27 applied_at=2026-08-23T03:56:45+00:00 build_sha256=18bb401d3b0203e118200b98e9147cf7cfd45b8d2db97e485889e1a8d3d61a4d
+  FEATURE-PATH-002.md sha256=ce12632cbd6d82da1cf73546737a646c03a2eaac64b99a495524accb614ad415 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-28 applied_at=2026-08-23T04:03:33+00:00 build_sha256=3cf96f8943f6b91a1c12f3b2f1d06d286335d59a9a8253364c05d2a26bffdd90
+  FEATURE-PATH-003.md sha256=ba16f0568b59d773f9417e23052f2b27cdfa01cc64cbf9144baa3681aaeaf526 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-29 applied_at=2026-08-23T04:11:08+00:00 build_sha256=1d9af1985625b522e149eca50476c1e2df85924cc4b6e935c8b222bb299b5338
+  FEATURE-PATH-004.md sha256=c7da09bd8a8d38dffd3e61165d016b71642428c3564233262c362ce1ac842163 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-30 applied_at=2026-08-23T04:17:44+00:00 build_sha256=c43156641f92c8abd6c7b550652816cbafa87e6517d0c59a02780653f984d508
+  FEATURE-Process-Contract.md sha256=b52f3427527125a46e8704b90ba4a2318c1c0d930818142fe7e7265034a00cbc commit=856bb477f9423ddc8731b8c647ab6a2bb1140f77 applied_by=block-2 applied_at=2026-08-22T18:11:32+00:00 build_sha256=4d6818d551ca2e0c13a5f0b8f30b47fad0b6f3351f72979a6e88a9c33b7c890c
+  FEATURE-TEXT-001.md sha256=4495f77e17235c016d99c020ed2463220bdf571a11038c0f4dd95d6fa531f11a commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-35 applied_at=2026-08-23T04:58:24+00:00 build_sha256=e0edef08bba6bf74b162379a6e87c9c9175d75691e552e1dcefe9c0a700be4a6
+  FEATURE-TEXT-002.md sha256=3173aa0142dd47f253c36734ddf49c392f080cdc5fff5fc86440ef633d32cdcb commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-36 applied_at=2026-08-23T05:06:38+00:00 build_sha256=1e4deee124064dc3e5978e8a0a5c21ff602e3c60113e0d4cda91a32cb2d8a9f1
+  FEATURE-TEXT-003.md sha256=1b5b689b9492dea27017fbc5248eaace3542c4ae73236ded0f285ce5d244a34c commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-37 applied_at=2026-08-23T11:38:15+00:00 build_sha256=a1e2c4cf7206bfab0c6359cfcd443864042b90ed36474df5a3fc1622a9ea4513
+  FEATURE-TEXT-004.md sha256=0b42202d9abf982069c897d8c6ff6417555aef658f477c2d04a31efd9e31e735 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-38 applied_at=2026-08-23T11:44:03+00:00 build_sha256=0a01924789a554a7c9d33b71f3b5080349877f405474247a2d69f0cb94471ac4
+  FEATURE-VALUE-001.md sha256=2236dc509b59427b8b587756ada8b8eb1bb9ac8dd65300c394ff2e3a68ff15c3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-13 applied_at=2026-08-23T02:35:55+00:00 build_sha256=e82ede8e9cb71584fe44dfda14d541a84d3907bc5f6a06b7278acaf553294d36
+  FEATURE-VALUE-002.md sha256=15d912ab5c5ea9208974390a15db9172b610bf448fda72d31acf34a9a7befbd3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-14 applied_at=2026-08-23T02:40:18+00:00 build_sha256=cb3d265a31adaa7ef067038120d3812466ef819d8639d7182c9c3092cc1ffe25
+  FEATURE-VALUE-003.md sha256=567865f1649cba6545abbbafc67328f689dcd18bc12100e56f4bdd207874141b commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-15 applied_at=2026-08-23T02:45:34+00:00 build_sha256=24fc09c4de2ee76d61921b74d69587c2813fec7ff3ee758eab0aa5bbd655ad46
+  FEATURE-VALUE-004.md sha256=eacd7e627e0d069f120ce5d8e3d45eccac0afc68c8c802ab4ac5dc4ff930abba commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-16 applied_at=2026-08-23T02:51:20+00:00 build_sha256=e0b5074ad931e7bb4fb259f6e1a13e1fecfe54630057ea9b50c8c42863a83550
+  builtin.jq sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4
+  exclusions.txt sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9
+  full_test.sh sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5
+  jq-manual.txt sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-41 applied_at=2026-08-23T11:56:37+00:00 build_sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3
+  jq.test sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd
+  lexer.l sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-8 applied_at=2026-08-23T02:16:48+00:00 build_sha256=cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3
+  parser.y sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60 commit=7ad68dfd33c39b8f018adb9d572c793c7ceeb780 applied_by=block-29 applied_at=2026-08-23T04:11:08+00:00 build_sha256=803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60
+  run_conformance.py sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492 commit=e89ba80994a110ae592b076b6006fb5a3d58cb0a applied_by=block-43 applied_at=2026-08-23T12:16:54+00:00 build_sha256=c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492
+applied: ARCHITECTURE.md=b6180cf90d8f416e778a09e787101cfc5e91831d,ARCHITECTURE_compact.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CONF-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CONF-002.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CONF-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-CORE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-CORE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-DATA-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-EXEC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-005.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FLOW-006.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-FUNC-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-IO-001.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-IO-002.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-IO-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-PARSE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PARSE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-PATH-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-TEXT-003.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-TEXT-004.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,FEATURE-VALUE-001.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-002.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-003.md=b6180cf90d8f416e778a09e787101cfc5e91831d,FEATURE-VALUE-004.md=b6180cf90d8f416e778a09e787101cfc5e91831d,TECHNOLOGY_STACK.md=b6180cf90d8f416e778a09e787101cfc5e91831d,builtin.jq=30c808224d13655ccad1d4708f9bcab07d4b0dfd,common.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,exclusions.txt=30c808224d13655ccad1d4708f9bcab07d4b0dfd,full_test.sh=30c808224d13655ccad1d4708f9bcab07d4b0dfd,jq-manual.txt=30c808224d13655ccad1d4708f9bcab07d4b0dfd,jq.test=30c808224d13655ccad1d4708f9bcab07d4b0dfd,lexer.l=b6180cf90d8f416e778a09e787101cfc5e91831d,parser.y=b6180cf90d8f416e778a09e787101cfc5e91831d,python.md=30c808224d13655ccad1d4708f9bcab07d4b0dfd,run_conformance.py=30c808224d13655ccad1d4708f9bcab07d4b0dfd
+
+## story 1: Define the standalone jq interpreter architecture and module boundaries.
+id: architecture-foundation
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-1.md
+summary: Define the standalone jq interpreter architecture and module boundaries.
+type: foundational
+kind: capability
+phase: 1
+block: 1
+implements: ARCHITECTURE.md
+context: TECHNOLOGY_STACK.md
+stack: python.md, common.md
+stack_mode: builder
+size: 13887
+provides: jq interpreter architecture, executable boundary, parser, evaluator, runtime
+consumes: —
+instructions: Establish the Python standard-library architecture for the executable, lexer/parser, generator evaluator, value model, builtins, runtime errors, and CLI boundary. Preserve the supplied source assets and forbid external jq implementations or subprocesses.
+acceptance: yes
+state: closed/implemented
+scope: target
+
+## story 2: Implement the executable jq entry point.
+id: EXEC-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-2.md
+summary: Implement the executable jq entry point.
+type: foundational
+kind: capability
+phase: 1
+block: 2
+implements: FEATURE-EXEC-001.md
+covers: EXEC-001
+context: run_conformance.py, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 15854
+provides: ./jq -c '<program>'
+consumes: executable boundary
+instructions: Create an executable named jq at the application root. Accept the exercised -c program interface, read JSON from stdin, evaluate the filter, and emit compact JSON values one per line.
+acceptance: yes
+depends: architecture-foundation
+state: closed/implemented
+scope: target
+
+## story 3: Implement jq process exit and diagnostic behavior.
+id: EXEC-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-3.md
+summary: Implement jq process exit and diagnostic behavior.
+type: service
+kind: capability
+phase: 1
+block: 3
+implements: FEATURE-EXEC-002.md
+covers: EXEC-002
+context: run_conformance.py, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 15865
+provides: compile exit 3, runtime exit 5, success exit 0, stderr diagnostics
+consumes: ./jq -c '<program>'
+instructions: Separate compile failures, runtime failures, and successful completion using exit codes 3, 5, and 0. Send diagnostics only to stderr and preserve output produced before runtime failure.
+acceptance: yes
+depends: EXEC-001
+state: closed/implemented
+scope: target
+
+## story 4: Implement JSON input and compact output handling.
+id: EXEC-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-4.md
+summary: Implement JSON input and compact output handling.
+type: service
+kind: capability
+phase: 1
+block: 4
+implements: FEATURE-EXEC-003.md
+covers: EXEC-003
+context: run_conformance.py, jq.test, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 28965
+provides: JSON stdin reader, ordered JSON-lines serializer
+consumes: ./jq -c '<program>'
+instructions: Parse the harness input format, support multiple input values and Unicode JSON, and serialize every generated value as one compact JSON line while preserving order and multiplicity.
+acceptance: yes
+depends: EXEC-002
+state: closed/implemented
+scope: target
+
+## story 5: Stage and validate immutable conformance assets.
+id: CONF-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-5.md
+summary: Stage and validate immutable conformance assets.
+type: foundational
+kind: test harness
+phase: 1
+block: 5
+implements: FEATURE-CONF-001.md
+covers: CONF-001
+context: run_conformance.py, full_test.sh, exclusions.txt, jq.test, jq-manual.txt, parser.y, lexer.l, builtin.jq, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 73937
+budget: over-target
+provides: sources/ conformance corpus, manual, grammar, harness, exclusions, full-test script
+consumes: target application root
+instructions: Stage the supplied sources verbatim under sources/. Validate corpus parsing and exclusion consistency by importing the harness parsers directly; do not modify or execute the candidate.
+acceptance: yes
+depends: architecture-foundation
+state: closed/implemented
+scope: both
+
+## story 6: Implement jq lexical scanning.
+id: PARSE-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-6.md
+summary: Implement jq lexical scanning.
+type: service
+kind: capability
+phase: 2
+block: 6
+implements: FEATURE-PARSE-001.md
+covers: PARSE-001
+context: lexer.l, parser.y, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 26493
+provides: jq lexer and token stream
+consumes: JSON input and filter source
+instructions: Implement lexical handling for literals, identifiers, fields, bindings, keywords, operators, delimiters, comments, formats, and interpolation markers according to lexer.l.
+acceptance: yes
+depends: EXEC-003
+state: closed/implemented
+scope: target
+
+## story 7: Implement literals, strings, escapes, and interpolation.
+id: PARSE-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-7.md
+summary: Implement literals, strings, escapes, and interpolation.
+type: service
+kind: capability
+phase: 2
+block: 7
+implements: FEATURE-PARSE-002.md
+covers: PARSE-002
+context: lexer.l, parser.y, jq.test, jq-manual.txt, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 59005
+budget: over-target
+provides: JSON literals, jq strings, escapes, interpolation, format literals
+consumes: jq lexer and token stream
+instructions: Parse JSON escapes, Unicode strings, string interpolation, and @format syntax. Reject invalid escapes and preserve jq string semantics.
+acceptance: yes
+depends: PARSE-001
+state: closed/implemented
+scope: target
+
+## story 8: Implement jq filter expression grammar.
+id: PARSE-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-8.md
+summary: Implement jq filter expression grammar.
+type: service
+kind: capability
+phase: 2
+block: 8
+implements: FEATURE-PARSE-003.md
+covers: PARSE-003
+context: parser.y, lexer.l, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 26329
+provides: expression AST, precedence, pipes, commas, indexing, slicing, arrays, objects, operators
+consumes: jq lexer and token stream
+instructions: Build the expression parser and AST for composition, precedence, indexing, slicing, arrays, objects, unary operators, arithmetic, comparison, optional access, and assignment syntax.
+acceptance: yes
+depends: PARSE-002
+state: closed/implemented
+scope: target
+
+## story 9: Implement declarations and control syntax parsing.
+id: PARSE-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-8.md
+summary: Implement declarations and control syntax parsing.
+type: service
+kind: capability
+phase: 2
+block: 8
+implements: FEATURE-PARSE-004.md
+covers: PARSE-004
+context: parser.y, lexer.l, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 26371
+provides: declarations, conditionals, try/catch, reductions, foreach, labels, bindings, modules grammar
+consumes: expression AST
+instructions: Parse defs, bindings, destructuring, conditionals, try/catch, reduce, foreach, labels, breaks, import/include/module grammar, and required compile-time rejection cases without loading excluded module fixtures.
+acceptance: yes
+depends: PARSE-003
+state: closed/implemented
+scope: target
+
+## story 10: Implement the stream-valued filter evaluator.
+id: CORE-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-9.md
+summary: Implement the stream-valued filter evaluator.
+type: service
+kind: capability
+phase: 3
+block: 9
+implements: FEATURE-CORE-001.md
+covers: CORE-001
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52216
+budget: over-target
+provides: ordered generator evaluator
+consumes: expression AST
+instructions: Evaluate every filter as an ordered generator supporting zero, one, or many outputs, backtracking, identity, iteration, empty, and range primitives.
+acceptance: yes
+depends: PARSE-004
+state: closed/implemented
+scope: target
+
+## story 11: Implement composition and Cartesian generator evaluation.
+id: CORE-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-10.md
+summary: Implement composition and Cartesian generator evaluation.
+type: service
+kind: capability
+phase: 3
+block: 10
+implements: FEATURE-CORE-002.md
+covers: CORE-002
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52248
+budget: over-target
+provides: pipe, comma, argument, array, object, and binary composition
+consumes: ordered generator evaluator
+instructions: Implement pipe and comma composition, Cartesian products across multi-output filters and arguments, collection, object construction, and generator ordering.
+acceptance: yes
+depends: CORE-001
+state: closed/implemented
+scope: target
+
+## story 12: Implement empty, runtime errors, optional evaluation, and try.
+id: CORE-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-11.md
+summary: Implement empty, runtime errors, optional evaluation, and try.
+type: service
+kind: capability
+phase: 3
+block: 11
+implements: FEATURE-CORE-003.md
+covers: CORE-003
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52226
+budget: over-target
+provides: empty, error, optional operator, try/catch, partial runtime output
+consumes: ordered generator evaluator
+instructions: Implement runtime error propagation, suppression with ?, try/catch handling, empty streams, and partial output before a runtime error.
+acceptance: yes
+depends: CORE-002
+state: closed/implemented
+scope: target
+
+## story 13: Implement jq truthiness, equality, and ordering.
+id: CORE-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-12.md
+summary: Implement jq truthiness, equality, and ordering.
+type: service
+kind: capability
+phase: 3
+block: 12
+implements: FEATURE-CORE-004.md
+covers: CORE-004
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52195
+budget: over-target
+provides: truthiness, equality, inequality, comparison ordering
+consumes: ordered generator evaluator
+instructions: Implement jq truthiness where only false and null are falsey, numeric equivalence, structural equality, and jq's total type ordering.
+acceptance: yes
+depends: CORE-003
+state: closed/implemented
+scope: target
+
+## story 14: Implement the jq value and numeric model.
+id: VALUE-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-13.md
+summary: Implement the jq value and numeric model.
+type: service
+kind: capability
+phase: 3
+block: 13
+implements: FEATURE-VALUE-001.md
+covers: VALUE-001
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52271
+budget: over-target
+provides: null, boolean, number, string, array, object, NaN, infinity values
+consumes: JSON input reader
+instructions: Implement jq values using standard-library representations, including special numeric values, literal-number preservation where required, and structural serialization behavior.
+acceptance: yes
+depends: CORE-004
+state: closed/implemented
+scope: target
+
+## story 15: Implement field and index access.
+id: VALUE-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-14.md
+summary: Implement field and index access.
+type: service
+kind: capability
+phase: 3
+block: 14
+implements: FEATURE-VALUE-002.md
+covers: VALUE-002
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52242
+budget: over-target
+provides: field access, index access, optional access, negative indices, missing values
+consumes: ordered generator evaluator, jq value model
+instructions: Implement object fields, array indices, string-key indexing, optional access, negative indices, missing-value null behavior, and access errors.
+acceptance: yes
+depends: VALUE-001
+state: closed/implemented
+scope: target
+
+## story 16: Implement slices and collection iteration.
+id: VALUE-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-15.md
+summary: Implement slices and collection iteration.
+type: service
+kind: capability
+phase: 3
+block: 15
+implements: FEATURE-VALUE-003.md
+covers: VALUE-003
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52257
+budget: over-target
+provides: array slices, string slices, array iteration, object iteration
+consumes: field and index access
+instructions: Implement array and string slices, fractional and out-of-range bounds, iteration over arrays and objects, optional iteration, and generator behavior.
+acceptance: yes
+depends: VALUE-002
+state: closed/implemented
+scope: target
+
+## story 17: Implement type, length, numeric predicates, conversions, and math.
+id: VALUE-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-16.md
+summary: Implement type, length, numeric predicates, conversions, and math.
+type: service
+kind: capability
+phase: 3
+block: 16
+implements: FEATURE-VALUE-004.md
+covers: VALUE-004
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52289
+budget: over-target
+provides: type, length, utf8bytelength, numeric predicates, conversions, math builtins
+consumes: jq value model, generator evaluator
+instructions: Implement type and length primitives, UTF-8 byte length, numeric predicates, tonumber/toboolean/tostring, arithmetic primitives, and required math functions.
+acceptance: yes
+depends: VALUE-003
+state: closed/implemented
+scope: target
+
+## story 18: Implement arithmetic and structural operators.
+id: FLOW-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-17.md
+summary: Implement arithmetic and structural operators.
+type: service
+kind: capability
+phase: 4
+block: 17
+implements: FEATURE-FLOW-001.md
+covers: FLOW-001
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52266
+budget: over-target
+provides: plus, minus, multiply, divide, modulo, negation, recursive merge, repetition, splitting
+consumes: jq value model, generator evaluator
+instructions: Implement typed arithmetic and structural operators, recursive object merge, string repetition, string division, array subtraction, modulo, and unary negation.
+acceptance: yes
+depends: VALUE-004
+state: closed/implemented
+scope: target
+
+## story 19: Implement boolean and alternative operators.
+id: FLOW-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-18.md
+summary: Implement boolean and alternative operators.
+type: service
+kind: capability
+phase: 4
+block: 18
+implements: FEATURE-FLOW-002.md
+covers: FLOW-002
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52247
+budget: over-target
+provides: and, or, not, defined-or, defined-or assignment
+consumes: generator evaluator, truthiness and comparison
+instructions: Implement Boolean operators, not, defined-or short-circuiting, generator-aware fallback behavior, and //=.
+acceptance: yes
+depends: FLOW-001
+state: closed/implemented
+scope: target
+
+## story 20: Implement conditionals and exception flow.
+id: FLOW-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-19.md
+summary: Implement conditionals and exception flow.
+type: service
+kind: capability
+phase: 4
+block: 19
+implements: FEATURE-FLOW-003.md
+covers: FLOW-003
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52268
+budget: over-target
+provides: if, then, elif, else, try, catch, optional control flow
+consumes: generator evaluator, runtime error model
+instructions: Implement branching over generator outputs, optional else behavior, elif chains, try/catch, and optional operators with correct stream and error semantics.
+acceptance: yes
+depends: FLOW-002
+state: closed/implemented
+scope: target
+
+## story 21: Implement lexical labels and breaks.
+id: FLOW-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-20.md
+summary: Implement lexical labels and breaks.
+type: service
+kind: capability
+phase: 4
+block: 20
+implements: FEATURE-FLOW-004.md
+covers: FLOW-004
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 57817
+budget: over-target
+provides: label and break control flow
+consumes: generator evaluator, runtime error model
+instructions: Implement lexically scoped labels and break termination so the correct enclosing generator stops without leaking outputs.
+acceptance: yes
+depends: FLOW-003
+state: closed/implemented
+scope: target
+
+## story 22: Implement reductions and iteration controls.
+id: FLOW-005
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-21.md
+summary: Implement reductions and iteration controls.
+type: service
+kind: capability
+phase: 4
+block: 21
+implements: FEATURE-FLOW-005.md
+covers: FLOW-005
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54748
+budget: over-target
+provides: reduce, foreach, range, limit, skip, first, last, nth
+consumes: generator evaluator, bindings, labels
+instructions: Implement reducer state, foreach extraction, range variants, limit, skip, first, last, and nth with Cartesian arguments, backtracking, and short-circuiting.
+acceptance: yes
+depends: FLOW-004
+state: closed/implemented
+scope: target
+
+## story 23: Implement recursive generator primitives.
+id: FLOW-006
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-22.md
+summary: Implement recursive generator primitives.
+type: service
+kind: capability
+phase: 4
+block: 22
+implements: FEATURE-FLOW-006.md
+covers: FLOW-006
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54717
+budget: over-target
+provides: while, until, repeat, recurse, recursive descent
+consumes: generator evaluator, runtime error model
+instructions: Implement recursive generators and recursive descent with correct termination, stream ordering, and recursion behavior.
+acceptance: yes
+depends: FLOW-005
+state: closed/implemented
+scope: target
+
+## story 24: Implement lexical variable bindings.
+id: FUNC-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-23.md
+summary: Implement lexical variable bindings.
+type: service
+kind: capability
+phase: 5
+block: 23
+implements: FEATURE-FUNC-001.md
+covers: FUNC-001
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 57899
+budget: over-target
+provides: as bindings, variable lookup, lexical scope, shadowing
+consumes: generator evaluator, parser AST
+instructions: Implement value bindings, lexical scope, shadowing, keyword identifiers, binding lifetime, and variable lookup across generator streams.
+acceptance: yes
+depends: FLOW-006
+state: closed/implemented
+scope: target
+
+## story 25: Implement filter and value function parameters.
+id: FUNC-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-24.md
+summary: Implement filter and value function parameters.
+type: service
+kind: capability
+phase: 5
+block: 24
+implements: FEATURE-FUNC-002.md
+covers: FUNC-002
+context: parser.y, jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 60314
+budget: over-target
+provides: filter parameters, value parameters, function arities, Cartesian function calls
+consumes: lexical variable bindings, generator evaluator
+instructions: Implement user-defined filter and value parameters, multiple arities, closures, repeated filter invocation, and Cartesian argument semantics.
+acceptance: yes
+depends: FUNC-001
+state: closed/implemented
+scope: target
+
+## story 26: Implement function definitions, scope, and recursion.
+id: FUNC-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-25.md
+summary: Implement function definitions, scope, and recursion.
+type: service
+kind: capability
+phase: 5
+block: 25
+implements: FEATURE-FUNC-003.md
+covers: FUNC-003
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 57917
+budget: over-target
+provides: def declarations, lexical function scope, redefinition, recursion, forward/self references
+consumes: function parameters, lexical variable bindings
+instructions: Implement function definitions, lexical function scope, redefinitions by arity, recursive and self references, closures, and function backtracking.
+acceptance: yes
+depends: FUNC-002
+state: closed/implemented
+scope: target
+
+## story 27: Implement destructuring patterns and alternatives.
+id: FUNC-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-26.md
+summary: Implement destructuring patterns and alternatives.
+type: service
+kind: capability
+phase: 5
+block: 26
+implements: FEATURE-FUNC-004.md
+covers: FUNC-004
+context: parser.y, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 57910
+budget: over-target
+provides: array patterns, object patterns, missing bindings, ?// alternatives
+consumes: lexical bindings, function evaluator
+instructions: Implement array and object destructuring, null binding for missing members, alternative pattern backtracking, and final-error propagation.
+acceptance: yes
+depends: FUNC-003
+state: closed/implemented
+scope: target
+
+## story 28: Implement path discovery and projection.
+id: PATH-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-27.md
+summary: Implement path discovery and projection.
+type: service
+kind: capability
+phase: 6
+block: 27
+implements: FEATURE-PATH-001.md
+covers: PATH-001
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54702
+budget: over-target
+provides: path, paths, pick
+consumes: accessors, recursive generators, destructuring
+instructions: Implement path expression discovery, recursive paths, filtered paths, and pick projections with valid path semantics and errors.
+acceptance: yes
+depends: FUNC-004
+state: closed/implemented
+scope: target
+
+## story 29: Implement path access and mutation primitives.
+id: PATH-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-28.md
+summary: Implement path access and mutation primitives.
+type: service
+kind: capability
+phase: 6
+block: 28
+implements: FEATURE-PATH-002.md
+covers: PATH-002
+context: jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54728
+budget: over-target
+provides: getpath, setpath, delpaths
+consumes: path discovery and jq value model
+instructions: Implement nested path reads, creation and updates, deletion, array expansion, invalid-path handling, negative indices, depth limits, and immutable results.
+acceptance: yes
+depends: PATH-001
+state: closed/implemented
+scope: target
+
+## story 30: Implement deletion and assignment operators.
+id: PATH-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-29.md
+summary: Implement deletion and assignment operators.
+type: service
+kind: capability
+phase: 6
+block: 29
+implements: FEATURE-PATH-003.md
+covers: PATH-003
+context: parser.y, jq-manual.txt, builtin.jq, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 60348
+budget: over-target
+provides: del, =, |=, +=, -=, *=, /=, %=, //=
+consumes: path discovery, getpath, setpath, delpaths
+instructions: Implement immutable deletion, plain assignment, update assignment, arithmetic assignment, defined-or assignment, multi-path behavior, and generator-valued RHS semantics.
+acceptance: yes
+depends: PATH-002
+state: closed/implemented
+scope: target
+
+## story 31: Implement complex assignment edge cases.
+id: PATH-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-30.md
+summary: Implement complex assignment edge cases.
+type: service
+kind: capability
+phase: 6
+block: 30
+implements: FEATURE-PATH-004.md
+covers: PATH-004
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52352
+budget: over-target
+provides: iterated assignment, empty updates, array expansion, invalid and deep paths
+consumes: deletion and assignment operators
+instructions: Complete iterated paths, empty updates, array expansion, invalid paths, negative and NaN indices, string-slice restrictions, and depth-limit behavior.
+acceptance: yes
+depends: PATH-003
+state: closed/implemented
+scope: target
+
+## story 32: Implement collection transformation builtins.
+id: DATA-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-31.md
+summary: Implement collection transformation builtins.
+type: service
+kind: capability
+phase: 7
+block: 31
+implements: FEATURE-DATA-001.md
+covers: DATA-001
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54677
+budget: over-target
+provides: map, map_values, select, add, flatten, transpose, combinations, walk
+consumes: generator evaluator, assignment operators
+instructions: Implement collection transformation builtins and recursive walk while preserving stream semantics, empty behavior, and immutable updates.
+acceptance: yes
+depends: PATH-004
+state: closed/implemented
+scope: target
+
+## story 33: Implement sorting and grouping builtins.
+id: DATA-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-32.md
+summary: Implement sorting and grouping builtins.
+type: service
+kind: capability
+phase: 7
+block: 32
+implements: FEATURE-DATA-002.md
+covers: DATA-002
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54667
+budget: over-target
+provides: sort, sort_by, group_by, unique, unique_by, min, max, keyed extrema
+consumes: jq comparison and ordering
+instructions: Implement sorting, keyed sorting, grouping, uniqueness, minimum, maximum, and keyed variants using jq ordering and stable generator-derived keys.
+acceptance: yes
+depends: DATA-001
+state: closed/implemented
+scope: target
+
+## story 34: Implement object-entry and containment builtins.
+id: DATA-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-33.md
+summary: Implement object-entry and containment builtins.
+type: service
+kind: capability
+phase: 7
+block: 33
+implements: FEATURE-DATA-003.md
+covers: DATA-003
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54692
+budget: over-target
+provides: keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries
+consumes: jq value model, comparison and ordering
+instructions: Implement object and array key utilities, containment relations, entry conversions, and with_entries while preserving object ordering semantics where required.
+acceptance: yes
+depends: DATA-002
+state: closed/implemented
+scope: target
+
+## story 35: Implement index and membership utilities.
+id: DATA-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-34.md
+summary: Implement index and membership utilities.
+type: service
+kind: capability
+phase: 7
+block: 34
+implements: FEATURE-DATA-004.md
+covers: DATA-004
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54679
+budget: over-target
+provides: indices, index, rindex, bsearch, all, any, isempty, IN
+consumes: collection transformations, comparison and generator evaluation
+instructions: Implement string and array index searches, binary search, all/any short-circuiting, isempty, and SQL-style IN variants.
+acceptance: yes
+depends: DATA-003
+state: closed/implemented
+scope: target
+
+## story 36: Implement string manipulation builtins.
+id: TEXT-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-35.md
+summary: Implement string manipulation builtins.
+type: service
+kind: capability
+phase: 8
+block: 35
+implements: FEATURE-TEXT-001.md
+covers: TEXT-001
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54717
+budget: over-target
+provides: trim, ltrim, rtrim, prefix/suffix, case, explode, implode, split, join
+consumes: jq string values, generator evaluator
+instructions: Implement Unicode-aware trimming, prefix and suffix operations, ASCII case conversion, codepoint conversion, split, join, and string validation errors.
+acceptance: yes
+depends: DATA-004
+state: closed/implemented
+scope: target
+
+## story 37: Implement JSON and output format filters.
+id: TEXT-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-36.md
+summary: Implement JSON and output format filters.
+type: service
+kind: capability
+phase: 8
+block: 36
+implements: FEATURE-TEXT-002.md
+covers: TEXT-002
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52483
+budget: over-target
+provides: tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d
+consumes: jq value model, string manipulation
+instructions: Implement JSON conversion and all required text, HTML, URI, CSV, TSV, shell, and Base64 format filters with interpolation and escaping semantics.
+acceptance: yes
+depends: TEXT-001
+state: closed/implemented
+scope: target
+
+## story 38: Implement regular-expression filters.
+id: TEXT-003
+finding: ADVISORY: implemented, not verified — every criterion this story declared settled UNVERIFIED, so nothing was measured against the built code. Repair the criteria in the Blueprint and rebuild to obtain a verdict.
+evidence: evidence/block-37.md
+summary: Implement regular-expression filters.
+type: service
+kind: capability
+phase: 8
+block: 37
+implements: FEATURE-TEXT-003.md
+covers: TEXT-003
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54868
+budget: over-target
+provides: test, match, capture, scan, split, splits, sub, gsub
+consumes: jq strings, generator evaluator
+instructions: Implement regex matching with standard-library re features mapped to jq flags, named captures, offsets, streams, splitting, substitution, and global replacement.
+acceptance: yes
+depends: TEXT-002
+state: closed/implemented
+scope: target
+
+## story 39: Implement date and time filters.
+id: TEXT-004
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-38.md
+summary: Implement date and time filters.
+type: service
+kind: capability
+phase: 8
+block: 38
+implements: FEATURE-TEXT-004.md
+covers: TEXT-004
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 52454
+budget: over-target
+provides: fromdate, todate, strptime, strftime, strflocaltime, gmtime, localtime, mktime
+consumes: jq strings and numbers
+instructions: Implement UTC date parsing and formatting plus required low-level time conversions using Python standard-library time and datetime facilities.
+acceptance: yes
+depends: TEXT-003
+state: closed/implemented
+scope: target
+
+## story 40: Implement input stream controls.
+id: IO-001
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-39.md
+summary: Implement input stream controls.
+type: service
+kind: capability
+phase: 9
+block: 39
+implements: FEATURE-IO-001.md
+covers: IO-001
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 53602
+budget: over-target
+provides: input, inputs, input_filename, input_line_number
+consumes: JSON stdin reader
+instructions: Implement input and inputs over the fixed stdin interface and provide the documented filename and line-number primitives.
+acceptance: yes
+depends: TEXT-004
+state: closed/implemented
+scope: target
+
+## story 41: Implement diagnostics and stderr output.
+id: IO-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-40.md
+summary: Implement diagnostics and stderr output.
+type: service
+kind: capability
+phase: 9
+block: 40
+implements: FEATURE-IO-002.md
+covers: IO-002
+context: jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 53614
+budget: over-target
+provides: debug, stderr, halt_error
+consumes: process exit and diagnostic contract
+instructions: Implement debug and stderr side effects, halt_error output and exit behavior, and preserve stdout/stderr separation.
+acceptance: yes
+depends: IO-001
+state: closed/implemented
+scope: target
+
+## story 42: Implement streaming transformations.
+id: IO-003
+finding: ADVISORY: implemented, not verified — every criterion this story declared settled UNVERIFIED, so nothing was measured against the built code. Repair the criteria in the Blueprint and rebuild to obtain a verdict.
+evidence: evidence/block-41.md
+summary: Implement streaming transformations.
+type: service
+kind: capability
+phase: 9
+block: 41
+implements: FEATURE-IO-003.md
+covers: IO-003
+context: builtin.jq, jq-manual.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md
+stack_mode: consumer
+size: 54606
+budget: over-target
+provides: tostream, fromstream, truncate_stream
+consumes: generator evaluator, path primitives
+instructions: Implement jq streaming representations and conversion utilities for the supplied streaming cases.
+acceptance: yes
+depends: IO-002
+state: closed/implemented
+scope: target
+
+## story 43: Provide scoped conformance verification.
+id: CONF-002
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-42.md
+summary: Provide scoped conformance verification.
+type: service
+kind: test harness
+phase: 9
+block: 42
+implements: FEATURE-CONF-002.md
+covers: CONF-002
+context: run_conformance.py, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 14420
+provides: scoped conformance execution with JQ candidate binding
+consumes: ./jq, sources/run_conformance.py
+instructions: Verify that scoped acceptance invocations execute selected corpus cases with JQ extended from the inherited environment and machine-readable results.
+acceptance: yes
+depends: IO-003, CONF-001
+state: closed/implemented
+scope: target
+
+## story 44: Run the complete jq conformance corpus.
+id: CONF-003
+finding: ADVISORY: implemented, not verified — no governed acceptance command covers this story. Declare one in ACCEPTANCE.json to gate it.
+evidence: evidence/block-43.md
+summary: Run the complete jq conformance corpus.
+type: service
+kind: test harness
+phase: 10
+block: 43
+implements: FEATURE-CONF-003.md
+covers: CONF-003
+accepts: st-001
+context: full_test.sh, run_conformance.py, exclusions.txt, jq.test, ARCHITECTURE_compact.md
+stack: python.md, common.md
+stack_mode: consumer
+size: 28320
+provides: complete jq conformance release verification
+consumes: ./jq, sources/full_test.sh
+instructions: Run the supplied full-test script as the terminal verification. Assert its exit status is zero, print captured stdout and stderr for diagnosis, and do not reinterpret or filter the corpus.
+acceptance: yes
+depends: EXEC-001, EXEC-002, EXEC-003, PARSE-001, PARSE-002, PARSE-003, PARSE-004, CORE-001, CORE-002, CORE-003, CORE-004, VALUE-001, VALUE-002, VALUE-003, VALUE-004, FLOW-001, FLOW-002, FLOW-003, FLOW-004, FLOW-005, FLOW-006, FUNC-001, FUNC-002, FUNC-003, FUNC-004, PATH-001, PATH-002, PATH-003, PATH-004, DATA-001, DATA-002, DATA-003, DATA-004, TEXT-001, TEXT-002, TEXT-003, TEXT-004, IO-001, IO-002, IO-003, CONF-001, CONF-002
+state: closed/implemented
+scope: target

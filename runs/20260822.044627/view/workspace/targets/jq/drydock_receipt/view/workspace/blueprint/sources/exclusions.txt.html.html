@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/exclusions.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/exclusions.txt.html</h1><div class="filenav"><a href="../../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/exclusions.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/sources/exclusions.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/sources/exclusions.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../../workspace/blueprint/sources/exclusions.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;# exclusions.txt — corpus cases this kit cannot run, and why.
+#
+# The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case
+# cannot run under this kit&amp;#x27;s harness, it is named here instead, so every skip is visible,
+# reasoned, and auditable against the upstream file. This file is a scoring asset: it is
+# hash-verified against the import and restored before grading.
+#
+# One verbatim program line per entry. An entry that matches no case in the corpus is a hard
+# error (exit 2), not a shrug — a silent no-op would quietly re-admit a case the kit cannot run
+# if the corpus pin ever moved.
+#
+# Nothing is excluded for being hard. The module-loader cases below are excluded because the
+# kit physically cannot deliver their inputs, not because the semantics are difficult.
+
+# --------------------------------------------------------------------------------------------
+# Module loading from disk.
+#
+# These cases resolve `import` and `include` against a module search path supplied by jq&amp;#x27;s -L
+# flag, reading roughly twenty fixture files spread across nested directories upstream
+# (tests/modules/{b,c,lib/jq/e,home2/.jq,...}). Drydock copies a kit&amp;#x27;s declared sources into the
+# application flattened by basename, so that directory tree cannot be carried, and the interface
+# this kit fixes exercises no flag but -c.
+#
+# Only the loader cases are excluded. The module *grammar* cases — `module (.+1); 0`,
+# `module []; 0`, `include &amp;quot;a&amp;quot; (.+1); 0`, `include &amp;quot;a&amp;quot; []; 0`, `include &amp;quot;\ &amp;quot;; 0`,
+# `include &amp;quot;\(a)&amp;quot;; 0`, and `%::wat` — remain in the scored set: they are parse errors that a
+# correct front end rejects without ever touching the filesystem.
+# --------------------------------------------------------------------------------------------
+
+import &amp;quot;a&amp;quot; as foo; import &amp;quot;b&amp;quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]
+import &amp;quot;c&amp;quot; as foo; [foo::a, foo::c]
+include &amp;quot;c&amp;quot;; [a, c]
+import &amp;quot;data&amp;quot; as $e; import &amp;quot;data&amp;quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(&amp;quot;;&amp;quot;)
+import &amp;quot;data&amp;quot; as $a; import &amp;quot;data&amp;quot; as $b; def f: {$a, $b}; f
+include &amp;quot;shadow1&amp;quot;; e
+include &amp;quot;shadow1&amp;quot;; include &amp;quot;shadow2&amp;quot;; e
+import &amp;quot;shadow1&amp;quot; as f; import &amp;quot;shadow2&amp;quot; as f; import &amp;quot;shadow1&amp;quot; as e; [e::e, f::e]
+import &amp;quot;syntaxerror&amp;quot; as e; .
+import &amp;quot;test_bind_order&amp;quot; as check; check::check
+
+# `modulemeta` reports a module&amp;#x27;s declared dependencies and definitions. Its three cases take
+# the module name &amp;quot;c&amp;quot; as input and read tests/modules/c/c.jq from the search path, so they fail
+# for the same reason as the loader cases above.
+modulemeta
+modulemeta | .deps | length
+modulemeta | .defs | length
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

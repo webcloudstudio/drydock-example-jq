@@ -1,0 +1,7 @@
+2026-08-22T20:18:42.111722Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    return vals[0] if vals else None
+2026-08-22T20:20:44.176517Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+        while self.p() in PREC and PREC[self.p()]>=n:
+            op=self.take(); q=PREC[op]; x=Node('binary',(op,x,self.expr(q if op in ("=","|=","+=","-=","*=","/=","%=","//=") else q+1)))
+        return x
+2026-08-22T20:21:59.667793Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq_interpreter/parser.py: No such file or directory (os error 2)

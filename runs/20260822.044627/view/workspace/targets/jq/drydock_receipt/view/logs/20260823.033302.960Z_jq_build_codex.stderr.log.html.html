@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260823.033302.960Z_jq_build_codex.stderr.log.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260823.033302.960Z_jq_build_codex.stderr.log.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260823.033302.960Z_jq_build_codex.stderr.log.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260823.033302.960Z_jq_build_codex.stderr.log&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260823.033302.960Z_jq_build_codex.stderr.log&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260823.033302.960Z_jq_build_codex.stderr.log&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;2026-08-23T03:33:38.833890Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+        if w==&amp;#x27;def&amp;#x27;:
+            name=self.take(); ps=[]
+            if self.p==&amp;#x27;(&amp;#x27;: self.take();
+            while self.p() not in (&amp;#x27;)&amp;#x27;,&amp;#x27;:&amp;#x27;):
+                ps.append(self.take().lstrip(&amp;#x27;$&amp;#x27;))
+                if self.p()==&amp;#x27;;&amp;#x27;: self.take()
+2026-08-23T03:33:56.963211Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    function = env.get(&amp;#x27;__funcs__&amp;#x27;,{}).get((name, len(args)))
+    if function is not None:
+        params, body, *closure = function
+        local=dict(env)
+        if closure:
+            local[&amp;#x27;__funcs__&amp;#x27;] = closure[0]
+        if not args:
+            yield from _node(body,value,local); return
+        # Function parameters are filters, not eagerly evaluated values.  A
+        # parameter can therefore produce multiple results every time its
+        # name is used, preserving jq&amp;#x27;s generator semantics.
+        parameters = dict(local.get(&amp;#x27;__params__&amp;#x27;, {}))
+        # Filter arguments are closures over the caller, not over the callee
+        # after its local parameter frame has been installed.  This is what
+        # makes `def f(x): 1 as $x | ...` preserve the caller&amp;#x27;s `x` filter.
+        captured = dict(env)
+        for param, arg in zip(params, args):
+            parameters[param] = (captured, arg)
+        local[&amp;#x27;__params__&amp;#x27;] = parameters
+        yield from _node(body,value,local); return
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

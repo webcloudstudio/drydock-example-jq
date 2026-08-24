@@ -1,0 +1,18 @@
+2026-08-23T05:08:21.737227Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+def _match_object(match: re.Match[str]) -> dict[str, object]:
+    captures = []
+    for index, name in enumerate(match.re.groupindex, 1):
+        start, end = match.span(name)
+        captures.append({'offset': start if start >= 0 else -1,
+                         'length': end - start if start >= 0 else 0,
+                         'string': match.group(name) if start >= 0 else None,
+                         'name': name})
+    named = set(match.re.groupindex)
+    for index in range(1, match.re.groups + 1):
+        if index not in [match.re.groupindex[name] for name in named]:
+            start, end = match.span(index)
+            captures.append({'offset': start if start >= 0 else -1,
+                             'length': end - start if start >= 0 else 0,
+                             'string': match.group(index) if start >= 0 else None,
+                             'name': None})
+    captures.sort(key=lambda item: (item['offset'] < 0, item['offset']))

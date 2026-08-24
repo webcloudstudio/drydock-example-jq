@@ -1,0 +1,13 @@
+2026-08-23T01:03:08.151101Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name == 'map':
+        result=[]
+        for x in value:
+            result.extend(_node(args[0], x, env))
+            result.extend(_node(args[0], x, env))
+        yield result; return
+2026-08-23T01:04:18.696926Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name=='add':
+2026-08-23T01:06:23.156402Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+            for key in _node(a[1], value, env):
+                if isinstance(key, float) and math.isnan(key):
+                    raise RuntimeError('Cannot set array element at NaN index')

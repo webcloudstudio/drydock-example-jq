@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.050451.082Z_jq_lineage_attribute_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;requirement name=&amp;quot;python-interpreter-architecture&amp;quot; stories=&amp;quot;architecture-foundation&amp;quot;&amp;gt;
+The implementation language is Python, fixed by this Target&amp;#x27;s `TECHNOLOGY_STACK.md` and governed by `stack/python.md`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;jq-executable-interface&amp;quot; stories=&amp;quot;EXEC-001&amp;quot;&amp;gt;
+The interface contract
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;process-exit-diagnostics&amp;quot; stories=&amp;quot;EXEC-002&amp;quot;&amp;gt;
+Exit codes follow jq&amp;#x27;s own, and the distinction is load-bearing because the harness grades on it:
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;json-stream-io&amp;quot; stories=&amp;quot;EXEC-003&amp;quot;&amp;gt;
+It writes each value the program produces to **stdout** as one compact JSON value per line, and exits `0`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;lexical-scanning&amp;quot; stories=&amp;quot;PARSE-001&amp;quot;&amp;gt;
+Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;literals-strings-interpolation&amp;quot; stories=&amp;quot;PARSE-002&amp;quot;&amp;gt;
+Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;filter-grammar&amp;quot; stories=&amp;quot;PARSE-003&amp;quot;&amp;gt;
+jq is a small language with a large semantic core.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;advanced-grammar-rejection&amp;quot; stories=&amp;quot;PARSE-004&amp;quot;&amp;gt;
+The module *grammar* cases are **not** excluded and must pass.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;generator-evaluation&amp;quot; stories=&amp;quot;CORE-001,CORE-002&amp;quot;&amp;gt;
+Almost every filter is a **generator**:
+it takes one input and produces a stream of zero, one, or many outputs, and downstream
+filters run once per upstream output.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;runtime-errors-and-optional&amp;quot; stories=&amp;quot;CORE-003&amp;quot;&amp;gt;
+A case may legitimately emit several values and then raise; the harness compares the values
+produced before the raise, so exit `5` is not by itself a failure.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;truthiness-comparison&amp;quot; stories=&amp;quot;CORE-004&amp;quot;&amp;gt;
+`reduce`, `foreach`, `limit`, `first`,
+`label`/`break`, and the `?//` destructuring alternative are all defined in terms of it.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;value-model-numbers&amp;quot; stories=&amp;quot;VALUE-001&amp;quot;&amp;gt;
+Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals,
+and the `have_decnum` builtin — return `false` from it and the corpus takes its
+non-decNumber branch, which native floats satisfy.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;value-accessors&amp;quot; stories=&amp;quot;VALUE-002&amp;quot;&amp;gt;
+field access, iteration, arithmetic, comparison, and
+`empty`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;slices-and-iteration&amp;quot; stories=&amp;quot;VALUE-003&amp;quot;&amp;gt;
+Get the core correctly before reaching for coverage.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;type-and-numeric-primitives&amp;quot; stories=&amp;quot;VALUE-004&amp;quot;&amp;gt;
+Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;conformance-assets&amp;quot; stories=&amp;quot;CONF-001&amp;quot;&amp;gt;
+These four files are the exam. They are hash-verified against the import and restored
+before grading, so a modification is reported as tampering rather than honoured:
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;arithmetic-structural-operators&amp;quot; stories=&amp;quot;FLOW-001&amp;quot;&amp;gt;
+Every later feature is expressed in terms of this.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;boolean-alternative-operators&amp;quot; stories=&amp;quot;FLOW-002&amp;quot;&amp;gt;
+`//`,
+`reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`,
+`recurse`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;conditionals-exception-flow&amp;quot; stories=&amp;quot;FLOW-003&amp;quot;&amp;gt;
+Control flow. `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;labels-breaks&amp;quot; stories=&amp;quot;FLOW-004&amp;quot;&amp;gt;
+`label`/`break`
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;reductions-iteration-control&amp;quot; stories=&amp;quot;FLOW-005&amp;quot;&amp;gt;
+`reduce`, `foreach`, `limit`, `first`, `last`, `until`, `while`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;recursive-generators&amp;quot; stories=&amp;quot;FLOW-006&amp;quot;&amp;gt;
+`recurse`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;variable-bindings&amp;quot; stories=&amp;quot;FUNC-001&amp;quot;&amp;gt;
+Functions, variables, and destructuring.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;function-parameters&amp;quot; stories=&amp;quot;FUNC-002&amp;quot;&amp;gt;
+`def` with arity and closures,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;function-definitions&amp;quot; stories=&amp;quot;FUNC-003&amp;quot;&amp;gt;
+`def` with arity and closures, `as`
+bindings,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;destructuring-alternatives&amp;quot; stories=&amp;quot;FUNC-004&amp;quot;&amp;gt;
+object and array patterns, and the `?//` alternative operator.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;path-discovery&amp;quot; stories=&amp;quot;PATH-001&amp;quot;&amp;gt;
+Paths and assignment. `path(f)`, getpath, setpath, delpaths, del,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;path-primitives&amp;quot; stories=&amp;quot;PATH-002&amp;quot;&amp;gt;
+`path(f)`, `getpath`, `setpath`, `delpaths`, `del`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;assignment-operators&amp;quot; stories=&amp;quot;PATH-003&amp;quot;&amp;gt;
+and then `=`, `|=`, `+=`, and friends.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;complex-assignments&amp;quot; stories=&amp;quot;PATH-004&amp;quot;&amp;gt;
+Assignment is defined over path expressions, so this
+cannot precede step 2.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;collection-transformations&amp;quot; stories=&amp;quot;DATA-001&amp;quot;&amp;gt;
+Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;sorting-grouping-extrema&amp;quot; stories=&amp;quot;DATA-002&amp;quot;&amp;gt;
+`sort_by`/`group_by`/`unique_by`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;object-entries-containment&amp;quot; stories=&amp;quot;DATA-003&amp;quot;&amp;gt;
+objects,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;index-membership-search&amp;quot; stories=&amp;quot;DATA-004&amp;quot;&amp;gt;
+`in`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;string-manipulation&amp;quot; stories=&amp;quot;TEXT-001&amp;quot;&amp;gt;
+strings,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;formats-serialization&amp;quot; stories=&amp;quot;TEXT-002&amp;quot;&amp;gt;
+`@base64`/`@uri`/`@csv`/`@tsv`/`@sh`
+formats,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;regular-expressions&amp;quot; stories=&amp;quot;TEXT-003&amp;quot;&amp;gt;
+the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;date-time-filters&amp;quot; stories=&amp;quot;TEXT-004&amp;quot;&amp;gt;
+the date functions,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;input-controls&amp;quot; stories=&amp;quot;IO-001&amp;quot;&amp;gt;
+`input`/`inputs`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;diagnostics-stderr&amp;quot; stories=&amp;quot;IO-002&amp;quot;&amp;gt;
+`$__loc__`, `debug`.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;streaming-transformations&amp;quot; stories=&amp;quot;IO-003&amp;quot;&amp;gt;
+`tostream`,
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;scoped-conformance&amp;quot; stories=&amp;quot;CONF-002&amp;quot;&amp;gt;
+Every other story runs its own slice, and the slice executes cases.
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;full-conformance&amp;quot; stories=&amp;quot;CONF-003&amp;quot;&amp;gt;
+Definition of Done
+&amp;lt;/requirement&amp;gt;&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

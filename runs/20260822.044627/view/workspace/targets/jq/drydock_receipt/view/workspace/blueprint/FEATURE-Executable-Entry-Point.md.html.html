@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Executable-Entry-Point.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Executable-Entry-Point.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Executable-Entry-Point.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-Executable-Entry-Point.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-Executable-Entry-Point.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-Executable-Entry-Point.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: Executable jq Entry Point&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Provides the executable jq command and its basic stdin-to-stdout filter interface.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;ARCHITECTURE.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;./jq -c program execution&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;interpreter parser and evaluator&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Workflow&lt;/h2&gt;
+&lt;ol&gt;&lt;li&gt;Start the executable at the application root as &lt;code&gt;./jq&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Accept the exercised &lt;code&gt;-c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/code&gt; interface.&lt;/li&gt;&lt;li&gt;Read JSON input from standard input.&lt;/li&gt;&lt;li&gt;Compile and evaluate the jq program for each input value.&lt;/li&gt;&lt;li&gt;Emit each generated result as one compact JSON line.&lt;/li&gt;&lt;li&gt;Exit successfully after all inputs complete.&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;The implementation must support multiple input values and preserve output order. The executable may delegate to modular Python files beside it, but the delivered command remains the root-level executable named &lt;code&gt;jq&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Interface&lt;/h2&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Input&lt;/th&gt;&lt;th&gt;Contract&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Arguments&lt;/td&gt;&lt;td&gt;&lt;code&gt;-c&lt;/code&gt; followed by one jq program string.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Standard input&lt;/td&gt;&lt;td&gt;JSON values in the corpus input format.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Standard output&lt;/td&gt;&lt;td&gt;One compact JSON value per generated result line.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Standard error&lt;/td&gt;&lt;td&gt;Diagnostics only.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Success status&lt;/td&gt;&lt;td&gt;&lt;code&gt;0&lt;/code&gt;.&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC exec-001-conformance ===&lt;br&gt;Intent: The executable runs the basic identity interface successfully.&lt;br&gt;Requires: executable=python3; scope=test&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=&amp;quot;true\nfalse\nnull\n1\n&amp;quot;, capture_output=True, text=True, ) assert result.returncode == 0 assert result.stdout.splitlines() == [&amp;quot;true&amp;quot;, &amp;quot;false&amp;quot;, &amp;quot;null&amp;quot;, &amp;quot;1&amp;quot;]&lt;/p&gt;
+&lt;p&gt;=== END AC exec-001-conformance ===&lt;/p&gt;
+&lt;p&gt;=== AC exec-001-process ===&lt;br&gt;Intent: The executable accepts the declared -c interface and completes a supplied identity filter successfully.&lt;/p&gt;
+&lt;p&gt;import json import subprocess&lt;/p&gt;
+&lt;p&gt;payload = &amp;quot;null\n&amp;quot; result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=payload, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=&lt;strong&gt;import&lt;/strong&gt;(&amp;quot;sys&amp;quot;).stderr) assert result.returncode == 0 assert result.stdout.splitlines() == [payload.strip()] === END AC exec-001-process ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;The delivered command is exactly &lt;code&gt;jq&lt;/code&gt; at the application root.&lt;/li&gt;&lt;li&gt;The implementation accepts the exercised &lt;code&gt;-c&lt;/code&gt; interface.&lt;/li&gt;&lt;li&gt;Output is compact and line-oriented.&lt;/li&gt;&lt;li&gt;The executable does not invoke another jq implementation.&lt;/li&gt;&lt;li&gt;Diagnostics are not written to standard output.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

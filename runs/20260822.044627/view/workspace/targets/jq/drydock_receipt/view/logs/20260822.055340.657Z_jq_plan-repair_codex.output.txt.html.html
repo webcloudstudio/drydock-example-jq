@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.055340.657Z_jq_plan-repair_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN REPAIRED SPECIFICATION ===
+# FEATURE: Date and Time
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define jq date parsing, formatting, and UTC time conversion filters. |
+| Depends On  | FEATURE-Type-and-Numeric-Primitives.md, FEATURE-String-Manipulation.md |
+| Provides    | strptime, strftime, strflocaltime, gmtime, localtime, mktime, fromdate, todate |
+| Consumes    | jq string and numeric primitives |
+
+## Scope
+
+Implement ISO-8601 date conversion and the low-level date filters exercised by the corpus. UTC behavior is normative for `fromdate`, `todate`, `gmtime`, `strptime`, `strftime`, and `mktime`; provide the documented local-time variants where exercised.
+
+## Programmatic Acceptance
+
+=== AC date-conformance ===
+Intent: The authoritative corpus cases covering jq date and time filters execute successfully.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;date|strftime|strptime|gmtime|mktime&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0 and summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC date-conformance ===
+Intent: The authoritative corpus verifies UTC conversion, broken-down time handling, formatting, and invalid-input runtime behavior.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;fromdate|todate|gmtime|localtime|mktime|strptime|strftime|strflocaltime&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert summary[&amp;quot;pass&amp;quot;] &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC date-utc-and-errors ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Date behavior must use standard-library facilities only.
+- UTC conversion must not depend on the machine&amp;#x27;s local timezone.
+- Invalid date inputs remain runtime errors with exit status 5 when uncaught.
+=== END REPAIRED SPECIFICATION ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

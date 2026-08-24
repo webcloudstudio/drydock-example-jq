@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.154443.505Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.154443.505Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.154443.505Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.154443.505Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.154443.505Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.154443.505Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-Streaming-Transformations.md ===
+# FEATURE: Streaming Transformations
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implement jq streaming conversion and truncation filters over the fixed process boundary. |
+| Depends On  | FEATURE-Path-Discovery.md, FEATURE-Generator-Core.md, FEATURE-Collection-Transformations.md |
+| Provides    | tostream, fromstream, truncate_stream |
+| Consumes    | ordered generators, path discovery, JSON values |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Implement the streaming value representation described by the jq manual while retaining the fixed non-streaming CLI interface. `tostream` emits path/value stream records, `fromstream` reconstructs values, and `truncate_stream` removes leading path components.
+
+## Behavior
+
+- `tostream` emits stream records in jq traversal order, including container termination records.
+- `fromstream` reconstructs arrays, objects, scalars, empty containers, and multiple streamed values.
+- `truncate_stream` consumes an integer depth and emits records with that many leading path components removed.
+- Invalid stream structures and invalid truncation depths follow jq runtime-error behavior.
+- The implementation uses only the standard library and preserves generator ordering.
+
+## Programmatic Acceptance
+
+=== AC streaming-conformance ===
+Intent: The streaming filters pass the executed conformance cases selected by their syntax.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;tostream|fromstream|truncate_stream&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC streaming-conformance ===
+
+=== AC streaming-roundtrip ===
+Intent: A streamed value can be reconstructed without changing its value.
+import json
+import os
+import subprocess
+
+source = &amp;quot;[0,[1,{\&amp;quot;a\&amp;quot;:2}]]&amp;quot;
+program = &amp;quot;. as $dot | fromstream($dot|tostream) | . == $dot&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, program],
+    input=source + &amp;quot;\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [True]
+assert actual == expected
+=== END AC streaming-roundtrip ===
+
+=== AC streaming-truncation ===
+Intent: Truncating a stream removes the requested leading path depth.
+import json
+import subprocess
+
+stream = &amp;quot;[[0],\&amp;quot;a\&amp;quot;],[[1,0],\&amp;quot;b\&amp;quot;],[[1,0]],[[1]]&amp;quot;
+program = &amp;quot;truncate_stream(1|[[0],\&amp;quot;a\&amp;quot;],[[1,0],\&amp;quot;b\&amp;quot;],[[1,0]],[[1]])&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, program],
+    input=&amp;quot;1\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [[[0], &amp;quot;b&amp;quot;], [[0]]]
+assert actual == expected
+=== END AC streaming-truncation ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not add a streaming command-line mode; these filters operate within the fixed `-c` interface.
+- Do not shell out to jq or use a third-party implementation.
+- Preserve stream record order and multiplicity.
+- Do not modify files under `sources/`.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Conformance-Asset-Staging.md ===
+# FEATURE: Conformance Asset Staging
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Stage and validate the immutable jq conformance assets required by the build. |
+| Depends On  | — |
+| Provides    | staged sources/* assets, parsed corpus and exclusions |
+| Consumes    | — |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Make the supplied manual, corpus, parser and lexer references, builtin reference, exclusions, runner, and full-test script available under `sources/` in the application root without modification.
+
+## Behavior
+
+- All imported source assets are copied byte-for-byte to their declared `sources/` paths.
+- The supplied harness imports successfully.
+- The corpus parses into its authoritative case set.
+- Every exclusion matches at least one corpus case.
+- This story validates staging only and does not execute candidate conformance cases.
+
+## Programmatic Acceptance
+
+=== AC staging-assets ===
+Intent: The staged harness parses the corpus and applies every declared exclusion successfully.
+import sys
+
+sys.path.insert(0, &amp;quot;sources&amp;quot;)
+import run_conformance as harness
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&amp;quot;utf-8&amp;quot;))
+excluded = harness.apply_exclusions(
+    cases,
+    harness.parse_exclusions(harness.EXCLUSIONS),
+)
+assert len(cases) == 550
+assert len(excluded) == 13
+=== END AC staging-assets ===
+
+=== AC staging-harness-import ===
+Intent: The staged harness exposes the required corpus and exclusion paths.
+from pathlib import Path
+import sys
+
+sys.path.insert(0, &amp;quot;sources&amp;quot;)
+import run_conformance as harness
+
+assert harness.CORPUS.is_file()
+assert harness.EXCLUSIONS.is_file()
+assert Path(&amp;quot;sources/full_test.sh&amp;quot;).is_file()
+assert Path(&amp;quot;sources/jq.test&amp;quot;).is_file()
+=== END AC staging-harness-import ===
+
+=== AC staging-readonly-assets ===
+Intent: The staged scoring assets retain their required executable and readable forms.
+from pathlib import Path
+
+assert Path(&amp;quot;sources/full_test.sh&amp;quot;).stat().st_mode &amp;amp; 0o111
+assert Path(&amp;quot;sources/run_conformance.py&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)
+assert Path(&amp;quot;sources/jq-manual.txt&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)
+assert Path(&amp;quot;sources/parser.y&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)
+assert Path(&amp;quot;sources/lexer.l&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)
+=== END AC staging-readonly-assets ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never modify, trim, regenerate, or substitute any file under `sources/`.
+- Do not launch the conformance harness from this staging story.
+- Preserve the supplied corpus and exclusion data verbatim.
+- The staged assets are read-only scoring inputs.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Scoped-Conformance-Verification.md ===
+# FEATURE: Scoped Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide construct-scoped execution of the supplied jq conformance harness. |
+| Depends On  | FEATURE-Executable-Entry-Point.md, FEATURE-Process-Contract.md, FEATURE-Conformance-Asset-Staging.md |
+| Provides    | scoped conformance execution contract |
+| Consumes    | executable jq, staged conformance assets |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Ensure implementation stories can execute only the corpus slice corresponding to the capability under construction, using the supplied runner and its machine-readable report.
+
+## Behavior
+
+- Each scoped invocation supplies `JQ` while preserving the inherited environment.
+- Selectors match actual jq program syntax and execute selected cases.
+- Acceptance reads the parsed JSON summary rather than scraping human-readable output.
+- A valid scoped run requires a nonzero selected case count, zero failures, zero errors, and exit status zero.
+- The unfiltered corpus remains reserved for the terminal verification story.
+
+## Programmatic Acceptance
+
+=== AC scoped-runner-contract ===
+Intent: The supplied runner executes a nonempty scoped slice and reports a clean result.
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;reduce&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC scoped-runner-contract ===
+
+=== AC scoped-selector-executes ===
+Intent: A syntax selector identifies executable corpus cases rather than merely enumerating them.
+import json
+import os
+import subprocess
+import sys
+
+select = r&amp;quot;try |error|\?&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, select, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC scoped-selector-executes ===
+
+=== AC scoped-environment-preserved ===
+Intent: A scoped invocation supplies JQ without discarding the inherited execution environment.
+import json
+import os
+import subprocess
+import sys
+
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, r&amp;quot;^(true|false|null|1)$&amp;quot;, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC scoped-environment-preserved ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Never use enumeration or dry-run mode as a behavioral acceptance gate.
+- Never invoke the unfiltered corpus from this story.
+- Never assert against printed summary text; parse the JSON report.
+- Never replace the inherited environment when setting `JQ`.
+- Do not modify supplied harness assets.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Complete-Conformance-Verification.md ===
+# FEATURE: Complete Conformance Verification
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Verify the completed interpreter against the entire supplied jq conformance corpus. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Executable-Entry-Point.md, FEATURE-Process-Contract.md, FEATURE-JSON-IO-Boundary.md, FEATURE-Lexer.md, FEATURE-Literals-And-Interpolation.md, FEATURE-Filter-Grammar.md, FEATURE-Declarations-And-Control-Syntax.md, FEATURE-Generator-Core.md, FEATURE-Composition-And-Cartesian-Evaluation.md, FEATURE-Errors-And-Optional-Evaluation.md, FEATURE-Truthiness-And-Comparison.md, FEATURE-Value-Model.md, FEATURE-Field-And-Index-Access.md, FEATURE-Slices-And-Iteration.md, FEATURE-Type-And-Numeric-Primitives.md, FEATURE-Arithmetic-And-Structural-Operators.md, FEATURE-Boolean-And-Alternative-Operators.md, FEATURE-Conditionals-And-Exception-Flow.md, FEATURE-Labels-And-Breaks.md, FEATURE-Reductions-And-Iteration-Control.md, FEATURE-Recursive-Generators.md, FEATURE-Variable-Bindings.md, FEATURE-Function-Parameters.md, FEATURE-Function-Definitions-And-Recursion.md, FEATURE-Destructuring-Patterns.md, FEATURE-Path-Discovery.md, FEATURE-Path-Primitives.md, FEATURE-Deletion-And-Assignment.md, FEATURE-Complex-Assignment-Edges.md, FEATURE-Collection-Transformations.md, FEATURE-Sorting-And-Grouping.md, FEATURE-Object-Entries-And-Containment.md, FEATURE-Index-And-Membership-Utilities.md, FEATURE-String-Manipulation.md, FEATURE-JSON-And-Output-Formats.md, FEATURE-Regular-Expressions.md, FEATURE-Date-And-Time-Filters.md, FEATURE-Input-Streams.md, FEATURE-Diagnostics-And-Stderr.md, FEATURE-Streaming-Transformations.md, FEATURE-Conformance-Asset-Staging.md, FEATURE-Scoped-Conformance-Verification.md |
+| Provides    | complete conformance release verification |
+| Consumes    | executable jq, all interpreter capabilities, staged conformance assets |
+
+## Questions
+
+- None.
+
+## Purpose
+
+Run the supplied scoring entry point once the complete interpreter is assembled. This is the terminal verification story and the project-level technical acceptance gate.
+
+## Behavior
+
+- `sources/full_test.sh` verifies that `./jq` is executable.
+- The script invokes the supplied conformance runner over the complete corpus.
+- The candidate must return zero for every executed valid case and exit 3 for every marked compile failure.
+- Declared module-loader exclusions remain skipped by the supplied exclusion list.
+- The story does not modify, filter, reinterpret, or replace the scoring assets.
+
+## Programmatic Acceptance
+
+=== AC complete-conformance ===
+Intent: The completed executable passes the supplied full jq conformance suite.
+Suite: full
+Requires: executable=sh; scope=test
+Requires: executable=python3; scope=test
+
+import os
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;sh&amp;quot;, &amp;quot;sources/full_test.sh&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ},
+)
+print(result.stdout)
+print(result.stderr, file=os.sys.stderr)
+assert result.returncode == 0
+=== END AC complete-conformance ===
+
+=== AC executable-interface-final ===
+Intent: The final executable accepts the fixed compact filter interface and completes successfully.
+import json
+import subprocess
+
+program = &amp;quot;.&amp;quot;
+payload = &amp;#x27;{&amp;quot;status&amp;quot;:&amp;quot;ready&amp;quot;}\n&amp;#x27;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, program],
+    input=payload,
+    capture_output=True,
+    text=True,
+)
+assert result.returncode == 0
+actual = [json.loads(line) for line in result.stdout.splitlines()]
+expected = [json.loads(payload)]
+assert actual == expected
+=== END AC executable-interface-final ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- This is the only story permitted to invoke `sh sources/full_test.sh`.
+- It is terminal and depends on every implementation and conformance story.
+- Do not add selectors, skips, output reinterpretation, or exit-code substitution.
+- Do not modify any file under `sources/`.
+- The full-suite exit status is the acceptance verdict; diagnostics are for evidence only.
+
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

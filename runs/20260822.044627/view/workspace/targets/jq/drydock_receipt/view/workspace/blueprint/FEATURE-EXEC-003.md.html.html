@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-003.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-003.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-003.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-EXEC-003.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-EXEC-003.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-EXEC-003.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: JSON Input and Compact Output&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Reads JSON input streams and serializes generated values as ordered compact lines.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;FEATURE-EXEC-002.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;JSON stdin reader, ordered JSON-lines serializer&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Intent&lt;/h2&gt;
+&lt;p&gt;Read JSON values from standard input in the format exercised by the supplied corpus. Evaluate each input in order and emit every generated output as one compact JSON value per line, preserving order and multiplicity.&lt;/p&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC multiple-input-values ===&lt;br&gt;Intent: Multiple JSON input values are processed in order and emitted one per line.&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;inputs = &amp;quot;1\n2\n3\n&amp;quot; result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=inputs, capture_output=True, text=True, ) expected = inputs.splitlines() actual = result.stdout.splitlines() assert result.returncode == 0 assert actual == expected === END AC multiple-input-values ===&lt;/p&gt;
+&lt;p&gt;=== AC generator-line-output ===&lt;br&gt;Intent: Multiple outputs generated from one input preserve order and multiplicity.&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;input_text = &amp;quot;[1,2,3]\n&amp;quot; result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.[]&amp;quot;], input=input_text, capture_output=True, text=True, ) expected = [&amp;quot;1&amp;quot;, &amp;quot;2&amp;quot;, &amp;quot;3&amp;quot;] assert result.returncode == 0 assert result.stdout.splitlines() == expected === END AC generator-line-output ===&lt;/p&gt;
+&lt;p&gt;=== AC compact-json-output ===&lt;br&gt;Intent: Generated objects are serialized as single-line JSON values.&lt;/p&gt;
+&lt;p&gt;import json import subprocess&lt;/p&gt;
+&lt;p&gt;input_text = &amp;#x27;{&amp;quot;a&amp;quot;: 1, &amp;quot;b&amp;quot;: [2, 3]}\n&amp;#x27; result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=input_text, capture_output=True, text=True, ) decoded = json.loads(input_text) actual = json.loads(result.stdout) assert result.returncode == 0 assert actual == decoded assert len(result.stdout.splitlines()) == 1 === END AC compact-json-output ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Emit one JSON value per output line.&lt;/li&gt;&lt;li&gt;Preserve generator order and multiplicity.&lt;/li&gt;&lt;li&gt;Do not pretty-print or combine separate generated values.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

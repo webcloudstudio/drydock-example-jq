@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.193326.654Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.193326.654Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.193326.654Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.193326.654Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.193326.654Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.193326.654Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT TOPOLOGY.md ===
+# Topology: jq
+
+## story architecture-foundation
+summary:      Define the standalone jq interpreter architecture and module boundaries.
+type:         foundational
+kind:         capability
+phase:        1
+implements:   ARCHITECTURE.md
+context:      COMPASS.md, TECHNOLOGY_STACK.md
+stack:        python.md, common.md
+provides:     jq interpreter architecture, executable boundary, parser, evaluator, runtime
+consumes:     —
+acceptance:   yes
+scope:        target
+instructions: |
+  Establish the Python standard-library architecture for the executable, lexer/parser, generator evaluator, value model, builtins, runtime errors, and CLI boundary. Preserve the supplied source assets and forbid external jq implementations or subprocesses.
+
+## story EXEC-001
+summary:      Implement the executable jq entry point.
+type:         foundational
+kind:         capability
+phase:        1
+implements:   FEATURE-EXEC-001.md
+covers:       EXEC-001
+context:      ARCHITECTURE.md, sources/INSTRUCTIONS.md, sources/run_conformance.py
+stack:        python.md, common.md
+provides:     ./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;
+consumes:     executable boundary
+depends:      architecture-foundation
+acceptance:   yes
+scope:        target
+instructions: |
+  Create an executable named jq at the application root. Accept the exercised -c program interface, read JSON from stdin, evaluate the filter, and emit compact JSON values one per line.
+
+## story EXEC-002
+summary:      Implement jq process exit and diagnostic behavior.
+type:         service
+kind:         capability
+phase:        1
+implements:   FEATURE-EXEC-002.md
+covers:       EXEC-002
+context:      ARCHITECTURE.md, sources/INSTRUCTIONS.md, sources/run_conformance.py
+stack:        python.md, common.md
+provides:     compile exit 3, runtime exit 5, success exit 0, stderr diagnostics
+consumes:     ./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;
+depends:      EXEC-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Separate compile failures, runtime failures, and successful completion using exit codes 3, 5, and 0. Send diagnostics only to stderr and preserve output produced before runtime failure.
+
+## story EXEC-003
+summary:      Implement JSON input and compact output handling.
+type:         service
+kind:         capability
+phase:        1
+implements:   FEATURE-EXEC-003.md
+covers:       EXEC-003
+context:      ARCHITECTURE.md, sources/INSTRUCTIONS.md, sources/run_conformance.py, sources/jq.test
+stack:        python.md, common.md
+provides:     JSON stdin reader, ordered JSON-lines serializer
+consumes:     ./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;
+depends:      EXEC-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Parse the harness input format, support multiple input values and Unicode JSON, and serialize every generated value as one compact JSON line while preserving order and multiplicity.
+
+## story PARSE-001
+summary:      Implement jq lexical scanning.
+type:         service
+kind:         capability
+phase:        2
+implements:   FEATURE-PARSE-001.md
+covers:       PARSE-001
+context:      ARCHITECTURE.md, sources/lexer.l, sources/parser.y, sources/jq.test
+stack:        python.md
+provides:     jq lexer and token stream
+consumes:     JSON input and filter source
+depends:      EXEC-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement lexical handling for literals, identifiers, fields, bindings, keywords, operators, delimiters, comments, formats, and interpolation markers according to lexer.l.
+
+## story PARSE-002
+summary:      Implement literals, strings, escapes, and interpolation.
+type:         service
+kind:         capability
+phase:        2
+implements:   FEATURE-PARSE-002.md
+covers:       PARSE-002
+context:      ARCHITECTURE.md, sources/lexer.l, sources/parser.y, sources/jq.test, sources/jq-manual.txt
+stack:        python.md
+provides:     JSON literals, jq strings, escapes, interpolation, format literals
+consumes:     jq lexer and token stream
+depends:      PARSE-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Parse JSON escapes, Unicode strings, string interpolation, and @format syntax. Reject invalid escapes and preserve jq string semantics.
+
+## story PARSE-003
+summary:      Implement jq filter expression grammar.
+type:         service
+kind:         capability
+phase:        2
+implements:   FEATURE-PARSE-003.md
+covers:       PARSE-003
+context:      ARCHITECTURE.md, sources/parser.y, sources/lexer.l, sources/jq.test
+stack:        python.md
+provides:     expression AST, precedence, pipes, commas, indexing, slicing, arrays, objects, operators
+consumes:     jq lexer and token stream
+depends:      PARSE-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Build the expression parser and AST for composition, precedence, indexing, slicing, arrays, objects, unary operators, arithmetic, comparison, optional access, and assignment syntax.
+
+## story PARSE-004
+summary:      Implement declarations and control syntax parsing.
+type:         service
+kind:         capability
+phase:        2
+implements:   FEATURE-PARSE-004.md
+covers:       PARSE-004
+context:      ARCHITECTURE.md, sources/parser.y, sources/lexer.l, sources/jq.test
+stack:        python.md
+provides:     declarations, conditionals, try/catch, reductions, foreach, labels, bindings, modules grammar
+consumes:     expression AST
+depends:      PARSE-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Parse defs, bindings, destructuring, conditionals, try/catch, reduce, foreach, labels, breaks, import/include/module grammar, and required compile-time rejection cases without loading excluded module fixtures.
+
+## story CORE-001
+summary:      Implement the stream-valued filter evaluator.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-CORE-001.md
+covers:       CORE-001
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     ordered generator evaluator
+consumes:     expression AST
+depends:      PARSE-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Evaluate every filter as an ordered generator supporting zero, one, or many outputs, backtracking, identity, iteration, empty, and range primitives.
+
+## story CORE-002
+summary:      Implement composition and Cartesian generator evaluation.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-CORE-002.md
+covers:       CORE-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     pipe, comma, argument, array, object, and binary composition
+consumes:     ordered generator evaluator
+depends:      CORE-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement pipe and comma composition, Cartesian products across multi-output filters and arguments, collection, object construction, and generator ordering.
+
+## story CORE-003
+summary:      Implement empty, runtime errors, optional evaluation, and try.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-CORE-003.md
+covers:       CORE-003
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     empty, error, optional operator, try/catch, partial runtime output
+consumes:     ordered generator evaluator
+depends:      CORE-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement runtime error propagation, suppression with ?, try/catch handling, empty streams, and partial output before a runtime error.
+
+## story CORE-004
+summary:      Implement jq truthiness, equality, and ordering.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-CORE-004.md
+covers:       CORE-004
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     truthiness, equality, inequality, comparison ordering
+consumes:     ordered generator evaluator
+depends:      CORE-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement jq truthiness where only false and null are falsey, numeric equivalence, structural equality, and jq&amp;#x27;s total type ordering.
+
+## story VALUE-001
+summary:      Implement the jq value and numeric model.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-VALUE-001.md
+covers:       VALUE-001
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     null, boolean, number, string, array, object, NaN, infinity values
+consumes:     JSON input reader
+depends:      CORE-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement jq values using standard-library representations, including special numeric values, literal-number preservation where required, and structural serialization behavior.
+
+## story VALUE-002
+summary:      Implement field and index access.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-VALUE-002.md
+covers:       VALUE-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     field access, index access, optional access, negative indices, missing values
+consumes:     ordered generator evaluator, jq value model
+depends:      VALUE-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement object fields, array indices, string-key indexing, optional access, negative indices, missing-value null behavior, and access errors.
+
+## story VALUE-003
+summary:      Implement slices and collection iteration.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-VALUE-003.md
+covers:       VALUE-003
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     array slices, string slices, array iteration, object iteration
+consumes:     field and index access
+depends:      VALUE-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement array and string slices, fractional and out-of-range bounds, iteration over arrays and objects, optional iteration, and generator behavior.
+
+## story VALUE-004
+summary:      Implement type, length, numeric predicates, conversions, and math.
+type:         service
+kind:         capability
+phase:        3
+implements:   FEATURE-VALUE-004.md
+covers:       VALUE-004
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     type, length, utf8bytelength, numeric predicates, conversions, math builtins
+consumes:     jq value model, generator evaluator
+depends:      VALUE-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement type and length primitives, UTF-8 byte length, numeric predicates, tonumber/toboolean/tostring, arithmetic primitives, and required math functions.
+
+## story FLOW-001
+summary:      Implement arithmetic and structural operators.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-001.md
+covers:       FLOW-001
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     plus, minus, multiply, divide, modulo, negation, recursive merge, repetition, splitting
+consumes:     jq value model, generator evaluator
+depends:      VALUE-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement typed arithmetic and structural operators, recursive object merge, string repetition, string division, array subtraction, modulo, and unary negation.
+
+## story FLOW-002
+summary:      Implement boolean and alternative operators.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-002.md
+covers:       FLOW-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     and, or, not, defined-or, defined-or assignment
+consumes:     generator evaluator, truthiness and comparison
+depends:      FLOW-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement Boolean operators, not, defined-or short-circuiting, generator-aware fallback behavior, and //=.
+
+## story FLOW-003
+summary:      Implement conditionals and exception flow.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-003.md
+covers:       FLOW-003
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     if, then, elif, else, try, catch, optional control flow
+consumes:     generator evaluator, runtime error model
+depends:      FLOW-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement branching over generator outputs, optional else behavior, elif chains, try/catch, and optional operators with correct stream and error semantics.
+
+## story FLOW-004
+summary:      Implement lexical labels and breaks.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-004.md
+covers:       FLOW-004
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     label and break control flow
+consumes:     generator evaluator, runtime error model
+depends:      FLOW-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement lexically scoped labels and break termination so the correct enclosing generator stops without leaking outputs.
+
+## story FLOW-005
+summary:      Implement reductions and iteration controls.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-005.md
+covers:       FLOW-005
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     reduce, foreach, range, limit, skip, first, last, nth
+consumes:     generator evaluator, bindings, labels
+depends:      FLOW-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement reducer state, foreach extraction, range variants, limit, skip, first, last, and nth with Cartesian arguments, backtracking, and short-circuiting.
+
+## story FLOW-006
+summary:      Implement recursive generator primitives.
+type:         service
+kind:         capability
+phase:        4
+implements:   FEATURE-FLOW-006.md
+covers:       FLOW-006
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     while, until, repeat, recurse, recursive descent
+consumes:     generator evaluator, runtime error model
+depends:      FLOW-005
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement recursive generators and recursive descent with correct termination, stream ordering, and recursion behavior.
+
+## story FUNC-001
+summary:      Implement lexical variable bindings.
+type:         service
+kind:         capability
+phase:        5
+implements:   FEATURE-FUNC-001.md
+covers:       FUNC-001
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     as bindings, variable lookup, lexical scope, shadowing
+consumes:     generator evaluator, parser AST
+depends:      FLOW-006
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement value bindings, lexical scope, shadowing, keyword identifiers, binding lifetime, and variable lookup across generator streams.
+
+## story FUNC-002
+summary:      Implement filter and value function parameters.
+type:         service
+kind:         capability
+phase:        5
+implements:   FEATURE-FUNC-002.md
+covers:       FUNC-002
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/builtin.jq, sources/jq.test
+stack:        python.md
+provides:     filter parameters, value parameters, function arities, Cartesian function calls
+consumes:     lexical variable bindings, generator evaluator
+depends:      FUNC-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement user-defined filter and value parameters, multiple arities, closures, repeated filter invocation, and Cartesian argument semantics.
+
+## story FUNC-003
+summary:      Implement function definitions, scope, and recursion.
+type:         service
+kind:         capability
+phase:        5
+implements:   FEATURE-FUNC-003.md
+covers:       FUNC-003
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     def declarations, lexical function scope, redefinition, recursion, forward/self references
+consumes:     function parameters, lexical variable bindings
+depends:      FUNC-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement function definitions, lexical function scope, redefinitions by arity, recursive and self references, closures, and function backtracking.
+
+## story FUNC-004
+summary:      Implement destructuring patterns and alternatives.
+type:         service
+kind:         capability
+phase:        5
+implements:   FEATURE-FUNC-004.md
+covers:       FUNC-004
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     array patterns, object patterns, missing bindings, ?// alternatives
+consumes:     lexical bindings, function evaluator
+depends:      FUNC-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement array and object destructuring, null binding for missing members, alternative pattern backtracking, and final-error propagation.
+
+## story PATH-001
+summary:      Implement path discovery and projection.
+type:         service
+kind:         capability
+phase:        6
+implements:   FEATURE-PATH-001.md
+covers:       PATH-001
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/builtin.jq, sources/jq.test
+stack:        python.md
+provides:     path, paths, pick
+consumes:     accessors, recursive generators, destructuring
+depends:      FUNC-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement path expression discovery, recursive paths, filtered paths, and pick projections with valid path semantics and errors.
+
+## story PATH-002
+summary:      Implement path access and mutation primitives.
+type:         service
+kind:         capability
+phase:        6
+implements:   FEATURE-PATH-002.md
+covers:       PATH-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/builtin.jq, sources/jq.test
+stack:        python.md
+provides:     getpath, setpath, delpaths
+consumes:     path discovery and jq value model
+depends:      PATH-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement nested path reads, creation and updates, deletion, array expansion, invalid-path handling, negative indices, depth limits, and immutable results.
+
+## story PATH-003
+summary:      Implement deletion and assignment operators.
+type:         service
+kind:         capability
+phase:        6
+implements:   FEATURE-PATH-003.md
+covers:       PATH-003
+context:      ARCHITECTURE.md, sources/parser.y, sources/jq-manual.txt, sources/builtin.jq, sources/jq.test
+stack:        python.md
+provides:     del, =, |=, +=, -=, *=, /=, %=, //=
+consumes:     path discovery, getpath, setpath, delpaths
+depends:      PATH-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement immutable deletion, plain assignment, update assignment, arithmetic assignment, defined-or assignment, multi-path behavior, and generator-valued RHS semantics.
+
+## story PATH-004
+summary:      Implement complex assignment edge cases.
+type:         service
+kind:         capability
+phase:        6
+implements:   FEATURE-PATH-004.md
+covers:       PATH-004
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     iterated assignment, empty updates, array expansion, invalid and deep paths
+consumes:     deletion and assignment operators
+depends:      PATH-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Complete iterated paths, empty updates, array expansion, invalid paths, negative and NaN indices, string-slice restrictions, and depth-limit behavior.
+
+## story DATA-001
+summary:      Implement collection transformation builtins.
+type:         service
+kind:         capability
+phase:        7
+implements:   FEATURE-DATA-001.md
+covers:       DATA-001
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     map, map_values, select, add, flatten, transpose, combinations, walk
+consumes:     generator evaluator, assignment operators
+depends:      PATH-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement collection transformation builtins and recursive walk while preserving stream semantics, empty behavior, and immutable updates.
+
+## story DATA-002
+summary:      Implement sorting and grouping builtins.
+type:         service
+kind:         capability
+phase:        7
+implements:   FEATURE-DATA-002.md
+covers:       DATA-002
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     sort, sort_by, group_by, unique, unique_by, min, max, keyed extrema
+consumes:     jq comparison and ordering
+depends:      DATA-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement sorting, keyed sorting, grouping, uniqueness, minimum, maximum, and keyed variants using jq ordering and stable generator-derived keys.
+
+## story DATA-003
+summary:      Implement object-entry and containment builtins.
+type:         service
+kind:         capability
+phase:        7
+implements:   FEATURE-DATA-003.md
+covers:       DATA-003
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries
+consumes:     jq value model, comparison and ordering
+depends:      DATA-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement object and array key utilities, containment relations, entry conversions, and with_entries while preserving object ordering semantics where required.
+
+## story DATA-004
+summary:      Implement index and membership utilities.
+type:         service
+kind:         capability
+phase:        7
+implements:   FEATURE-DATA-004.md
+covers:       DATA-004
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     indices, index, rindex, bsearch, all, any, isempty, IN
+consumes:     collection transformations, comparison and generator evaluation
+depends:      DATA-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement string and array index searches, binary search, all/any short-circuiting, isempty, and SQL-style IN variants.
+
+## story TEXT-001
+summary:      Implement string manipulation builtins.
+type:         service
+kind:         capability
+phase:        8
+implements:   FEATURE-TEXT-001.md
+covers:       TEXT-001
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     trim, ltrim, rtrim, prefix/suffix, case, explode, implode, split, join
+consumes:     jq string values, generator evaluator
+depends:      DATA-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement Unicode-aware trimming, prefix and suffix operations, ASCII case conversion, codepoint conversion, split, join, and string validation errors.
+
+## story TEXT-002
+summary:      Implement JSON and output format filters.
+type:         service
+kind:         capability
+phase:        8
+implements:   FEATURE-TEXT-002.md
+covers:       TEXT-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d
+consumes:     jq value model, string manipulation
+depends:      TEXT-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement JSON conversion and all required text, HTML, URI, CSV, TSV, shell, and Base64 format filters with interpolation and escaping semantics.
+
+## story TEXT-003
+summary:      Implement regular-expression filters.
+type:         service
+kind:         capability
+phase:        8
+implements:   FEATURE-TEXT-003.md
+covers:       TEXT-003
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     test, match, capture, scan, split, splits, sub, gsub
+consumes:     jq strings, generator evaluator
+depends:      TEXT-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement regex matching with standard-library re features mapped to jq flags, named captures, offsets, streams, splitting, substitution, and global replacement.
+
+## story TEXT-004
+summary:      Implement date and time filters.
+type:         service
+kind:         capability
+phase:        8
+implements:   FEATURE-TEXT-004.md
+covers:       TEXT-004
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     fromdate, todate, strptime, strftime, strflocaltime, gmtime, localtime, mktime
+consumes:     jq strings and numbers
+depends:      TEXT-003
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement UTC date parsing and formatting plus required low-level time conversions using Python standard-library time and datetime facilities.
+
+## story IO-001
+summary:      Implement input stream controls.
+type:         service
+kind:         capability
+phase:        9
+implements:   FEATURE-IO-001.md
+covers:       IO-001
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md, common.md
+provides:     input, inputs, input_filename, input_line_number
+consumes:     JSON stdin reader
+depends:      TEXT-004
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement input and inputs over the fixed stdin interface and provide the documented filename and line-number primitives.
+
+## story IO-002
+summary:      Implement diagnostics and stderr output.
+type:         service
+kind:         capability
+phase:        9
+implements:   FEATURE-IO-002.md
+covers:       IO-002
+context:      ARCHITECTURE.md, sources/jq-manual.txt, sources/jq.test
+stack:        python.md, common.md
+provides:     debug, stderr, halt_error
+consumes:     process exit and diagnostic contract
+depends:      IO-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement debug and stderr side effects, halt_error output and exit behavior, and preserve stdout/stderr separation.
+
+## story IO-003
+summary:      Implement streaming transformations.
+type:         service
+kind:         capability
+phase:        9
+implements:   FEATURE-IO-003.md
+covers:       IO-003
+context:      ARCHITECTURE.md, sources/builtin.jq, sources/jq-manual.txt, sources/jq.test
+stack:        python.md
+provides:     tostream, fromstream, truncate_stream
+consumes:     generator evaluator, path primitives
+depends:      IO-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Implement jq streaming representations and conversion utilities for the supplied streaming cases.
+
+## story CONF-001
+summary:      Stage and validate immutable conformance assets.
+type:         foundational
+kind:         test harness
+phase:        1
+implements:   FEATURE-CONF-001.md
+covers:       CONF-001
+context:      COMPASS.md, sources/INSTRUCTIONS.md, sources/run_conformance.py, sources/full_test.sh, sources/exclusions.txt, sources/jq.test, sources/jq-manual.txt, sources/parser.y, sources/lexer.l, sources/builtin.jq
+stack:        python.md, common.md
+provides:     sources/ conformance corpus, manual, grammar, harness, exclusions, full-test script
+consumes:     target application root
+depends:      architecture-foundation
+acceptance:   yes
+scope:        both
+instructions: |
+  Stage the supplied sources verbatim under sources/. Validate corpus parsing and exclusion consistency by importing the harness parsers directly; do not modify or execute the candidate.
+
+## story CONF-002
+summary:      Provide scoped conformance verification.
+type:         service
+kind:         test harness
+phase:        9
+implements:   FEATURE-CONF-002.md
+covers:       CONF-002
+context:      COMPASS.md, sources/run_conformance.py
+stack:        python.md, common.md
+provides:     scoped conformance execution with JQ candidate binding
+consumes:     ./jq, sources/run_conformance.py
+depends:      IO-003, CONF-001
+acceptance:   yes
+scope:        target
+instructions: |
+  Verify that scoped acceptance invocations execute selected corpus cases with JQ extended from the inherited environment and machine-readable results.
+
+## story CONF-003
+summary:      Run the complete jq conformance corpus.
+type:         service
+kind:         test harness
+phase:        10
+implements:   FEATURE-CONF-003.md
+covers:       CONF-003
+accepts:       st-001
+context:      COMPASS.md, sources/full_test.sh, sources/run_conformance.py, sources/exclusions.txt, sources/jq.test
+stack:        python.md, common.md
+provides:     complete jq conformance release verification
+consumes:     ./jq, sources/full_test.sh
+depends:      EXEC-001, EXEC-002, EXEC-003, PARSE-001, PARSE-002, PARSE-003, PARSE-004, CORE-001, CORE-002, CORE-003, CORE-004, VALUE-001, VALUE-002, VALUE-003, VALUE-004, FLOW-001, FLOW-002, FLOW-003, FLOW-004, FLOW-005, FLOW-006, FUNC-001, FUNC-002, FUNC-003, FUNC-004, PATH-001, PATH-002, PATH-003, PATH-004, DATA-001, DATA-002, DATA-003, DATA-004, TEXT-001, TEXT-002, TEXT-003, TEXT-004, IO-001, IO-002, IO-003, CONF-001, CONF-002
+acceptance:   yes
+scope:        target
+instructions: |
+  Run the supplied full-test script as the terminal verification. Assert its exit status is zero, print captured stdout and stderr for diagnosis, and do not reinterpret or filter the corpus.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT DECISIONS.json ===
+[]
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

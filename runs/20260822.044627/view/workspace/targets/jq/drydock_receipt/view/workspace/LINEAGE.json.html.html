@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/LINEAGE.json.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/LINEAGE.json.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/LINEAGE.json.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/LINEAGE.json&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/LINEAGE.json&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../workspace/LINEAGE.json&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;{
+  &amp;quot;version&amp;quot;: 1,
+  &amp;quot;import&amp;quot;: {
+    &amp;quot;root&amp;quot;: &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/sources&amp;quot;,
+    &amp;quot;format&amp;quot;: &amp;quot;markdown&amp;quot;
+  },
+  &amp;quot;sources&amp;quot;: {
+    &amp;quot;INSTRUCTIONS.md&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;51b43aaf9eec2855347c8e6f57ca4eb52e36b8cc9202d0177cffe429aaa8aeea&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;python-interpreter-architecture&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The implementation language is Python, fixed by this Target&amp;#x27;s `TECHNOLOGY_STACK.md` and governed by `stack/python.md`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;architecture-foundation&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;jq-executable-interface&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The interface contract&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;process-exit-diagnostics&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Exit codes follow jq&amp;#x27;s own, and the distinction is load-bearing because the harness grades on it:&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;json-stream-io&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;It writes each value the program produces to **stdout** as one compact JSON value per line, and exits `0`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;lexical-scanning&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Follow `sources/lexer.l` and `sources/parser.y` directly. Produce an AST.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;literals-strings-interpolation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Precedence, `?` suffixes, string interpolation, and the `def` forms are all settled there.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq is a small language with a large semantic core.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;advanced-grammar-rejection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The module *grammar* cases are **not** excluded and must pass.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;generator-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Almost every filter is a **generator**:\nit takes one input and produces a stream of zero, one, or many outputs, and downstream\nfilters run once per upstream output.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;,
+                &amp;quot;CORE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;runtime-errors-and-optional&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;A case may legitimately emit several values and then raise; the harness compares the values\nproduced before the raise, so exit `5` is not by itself a failure.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;truthiness-comparison&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`reduce`, `foreach`, `limit`, `first`,\n`label`/`break`, and the `?//` destructuring alternative are all defined in terms of it.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-model-numbers&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Numbers and edge cases. `nan`, `infinite`, integer/float equality, large literals,\nand the `have_decnum` builtin \u2014 return `false` from it and the corpus takes its\nnon-decNumber branch, which native floats satisfy.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-accessors&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;field access, iteration, arithmetic, comparison, and\n`empty`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;slices-and-iteration&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Get the core correctly before reaching for coverage.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;type-and-numeric-primitives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conformance-assets&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;These four files are the exam. They are hash-verified against the import and restored\nbefore grading, so a modification is reported as tampering rather than honoured:&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;arithmetic-structural-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Every later feature is expressed in terms of this.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;boolean-alternative-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`//`,\n`reduce`, `foreach`, `label`/`break`, `limit`, `first`, `last`, `until`, `while`,\n`recurse`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conditionals-exception-flow&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Control flow. `if`/`then`/`elif`/`else`/`end`, `try`/`catch` and `?`, `//`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;labels-breaks&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`label`/`break`&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;reductions-iteration-control&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`reduce`, `foreach`, `limit`, `first`, `last`, `until`, `while`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recursive-generators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`recurse`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-006&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;variable-bindings&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Functions, variables, and destructuring.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-parameters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`def` with arity and closures,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-definitions&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`def` with arity and closures, `as`\nbindings,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;destructuring-alternatives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;object and array patterns, and the `?//` alternative operator.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-discovery&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Paths and assignment. `path(f)`, getpath, setpath, delpaths, del,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-primitives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`path(f)`, `getpath`, `setpath`, `delpaths`, `del`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;assignment-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;and then `=`, `|=`, `+=`, and friends.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;complex-assignments&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Assignment is defined over path expressions, so this\ncannot precede step 2.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;collection-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Builtins. Work outward from `sources/builtin.jq` and the manual: strings, arrays, objects,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;sorting-grouping-extrema&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`sort_by`/`group_by`/`unique_by`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;object-entries-containment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;objects,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;index-membership-search&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`in`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;string-manipulation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;strings,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;formats-serialization&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`@base64`/`@uri`/`@csv`/`@tsv`/`@sh`\nformats,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;regular-expressions&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;the date functions, `tostream`, `input`/`inputs`, `$__loc__`, `debug`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;date-time-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;the date functions,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;input-controls&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`input`/`inputs`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;diagnostics-stderr&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`$__loc__`, `debug`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;streaming-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`tostream`,&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;scoped-conformance&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Every other story runs its own slice, and the slice executes cases.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;full-conformance&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Definition of Done&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;builtin.jq&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;b8a5fd9579be9b51c9a04e6620f8c1655539aa57eea33a84e202a8dea401f2a4&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;error-and-selection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def halt_error: halt_error(5);\ndef error(msg): msg|error;\ndef select(f): if f then . else empty end;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-003&amp;quot;,
+                &amp;quot;FLOW-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;collection-mapping&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def map(f): [.[] | f];\ndef map_values(f): .[] |= f;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;sorting-and-grouping&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def sort_by(f): _sort_by_impl(map([f]));\ndef group_by(f): _group_by_impl(map([f]));\ndef unique_by(f): _unique_by_impl(map([f]));\ndef max_by(f): _max_by_impl(map([f]));\ndef min_by(f): _min_by_impl(map([f]));&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;object-entries-and-containment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def to_entries: [keys_unsorted[] as $k | {key: $k, value: .[$k]}];\ndef from_entries: map({ (.key // .Key // .name // .Name):\n  if has(\&amp;quot;value\&amp;quot;) then .value else .Value end }) | add // {};\ndef with_entries(f): to_entries | map(f) | from_entries;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;index-and-membership&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def indices($i): if type == \&amp;quot;array\&amp;quot; and ($i|type) == \&amp;quot;array\&amp;quot; then .[$i]\n  elif type == \&amp;quot;array\&amp;quot; then .[[$i]]\n  elif type == \&amp;quot;string\&amp;quot; and ($i|type) == \&amp;quot;string\&amp;quot; then _strindices($i)\n  else .[$i] end;\ndef index($i):   indices($i) | .[0];       # TODO: optimize\ndef rindex($i):  indices($i) | .[-1:][0];  # TODO: optimize\ndef in(xs): . as $x | xs | has($x);\ndef inside(xs): . as $x | xs | contains($x);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;string-manipulation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def join($x): reduce .[] as $i (null;\n            (if .==null then \&amp;quot;\&amp;quot; else .+$x end) +\n            ($i | if type==\&amp;quot;boolean\&amp;quot; or type==\&amp;quot;number\&amp;quot; then tostring else .//\&amp;quot;\&amp;quot; end)\n        ) // \&amp;quot;\&amp;quot;;\ndef ltrimstr($left): if startswith($left) then .[$left | length:] end;\ndef rtrimstr($right): if endswith($right) then .[:length - ($right | length)] end;\ndef trimstr($val): ltrimstr($val) | rtrimstr($val);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;regular-expression-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def match(re; mode): _match_impl(re; mode; false)|.[];\ndef test(re; mode): _match_impl(re; mode; true);\ndef capture(re; mods): match(re; mods) | reduce ( .captures | .[] | select(.name != null) | { (.name) : .string } ) as $pair ({}; . + $pair);\ndef scan($re; $flags):\n  match($re; \&amp;quot;g\&amp;quot; + $flags)\n    | if (.captures|length &amp;gt; 0)\n      then [ .captures | .[] | .string ]\n      else .string\n      end;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;date-and-time-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def fromdateiso8601: strptime(\&amp;quot;%Y-%m-%dT%H:%M:%SZ\&amp;quot;)|mktime;\ndef todateiso8601: strftime(\&amp;quot;%Y-%m-%dT%H:%M:%SZ\&amp;quot;);\ndef fromdate: fromdateiso8601;\ndef todate: todateiso8601;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;input-stream-controls&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def inputs: try repeat(input) catch if .==\&amp;quot;break\&amp;quot; then empty else error end;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;diagnostics&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def debug(msgs): (msgs | debug | empty), .;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;stream-valued-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def while(cond; update):\n     def _while:\n         if cond then ., (update | _while) else empty end;\n     _while;\ndef until(cond; next):\n     def _until:\n         if cond then . else (next|_until) end;\n     _until;\ndef limit($n; expr):\n  if $n &amp;gt; 0 then label $out | foreach expr as $item ($n; . - 1; $item, if . &amp;lt;= 0 then break $out else empty end)\n  elif $n == 0 then empty\n  else error(\&amp;quot;limit doesn&amp;#x27;t support negative count\&amp;quot;) end;\ndef skip($n; expr):\n  if $n &amp;gt; 0 then foreach expr as $item ($n; . - 1; if . &amp;lt; 0 then $item else empty end)\n  elif $n == 0 then expr\n  else error(\&amp;quot;skip doesn&amp;#x27;t support negative count\&amp;quot;) end;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;,
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;composition-and-combinations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def combinations:\n    if length == 0 then [] else\n        .[0][] as $x\n          | (.[1:] | combinations) as $y\n          | [$x] + $y\n    end;\ndef combinations(n):\n    . as $dot\n      | [range(n) | $dot]\n      | combinations;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;truthiness-and-membership&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def IN(s): any(s == .; .);\ndef IN(src; s): any(src == s; .);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-004&amp;quot;,
+                &amp;quot;FLOW-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-types-and-numeric-primitives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def abs: if . &amp;lt; 0 then - . else . end;\ndef isfinite: type == \&amp;quot;number\&amp;quot; and (isinfinite | not);\ndef arrays: select(type == \&amp;quot;array\&amp;quot;);\ndef objects: select(type == \&amp;quot;object\&amp;quot;);\ndef iterables: select(type|. == \&amp;quot;array\&amp;quot; or . == \&amp;quot;object\&amp;quot;);\ndef booleans: select(type == \&amp;quot;boolean\&amp;quot;);\ndef numbers: select(type == \&amp;quot;number\&amp;quot;);\ndef normals: select(isnormal);\ndef finites: select(isfinite);\ndef strings: select(type == \&amp;quot;string\&amp;quot;);\ndef nulls: select(. == null);\ndef values: select(. != null);\ndef scalars: select(type|. != \&amp;quot;array\&amp;quot; and . != \&amp;quot;object\&amp;quot;);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-001&amp;quot;,
+                &amp;quot;VALUE-004&amp;quot;,
+                &amp;quot;FLOW-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;accessors-and-slices&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def first: .[0];\ndef last: .[-1];\ndef nth($n): .[$n];\ndef reverse: [.[length - 1 - range(0;length)]];\ndef flatten($x): if $x &amp;lt; 0 then error(\&amp;quot;flatten depth must not be negative\&amp;quot;) else _flatten($x) end;\ndef flatten: _flatten(-1);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-002&amp;quot;,
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recursive-generators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def recurse(f): def r: ., (f | r); r;\ndef recurse(f; cond): def r: ., (f | select(cond) | r); r;\ndef recurse: recurse(.[]?);\ndef repeat(exp):\n     def _repeat:\n         exp, _repeat;\n     _repeat;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-006&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;labels-and-breaks&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def _modify(paths; update):\n    reduce path(paths) as $p ([., []];\n        . as $dot\n      | null\n      | label $out\n      | ($dot[0] | getpath($p)) as $v\n      | (\n          (   $$$$v\n            | update\n            | (., break $out) as $v&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;variable-bindings-and-parameters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def add(f): reduce f as $x (null; . + $x);\ndef add: add(.[]);\ndef all(generator; condition): isempty(generator|condition and empty);\ndef any(generator; condition): isempty(generator|condition or empty)|not;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-001&amp;quot;,
+                &amp;quot;FUNC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-definitions-and-recursion&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def _flatten($x): reduce .[] as $i ([]; if $i | type == \&amp;quot;array\&amp;quot; and $x != 0 then . + ($i | _flatten($x-1)) else . + [$i] end);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-discovery-and-projection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def paths: path(recurse)|select(length &amp;gt; 0);\ndef paths(node_filter): path(recurse|select(node_filter))|select(length &amp;gt; 0);\ndef pick(pathexps):\n  . as $in\n  | reduce path(pathexps) as $a (null;\n      setpath($a; $in|getpath($a)) );&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-access-and-mutation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def _assign(paths; $value): reduce path(paths) as $p (.; setpath($p; $value));\ndef _modify(paths; update):\n    reduce path(paths) as $p ([., []];\n        . as $dot\n      | ($dot[0] | getpath($p)) as $v\n      | $$$$dot\n      | setpath([0] + $p; $v)&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-002&amp;quot;,
+                &amp;quot;PATH-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;deletion-and-assignment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def del(f): delpaths([path(f)]);&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conformance-verification&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# ensure the output of debug(m1,m2) is kept together:\ndef debug(msgs): (msgs | debug | empty), .;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-002&amp;quot;,
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;exclusions.txt&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;0755022f0c2f339883aaa2668a10d6a11bc8f7c4a37b0743f213830d848a05d9&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;document-excluded-cases&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The corpus in sources/jq.test is byte-for-byte upstream and is never edited. Where a case cannot run under this kit&amp;#x27;s harness, it is named here instead, so every skip is visible, reasoned, and auditable against the upstream file. This file is a scoring asset: it is hash-verified against the import and restored before grading.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;validate-exclusion-entries&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;One verbatim program line per entry. An entry that matches no case in the corpus is a hard error (exit 2), not a shrug \u2014 a silent no-op would quietly re-admit a case the kit cannot run if the corpus pin ever moved.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;,
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;exclude-module-loader-cases&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Only the loader cases are excluded. The module *grammar* cases \u2014 `module (.+1); 0`, `module []; 0`, `include \&amp;quot;a\&amp;quot; (.+1); 0`, `include \&amp;quot;a\&amp;quot; []; 0`, `include \&amp;quot;\\ \&amp;quot;; 0`, `include \&amp;quot;\\(a)\&amp;quot;; 0`, and `%::wat` \u2014 remain in the scored set: they are parse errors that a correct front end rejects without ever touching the filesystem.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;full_test.sh&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;4df25cda12c2741ee02cb7e22d5e3b62161bd90fde948c88a675cb2a94e70fc5&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;executable-json-interface&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The deliverable is an executable named jq that reads JSON on stdin.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-001&amp;quot;,
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;distinguish-interface-and-conformance-failures&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The interface check is separate from the conformance run so that a missing or non-executable program and a genuine conformance failure are distinguishable in the evidence.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;score-full-conformance-run&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its exit code and output as the score.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;jq-manual.txt&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;filter-model&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;A jq program is a \&amp;quot;filter\&amp;quot;: it takes an input, and produces an output.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;filter-composition&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Filters can be combined in various ways - you can pipe the output of\none filter into another filter, or collect the output of a filter\ninto an array.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;stream-values&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Some filters produce multiple results, for instance there&amp;#x27;s one that\nproduces all the elements of its input array.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;numeric-semantics&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Numbers in jq are internally represented by their IEEE754 double\nprecision approximation.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;object-access&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The simplest *useful* filter has the form `.foo`. When given a\nJSON object (aka dictionary or hash) as input, `.foo` produces\nthe value at the key \&amp;quot;foo\&amp;quot; if the key is present, or null otherwise.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;array-access-and-iteration&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;When the index value is an integer, `.[&amp;lt;number&amp;gt;]` can index\narrays. Arrays are zero-based, so `.[2]` returns the third\nelement.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;slices&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `.[&amp;lt;number&amp;gt;:&amp;lt;number&amp;gt;]` syntax can be used to return a\nsubarray of an array or substring of a string.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;lexical-scanning&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;A `#` character (not part of a string) starts a comment.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;literals-and-interpolation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Inside a string, you can put an expression inside parens\nafter a backslash. Whatever the expression returns will be\ninterpolated into the string.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;core-filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The | operator combines two filters by feeding the output(s) of\nthe one on the left into the input of the one on the right.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;advanced-filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;You can give a filter a name using \&amp;quot;def\&amp;quot; syntax:&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;runtime-errors-and-optional-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Errors can be caught by using `try EXP catch EXP`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;truthiness-and-comparison&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The expression &amp;#x27;a == b&amp;#x27; will produce &amp;#x27;true&amp;#x27; if the results of evaluating\na and b are equal (that is, if they represent equivalent JSON values) and\n&amp;#x27;false&amp;#x27; otherwise.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;arithmetic-and-structural-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The operator `+` takes two filters, applies them both\nto the same input, and adds the results together.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;boolean-and-default-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq supports the normal Boolean operators `and`, `or`, `not`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conditionals-and-exception-flow&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`if A then B else C end` will act the same as `B` if `A`\nproduces a value other than false or null, but act the same as\n`C` otherwise.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;labels-and-breaks&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq has a syntax for named lexical labels to\nbreak or go (back) to:&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;reductions-and-iteration-control&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `reduce` syntax allows you to combine all of the results of\nan expression by accumulating them into a single answer.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recursive-generators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `recurse(f)` function allows you to search through a\nrecursive structure, and extract interesting data from all\nlevels.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-006&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;variable-bindings&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq lets you define variables using\n`expression as $variable`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-parameters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Arguments are passed as _filters_ (functions with no\narguments), _not_ as values.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-definitions-and-scope&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;It is also possible to define functions in jq, although this\nis a feature whose biggest use is defining jq&amp;#x27;s standard library&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;destructuring-alternatives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The destructuring alternative operator provides a concise mechanism\nfor destructuring an input that can take one of several forms.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-discovery-and-projection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;`paths` outputs the paths to all the elements in its input&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-access-and-mutation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The builtin function `getpath` outputs the values in `.` found\nat each path in `PATHS`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;assignment-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Most users will want to use modification assignment operators,\nsuch as `|=` or `+=`, rather than `=`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;complex-assignments&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Any filter may be used on the\nleft-hand side of an equals - whichever paths it selects from the\ninput will be where the assignment is performed.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;collection-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;For any filter `f`, `map(f)` and `map_values(f)` apply `f`\nto each of the values in the input array or object, that is,\nto the values of `.[]`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;sorting-grouping-and-extrema&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `sort` functions sorts its input, which must be an\narray.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;object-entries-and-containment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;These functions convert between an object and an array of\nkey-value pairs.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;index-membership-and-sql-utilities&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The builtin function `has` returns whether the input object\nhas the given key, or the input array has an element\nat the given index.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;string-manipulation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `split` function splits an input string on the separator argument.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;json-conversion-and-output-formats&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;regular-expression-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq uses the\n[Oniguruma regular expression library](https://github.com/kkos/oniguruma/blob/master/doc/RE),&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;date-and-time-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq provides some basic date handling functionality, with some\nhigh-level and low-level builtins.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;input-stream-controls&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Two builtins functions\nare provided for this, `input` and `inputs`, that read from\nthe same sources&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;diagnostics-and-stderr&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The `debug` builtin can have as a side-effect the production of one or more messages on stderr.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;streaming-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;With the `--stream` option jq can parse input texts in a streaming\nfashion, allowing jq programs to start processing large JSON texts\nimmediately rather than after the parse completes.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;process-exit-and-errors&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;The given `exit_code` (defaulting to `5`) will be jq&amp;#x27;s\nexit status.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;json-input-and-output&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq&amp;#x27;s output values are always\noutput as JSON texts on `stdout`.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-types-and-primitives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq supports the same set of datatypes as JSON - numbers,\nstrings, booleans, arrays, objects (which in JSON-speak are\nhashes with only string keys), and \&amp;quot;null\&amp;quot;.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-004&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;jq.test&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;329689763b651096989bd8260b643731083fc5fd17f6bd7834d158713f738cbd&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;test-input-output-contract&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Tests are groups of three lines: program, input, expected output\n# Blank lines and lines starting with # are ignored&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;lexical-scanning&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# The input line starts with a 0xFEFF (byte order mark) codepoint&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;literals-strings-interpolation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# We test escapes by matching them against Unicode codepoints&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;core-filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Field access, piping&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;advanced-filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# module system&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;stream-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Multiple outputs, iteration&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;composition-cartesian-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Check that various builtins evaluate all arguments where appropriate,\n# doing cartesian products where appropriate.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;errors-and-optional-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Try/catch and general `?` operator&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;truthiness-comparison&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# And some in/equality tests&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-model-numeric-edge-cases&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Basic numbers tests: integers, powers of two&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;field-index-access&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Negative array indices&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;slices-and-iteration&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Slices&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;type-length-math-primitives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# abs, fabs, length&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;arithmetic-structural-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Builtin functions&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;boolean-alternative-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# containment operator&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conditionals-exception-flow&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Conditionals&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;labels-and-breaks&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;[label $out | foreach .[] as $item ([3, null]; if .[0] &amp;lt; 1 then break $out else [.[0] -1, $item] end; .[1])]&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;reductions-iteration-control&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;[foreach .[] as $x (0; . + $x) as $x | $x]&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recursive-generators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# test recursion&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-006&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;variable-bindings&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Variables&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-parameters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0])&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-definitions-scope&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# test multiple function arities and redefinition&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;destructuring-alternatives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Destructuring with alternation&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-discovery-projection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Paths&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-access-mutation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;[\&amp;quot;foo\&amp;quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;deletion-assignment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;#\n# Assignment\n#\n.message = \&amp;quot;goodbye\&amp;quot;&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;complex-assignment-edge-cases&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# #1358, getpath/1 should work in path expressions&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;collection-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Collection transformations&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;sorting-grouping-extrema&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;sort\n[42,[2,5,3,11],10,{\&amp;quot;a\&amp;quot;:42,\&amp;quot;b\&amp;quot;:2},{\&amp;quot;a\&amp;quot;:42},true,2,[2,6],\&amp;quot;hello\&amp;quot;,null,[2,5,6],{\&amp;quot;a\&amp;quot;:[],\&amp;quot;b\&amp;quot;:1},\&amp;quot;abc\&amp;quot;,\&amp;quot;ab\&amp;quot;,[3,10],{},false,\&amp;quot;abcd\&amp;quot;,null]&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;object-entries-containment&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;to_entries\n{\&amp;quot;a\&amp;quot;: 1, \&amp;quot;b\&amp;quot;: 2}\n[{\&amp;quot;key\&amp;quot;:\&amp;quot;a\&amp;quot;, \&amp;quot;value\&amp;quot;:1}, {\&amp;quot;key\&amp;quot;:\&amp;quot;b\&amp;quot;, \&amp;quot;value\&amp;quot;:2}]&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;index-membership-search&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# check that dead code removal occurs after builtin it generation&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;DATA-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;string-manipulation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# string operations&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;formats-serialization&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;[.[]|tojson|fromjson]\n[\&amp;quot;foo\&amp;quot;, 1, [\&amp;quot;a\&amp;quot;, 1, \&amp;quot;b\&amp;quot;, 2, {\&amp;quot;foo\&amp;quot;:\&amp;quot;bar\&amp;quot;}]]\n[\&amp;quot;foo\&amp;quot;,1,[\&amp;quot;a\&amp;quot;,1,\&amp;quot;b\&amp;quot;,2,{\&amp;quot;foo\&amp;quot;:\&amp;quot;bar\&amp;quot;}]]&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;regular-expression-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# string operations&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;date-time-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# module system&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;input-stream-controls&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# calling input/0, or debug/0 in a test doesn&amp;#x27;t crash jq&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;diagnostics-stderr-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;debug\n1\n1&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;streaming-transformations&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Multiple outputs, iteration&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;full-conformance-verification&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;# Tests are groups of three lines: program, input, expected output&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;,
+                &amp;quot;CONF-002&amp;quot;,
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;lexer.l&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;cfb3af17a786df30d7e30dae5861b84747d4904f8ce7ae9ab9b48bde342ee7f3&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;handle-comments&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;#\&amp;quot; { yy_push_state(IN_COMMENT, yyscanner); }\n&amp;lt;IN_COMMENT&amp;gt;{\n  \\\\(\\\\|\\r?\\n)|. { }\n  \\r?\\n { yy_pop_state(yyscanner); }\n}\n&amp;lt;IN_COMMENT&amp;gt;&amp;lt;&amp;lt;EOF&amp;gt;&amp;gt; { yy_pop_state(yyscanner); }&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recognize-keywords&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;as\&amp;quot; { return AS; }\n\&amp;quot;import\&amp;quot; { return IMPORT; }\n\&amp;quot;include\&amp;quot; { return INCLUDE; }\n\&amp;quot;module\&amp;quot; { return MODULE; }\n\&amp;quot;def\&amp;quot; { return DEF; }\n\&amp;quot;if\&amp;quot; { return IF; }\n\&amp;quot;then\&amp;quot; { return THEN; }\n\&amp;quot;else\&amp;quot; { return ELSE; }\n\&amp;quot;elif\&amp;quot; { return ELSE_IF; }\n\&amp;quot;and\&amp;quot; { return AND; }\n\&amp;quot;or\&amp;quot; { return OR; }\n\&amp;quot;end\&amp;quot; { return END; }\n\&amp;quot;reduce\&amp;quot; { return REDUCE; }\n\&amp;quot;foreach\&amp;quot; { return FOREACH; }\n\&amp;quot;try\&amp;quot; { return TRY; }\n\&amp;quot;catch\&amp;quot; { return CATCH; }\n\&amp;quot;label\&amp;quot; { return LABEL; }\n\&amp;quot;break\&amp;quot; { return BREAK; }\n\&amp;quot;$__loc__\&amp;quot; { return LOC; }&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;PARSE-003&amp;quot;,
+                &amp;quot;PARSE-004&amp;quot;,
+                &amp;quot;FUNC-003&amp;quot;,
+                &amp;quot;FLOW-003&amp;quot;,
+                &amp;quot;FLOW-004&amp;quot;,
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recognize-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;!=\&amp;quot; { return NEQ; }\n\&amp;quot;==\&amp;quot; { return EQ; }\n\&amp;quot;//\&amp;quot; { return DEFINEDOR; }\n\&amp;quot;|=\&amp;quot; { return SETPIPE; }\n\&amp;quot;+=\&amp;quot; { return SETPLUS; }\n\&amp;quot;-=\&amp;quot; { return SETMINUS; }\n\&amp;quot;*=\&amp;quot; { return SETMULT; }\n\&amp;quot;/=\&amp;quot; { return SETDIV; }\n\&amp;quot;%=\&amp;quot; { return SETMOD; }\n\&amp;quot;//=\&amp;quot; { return SETDEFINEDOR; }\n\&amp;quot;&amp;lt;=\&amp;quot; { return LESSEQ; }\n\&amp;quot;&amp;gt;=\&amp;quot; { return GREATEREQ; }\n\&amp;quot;..\&amp;quot; { return REC; }\n\&amp;quot;?//\&amp;quot; { return ALTERNATION; }\n\&amp;quot;.\&amp;quot;|\&amp;quot;?\&amp;quot;|\&amp;quot;=\&amp;quot;|\&amp;quot;;\&amp;quot;|\&amp;quot;,\&amp;quot;|\&amp;quot;:\&amp;quot;|\&amp;quot;|\&amp;quot;|\&amp;quot;+\&amp;quot;|\&amp;quot;-\&amp;quot;|\&amp;quot;*\&amp;quot;|\&amp;quot;/\&amp;quot;|\&amp;quot;%\&amp;quot;|\&amp;quot;\\$\&amp;quot;|\&amp;quot;&amp;lt;\&amp;quot;|\&amp;quot;&amp;gt;\&amp;quot; { return yytext[0];}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;FLOW-001&amp;quot;,
+                &amp;quot;FLOW-002&amp;quot;,
+                &amp;quot;FLOW-003&amp;quot;,
+                &amp;quot;FLOW-004&amp;quot;,
+                &amp;quot;FLOW-006&amp;quot;,
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;track-delimited-states&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;[\&amp;quot;|\&amp;quot;{\&amp;quot;|\&amp;quot;(\&amp;quot; {\n  return enter(yytext[0], YY_START, yyscanner);\n}\n\n\&amp;quot;]\&amp;quot;|\&amp;quot;}\&amp;quot;|\&amp;quot;)\&amp;quot; {\n  return try_exit(yytext[0], YY_START, yyscanner);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;PARSE-003&amp;quot;,
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;scan-formats-and-numbers&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;@\&amp;quot;[a-zA-Z0-9_]+ {\n  yylval-&amp;gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;\n}\n\n([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][+-]?[0-9]+)? {\n   yylval-&amp;gt;literal = jv_parse_sized(yytext, yyleng); return LITERAL;\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;PARSE-002&amp;quot;,
+                &amp;quot;VALUE-001&amp;quot;,
+                &amp;quot;TEXT-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;scan-strings-and-interpolation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;\\\&amp;quot;\&amp;quot; {\n  yy_push_state(IN_QQSTRING, yyscanner);\n  return QQSTRING_START;\n}\n\n&amp;lt;IN_QQSTRING&amp;gt;{\n  \&amp;quot;\\\\(\&amp;quot; {\n    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);\n  }\n  \&amp;quot;\\\&amp;quot;\&amp;quot; {\n    yy_pop_state(yyscanner);\n    return QQSTRING_END;\n  }\n  (\\\\[^u(]|\\\\u[a-zA-Z0-9]{0,4})+ {\n    /* pass escapes to the json parser */\n    jv escapes = jv_string_fmt(\&amp;quot;\\\&amp;quot;%.*s\\\&amp;quot;\&amp;quot;, (int)yyleng, yytext);\n    yylval-&amp;gt;literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));\n    jv_free(escapes);\n    return QQSTRING_TEXT;\n  }\n  [^\\\\\\\&amp;quot;]+ {\n    yylval-&amp;gt;literal = jv_string_sized(yytext, yyleng);\n    return QQSTRING_TEXT;\n  }\n  . {\n    return INVALID_CHARACTER;\n  }\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;PARSE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;scan-identifiers-and-accessors&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext); return IDENT;}\n\\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext+1); return FIELD;}\n\\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext+1); return BINDING;}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;FUNC-001&amp;quot;,
+                &amp;quot;FUNC-002&amp;quot;,
+                &amp;quot;VALUE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;ignore-whitespace-and-reject-invalid-characters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;[ \\r\\n\\t]+  {}\n\n. { return INVALID_CHARACTER; }&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;,
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;parser.y&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;803aa7c0b1acba2228e52d1de392fb51e60a7bbe23e42870aea1d62c43360c60&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;lexical-scanning&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;%token INVALID_CHARACTER\n%token &amp;lt;literal&amp;gt; IDENT\n%token &amp;lt;literal&amp;gt; FIELD\n%token &amp;lt;literal&amp;gt; BINDING\n%token &amp;lt;literal&amp;gt; LITERAL\n%token &amp;lt;literal&amp;gt; FORMAT&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;literals-strings-interpolation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;String:\nStringStart QQString QQSTRING_END {\n  $$ = $2;\n  jv_free($1);\n};&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;core-filter-grammar&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr:\nExpr \&amp;quot;//\&amp;quot; Expr {\n  $$ = gen_definedor($1, $3);\n} |\nExpr &amp;#x27;=&amp;#x27; Expr {\n  $$ = gen_call(\&amp;quot;_assign\&amp;quot;, BLOCK(gen_lambda($1), gen_lambda($3)));\n} |\nTerm %prec NONOPT {\n  $$ = $1;\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;declarations-control-rejection&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;TopLevel:\nModule Imports Query {\n  *answer = BLOCK($1, $2, gen_op_simple(TOP), $3);\n} |\nModule Imports FuncDefs {\n  *answer = BLOCK($1, $2, $3);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PARSE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;stream-valued-filters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Query:\nFuncDef Query %prec FUNCDEF {\n  $$ = block_bind_referenced($1, $2, OP_IS_CALL_PSEUDO);\n} |\nExpr {\n  $$ = $1;\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;filter-composition&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Query &amp;#x27;|&amp;#x27; Query {\n  $$ = block_join($1, $3);\n} |\nQuery &amp;#x27;,&amp;#x27; Query {\n  $$ = gen_both($1, $3);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;errors-and-optional-evaluation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Term FIELD &amp;#x27;?&amp;#x27; {\n  $$ = gen_index_opt($1, gen_const($2));\n} |\nTerm &amp;#x27;?&amp;#x27; {\n  $$ = gen_try($1, gen_op_simple(BACKTRACK));\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;truthiness-comparison&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr \&amp;quot;or\&amp;quot; Expr {\n  $$ = gen_or($1, $3);\n} |\nExpr \&amp;quot;and\&amp;quot; Expr {\n  $$ = gen_and($1, $3);\n} |\nExpr \&amp;quot;==\&amp;quot; Expr {\n  $$ = gen_binop($1, $3, EQ);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CORE-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;value-constants&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;LITERAL {\n  $$ = gen_const($1);\n} |\nIDENT {\n  const char *s = jv_string_value($1);\n  if (strcmp(s, \&amp;quot;false\&amp;quot;) == 0)\n    $$ = gen_const(jv_false());\n  else if (strcmp(s, \&amp;quot;true\&amp;quot;) == 0)\n    $$ = gen_const(jv_true());\n  else if (strcmp(s, \&amp;quot;null\&amp;quot;) == 0)\n    $$ = gen_const(jv_null());&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;field-index-access&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Term FIELD %prec NONOPT {\n  $$ = gen_index($1, gen_const($2));\n} |\nTerm &amp;#x27;[&amp;#x27; Query &amp;#x27;]&amp;#x27; %prec NONOPT {\n  $$ = gen_index($1, $3);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;slices-and-iteration&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Term &amp;#x27;[&amp;#x27; &amp;#x27;]&amp;#x27; %prec NONOPT {\n  $$ = block_join($1, gen_op_simple(EACH));\n} |\nTerm &amp;#x27;[&amp;#x27; Query &amp;#x27;:&amp;#x27; Query &amp;#x27;]&amp;#x27; %prec NONOPT {\n  $$ = gen_slice_index($1, $3, $5, INDEX);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;VALUE-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;arithmetic-structural-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr &amp;#x27;+&amp;#x27; Expr {\n  $$ = gen_binop($1, $3, &amp;#x27;+&amp;#x27;);\n} |\nExpr \&amp;quot;+=\&amp;quot; Expr {\n  $$ = gen_update($1, $3, &amp;#x27;+&amp;#x27;);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;boolean-alternative-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr \&amp;quot;//\&amp;quot; Expr {\n  $$ = gen_definedor($1, $3);\n} |\nExpr \&amp;quot;//=\&amp;quot; Expr {\n  $$ = gen_definedor_assign($1, $3);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;conditionals-exception-flow&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;if\&amp;quot; Query \&amp;quot;then\&amp;quot; Query ElseBody {\n  $$ = gen_cond($2, $4, $5);\n} |\n\&amp;quot;try\&amp;quot; Expr \&amp;quot;catch\&amp;quot; Expr {\n  $$ = gen_try($2, $4);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;labels-and-breaks&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;label\&amp;quot; BINDING &amp;#x27;|&amp;#x27; Query {\n  jv v = jv_string_fmt(\&amp;quot;*label-%s\&amp;quot;, jv_string_value($2));\n  $$ = gen_location(@$, locations, gen_label(jv_string_value(v), $4));\n} |\nBREAK BINDING {\n  jv v = jv_string_fmt(\&amp;quot;*label-%s\&amp;quot;, jv_string_value($2));&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;reductions-and-iteration-control&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;\&amp;quot;reduce\&amp;quot; Expr \&amp;quot;as\&amp;quot; Patterns &amp;#x27;(&amp;#x27; Query &amp;#x27;;&amp;#x27; Query &amp;#x27;)&amp;#x27; {\n  $$ = gen_reduce($2, $4, $6, $8);\n} |\n\&amp;quot;foreach\&amp;quot; Expr \&amp;quot;as\&amp;quot; Patterns &amp;#x27;(&amp;#x27; Query &amp;#x27;;&amp;#x27; Query &amp;#x27;;&amp;#x27; Query &amp;#x27;)&amp;#x27; {\n  $$ = gen_foreach($2, $4, $6, $8, $10);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-005&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;recursive-generators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;REC {\n  $$ = gen_call(\&amp;quot;recurse\&amp;quot;, gen_noop());\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FLOW-006&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;variable-bindings&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr \&amp;quot;as\&amp;quot; Patterns &amp;#x27;|&amp;#x27; Query {\n  $$ = gen_destructure($1, $3, $5);\n} |\nBINDING {\n  $$ = gen_location(@$, locations, gen_op_unbound(LOADV, jv_string_value($1)));\n  jv_free($1);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-parameters&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Params:\nParam {\n  $$ = $1;\n} |\nParams &amp;#x27;;&amp;#x27; Param {\n  $$ = BLOCK($1, $3);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;function-definitions&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;FuncDef:\n\&amp;quot;def\&amp;quot; IDENT &amp;#x27;:&amp;#x27; Query &amp;#x27;;&amp;#x27; {\n  $$ = gen_function(jv_string_value($2), gen_noop(), $4);\n  jv_free($2);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;destructuring-alternatives&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;RepPatterns:\nRepPatterns \&amp;quot;?//\&amp;quot; Pattern {\n  $$ = BLOCK($1, gen_destructure_alt($3));\n} |\nPattern {\n  $$ = gen_destructure_alt($1);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;FUNC-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;path-access-mutation&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;static block gen_update(block object, block val, int optype) {\n  block tmp = gen_op_var_fresh(STOREV, \&amp;quot;tmp\&amp;quot;);\n  return BLOCK(gen_op_simple(DUP),\n               val,\n               tmp,\n               gen_call(\&amp;quot;_modify\&amp;quot;, BLOCK(gen_lambda(object),\n                                         gen_lambda(gen_binop(gen_noop(),\n                                                              gen_op_bound(LOADV, tmp),\n                                                              optype)))));\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;assignment-operators&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr \&amp;quot;|=\&amp;quot; Expr {\n  $$ = gen_call(\&amp;quot;_modify\&amp;quot;, BLOCK(gen_lambda($1), gen_lambda($3)));\n} |\nExpr \&amp;quot;+=\&amp;quot; Expr {\n  $$ = gen_update($1, $3, &amp;#x27;+&amp;#x27;);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;complex-assignments&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Expr &amp;#x27;=&amp;#x27; Expr {\n  $$ = gen_call(\&amp;quot;_assign\&amp;quot;, BLOCK(gen_lambda($1), gen_lambda($3)));\n} |\nExpr SETMOD Expr {\n  $$ = gen_update($1, $3, &amp;#x27;%&amp;#x27;);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;PATH-004&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;formats-and-serialization&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;static block gen_format(block a, jv fmt) {\n  return BLOCK(a, gen_call(\&amp;quot;format\&amp;quot;, gen_lambda(gen_const(fmt))));\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;TEXT-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;parser-diagnostics&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;void yyerror(YYLTYPE* loc, block* answer, int* errors,\n             struct locfile* locations, struct lexer_param* lexer_param_ptr, const char *s){\n  (*errors)++;\n  locfile_locate(locations, *loc, \&amp;quot;jq: error: %s\&amp;quot;, s);\n}&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;IO-002&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    &amp;quot;run_conformance.py&amp;quot;: {
+      &amp;quot;state&amp;quot;: &amp;quot;current&amp;quot;,
+      &amp;quot;versions&amp;quot;: [
+        {
+          &amp;quot;commit&amp;quot;: &amp;quot;4ce30eb&amp;quot;,
+          &amp;quot;date&amp;quot;: &amp;quot;2026-08-22&amp;quot;,
+          &amp;quot;hash&amp;quot;: &amp;quot;c1b5be717d542f2d2dc4f4a694dd02ae8c8f84b25f15c6224fbb6a784abe7492&amp;quot;,
+          &amp;quot;release&amp;quot;: &amp;quot;&amp;quot;,
+          &amp;quot;state&amp;quot;: &amp;quot;consumed&amp;quot;,
+          &amp;quot;via&amp;quot;: &amp;quot;plan&amp;quot;,
+          &amp;quot;ticket&amp;quot;: null,
+          &amp;quot;requirements&amp;quot;: [
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;stage-conformance-assets&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;It is supplied, not authored: it is staged verbatim into the build directory, hash-verified against the import, and restored before grading.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;run-conformance-corpus&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Run the upstream jq conformance corpus against a candidate implementation.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;execute-candidate-cases&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;This runner re-implements the corpus protocol and drives the candidate as a subprocess, one process per case.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-001&amp;quot;,
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;enforce-process-contract&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Its exit status is the acceptance verdict.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;parse-corpus&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Parse the jq test corpus.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;apply-exclusions&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;An exclusion that matches nothing is a hard error rather than a shrug.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-001&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;compare-outputs&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;Structural, not textual: ``1`` and ``1.0`` are the same jq value and the corpus relies on that.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-003&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;handle-timeouts&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;A case that has not produced output in this long is not going to.&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;support-scoped-runs&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;run only cases whose program matches REGEX&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;CONF-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;report-results&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;jq conformance: {tally[PASS]} passed, {tally[FAIL]} failed, {tally[ERROR]} errored, {tally[SKIP]} skipped&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-002&amp;quot;
+              ]
+            },
+            {
+              &amp;quot;name&amp;quot;: &amp;quot;provide-cli-options&amp;quot;,
+              &amp;quot;text&amp;quot;: &amp;quot;--json&amp;quot;,
+              &amp;quot;stories&amp;quot;: [
+                &amp;quot;EXEC-001&amp;quot;
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

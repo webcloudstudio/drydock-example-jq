@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.174505.320Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.174505.320Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.174505.320Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Strings-and-Interpolation-Parser.md ===
+# FEATURE: Strings and Interpolation Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse JSON strings, escapes, interpolation, and format literals. |
+| Depends On  | FEATURE-Lexer.md |
+| Provides    | JSON string literals, escapes, interpolation, format literals |
+| Consumes    | jq tokenization |
+
+## Questions
+
+- None.
+
+The parser shall support JSON-compatible string escapes, Unicode characters, formatted string prefixes, and `\(expression)` interpolation. Interpolation evaluates as a jq generator, preserving output multiplicity and order. Invalid escapes and malformed interpolation are compile failures with exit code 3.
+
+## Programmatic Acceptance
+
+=== AC parse-002-interpolation ===
+Intent: The authoritative corpus executes the non-empty interpolation and format-literal slice owned by this parser story.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;interpolation|@base64|@uri&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-002-interpolation ===
+
+=== AC parse-002-escapes ===
+Intent: The authoritative corpus executes string escape and Unicode cases without compile or runtime failures.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;interpolation|@base64|@uri|@html&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-002-escapes ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Preserve interpolation generator multiplicity and ordering.
+- Do not modify files under `sources/`.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Filter-Parser.md ===
+# FEATURE: Filter Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse jq filter expressions, precedence, accessors, collections, and operators. |
+| Depends On  | FEATURE-Strings-and-Interpolation-Parser.md |
+| Provides    | AST for pipes, commas, precedence, indexing, slices, arrays, objects, operators |
+| Consumes    | jq tokenization |
+
+## Questions
+
+- None.
+
+The parser shall implement the expression grammar defined by `sources/parser.y`, including pipes, commas, precedence and associativity, parenthesized expressions, field and index access, slices, arrays, objects, unary operators, binary operators, and optional expressions. Syntax failures must be reported as compile failures with exit code 3.
+
+## Programmatic Acceptance
+
+=== AC parse-003-expression-grammar ===
+Intent: The authoritative corpus executes a non-empty slice covering jq expression grammar and precedence.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\.|\[|\{|\+|\-|\*|/|%&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-003-expression-grammar ===
+
+=== AC parse-003-composition-syntax ===
+Intent: The authoritative corpus executes collection, object, indexing, and composition syntax without failures.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\||,|\[|\{|\.&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-003-composition-syntax ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Follow the precedence and associativity specified by `sources/parser.y`.
+- Preserve generator-valued expressions in the AST.
+- Do not modify files under `sources/`.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Declaration-Parser.md ===
+# FEATURE: Declaration Parser
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Parse jq declarations, control syntax, bindings, modules, and destructuring. |
+| Depends On  | FEATURE-Filter-Parser.md |
+| Provides    | declarations, modules grammar, conditionals, exceptions, reductions, labels, bindings |
+| Consumes    | AST for filter expressions |
+
+## Questions
+
+- None.
+
+The parser shall support `def`, imports and module grammar, conditionals, `try`/`catch`, reductions, `foreach`, labels, bindings, destructuring patterns, and `?//` alternatives. Module grammar must be parsed sufficiently to reject invalid metadata, paths, and syntax without loading excluded fixtures. Rejected programs must exit 3.
+
+## Programmatic Acceptance
+
+=== AC parse-004-declarations ===
+Intent: The authoritative corpus executes a non-empty slice covering declarations, control syntax, bindings, reductions, and labels.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;%%FAIL|if |try |reduce |foreach |def | as |label |module|include&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-004-declarations ===
+
+=== AC parse-004-module-rejections ===
+Intent: The authoritative corpus executes module grammar rejection cases and accepts only the required compile-error status.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;%%FAIL|module|include&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC parse-004-module-rejections ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Do not resolve or load excluded module fixtures.
+- Preserve lexical scope for bindings, labels, and function declarations.
+- Do not modify files under `sources/`.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Generator-Core.md ===
+# FEATURE: Generator Core
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Evaluate jq filters as ordered streams of zero or more values. |
+| Depends On  | FEATURE-Declaration-Parser.md |
+| Provides    | ordered generator evaluation, empty, iteration, range |
+| Consumes    | AST for filter expressions |
+
+## Questions
+
+- None.
+
+Every filter shall evaluate against an input value as an ordered generator. The evaluator shall preserve zero, one, and multiple outputs, backtracking, identity, array/object iteration, recursive descent support, `range`, and `empty`. Output order and multiplicity are semantic requirements.
+
+## Programmatic Acceptance
+
+=== AC core-001-generators ===
+Intent: The authoritative corpus executes a non-empty slice covering identity, iteration, empty, and range generators.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\.|,|\[\.\]|range|empty&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-001-generators ===
+
+=== AC core-001-ordering ===
+Intent: The authoritative corpus executes generator cases whose correctness depends on output order and multiplicity.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\.|,|range|empty|while|recurse&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-001-ordering ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Treat generators and backtracking as the evaluation model, not an optimization.
+- Preserve partial output before a later runtime failure.
+- Do not shell out to another jq implementation.
+
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Composition.md ===
+# FEATURE: Composition
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Implement jq composition, Cartesian evaluation, collection, and object construction. |
+| Depends On  | FEATURE-Generator-Core.md |
+| Provides    | pipe, comma, argument Cartesian products, collection, object construction |
+| Consumes    | ordered generator evaluation |
+
+## Questions
+
+- None.
+
+Composition shall feed every output of a left-hand filter into the right-hand filter in order. Comma expressions shall concatenate streams. Filter arguments shall evaluate as Cartesian products where required. Array collection shall gather all outputs into one array, and object construction shall preserve jq&#x27;s stream multiplicity and key/value semantics.
+
+## Programmatic Acceptance
+
+=== AC core-002-composition ===
+Intent: The authoritative corpus executes a non-empty slice covering pipes, comma streams, collections, and object construction.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\||,|\[|\{&quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-002-composition ===
+
+=== AC core-002-cartesian-products ===
+Intent: The authoritative corpus executes composition cases requiring multiplicity, backtracking, and Cartesian argument combinations.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&quot;\||,|\[|\{|range|def &quot;
+result = subprocess.run(
+    [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, selector, &quot;--json&quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&quot;summary&quot;]
+assert sum(summary.values()) &gt; 0
+assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0
+assert result.returncode == 0
+=== END AC core-002-cartesian-products ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve stream order, multiplicity, and Cartesian evaluation.
+- Collection must remove no outputs except those produced by `empty`.
+- Do not modify files under `sources/`.
+
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

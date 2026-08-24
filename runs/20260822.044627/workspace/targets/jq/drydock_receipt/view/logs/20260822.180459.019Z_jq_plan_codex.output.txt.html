@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.180459.019Z_jq_plan_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.180459.019Z_jq_plan_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.180459.019Z_jq_plan_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>=== BEGIN ARTIFACT FEATURE-Path-Discovery.md ===
+# FEATURE: Path Discovery and Projection
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Discovers jq paths and constructs projections from path expressions. |
+| Depends On  | FEATURE-Destructuring.md, FEATURE-Accessors.md |
+| Provides    | path, paths, pick, path projections |
+| Consumes    | destructuring and field/index access |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement exact and generated path expressions, recursive path enumeration, filtered `paths`, and `pick` projections. Path results preserve jq&#x27;s ordering and use string object keys and numeric array indices. Invalid path expressions raise runtime errors according to jq semantics.
+
+## Programmatic Acceptance
+
+=== AC path-001-conformance ===
+Intent: Path discovery and projection behavior executes successfully for representative path, paths, and pick programs.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+
+path_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;path(.a)&quot;,],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+paths_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;paths&quot;,],
+    input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:[2]}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+pick_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;pick(.a)&quot;,],
+    input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+assert path_result.returncode == 0
+assert path_result.stdout.splitlines() == [&#x27;[&quot;a&quot;]&#x27;]
+assert paths_result.returncode == 0
+assert paths_result.stdout.splitlines() == [&#x27;[&quot;a&quot;]&#x27;, &#x27;[&quot;b&quot;,0]&#x27;]
+assert pick_result.returncode == 0
+assert pick_result.stdout.splitlines() == [&#x27;{&quot;a&quot;:1}&#x27;]
+=== END AC path-001-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Path enumeration must preserve traversal order and distinguish empty root paths from descendant paths.
+- Projection must not mutate the source value.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Path-Primitives.md ===
+# FEATURE: Path Access and Mutation Primitives
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Reads, creates, replaces, and deletes nested values through jq path primitives. |
+| Depends On  | FEATURE-Path-Discovery.md |
+| Provides    | getpath, setpath, delpaths |
+| Consumes    | path discovery and projection |
+
+## Questions
+
+- None.
+
+## Scope
+
+Implement `getpath`, `setpath`, and `delpaths` for nested object and array paths. Operations create intermediate containers where jq requires them, expand arrays with null values, preserve immutable-value semantics, and reject invalid or excessively deep paths with runtime errors.
+
+## Programmatic Acceptance
+
+=== AC path-002-conformance ===
+Intent: Path access and mutation primitives execute successfully for representative getpath, setpath, and delpaths programs.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+
+get_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;getpath([\&quot;a\&quot;, \&quot;b\&quot;])&quot;,],
+    input=&#x27;{&quot;a&quot;:{&quot;b&quot;:3}}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+set_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;setpath([\&quot;a\&quot;, \&quot;b\&quot;]; 4)&quot;,],
+    input=&#x27;{&quot;a&quot;:{}}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+del_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;delpaths([[\&quot;a\&quot;]])&quot;,],
+    input=&#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+assert get_result.returncode == 0
+assert get_result.stdout.splitlines() == [&quot;3&quot;]
+assert set_result.returncode == 0
+assert set_result.stdout.splitlines() == [&#x27;{&quot;a&quot;:{&quot;b&quot;:4}}&#x27;]
+assert del_result.returncode == 0
+assert del_result.stdout.splitlines() == [&#x27;{&quot;b&quot;:2}&#x27;]
+=== END AC path-002-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Path operations must not mutate previously produced values.
+- Invalid path types and excessive depth must remain runtime errors, not compile failures.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Process-Contract.md ===
+# FEATURE: jq Process Contract
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Defines jq compilation, runtime failure, success, partial-output, and diagnostic process behavior. |
+| Depends On  | FEATURE-Executable-Entry-Point.md |
+| Provides    | compile exit 3, runtime exit 5, success exit 0, stderr diagnostics |
+| Consumes    | ./jq -c program execution |
+
+## Questions
+
+- None.
+
+## Compile and Runtime Outcomes
+
+| Condition | Exit |
+|---|---:|
+| Program compiles and finishes | `0` |
+| Program is rejected during compilation | `3` |
+| Program compiles and raises during evaluation | `5` |
+
+A compile failure must not be reported as a runtime failure. A runtime failure may occur after values have already been emitted; those values remain observable on stdout. Diagnostics go to stderr and are not part of the value stream.
+
+## Programmatic Acceptance
+
+=== AC exec-002-compile-runtime ===
+Intent: The executable distinguishes compile failures, runtime failures, and successful completion.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import subprocess
+
+compile_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+runtime_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+success_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert compile_result.returncode == 3
+assert runtime_result.returncode == 5
+assert success_result.returncode == 0
+assert compile_result.stderr != &quot;&quot;
+assert runtime_result.stderr != &quot;&quot;
+=== END AC exec-002-compile-runtime ===
+
+=== AC exec-002-statuses ===
+Intent: The executable exposes distinct compile, runtime, and successful completion statuses.
+
+import subprocess
+
+compile_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;{&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+runtime_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+success_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;.&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert compile_result.returncode == 3
+assert runtime_result.returncode == 5
+assert success_result.returncode == 0
+=== END AC exec-002-statuses ===
+
+=== AC exec-002-partial-output ===
+Intent: A runtime failure preserves values emitted before the failure and keeps diagnostics off standard output.
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1, error&quot;],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&quot;sys&quot;).stderr)
+assert result.returncode == 5
+assert result.stdout.splitlines() == [&quot;1&quot;]
+assert result.stderr != &quot;&quot;
+=== END AC exec-002-partial-output ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Compile failures exit `3`.
+- Runtime failures exit `5`.
+- Successful completion exits `0`.
+- Runtime output produced before failure is preserved.
+- Diagnostics are written to stderr only.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Recursive-Generators.md ===
+# FEATURE: Recursive Generators
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq recursive and repeated generator filters. |
+| Depends On  | FEATURE-Reductions-and-Iteration-Control.md |
+| Provides    | while, until, repeat, recurse, recursive descent |
+| Consumes    | reductions and ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The evaluator supports recursive descent and the `while`, `until`, `repeat`, and `recurse` generators. Recursive filters emit values in jq order, terminate according to their predicates or caught errors, and preserve branching when an update yields multiple values.
+
+## Programmatic Acceptance
+
+=== AC recursive-generators-scoped ===
+Intent: Recursive generator behavior executes successfully for representative while, until, and recurse programs.
+Suite: scoped
+
+import subprocess
+
+while_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 | while(. &lt; 3; . + 1)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+until_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 | until(. &gt;= 3; . + 1)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+recurse_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;1 | recurse(. &lt; 3; . + 1)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert while_result.returncode == 0
+assert until_result.returncode == 0
+assert recurse_result.returncode == 0
+assert while_result.stdout != &quot;&quot;
+assert until_result.stdout != &quot;&quot;
+assert recurse_result.stdout != &quot;&quot;
+=== END AC recursive-generators-scoped ===
+
+=== AC recursive-descent-scoped ===
+Intent: Recursive-descent syntax executes successfully and emits descendants.
+Suite: scoped
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;..&quot;,],
+    input=&#x27;{&quot;a&quot;:1}\n&#x27;,
+    capture_output=True,
+    text=True,
+)
+lines = result.stdout.splitlines()
+assert result.returncode == 0
+assert len(lines) &gt;= 2
+assert &quot;1&quot; in lines
+=== END AC recursive-descent-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Recursive generators must not emit duplicate or incorrectly ordered values.
+- Termination must not depend on a fixed shallow recursion cutoff.
+- Runtime errors from repeated expressions must remain catchable.
+=== END ARTIFACT ===
+
+=== BEGIN ARTIFACT FEATURE-Reductions-and-Iteration-Control.md ===
+# FEATURE: Reductions and Iteration Control
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq reductions and generator control primitives. |
+| Depends On  | FEATURE-Labels-and-Breaks.md, FEATURE-Generator-Core.md |
+| Provides    | reduce, foreach, limit, skip, first, last, nth, range |
+| Consumes    | label and break evaluation, ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Workflow
+
+The evaluator implements stateful `reduce` and `foreach` operations, bounded and skipped generator consumption, first/last/nth selection, and range generation. All operations preserve jq stream ordering, multiplicity, cartesian argument behavior, and lexical break handling.
+
+## Programmatic Acceptance
+
+=== AC reductions-scoped ===
+Intent: Reduction and iteration-control behavior executes successfully for representative reduce, foreach, limit, first, and nth programs.
+Suite: scoped
+
+import subprocess
+
+reduce_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;reduce range(1; 4) as $x (0; . + $x)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+foreach_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;foreach range(1; 4) as $x (0; . + $x)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+limit_result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;limit(2; range(5))&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+assert reduce_result.returncode == 0
+assert foreach_result.returncode == 0
+assert limit_result.returncode == 0
+assert reduce_result.stdout != &quot;&quot;
+assert foreach_result.stdout != &quot;&quot;
+assert limit_result.stdout.splitlines() == [&quot;0&quot;, &quot;1&quot;]
+=== END AC reductions-scoped ===
+
+=== AC range-scoped ===
+Intent: Range generation executes successfully and preserves generated values.
+Suite: scoped
+
+import subprocess
+
+result = subprocess.run(
+    [&quot;./jq&quot;, &quot;-c&quot;, &quot;range(2; 5)&quot;,],
+    input=&quot;null\n&quot;,
+    capture_output=True,
+    text=True,
+)
+lines = result.stdout.splitlines()
+assert result.returncode == 0
+assert lines == [&quot;2&quot;, &quot;3&quot;, &quot;4&quot;]
+assert len(lines) &gt; 0
+=== END AC range-scoped ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve generator ordering, multiplicity, backtracking, and partial runtime output.
+- Do not implement reductions as scalar-only operations.
+- Negative limits, skips, and nth indices must retain jq runtime-error behavior.
+=== END ARTIFACT ===</pre></article>
+</main>
+</body>
+</html>

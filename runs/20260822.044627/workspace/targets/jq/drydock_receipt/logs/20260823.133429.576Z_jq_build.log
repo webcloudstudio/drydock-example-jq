@@ -1,0 +1,55 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Next: (no actionable steps — all done or blocked)
+
+Blueprint: jq
+Target: uat/jq/runs/20260822.044627/workspace/targets/jq
+Rows: <state> <type>  <Name>  [<id>]   — pass [<id>] to --step
+Block: Build Block 1 · Foundational  [block-1]   — [built] story Define the standalone jq interpreter architecture and module boundaries.  [architecture-foundation] — complete
+Block: Build Block 2 · Foundational  [block-2]   — [built] story Implement the executable jq entry point.  [EXEC-001] — complete
+Block: Build Block 3 · Service  [block-3]   — [built] story Implement jq process exit and diagnostic behavior.  [EXEC-002] — complete
+Block: Build Block 4 · Service  [block-4]   — [built] story Implement JSON input and compact output handling.  [EXEC-003] — complete
+Block: Build Block 5 · Foundational  [block-5]   — [built] story Stage and validate immutable conformance assets.  [CONF-001] — complete
+Block: Build Block 6 · Service  [block-6]   — [built] story Implement jq lexical scanning.  [PARSE-001] — complete
+Block: Build Block 7 · Service  [block-7]   — [built] story Implement literals, strings, escapes, and interpolation.  [PARSE-002] — complete
+
+Block: Build Block 8 · Service  [block-8]   — 2/2 stories complete
+  [built]   story  Implement jq filter expression grammar.  [PARSE-003]
+  [built]   story  Implement declarations and control syntax parsing.  [PARSE-004]
+Block: Build Block 9 · Service  [block-9]   — [built] story Implement the stream-valued filter evaluator.  [CORE-001] — complete
+Block: Build Block 10 · Service  [block-10]   — [built] story Implement composition and Cartesian generator evaluation.  [CORE-002] — complete
+Block: Build Block 11 · Service  [block-11]   — [built] story Implement empty, runtime errors, optional evaluation, and try.  [CORE-003] — complete
+Block: Build Block 12 · Service  [block-12]   — [built] story Implement jq truthiness, equality, and ordering.  [CORE-004] — complete
+Block: Build Block 13 · Service  [block-13]   — [built] story Implement the jq value and numeric model.  [VALUE-001] — complete
+Block: Build Block 14 · Service  [block-14]   — [built] story Implement field and index access.  [VALUE-002] — complete
+Block: Build Block 15 · Service  [block-15]   — [built] story Implement slices and collection iteration.  [VALUE-003] — complete
+Block: Build Block 16 · Service  [block-16]   — [built] story Implement type, length, numeric predicates, conversions, and math.  [VALUE-004] — complete
+Block: Build Block 17 · Service  [block-17]   — [built] story Implement arithmetic and structural operators.  [FLOW-001] — complete
+Block: Build Block 18 · Service  [block-18]   — [built] story Implement boolean and alternative operators.  [FLOW-002] — complete
+Block: Build Block 19 · Service  [block-19]   — [built] story Implement conditionals and exception flow.  [FLOW-003] — complete
+Block: Build Block 20 · Service  [block-20]   — [built] story Implement lexical labels and breaks.  [FLOW-004] — complete
+Block: Build Block 21 · Service  [block-21]   — [built] story Implement reductions and iteration controls.  [FLOW-005] — complete
+Block: Build Block 22 · Service  [block-22]   — [built] story Implement recursive generator primitives.  [FLOW-006] — complete
+Block: Build Block 23 · Service  [block-23]   — [built] story Implement lexical variable bindings.  [FUNC-001] — complete
+Block: Build Block 24 · Service  [block-24]   — [built] story Implement filter and value function parameters.  [FUNC-002] — complete
+Block: Build Block 25 · Service  [block-25]   — [built] story Implement function definitions, scope, and recursion.  [FUNC-003] — complete
+Block: Build Block 26 · Service  [block-26]   — [built] story Implement destructuring patterns and alternatives.  [FUNC-004] — complete
+Block: Build Block 27 · Service  [block-27]   — [built] story Implement path discovery and projection.  [PATH-001] — complete
+Block: Build Block 28 · Service  [block-28]   — [built] story Implement path access and mutation primitives.  [PATH-002] — complete
+Block: Build Block 29 · Service  [block-29]   — [built] story Implement deletion and assignment operators.  [PATH-003] — complete
+Block: Build Block 30 · Service  [block-30]   — [built] story Implement complex assignment edge cases.  [PATH-004] — complete
+Block: Build Block 31 · Service  [block-31]   — [built] story Implement collection transformation builtins.  [DATA-001] — complete
+Block: Build Block 32 · Service  [block-32]   — [built] story Implement sorting and grouping builtins.  [DATA-002] — complete
+Block: Build Block 33 · Service  [block-33]   — [built] story Implement object-entry and containment builtins.  [DATA-003] — complete
+Block: Build Block 34 · Service  [block-34]   — [built] story Implement index and membership utilities.  [DATA-004] — complete
+Block: Build Block 35 · Service  [block-35]   — [built] story Implement string manipulation builtins.  [TEXT-001] — complete
+Block: Build Block 36 · Service  [block-36]   — [built] story Implement JSON and output format filters.  [TEXT-002] — complete
+Block: Build Block 37 · Service  [block-37]   — [built] story Implement regular-expression filters.  [TEXT-003] — complete
+Block: Build Block 38 · Service  [block-38]   — [built] story Implement date and time filters.  [TEXT-004] — complete
+Block: Build Block 39 · Service  [block-39]   — [built] story Implement input stream controls.  [IO-001] — complete
+Block: Build Block 40 · Service  [block-40]   — [built] story Implement diagnostics and stderr output.  [IO-002] — complete
+Block: Build Block 41 · Service  [block-41]   — [built] story Implement streaming transformations.  [IO-003] — complete
+Block: Build Block 42 · Service  [block-42]   — [built] story Provide scoped conformance verification.  [CONF-002] — complete
+Block: Build Block 43 · Service  [block-43]   — [built] story Run the complete jq conformance corpus.  [CONF-003] — complete
+
+Steps: 44 total — 0 done, 44 built (await verify), 0 in review, 0 pending, 0 blocked by questions, 0 failed (0% complete)
+Buildable now: (none)

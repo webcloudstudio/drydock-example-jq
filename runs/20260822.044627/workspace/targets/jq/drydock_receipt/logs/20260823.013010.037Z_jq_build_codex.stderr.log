@@ -1,0 +1,5 @@
+2026-08-23T01:33:27.552449Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+            elif isinstance(x, str) and isinstance(y, (int,float)):
+                if isinstance(y, float) and math.isnan(y):
+                    yield float('nan'); continue
+2026-08-23T01:36:28.019747Z ERROR codex_core::tools::router: error=apply_patch verification failed: invalid patch: The last line of the patch must be '*** End Patch'

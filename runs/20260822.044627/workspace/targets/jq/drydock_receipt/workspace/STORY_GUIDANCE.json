@@ -1,0 +1,452 @@
+{
+  "stories": [
+    {
+      "id": "EXEC-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^(true|false|null|1)$"
+      ],
+      "note": "Build Instructions: interface contract"
+    },
+    {
+      "id": "PARSE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "^(true|false|null|1|\\.)$"
+      ],
+      "note": "lexer.l"
+    },
+    {
+      "id": "PARSE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "interpolation|@base64|@uri"
+      ],
+      "note": "lexer.l and jq.test string/format cases"
+    },
+    {
+      "id": "PARSE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.|\\[|\\{|\\+|\\-|\\*|/|%"
+      ],
+      "note": "parser.y expression grammar"
+    },
+    {
+      "id": "PARSE-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "%%FAIL|if |try |reduce |foreach |def | as |label |module|include"
+      ],
+      "note": "parser.y declarations and control grammar"
+    },
+    {
+      "id": "CORE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.|,|\\[\\.\\]|range|empty"
+      ],
+      "note": "Build Instructions: generator core"
+    },
+    {
+      "id": "CORE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\||,|\\[|\\{"
+      ],
+      "note": "jq-manual.txt generator semantics"
+    },
+    {
+      "id": "CORE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "try|error|\\?"
+      ],
+      "note": "jq-manual.txt error and optional semantics"
+    },
+    {
+      "id": "CORE-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "==|!=|<=|>=|<|>"
+      ],
+      "note": "jq-manual.txt comparison and truthiness"
+    },
+    {
+      "id": "VALUE-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "nan|infinite|tojson|fromjson"
+      ],
+      "note": "jq-manual.txt types and numeric values"
+    },
+    {
+      "id": "VALUE-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\.[A-Za-z]|\\[[-0-9]"
+      ],
+      "note": "jq-manual.txt accessors"
+    },
+    {
+      "id": "VALUE-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\[.*:|\\.\\[\\]"
+      ],
+      "note": "jq-manual.txt slices and iteration"
+    },
+    {
+      "id": "VALUE-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "length|type|sqrt|floor|tonumber"
+      ],
+      "note": "jq-manual.txt types and numeric builtins"
+    },
+    {
+      "id": "FLOW-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\+|\\-|\\*|/|%"
+      ],
+      "note": "jq-manual.txt builtin operators"
+    },
+    {
+      "id": "FLOW-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "and|or|not|//"
+      ],
+      "note": "jq-manual.txt conditionals and comparisons"
+    },
+    {
+      "id": "FLOW-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "if |try |\\?"
+      ],
+      "note": "jq-manual.txt conditionals and try-catch"
+    },
+    {
+      "id": "FLOW-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "label|break"
+      ],
+      "note": "jq-manual.txt breaking out of control structures"
+    },
+    {
+      "id": "FLOW-005",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "reduce|foreach|limit|skip|nth|first|last"
+      ],
+      "note": "jq-manual.txt advanced generators"
+    },
+    {
+      "id": "FLOW-006",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "while|until|recurse|repeat"
+      ],
+      "note": "jq-manual.txt recursive generators"
+    },
+    {
+      "id": "FUNC-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        " as \\$|\\$[A-Za-z]"
+      ],
+      "note": "jq-manual.txt variable binding"
+    },
+    {
+      "id": "FUNC-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "def .*\\("
+      ],
+      "note": "jq-manual.txt defining functions"
+    },
+    {
+      "id": "FUNC-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "def "
+      ],
+      "note": "jq-manual.txt function scoping and recursion"
+    },
+    {
+      "id": "FUNC-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "\\?//| as \\{"
+      ],
+      "note": "jq-manual.txt destructuring alternatives"
+    },
+    {
+      "id": "PATH-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "path\\(|paths|pick\\("
+      ],
+      "note": "jq-manual.txt paths"
+    },
+    {
+      "id": "PATH-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "getpath|setpath|delpaths"
+      ],
+      "note": "jq-manual.txt path primitives"
+    },
+    {
+      "id": "PATH-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "=|\\|=|\\+="
+      ],
+      "note": "jq-manual.txt assignment"
+    },
+    {
+      "id": "PATH-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "negative|NaN|depth|empty"
+      ],
+      "note": "jq.test assignment edge cases"
+    },
+    {
+      "id": "DATA-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "map|flatten|transpose|combinations|walk"
+      ],
+      "note": "builtin.jq collection utilities"
+    },
+    {
+      "id": "DATA-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "sort|group_by|unique|min|max"
+      ],
+      "note": "jq-manual.txt collection ordering"
+    },
+    {
+      "id": "DATA-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "keys|has\\(|contains|inside|to_entries|from_entries"
+      ],
+      "note": "jq-manual.txt object and containment builtins"
+    },
+    {
+      "id": "DATA-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "indices|index\\(|rindex|bsearch|any|all|IN\\("
+      ],
+      "note": "builtin.jq generic iterator and membership utilities"
+    },
+    {
+      "id": "TEXT-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "split|join|trim|ascii_|explode|implode|startswith|endswith"
+      ],
+      "note": "jq-manual.txt string builtins"
+    },
+    {
+      "id": "TEXT-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "@text|@json|@html|@uri|@csv|@tsv|@sh|@base64"
+      ],
+      "note": "jq-manual.txt format strings and escaping"
+    },
+    {
+      "id": "TEXT-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "test\\(|match\\(|capture\\(|scan\\(|sub\\(|gsub\\("
+      ],
+      "note": "jq-manual.txt regular expressions"
+    },
+    {
+      "id": "TEXT-004",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "date|strftime|strptime|gmtime|mktime"
+      ],
+      "note": "jq-manual.txt dates"
+    },
+    {
+      "id": "IO-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "input|inputs"
+      ],
+      "note": "jq-manual.txt I/O"
+    },
+    {
+      "id": "IO-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "debug|stderr|halt_error"
+      ],
+      "note": "jq-manual.txt diagnostics"
+    },
+    {
+      "id": "IO-003",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "tostream|fromstream|truncate_stream"
+      ],
+      "note": "jq-manual.txt streaming"
+    },
+    {
+      "id": "CONF-001",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--list"
+      ],
+      "note": "Build Instructions: source roles and staged assets"
+    },
+    {
+      "id": "CONF-002",
+      "provenance": "plan",
+      "gate": [
+        "python3",
+        "sources/run_conformance.py",
+        "--select",
+        "reduce"
+      ],
+      "note": "Build Instructions: scoped verification"
+    },
+    {
+      "id": "CONF-003",
+      "provenance": "plan",
+      "gate": [
+        "sh",
+        "sources/full_test.sh"
+      ],
+      "note": "Sea Trials and definition of done"
+    }
+  ]
+}

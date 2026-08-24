@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/evidence/block-13.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/evidence/block-13.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/evidence/block-13.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 13 · Service (block-13)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51257</li><li>execution id: 20260823.023237.129Z-a6819c83</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement the jq value and numeric model. (VALUE-001) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-VALUE-001.md (SP 351)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_001.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: value-001-conformance (FEATURE-VALUE-001.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising jq values and special numeric behavior execute successfully. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 23, &quot;fail&quot;: 1, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1733, &quot;program&quot;: &quot;has(nan)&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;false&quot; ], &quot;actual&quot;: [] } ] } stderr: --- drydock: progress --- cases: pass=23 fail=1 error=0 skip=0 total=24 from=tally --- drydock: end progress --- --- drydock: values at failure --- tally = {&#x27;pass&#x27;: 23, &#x27;fail&#x27;: 1, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;value-001-conformance.py&quot;, line 18, in &lt;module&gt; assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: value-001-conformance (FEATURE-VALUE-001.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising jq values and special numeric behavior execute successfully. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 24, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_001.py</li></ul>
+<p>SUMMARY: Fixed <code>has(nan)</code> handling and added numeric/value boundary tests. Pytest: 62 passed. Scoped conformance: 24 passed, 0 failed, 0 errored.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

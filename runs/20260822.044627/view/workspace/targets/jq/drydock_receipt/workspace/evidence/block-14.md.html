@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/evidence/block-14.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/evidence/block-14.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/evidence/block-14.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 14 · Service (block-14)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51245</li><li>execution id: 20260823.023629.826Z-b996dd45</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement field and index access. (VALUE-002) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-VALUE-002.md (SP 347)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_002_access.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): value-002-conformance (FEATURE-VALUE-002.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising field and index access execute successfully. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 135, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 3 }, &quot;cases&quot;: [ { &quot;line&quot;: 1912, &quot;program&quot;: &quot;import \&quot;data\&quot; as $e; import \&quot;data\&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&quot;;\&quot;)&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;\&quot;is a test;is too;is a test;is too\&quot;&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1973, &quot;program&quot;: &quot;modulemeta | .deps | length&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;6&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1977, &quot;program&quot;: &quot;modulemeta | .defs | length&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;2&quot; ], &quot;actual&quot;: [] } ] }</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: value-002-conformance (FEATURE-VALUE-002.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising field and index access execute successfully. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 135, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 3 }, &quot;cases&quot;: [ { &quot;line&quot;: 1912, &quot;program&quot;: &quot;import \&quot;data\&quot; as $e; import \&quot;data\&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&quot;;\&quot;)&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;\&quot;is a test;is too;is a test;is too\&quot;&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1973, &quot;program&quot;: &quot;modulemeta | .deps | length&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;6&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1977, &quot;program&quot;: &quot;modulemeta | .defs | length&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;2&quot; ], &quot;actual&quot;: [] } ] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_002_access.py</li></ul>
+<p>SUMMARY: Implemented strict object key access and added VALUE-002 coverage for fields, indexes, negatives, optional access, missing values, and errors.</p>
+<p>Tests: 68 passed. Conformance: 135 passed, 0 failed, 0 errored, 3 skipped.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

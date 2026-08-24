@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/run_conformance.py.html</title>
+<link rel="stylesheet" href="../../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/run_conformance.py.html</h1><div class="filenav"><a href="../../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/run_conformance.py.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/sources/run_conformance.py&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/sources/run_conformance.py&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../../workspace/blueprint/sources/run_conformance.py&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;#!/usr/bin/env python3
+&amp;quot;&amp;quot;&amp;quot;Run the upstream jq conformance corpus against a candidate implementation.
+
+This is the scoring instrument. It is supplied, not authored: it is staged verbatim into the
+build directory, hash-verified against the import, and restored before grading. Its exit status
+is the acceptance verdict.
+
+It is deliberately external to the implementation. Upstream jq grades itself, through its own
+``--run-tests`` flag; a self-graded suite proves nothing here, so this runner re-implements the
+corpus protocol and drives the candidate as a subprocess, one process per case.
+
+Imported sources land in ``sources/`` inside the application directory, so this is normally
+invoked as ``python3 sources/run_conformance.py`` from that directory.
+
+Usage:
+    JQ=./jq python3 sources/run_conformance.py                     # full corpus, the scored run
+    JQ=./jq python3 sources/run_conformance.py -v                  # list passing cases too
+    JQ=./jq python3 sources/run_conformance.py --json              # machine-readable report
+    JQ=./jq python3 sources/run_conformance.py --list              # print cases, run nothing
+    JQ=./jq python3 sources/run_conformance.py --select &amp;#x27;reduce&amp;#x27;   # develop one construct
+
+Environment:
+    JQ         command that runs the candidate. Required -- this harness is language-neutral
+               and deliberately has no default implementation language.
+
+Exit codes:
+    0   every case that ran passed
+    1   at least one case failed or errored
+    2   the harness could not run: bad usage, missing corpus, or a stale exclusion
+&amp;quot;&amp;quot;&amp;quot;
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+CORPUS = HERE / &amp;quot;jq.test&amp;quot;
+EXCLUSIONS = HERE / &amp;quot;exclusions.txt&amp;quot;
+
+#: A case that has not produced output in this long is not going to. jq&amp;#x27;s own suite runs the
+#: whole corpus in under a second; anything near this bound is a runaway generator.
+DEFAULT_TIMEOUT = 10.0
+
+PASS, FAIL, ERROR, SKIP = &amp;quot;pass&amp;quot;, &amp;quot;fail&amp;quot;, &amp;quot;error&amp;quot;, &amp;quot;skip&amp;quot;
+
+#: jq&amp;#x27;s documented exit codes, which this kit&amp;#x27;s interface contract adopts. The distinction is
+#: load-bearing: the corpus&amp;#x27;s %%FAIL cases are programs that must not compile, while an ordinary
+#: case may legitimately raise at run time part-way through its output and still be correct.
+EXIT_COMPILE_ERROR = 3
+EXIT_RUNTIME_ERROR = 5
+
+
+def split_lines(text: str) -&amp;gt; list[str]:
+    &amp;quot;&amp;quot;&amp;quot;Split on newlines only.
+
+    ``str.splitlines`` is Unicode-aware and also breaks on U+000B, U+000C, U+0085, U+2028, and
+    U+2029. The corpus contains cases whose expected output embeds those code points inside JSON
+    strings -- ``trim, ltrim, rtrim`` over the Unicode whitespace set is one -- and splitting
+    there shreds one JSON value into several, failing a correct implementation.
+    &amp;quot;&amp;quot;&amp;quot;
+    lines = text.split(&amp;quot;\n&amp;quot;)
+    if lines and lines[-1] == &amp;quot;&amp;quot;:
+        lines.pop()
+    return lines
+
+
+@dataclass
+class Case:
+    &amp;quot;&amp;quot;&amp;quot;One corpus case: a program, an input, and what it must produce.
+
+    ``expect_failure`` cases are the corpus&amp;#x27;s ``%%FAIL`` blocks. Upstream compares their
+    diagnostic text; this runner requires only that the candidate reject the program. The
+    expected strings are jq&amp;#x27;s exact C-implementation diagnostics, down to the caret art
+    underlining the offending token -- reproducing them is reverse-engineering an
+    implementation, not conforming to a specification. The text is parsed and reported so a
+    reader can see what upstream said, and is never compared.
+    &amp;quot;&amp;quot;&amp;quot;
+
+    line: int
+    program: str
+    stdin: str = &amp;quot;&amp;quot;
+    expected: list[str] = field(default_factory=list)
+    expect_failure: bool = False
+    diagnostic: str = &amp;quot;&amp;quot;
+
+
+@dataclass
+class Result:
+    case: Case
+    status: str
+    detail: str = &amp;quot;&amp;quot;
+    actual: list[str] = field(default_factory=list)
+    return_code: int | None = None
+    stderr: str = &amp;quot;&amp;quot;
+
+
+class HarnessError(Exception):
+    &amp;quot;&amp;quot;&amp;quot;A fault in the kit or its invocation, never a fault in the candidate.&amp;quot;&amp;quot;&amp;quot;
+
+
+# --------------------------------------------------------------------------------------------
+# Corpus parsing
+# --------------------------------------------------------------------------------------------
+
+
+def parse_corpus(text: str) -&amp;gt; list[Case]:
+    &amp;quot;&amp;quot;&amp;quot;Parse the jq test corpus.
+
+    The format is documented in the corpus&amp;#x27;s own header: cases are groups of lines separated by
+    blank lines; blank lines and lines starting with ``#`` are ignored. A case is a program
+    line, an input line, and then zero or more expected output lines. A case preceded by a
+    ``%%FAIL`` or ``%%FAIL IGNORE MSG`` marker is a program line followed by the diagnostic
+    upstream jq emits, which may itself span several lines of source excerpt and caret art.
+    &amp;quot;&amp;quot;&amp;quot;
+    cases: list[Case] = []
+    block: list[tuple[int, str]] = []
+    expect_failure = False
+    lines = split_lines(text)
+
+    def flush() -&amp;gt; None:
+        nonlocal block, expect_failure
+        if block:
+            cases.append(_case_from_block(block, expect_failure))
+        block = []
+        expect_failure = False
+
+    for number, raw in enumerate(lines, start=1):
+        stripped = raw.strip()
+        if not stripped:
+            flush()
+            continue
+        if raw.startswith(&amp;quot;%%FAIL&amp;quot;):
+            flush()
+            expect_failure = True
+            continue
+        # A &amp;#x27;#&amp;#x27; comment closes nothing: upstream places section banners between cases, always
+        # with blank lines around them, and never inside a case.
+        if raw.lstrip().startswith(&amp;quot;#&amp;quot;) and not block:
+            continue
+        if raw.lstrip().startswith(&amp;quot;#&amp;quot;):
+            continue
+        block.append((number, raw))
+    flush()
+    return cases
+
+
+def _case_from_block(block: list[tuple[int, str]], expect_failure: bool) -&amp;gt; Case:
+    line, program = block[0]
+    if expect_failure:
+        diagnostic = &amp;quot;\n&amp;quot;.join(text for _, text in block[1:])
+        return Case(line=line, program=program, expect_failure=True, diagnostic=diagnostic)
+    if len(block) &amp;lt; 2:
+        raise HarnessError(
+            f&amp;quot;{CORPUS.name}:{line}: case has a program but no input line; the corpus is malformed&amp;quot;
+        )
+    return Case(
+        line=line,
+        program=program,
+        stdin=block[1][1],
+        expected=[text for _, text in block[2:]],
+    )
+
+
+# --------------------------------------------------------------------------------------------
+# Exclusions
+# --------------------------------------------------------------------------------------------
+
+
+def parse_exclusions(path: Path) -&amp;gt; list[str]:
+    &amp;quot;&amp;quot;&amp;quot;Read the declared exclusions: one verbatim program line per entry, ``#`` for reasons.&amp;quot;&amp;quot;&amp;quot;
+    if not path.is_file():
+        return []
+    return [
+        line
+        for line in split_lines(path.read_text(encoding=&amp;quot;utf-8&amp;quot;))
+        if line.strip() and not line.lstrip().startswith(&amp;quot;#&amp;quot;)
+    ]
+
+
+def apply_exclusions(cases: list[Case], exclusions: list[str]) -&amp;gt; set[int]:
+    &amp;quot;&amp;quot;&amp;quot;Return the corpus line numbers of excluded cases.
+
+    An exclusion that matches nothing is a hard error rather than a shrug. The corpus is pinned
+    by hash, so a stale exclusion means the pin moved without the exclusion list being revisited
+    -- and a silent no-op there would quietly re-admit a case the kit cannot run.
+    &amp;quot;&amp;quot;&amp;quot;
+    by_program: dict[str, list[Case]] = {}
+    for case in cases:
+        by_program.setdefault(case.program, []).append(case)
+
+    excluded: set[int] = set()
+    stale: list[str] = []
+    for program in exclusions:
+        matched = by_program.get(program)
+        if not matched:
+            stale.append(program)
+            continue
+        excluded.update(case.line for case in matched)
+    if stale:
+        listed = &amp;quot;\n&amp;quot;.join(f&amp;quot;    {program}&amp;quot; for program in stale)
+        raise HarnessError(
+            f&amp;quot;{EXCLUSIONS.name}: these exclusions match no case in {CORPUS.name}:\n{listed}\n&amp;quot;
+            &amp;quot;The corpus and the exclusion list have drifted apart.&amp;quot;
+        )
+    return excluded
+
+
+# --------------------------------------------------------------------------------------------
+# Comparison
+# --------------------------------------------------------------------------------------------
+
+
+def jv_equal(left: object, right: object) -&amp;gt; bool:
+    &amp;quot;&amp;quot;&amp;quot;Compare two decoded JSON values the way jq&amp;#x27;s own ``jv_equal`` does.
+
+    Structural, not textual: ``1`` and ``1.0`` are the same jq value and the corpus relies on
+    that. Python&amp;#x27;s ``==`` almost does this, but it also equates ``True`` with ``1`` and
+    ``False`` with ``0``, which jq does not; booleans are therefore matched by identity of type
+    before anything else.
+    &amp;quot;&amp;quot;&amp;quot;
+    if isinstance(left, bool) or isinstance(right, bool):
+        return isinstance(left, bool) and isinstance(right, bool) and left is right
+    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+        return left == right
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(jv_equal(a, b) for a, b in zip(left, right))
+    if isinstance(left, dict) and isinstance(right, dict):
+        return left.keys() == right.keys() and all(jv_equal(left[k], right[k]) for k in left)
+    if type(left) is not type(right):
+        return False
+    return left == right
+
+
+def _decode(line: str) -&amp;gt; tuple[bool, object]:
+    try:
+        return True, json.loads(line)
+    except ValueError:
+        return False, line
+
+
+def outputs_match(expected: list[str], actual: list[str]) -&amp;gt; bool:
+    if len(expected) != len(actual):
+        return False
+    for want, got in zip(expected, actual):
+        want_ok, want_value = _decode(want)
+        got_ok, got_value = _decode(got)
+        if want_ok and got_ok:
+            if not jv_equal(want_value, got_value):
+                return False
+        elif want.strip() != got.strip():
+            return False
+    return True
+
+
+# --------------------------------------------------------------------------------------------
+# Execution
+# --------------------------------------------------------------------------------------------
+
+
+def run_case(case: Case, argv: list[str], timeout: float) -&amp;gt; Result:
+    try:
+        completed = subprocess.run(
+            [*argv, &amp;quot;-c&amp;quot;, case.program],
+            input=case.stdin,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return Result(case, ERROR, detail=f&amp;quot;timed out after {timeout:g}s&amp;quot;)
+    except OSError as exc:
+        raise HarnessError(f&amp;quot;cannot execute {shlex.join(argv)}: {exc}&amp;quot;) from exc
+
+    actual = split_lines(completed.stdout)
+    stderr = completed.stderr.strip()
+    code = completed.returncode
+    first_diagnostic = split_lines(stderr)[0] if stderr else &amp;quot;&amp;quot;
+
+    if case.expect_failure:
+        # The corpus&amp;#x27;s %%FAIL cases are programs that must be rejected at compile time. Accepting
+        # one and then failing at run time is a different, wrong behaviour, so the compile-error
+        # code specifically -- not merely a non-zero exit -- is what passes here.
+        if code == EXIT_COMPILE_ERROR:
+            return Result(case, PASS, return_code=code, stderr=stderr)
+        detail = (
+            &amp;quot;program was accepted, but the corpus marks it %%FAIL&amp;quot;
+            if code == 0
+            else f&amp;quot;exited {code}; a rejected program must exit {EXIT_COMPILE_ERROR}&amp;quot;
+        )
+        return Result(case, FAIL, detail=detail, actual=actual, return_code=code, stderr=stderr)
+
+    if code == EXIT_COMPILE_ERROR:
+        return Result(
+            case,
+            FAIL,
+            detail=f&amp;quot;program did not compile: {first_diagnostic}&amp;quot;,
+            actual=actual,
+            return_code=code,
+            stderr=stderr,
+        )
+    if code not in (0, EXIT_RUNTIME_ERROR):
+        # A runtime error is legitimate: several cases raise part-way through a generator and are
+        # judged on the outputs produced before the raise, exactly as upstream judges them. Any
+        # other non-zero status is the program failing in a way the contract does not describe.
+        return Result(
+            case,
+            FAIL,
+            detail=f&amp;quot;exited {code}: {first_diagnostic}&amp;quot;,
+            actual=actual,
+            return_code=code,
+            stderr=stderr,
+        )
+    if not outputs_match(case.expected, actual):
+        return Result(
+            case,
+            FAIL,
+            detail=&amp;quot;output mismatch&amp;quot;,
+            actual=actual,
+            return_code=code,
+            stderr=stderr,
+        )
+    return Result(case, PASS, actual=actual, return_code=code, stderr=stderr)
+
+
+# --------------------------------------------------------------------------------------------
+# Reporting
+# --------------------------------------------------------------------------------------------
+
+
+def _render_failure(result: Result) -&amp;gt; str:
+    case = result.case
+    lines = [
+        f&amp;quot;FAIL {CORPUS.name}:{case.line}  {result.detail}&amp;quot;,
+        f&amp;quot;    program:  {case.program}&amp;quot;,
+    ]
+    if not case.expect_failure:
+        lines.append(f&amp;quot;    input:    {case.stdin}&amp;quot;)
+        lines.append(f&amp;quot;    expected: {case.expected if case.expected else &amp;#x27;(no output)&amp;#x27;}&amp;quot;)
+        lines.append(f&amp;quot;    actual:   {result.actual if result.actual else &amp;#x27;(no output)&amp;#x27;}&amp;quot;)
+    if result.stderr:
+        lines.append(f&amp;quot;    stderr:   {split_lines(result.stderr)[0]}&amp;quot;)
+    return &amp;quot;\n&amp;quot;.join(lines)
+
+
+def main(argv: list[str] | None = None) -&amp;gt; int:
+    parser = argparse.ArgumentParser(
+        description=&amp;quot;Run the upstream jq conformance corpus against a candidate implementation.&amp;quot;,
+    )
+    parser.add_argument(&amp;quot;--jq&amp;quot;, default=None, help=&amp;quot;candidate command (default: $JQ)&amp;quot;)
+    parser.add_argument(&amp;quot;--timeout&amp;quot;, type=float, default=DEFAULT_TIMEOUT, help=&amp;quot;seconds per case&amp;quot;)
+    parser.add_argument(&amp;quot;--json&amp;quot;, action=&amp;quot;store_true&amp;quot;, help=&amp;quot;machine-readable report&amp;quot;)
+    parser.add_argument(&amp;quot;-v&amp;quot;, &amp;quot;--verbose&amp;quot;, action=&amp;quot;store_true&amp;quot;, help=&amp;quot;list passing cases too&amp;quot;)
+    parser.add_argument(&amp;quot;--list&amp;quot;, action=&amp;quot;store_true&amp;quot;, help=&amp;quot;print the cases and run nothing&amp;quot;)
+    parser.add_argument(
+        &amp;quot;--select&amp;quot;,
+        default=None,
+        metavar=&amp;quot;REGEX&amp;quot;,
+        help=&amp;quot;run only cases whose program matches REGEX (development aid; the acceptance &amp;quot;
+        &amp;quot;gate always runs the whole corpus)&amp;quot;,
+    )
+    args = parser.parse_args(argv)
+
+    try:
+        return _run(args)
+    except HarnessError as exc:
+        print(f&amp;quot;error: {exc}&amp;quot;, file=sys.stderr)
+        return 2
+
+
+def _run(args: argparse.Namespace) -&amp;gt; int:
+    if not CORPUS.is_file():
+        raise HarnessError(f&amp;quot;corpus not found at {CORPUS}&amp;quot;)
+
+    cases = parse_corpus(CORPUS.read_text(encoding=&amp;quot;utf-8&amp;quot;))
+    excluded = apply_exclusions(cases, parse_exclusions(EXCLUSIONS))
+
+    selector = re.compile(args.select) if args.select else None
+    if selector is not None:
+        cases = [case for case in cases if selector.search(case.program)]
+
+    if args.list:
+        for case in cases:
+            mark = &amp;quot;skip&amp;quot; if case.line in excluded else &amp;quot;run &amp;quot;
+            print(f&amp;quot;{mark} {CORPUS.name}:{case.line}  {case.program}&amp;quot;)
+        print(f&amp;quot;\n{len(cases)} cases, {sum(1 for c in cases if c.line in excluded)} excluded&amp;quot;)
+        return 0
+
+    command = args.jq or os.environ.get(&amp;quot;JQ&amp;quot;) or &amp;quot;&amp;quot;
+    if not command.strip():
+        raise HarnessError(
+            &amp;quot;JQ is not set; give the command that runs your implementation, e.g.\n&amp;quot;
+            &amp;#x27;    JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py&amp;#x27;
+        )
+    jq_argv = shlex.split(command)
+
+    results: list[Result] = []
+    for case in cases:
+        if case.line in excluded:
+            results.append(Result(case, SKIP, detail=&amp;quot;declared in exclusions.txt&amp;quot;))
+            continue
+        results.append(run_case(case, jq_argv, args.timeout))
+
+    tally = {status: sum(1 for r in results if r.status == status) for status in
+             (PASS, FAIL, ERROR, SKIP)}
+    summary = (
+        f&amp;quot;jq conformance: {tally[PASS]} passed, {tally[FAIL]} failed, &amp;quot;
+        f&amp;quot;{tally[ERROR]} errored, {tally[SKIP]} skipped &amp;quot;
+        f&amp;quot;(corpus {CORPUS.name} @ jq-1.8.2)&amp;quot;
+    )
+
+    if args.json:
+        print(json.dumps(
+            {
+                &amp;quot;candidate&amp;quot;: jq_argv,
+                &amp;quot;corpus&amp;quot;: CORPUS.name,
+                &amp;quot;summary&amp;quot;: tally,
+                &amp;quot;cases&amp;quot;: [
+                    {
+                        &amp;quot;line&amp;quot;: r.case.line,
+                        &amp;quot;program&amp;quot;: r.case.program,
+                        &amp;quot;status&amp;quot;: r.status,
+                        &amp;quot;detail&amp;quot;: r.detail,
+                        &amp;quot;expect_failure&amp;quot;: r.case.expect_failure,
+                        &amp;quot;expected&amp;quot;: r.case.expected,
+                        &amp;quot;actual&amp;quot;: r.actual,
+                    }
+                    for r in results
+                    if args.verbose or r.status != PASS
+                ],
+            },
+            indent=2,
+        ))
+    else:
+        for result in results:
+            if result.status in (FAIL, ERROR):
+                print(_render_failure(result))
+            elif args.verbose and result.status == PASS:
+                print(f&amp;quot;ok   {CORPUS.name}:{result.case.line}  {result.case.program}&amp;quot;)
+            elif args.verbose and result.status == SKIP:
+                print(f&amp;quot;skip {CORPUS.name}:{result.case.line}  {result.case.program}&amp;quot;)
+        print(summary)
+
+    return 0 if tally[FAIL] == 0 and tally[ERROR] == 0 else 1
+
+
+if __name__ == &amp;quot;__main__&amp;quot;:
+    raise SystemExit(main())
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

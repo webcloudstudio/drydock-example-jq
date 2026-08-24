@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-002.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-002.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Boolean and Alternative Operators</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20220822 V1</td></tr><tr><td>Description</td><td>Provide jq Boolean, negation, defined-or, and defined-or assignment operators.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FLOW-001.md</td></tr><tr><td>Provides</td><td>and, or, not, defined-or, defined-or assignment</td></tr><tr><td>Consumes</td><td>ordered generator evaluator, truthiness and comparison</td></tr></tbody></table></div>
+<h2>Intent</h2>
+<p>Implement <code>and</code>, <code>or</code>, <code>not</code>, <code>//</code>, and <code>//=</code> with jq truthiness and generator-aware short-circuiting. False and null are falsey; all other values are truthy. Alternative expressions must emit all valid left-hand outputs or fall back to the right-hand generator.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-002-conformance ===<br>Intent: The implementation passes the authoritative corpus slice covering Boolean and alternative operators.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;and|or|not|//&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not use host-language truthiness in place of jq truthiness.</li><li>Preserve ordering and multiplicity of generator outputs.</li><li>Preserve short-circuit behavior where required.</li></ul></article>
+</main>
+</body>
+</html>

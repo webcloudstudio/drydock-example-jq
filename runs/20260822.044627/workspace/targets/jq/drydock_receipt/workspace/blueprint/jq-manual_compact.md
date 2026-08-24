@@ -1,0 +1,3 @@
+<!-- Compacted from jq-manual.txt sha256=92fc1c179ee6e33d75ffc1f24dd1f0b8ddf5ea666a51224be5088d9431cd8ab3 on 2026-08-22 by drydock build agent -->
+
+Normative jq language specification: filters, generators, operators, builtins, variables, functions, paths, assignments, regex, dates, I/O, streaming, and modules.

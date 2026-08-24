@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-25.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-25.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-25.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-25.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-25.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-25.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 25 · Service (block-25)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-22&lt;/li&gt;&lt;li&gt;resulting state: closed/verified&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 56981&lt;/li&gt;&lt;li&gt;execution id: 20260823.033926.906Z-4e4c50bc&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement function definitions, scope, and recursion. (FUNC-003) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Acceptance tooling authorization&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;FEATURE-FUNC-003.md#func-003-conformance: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-FUNC-003.md (SP 486)&lt;/li&gt;&lt;li&gt;context: parser.y (SP 5596)&lt;/li&gt;&lt;li&gt;context: jq-manual.txt (SP 32696)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python_compact.md (SP 1534)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Build directory changes&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_func_002_parameters.py&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;GREEN (prepassed): func-003-conformance (FEATURE-FUNC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The executable passes the authoritative conformance cases exercising function definitions, scope, redefinition, and recursion. return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 15, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 2 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 1900, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;a\&amp;quot; as foo; import \&amp;quot;b\&amp;quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;[\&amp;quot;a\&amp;quot;,\&amp;quot;b\&amp;quot;,\&amp;quot;c\&amp;quot;,\&amp;quot;a\&amp;quot;]&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1917, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;data\&amp;quot; as $a; import \&amp;quot;data\&amp;quot; as $b; def f: {$a, $b}; f&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;{\&amp;quot;a\&amp;quot;:[{\&amp;quot;this\&amp;quot;:\&amp;quot;is a test\&amp;quot;,\&amp;quot;that\&amp;quot;:\&amp;quot;is too\&amp;quot;}],\&amp;quot;b\&amp;quot;:[{\&amp;quot;this\&amp;quot;:\&amp;quot;is a test\&amp;quot;,\&amp;quot;that\&amp;quot;:\&amp;quot;is too\&amp;quot;}]}&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] }&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;PASS: func-003-conformance (FEATURE-FUNC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The executable passes the authoritative conformance cases exercising function definitions, scope, redefinition, and recursion. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 15, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 2 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 1900, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;a\&amp;quot; as foo; import \&amp;quot;b\&amp;quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;[\&amp;quot;a\&amp;quot;,\&amp;quot;b\&amp;quot;,\&amp;quot;c\&amp;quot;,\&amp;quot;a\&amp;quot;]&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1917, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;data\&amp;quot; as $a; import \&amp;quot;data\&amp;quot; as $b; def f: {$a, $b}; f&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;{\&amp;quot;a\&amp;quot;:[{\&amp;quot;this\&amp;quot;:\&amp;quot;is a test\&amp;quot;,\&amp;quot;that\&amp;quot;:\&amp;quot;is too\&amp;quot;}],\&amp;quot;b\&amp;quot;:[{\&amp;quot;this\&amp;quot;:\&amp;quot;is a test\&amp;quot;,\&amp;quot;that\&amp;quot;:\&amp;quot;is too\&amp;quot;}]}&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] }&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;RESULT: SUCCESS&lt;/p&gt;
+&lt;p&gt;FILES CHANGED:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_func_002_parameters.py&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;SUMMARY: Implemented definition-time lexical closures while preserving recursion, redefinition, arity, and generator behavior.&lt;/p&gt;
+&lt;p&gt;Verification:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;120 pytest tests passed.&lt;/li&gt;&lt;li&gt;Conformance &lt;code&gt;def&lt;/code&gt; slice: 15 passed, 0 failed, 0 errored, 2 skipped.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;BLOCKERS:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;None&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

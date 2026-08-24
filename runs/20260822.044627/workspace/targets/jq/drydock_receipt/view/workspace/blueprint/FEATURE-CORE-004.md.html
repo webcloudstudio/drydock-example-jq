@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-CORE-004.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-CORE-004.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-CORE-004.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Truthiness and Comparison Semantics</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Define jq truthiness, equality, inequality, and total value ordering.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CORE-003.md</td></tr><tr><td>Provides</td><td>truthiness, equality, inequality, comparison ordering</td></tr><tr><td>Consumes</td><td>ordered generator evaluator</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-004-conformance ===<br>Intent: The executable evaluates jq truthiness, equality, inequality, and ordering semantics.<br>Suite: scoped</p>
+<p>import subprocess</p>
+<p>def run(program, input_text=&quot;null\n&quot;): return subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, )</p>
+<p>assert run(&quot;false, null, 0, 1 | if . then 1 else 0 end&quot;).stdout == &quot;0\n0\n1\n1\n&quot; assert run(&quot;1 == 1.0&quot;).stdout == &quot;true\n&quot; assert run(&quot;true == 1&quot;).stdout == &quot;false\n&quot; assert run(&quot;[1,2] &lt; [1,3]&quot;).stdout == &quot;true\n&quot; === END AC core-004-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Only <code>false</code> and <code>null</code> are falsey.</li><li>Structural comparisons must be independent of object key insertion order.</li></ul></article>
+</main>
+</body>
+</html>

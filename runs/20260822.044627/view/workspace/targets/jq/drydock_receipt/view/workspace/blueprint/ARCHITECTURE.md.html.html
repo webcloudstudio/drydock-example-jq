@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/ARCHITECTURE.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/ARCHITECTURE.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/ARCHITECTURE.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/ARCHITECTURE.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/ARCHITECTURE.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/ARCHITECTURE.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;ARCHITECTURE: jq Interpreter&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Standard-library Python architecture for a standalone jq interpreter.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;COMPASS.md, TECHNOLOGY_STACK.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;jq interpreter architecture, executable boundary, parser, evaluator, runtime&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;System Overview&lt;/h2&gt;
+&lt;p&gt;The application is an executable named &lt;code&gt;jq&lt;/code&gt; at the application root. It accepts &lt;code&gt;-c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/code&gt;, reads JSON values from standard input, evaluates the jq program as an ordered generator, and writes compact JSON values one per line.&lt;/p&gt;
+&lt;p&gt;The implementation is composed of:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;CLI and process boundary.&lt;/li&gt;&lt;li&gt;Lexer and recursive-descent or precedence parser.&lt;/li&gt;&lt;li&gt;AST and compiled filter representation.&lt;/li&gt;&lt;li&gt;Generator evaluator with lexical environments.&lt;/li&gt;&lt;li&gt;jq value, numeric, accessor, assignment, builtin, and runtime-error layers.&lt;/li&gt;&lt;li&gt;Streaming JSON input and output serialization.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;All runtime code uses Python 3.11+ standard-library modules only. The implementation must not invoke, import, or bind to another jq implementation.&lt;/p&gt;
+&lt;h2&gt;Module Boundaries&lt;/h2&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Module&lt;/th&gt;&lt;th&gt;Responsibility&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Executable entry point and command-line validation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_runtime.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;Input stream, evaluation context, errors, output serialization&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_lexer.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;Tokens, comments, literals, strings, interpolation markers&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_parser.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;AST construction, precedence, declarations, syntax validation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_eval.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;Ordered generator evaluation, environments, functions, control flow&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_values.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;jq values, numeric handling, comparison, access, mutation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq_builtins.py&lt;/code&gt; or equivalent&lt;/td&gt;&lt;td&gt;Builtin filters and standard-library implementations&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;The concrete module filenames may vary, but responsibilities remain isolated at these boundaries.&lt;/p&gt;
+&lt;h2&gt;Evaluation Model&lt;/h2&gt;
+&lt;p&gt;Every filter receives one input and yields an ordered stream of zero or more outputs. Pipes evaluate the right-hand filter once per left-hand output. Commas concatenate streams. Filter arguments remain generators, while value arguments are evaluated and bound as values. Runtime errors propagate through the stream and preserve outputs already emitted.&lt;/p&gt;
+&lt;p&gt;Assignments operate immutably over paths and return replacement values rather than mutating shared input objects.&lt;/p&gt;
+&lt;h2&gt;Process Contract&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Compile success and complete execution exit &lt;code&gt;0&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Compile or static failure exit &lt;code&gt;3&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Runtime failure exit &lt;code&gt;5&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Diagnostics are written to standard error.&lt;/li&gt;&lt;li&gt;Output is compact JSON, one generated value per line.&lt;/li&gt;&lt;li&gt;Partial output before a runtime failure is preserved.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Technology Stack&lt;/h2&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Technology&lt;/th&gt;&lt;th&gt;Application&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Python&lt;/td&gt;&lt;td&gt;Interpreter, parser, evaluator, builtins, CLI&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;POSIX sh&lt;/td&gt;&lt;td&gt;Supplied conformance entry point&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;Only Python standard-library facilities are permitted at runtime.&lt;/p&gt;
+&lt;h2&gt;Source and Test Asset Boundary&lt;/h2&gt;
+&lt;p&gt;The supplied files under &lt;code&gt;sources/&lt;/code&gt; are immutable inputs. The implementation reads them when required but does not modify them. The conformance runner is external to the interpreter and remains the authority for corpus comparison.&lt;/p&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC architecture-runtime ===&lt;br&gt;Intent: The declared runtime stack is available using only Python standard-library modules.&lt;/p&gt;
+&lt;p&gt;import importlib&lt;/p&gt;
+&lt;p&gt;modules = [&amp;quot;json&amp;quot;, &amp;quot;decimal&amp;quot;, &amp;quot;math&amp;quot;, &amp;quot;re&amp;quot;, &amp;quot;datetime&amp;quot;, &amp;quot;time&amp;quot;, &amp;quot;base64&amp;quot;, &amp;quot;unicodedata&amp;quot;, &amp;quot;itertools&amp;quot;, &amp;quot;functools&amp;quot;, &amp;quot;dataclasses&amp;quot;, &amp;quot;argparse&amp;quot;, &amp;quot;sys&amp;quot;] for module in modules: assert importlib.import_module(module) is not None === END AC architecture-runtime ===&lt;/p&gt;
+&lt;p&gt;=== AC architecture-contract ===&lt;br&gt;Intent: The staged conformance runner exposes the process exit-code contract required by the architecture.&lt;/p&gt;
+&lt;p&gt;import sys sys.path.insert(0, &amp;quot;sources&amp;quot;) import run_conformance as harness&lt;/p&gt;
+&lt;p&gt;assert harness.EXIT_COMPILE_ERROR == 3 assert harness.EXIT_RUNTIME_ERROR == 5 assert harness.PASS == &amp;quot;pass&amp;quot; assert harness.FAIL == &amp;quot;fail&amp;quot; assert harness.ERROR == &amp;quot;error&amp;quot; === END AC architecture-contract ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Do not shell out to a system &lt;code&gt;jq&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Do not use a third-party jq implementation or binding.&lt;/li&gt;&lt;li&gt;Do not modify files under &lt;code&gt;sources/&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Preserve generator ordering, multiplicity, backtracking, and partial runtime output.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

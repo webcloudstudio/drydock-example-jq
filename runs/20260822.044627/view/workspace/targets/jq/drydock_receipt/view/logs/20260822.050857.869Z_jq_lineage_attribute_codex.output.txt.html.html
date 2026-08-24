@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.050857.869Z_jq_lineage_attribute_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;requirement name=&amp;quot;handle-comments&amp;quot; stories=&amp;quot;PARSE-001&amp;quot;&amp;gt;
+&amp;quot;#&amp;quot; { yy_push_state(IN_COMMENT, yyscanner); }
+&amp;lt;IN_COMMENT&amp;gt;{
+  \\(\\|\r?\n)|. { }
+  \r?\n { yy_pop_state(yyscanner); }
+}
+&amp;lt;IN_COMMENT&amp;gt;&amp;lt;&amp;lt;EOF&amp;gt;&amp;gt; { yy_pop_state(yyscanner); }
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;recognize-keywords&amp;quot; stories=&amp;quot;PARSE-001,PARSE-003,PARSE-004,FUNC-003,FLOW-003,FLOW-004,FLOW-005&amp;quot;&amp;gt;
+&amp;quot;as&amp;quot; { return AS; }
+&amp;quot;import&amp;quot; { return IMPORT; }
+&amp;quot;include&amp;quot; { return INCLUDE; }
+&amp;quot;module&amp;quot; { return MODULE; }
+&amp;quot;def&amp;quot; { return DEF; }
+&amp;quot;if&amp;quot; { return IF; }
+&amp;quot;then&amp;quot; { return THEN; }
+&amp;quot;else&amp;quot; { return ELSE; }
+&amp;quot;elif&amp;quot; { return ELSE_IF; }
+&amp;quot;and&amp;quot; { return AND; }
+&amp;quot;or&amp;quot; { return OR; }
+&amp;quot;end&amp;quot; { return END; }
+&amp;quot;reduce&amp;quot; { return REDUCE; }
+&amp;quot;foreach&amp;quot; { return FOREACH; }
+&amp;quot;try&amp;quot; { return TRY; }
+&amp;quot;catch&amp;quot; { return CATCH; }
+&amp;quot;label&amp;quot; { return LABEL; }
+&amp;quot;break&amp;quot; { return BREAK; }
+&amp;quot;$__loc__&amp;quot; { return LOC; }
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;recognize-operators&amp;quot; stories=&amp;quot;PARSE-001,FLOW-001,FLOW-002,FLOW-003,FLOW-004,FLOW-006,PATH-003&amp;quot;&amp;gt;
+&amp;quot;!=&amp;quot; { return NEQ; }
+&amp;quot;==&amp;quot; { return EQ; }
+&amp;quot;//&amp;quot; { return DEFINEDOR; }
+&amp;quot;|=&amp;quot; { return SETPIPE; }
+&amp;quot;+=&amp;quot; { return SETPLUS; }
+&amp;quot;-=&amp;quot; { return SETMINUS; }
+&amp;quot;*=&amp;quot; { return SETMULT; }
+&amp;quot;/=&amp;quot; { return SETDIV; }
+&amp;quot;%=&amp;quot; { return SETMOD; }
+&amp;quot;//=&amp;quot; { return SETDEFINEDOR; }
+&amp;quot;&amp;lt;=&amp;quot; { return LESSEQ; }
+&amp;quot;&amp;gt;=&amp;quot; { return GREATEREQ; }
+&amp;quot;..&amp;quot; { return REC; }
+&amp;quot;?//&amp;quot; { return ALTERNATION; }
+&amp;quot;.&amp;quot;|&amp;quot;?&amp;quot;|&amp;quot;=&amp;quot;|&amp;quot;;&amp;quot;|&amp;quot;,&amp;quot;|&amp;quot;:&amp;quot;|&amp;quot;|&amp;quot;|&amp;quot;+&amp;quot;|&amp;quot;-&amp;quot;|&amp;quot;*&amp;quot;|&amp;quot;/&amp;quot;|&amp;quot;%&amp;quot;|&amp;quot;\$&amp;quot;|&amp;quot;&amp;lt;&amp;quot;|&amp;quot;&amp;gt;&amp;quot; { return yytext[0];}
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;track-delimited-states&amp;quot; stories=&amp;quot;PARSE-001,PARSE-003,PARSE-004&amp;quot;&amp;gt;
+&amp;quot;[&amp;quot;|&amp;quot;{&amp;quot;|&amp;quot;(&amp;quot; {
+  return enter(yytext[0], YY_START, yyscanner);
+}
+
+&amp;quot;]&amp;quot;|&amp;quot;}&amp;quot;|&amp;quot;)&amp;quot; {
+  return try_exit(yytext[0], YY_START, yyscanner);
+}
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;scan-formats-and-numbers&amp;quot; stories=&amp;quot;PARSE-001,PARSE-002,VALUE-001,TEXT-002&amp;quot;&amp;gt;
+&amp;quot;@&amp;quot;[a-zA-Z0-9_]+ {
+  yylval-&amp;gt;literal = jv_string_sized(yytext + 1, yyleng - 1); return FORMAT;
+}
+
+([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)? {
+   yylval-&amp;gt;literal = jv_parse_sized(yytext, yyleng); return LITERAL;
+}
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;scan-strings-and-interpolation&amp;quot; stories=&amp;quot;PARSE-001,PARSE-002&amp;quot;&amp;gt;
+&amp;quot;\&amp;quot;&amp;quot; {
+  yy_push_state(IN_QQSTRING, yyscanner);
+  return QQSTRING_START;
+}
+
+&amp;lt;IN_QQSTRING&amp;gt;{
+  &amp;quot;\\(&amp;quot; {
+    return enter(QQSTRING_INTERP_START, YY_START, yyscanner);
+  }
+  &amp;quot;\&amp;quot;&amp;quot; {
+    yy_pop_state(yyscanner);
+    return QQSTRING_END;
+  }
+  (\\[^u(]|\\u[a-zA-Z0-9]{0,4})+ {
+    /* pass escapes to the json parser */
+    jv escapes = jv_string_fmt(&amp;quot;\&amp;quot;%.*s\&amp;quot;&amp;quot;, (int)yyleng, yytext);
+    yylval-&amp;gt;literal = jv_parse_sized(jv_string_value(escapes), jv_string_length_bytes(jv_copy(escapes)));
+    jv_free(escapes);
+    return QQSTRING_TEXT;
+  }
+  [^\\\&amp;quot;]+ {
+    yylval-&amp;gt;literal = jv_string_sized(yytext, yyleng);
+    return QQSTRING_TEXT;
+  }
+  . {
+    return INVALID_CHARACTER;
+  }
+}
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;scan-identifiers-and-accessors&amp;quot; stories=&amp;quot;PARSE-001,FUNC-001,FUNC-002,VALUE-002&amp;quot;&amp;gt;
+([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext); return IDENT;}
+\.[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext+1); return FIELD;}
+\$([a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*  { yylval-&amp;gt;literal = jv_string(yytext+1); return BINDING;}
+&amp;lt;/requirement&amp;gt;
+&amp;lt;requirement name=&amp;quot;ignore-whitespace-and-reject-invalid-characters&amp;quot; stories=&amp;quot;PARSE-001,PARSE-004&amp;quot;&amp;gt;
+[ \r\n\t]+  {}
+
+. { return INVALID_CHARACTER; }
+&amp;lt;/requirement&amp;gt;
+&amp;lt;unattached story=&amp;quot;architecture-foundation&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;EXEC-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CORE-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;VALUE-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CONF-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FLOW-006&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;FUNC-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;PATH-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;DATA-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;TEXT-004&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-001&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;IO-003&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CONF-002&amp;quot;/&amp;gt;
+&amp;lt;unattached story=&amp;quot;CONF-003&amp;quot;/&amp;gt;&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

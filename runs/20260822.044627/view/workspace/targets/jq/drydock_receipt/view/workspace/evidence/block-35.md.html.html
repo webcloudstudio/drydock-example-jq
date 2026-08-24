@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-35.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-35.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-35.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-35.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-35.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-35.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 35 · Service (block-35)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-22&lt;/li&gt;&lt;li&gt;resulting state: closed/verified&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 53782&lt;/li&gt;&lt;li&gt;execution id: 20260823.045149.005Z-117c6dab&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement string manipulation builtins. (TEXT-001) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Acceptance tooling authorization&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;FEATURE-TEXT-001.md#text-001-conformance: executable=python3; scope=test; authorization=existing Target environment&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-TEXT-001.md (SP 474)&lt;/li&gt;&lt;li&gt;context: builtin.jq (SP 2408)&lt;/li&gt;&lt;li&gt;context: jq-manual.txt (SP 32696)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python_compact.md (SP 1534)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Build directory changes&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;tests/test_text_001_string_builtins.py&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;RED: text-001-conformance (FEATURE-TEXT-001.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The string manipulation slice executes matching corpus cases and passes all selected cases. return code: 1 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 28, &amp;quot;fail&amp;quot;: 2, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 1 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 1516, &amp;quot;program&amp;quot;: &amp;quot;split(\&amp;quot;\&amp;quot;)&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;fail&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;output mismatch&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;[\&amp;quot;a\&amp;quot;,\&amp;quot;b\&amp;quot;,\&amp;quot;c\&amp;quot;]&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1823, &amp;quot;program&amp;quot;: &amp;quot;ascii_upcase&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;fail&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;program did not compile: jq: compile error: unknown filter&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;\&amp;quot;USEFUL BUT NOT FOR \u00e9\&amp;quot;&amp;quot; ], &amp;quot;actual&amp;quot;: [] }, { &amp;quot;line&amp;quot;: 1912, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;data\&amp;quot; as $e; import \&amp;quot;data\&amp;quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&amp;quot;;\&amp;quot;)&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;\&amp;quot;is a test;is too;is a test;is too\&amp;quot;&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] } stderr: --- drydock: progress --- cases: pass=28 fail=2 error=0 skip=1 total=31 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&amp;#x27;pass&amp;#x27;: 28, &amp;#x27;fail&amp;#x27;: 2, &amp;#x27;error&amp;#x27;: 0, &amp;#x27;skip&amp;#x27;: 1} --- drydock: end values --- Traceback (most recent call last): File &amp;quot;text-001-conformance.py&amp;quot;, line 18, in &amp;lt;module&amp;gt; assert summary[&amp;quot;fail&amp;quot;] == 0 ^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;PASS: text-001-conformance (FEATURE-TEXT-001.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: The string manipulation slice executes matching corpus cases and passes all selected cases. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &amp;quot;candidate&amp;quot;: [ &amp;quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&amp;quot; ], &amp;quot;corpus&amp;quot;: &amp;quot;jq.test&amp;quot;, &amp;quot;summary&amp;quot;: { &amp;quot;pass&amp;quot;: 30, &amp;quot;fail&amp;quot;: 0, &amp;quot;error&amp;quot;: 0, &amp;quot;skip&amp;quot;: 1 }, &amp;quot;cases&amp;quot;: [ { &amp;quot;line&amp;quot;: 1912, &amp;quot;program&amp;quot;: &amp;quot;import \&amp;quot;data\&amp;quot; as $e; import \&amp;quot;data\&amp;quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&amp;quot;;\&amp;quot;)&amp;quot;, &amp;quot;status&amp;quot;: &amp;quot;skip&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;declared in exclusions.txt&amp;quot;, &amp;quot;expect_failure&amp;quot;: false, &amp;quot;expected&amp;quot;: [ &amp;quot;\&amp;quot;is a test;is too;is a test;is too\&amp;quot;&amp;quot; ], &amp;quot;actual&amp;quot;: [] } ] }&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;Implemented TEXT-001 string builtins.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Added ASCII case conversion and parser registration.&lt;/li&gt;&lt;li&gt;Fixed empty-string splitting and strict string validation.&lt;/li&gt;&lt;li&gt;Added focused regression tests.&lt;/li&gt;&lt;li&gt;&lt;code&gt;pytest -q&lt;/code&gt;: 156 passed.&lt;/li&gt;&lt;li&gt;Scoped conformance: 30 passed, 0 failed, 0 errored, 1 skipped.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;RESULT: SUCCESS&lt;/p&gt;
+&lt;p&gt;FILES CHANGED:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_text_001_string_builtins.py&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;SUMMARY: String manipulation builtins now satisfy the declared scoped conformance suite.&lt;/p&gt;
+&lt;p&gt;BLOCKERS:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;None&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

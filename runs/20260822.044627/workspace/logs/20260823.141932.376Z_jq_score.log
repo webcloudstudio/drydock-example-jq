@@ -1,0 +1,18 @@
+Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+Target: jq
+State:  PROJECT COMPLETE
+        PASS · 2026-08-23 08:33
+
+Score    Last run          Result   Output
+spec     —                 not run  SPECIFICATION_SCORECARD.md
+                                    not written
+ac       2026-08-23 08:20  fail     SOUNDINGS.md
+                                    2026-08-23 08:29 · 57 criteria: 18 passed, 36 prepassed, 3 failed
+build    2026-08-23 08:29  fail     —
+                                    console report; writes no file
+release  2026-08-23 08:29  pass     SCORECARD.md
+                                    2026-08-23 08:33
+report   —                 not run  drydock_receipt/index.html
+                                    not written
+
+Not yet run: drydock score report

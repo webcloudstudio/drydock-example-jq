@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-003.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-003.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-003.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Complete Conformance Verification</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Runs the complete jq conformance corpus as the terminal release verification.</td></tr><tr><td>Depends On</td><td>FEATURE-IO-003.md, FEATURE-CONF-002.md</td></tr><tr><td>Provides</td><td>complete jq conformance release verification</td></tr><tr><td>Consumes</td><td>./jq, sources/full_test.sh</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>As the terminal verification, this story runs the supplied <code>sources/full_test.sh</code> without filtering or reinterpretation. The script validates the executable boundary and runs the complete non-excluded corpus.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conf-003-full-suite ===<br>Intent: The supplied complete conformance suite passes with a successful exit status.<br>Suite: full</p>
+<p>import subprocess</p>
+<p>result = subprocess.run( [&quot;sh&quot;, &quot;sources/full_test.sh&quot;], capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=<strong>import</strong>(&quot;sys&quot;).stderr) assert result.returncode == 0 === END AC conf-003-full-suite ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>This is the only story that runs the complete corpus.</li><li>The scoring script and its exit status are authoritative; its output is diagnostic only.</li></ul></article>
+</main>
+</body>
+</html>

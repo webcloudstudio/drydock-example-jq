@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-TEXT-001.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-TEXT-001.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-TEXT-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: String Manipulation Builtins</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provide jq string trimming, conversion, splitting, joining, and prefix operations.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-DATA-004.md</td></tr><tr><td>Provides</td><td>trim, ltrim, rtrim, ltrimstr, rtrimstr, trimstr, ascii_downcase, ascii_upcase, explode, implode, split, join, startswith, endswith</td></tr><tr><td>Consumes</td><td>jq string values, generator evaluator</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Implement Unicode-aware whitespace trimming, prefix and suffix removal, ASCII-only case conversion, Unicode codepoint conversion, string splitting and joining, and prefix/suffix predicates. Validate input types and preserve jq&#x27;s stream and error behavior.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC text-001-conformance ===<br>Intent: The string manipulation slice executes matching corpus cases and passes all selected cases.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;split|join|trim|ascii_|explode|implode|startswith|endswith&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) summary = report[&quot;summary&quot;] assert sum(summary.values()) &gt; 0 assert summary[&quot;fail&quot;] == 0 assert summary[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC text-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>String length and codepoint operations must support Unicode values without treating UTF-8 bytes as individual characters.</li><li><code>ascii_downcase</code> and <code>ascii_upcase</code> must affect only ASCII letters.</li><li>Invalid argument types must produce jq runtime errors rather than silent coercions.</li></ul></article>
+</main>
+</body>
+</html>

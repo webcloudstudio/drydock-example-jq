@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/INSTRUCTIONS.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/INSTRUCTIONS.md.html</h1><div class="filenav"><a href="../../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/sources/INSTRUCTIONS.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/sources/INSTRUCTIONS.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/sources/INSTRUCTIONS.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../../workspace/blueprint/sources/INSTRUCTIONS.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Build Instructions: A jq Interpreter&lt;/h1&gt;
+&lt;h2&gt;Objective&lt;/h2&gt;
+&lt;p&gt;Build an interpreter for the jq language as described in &lt;code&gt;sources/jq-manual.txt&lt;/code&gt;. Correctness is measured by the upstream jq conformance corpus, &lt;code&gt;sources/jq.test&lt;/code&gt;, taken verbatim from jq 1.8.2. The goal is to pass every case the corpus supplies, with none failed and none errored. The suite&amp;#x27;s size is a property of the pinned corpus; never assert a case count.&lt;/p&gt;
+&lt;p&gt;The implementation language is Python, fixed by this Target&amp;#x27;s &lt;code&gt;TECHNOLOGY_STACK.md&lt;/code&gt; and governed by &lt;code&gt;stack/python.md&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;jq is a small language with a large semantic core. Almost every filter is a &lt;strong&gt;generator&lt;/strong&gt;: it takes one input and produces a stream of zero, one, or many outputs, and downstream filters run once per upstream output. Backtracking through that stream is not an optimisation, it is the evaluation model, and &lt;code&gt;reduce&lt;/code&gt;, &lt;code&gt;foreach&lt;/code&gt;, &lt;code&gt;limit&lt;/code&gt;, &lt;code&gt;first&lt;/code&gt;, &lt;code&gt;label&lt;/code&gt;/&lt;code&gt;break&lt;/code&gt;, and the &lt;code&gt;?//&lt;/code&gt; destructuring alternative are all defined in terms of it. An implementation that treats a filter as a function returning one value will pass the early cases and then stall permanently. Decide the evaluation model before writing builtins.&lt;/p&gt;
+&lt;h2&gt;Run Harness&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sources/full_test.sh&lt;/code&gt; is the single scoring entry point. It is supplied, not authored: it is staged verbatim into the build directory alongside the other imported assets, and &lt;code&gt;drydock uat&lt;/code&gt; runs &lt;code&gt;sh sources/full_test.sh&lt;/code&gt; from the completed application root and takes its exit code and output as the score. It reads:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+# full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.
+set -eu
+if [ ! -x ./jq ]; then
+    echo &amp;quot;error: no executable ./jq at the application root.&amp;quot; &amp;gt;&amp;amp;2
+    echo &amp;quot;The deliverable is an executable named jq that reads JSON on stdin.&amp;quot; &amp;gt;&amp;amp;2
+    exit 1
+fi
+JQ=&amp;quot;$PWD/jq&amp;quot; exec python3 sources/run_conformance.py&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before relying on any path above, run &lt;code&gt;ls sources/&lt;/code&gt; in the application directory and correct the paths in the harness against what is actually on disk. Correcting a path is the only edit permitted to this script. Do not add flags, filters, skips, or a redirection of the exit code.&lt;/p&gt;
+&lt;p&gt;The interface check is deliberately separate from the conformance run so that a missing program and a genuine conformance failure are distinguishable in the evidence. &lt;code&gt;JQ&lt;/code&gt; is the harness&amp;#x27;s only knowledge of the implementation language; the harness itself is language-neutral.&lt;/p&gt;
+&lt;h2&gt;Read-only scoring assets&lt;/h2&gt;
+&lt;p&gt;These four files are the exam. They are hash-verified against the import and restored before grading, so a modification is reported as tampering rather than honoured:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/full_test.sh&lt;/code&gt; — the scoring entry point&lt;/li&gt;&lt;li&gt;&lt;code&gt;sources/run_conformance.py&lt;/code&gt; — the scoring instrument&lt;/li&gt;&lt;li&gt;&lt;code&gt;sources/exclusions.txt&lt;/code&gt; — the declared skips&lt;/li&gt;&lt;li&gt;&lt;code&gt;sources/jq.test&lt;/code&gt; — the conformance corpus&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;Do not write to them. Build &lt;code&gt;./jq&lt;/code&gt; so that the supplied entry point succeeds; changing the entry point is not a repair, and a repair pass spent editing one of these files is wasted.&lt;/p&gt;
+&lt;h2&gt;Interface contract&lt;/h2&gt;
+&lt;p&gt;The program is a filter: an executable file named &lt;code&gt;jq&lt;/code&gt; at the application root, invoked as&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with JSON on &lt;strong&gt;stdin&lt;/strong&gt;. It writes each value the program produces to &lt;strong&gt;stdout&lt;/strong&gt; as one compact JSON value per line, and exits &lt;code&gt;0&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-c&lt;/code&gt; is the only option exercised. The program need not implement any other jq command-line option, and the manual&amp;#x27;s &amp;quot;Invoking jq&amp;quot; section is omitted from &lt;code&gt;sources/jq-manual.txt&lt;/code&gt; for that reason.&lt;/p&gt;
+&lt;p&gt;Exit codes follow jq&amp;#x27;s own, and the distinction is load-bearing because the harness grades on it:&lt;/p&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Exit&lt;/th&gt;&lt;th&gt;Meaning&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;0&lt;/code&gt;&lt;/td&gt;&lt;td&gt;the program compiled and ran to completion&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;3&lt;/code&gt;&lt;/td&gt;&lt;td&gt;the program did not compile — a syntax or static error&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;5&lt;/code&gt;&lt;/td&gt;&lt;td&gt;the program compiled but raised at run time&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;A case may legitimately emit several values and then raise; the harness compares the values produced before the raise, so exit &lt;code&gt;5&lt;/code&gt; is not by itself a failure. Exit &lt;code&gt;3&lt;/code&gt; on a valid program is always a failure. Diagnostics go to &lt;strong&gt;stderr&lt;/strong&gt; and are never compared.&lt;/p&gt;
+&lt;p&gt;Any implementation shape that satisfies this contract is acceptable. A &lt;code&gt;#!/usr/bin/env python3&lt;/code&gt; script named &lt;code&gt;jq&lt;/code&gt; that imports the real work from a package alongside it is the obvious one; &lt;code&gt;main&lt;/code&gt; should parse arguments and delegate.&lt;/p&gt;
+&lt;h2&gt;Test / verification process&lt;/h2&gt;
+&lt;p&gt;The imported source files are placed in a &lt;code&gt;sources/&lt;/code&gt; subdirectory of the application directory. The only tools required are &lt;code&gt;python3&lt;/code&gt; and a POSIX &lt;code&gt;sh&lt;/code&gt;, both already present. No installation step, no package download, and no network access are required at any point.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py                     # the scored run
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py -v                  # list passing cases too
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py --json              # machine-readable
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py --list              # print cases, run nothing
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py --select &amp;#x27;reduce&amp;#x27;   # one construct at a time
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py --select &amp;#x27;reduce&amp;#x27; --list   # size that slice&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;During development, &lt;code&gt;sh sources/full_test.sh&lt;/code&gt; does the interface check and the conformance run together, and is the same command the score is taken from.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--select&lt;/code&gt; takes a regular expression matched against the case&amp;#x27;s program text. It is how an intermediate story runs its own slice of the corpus, and it is required, not optional.&lt;/p&gt;
+&lt;p&gt;The harness&amp;#x27;s own &lt;code&gt;--help&lt;/code&gt; text for &lt;code&gt;--select&lt;/code&gt; calls it a development aid and states that the acceptance gate always runs the whole corpus. That text predates this rule and does not govern. It is part of a read-only scoring asset and cannot be corrected in place, so it is corrected here: where the harness&amp;#x27;s help text and this document disagree, this document is authoritative.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exactly one acceptance check runs the whole corpus.&lt;/strong&gt; One terminal story — the last one — runs &lt;code&gt;sh sources/full_test.sh&lt;/code&gt;, asserts only &lt;code&gt;result.returncode == 0&lt;/code&gt;, prints the captured stdout and stderr so a failure can be diagnosed from the evidence, and carries the Sea Trial. No other acceptance check may run the corpus unscoped, and none may invoke &lt;code&gt;full_test.sh&lt;/code&gt; at all. A partial implementation fails most of the corpus by construction, so an unscoped mid-build run reports the schedule rather than a defect, and it is slow in exact proportion to how incomplete the code is.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Every other story runs its own slice, and the slice executes cases.&lt;/strong&gt; Each story&amp;#x27;s acceptance invokes &lt;code&gt;sources/run_conformance.py&lt;/code&gt; with a &lt;code&gt;--select&lt;/code&gt; expression scoped to the construct that story implements, supplies &lt;code&gt;JQ&lt;/code&gt;, and asserts &lt;code&gt;result.returncode == 0&lt;/code&gt;. Those are exactly the cases the story&amp;#x27;s code is supposed to pass, so the run is neither slow nor red by construction, and the corpus goes green in the order the plan builds it.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--list&lt;/code&gt; prints the matching cases and runs nothing. Use it while planning, to size and inspect a selector before committing to it. An acceptance check that invokes it executes nothing, passes before the story&amp;#x27;s code exists, and steers no repair; such a check is a defect. The one exception is the story whose only obligation is that the corpus parses, the exclusion list applies, and the harness starts — it implements none of the behaviour under test, so listing is the correct thing for it to assert.&lt;/p&gt;
+&lt;p&gt;A selector matching no case is a defect too: it buys the story no coverage and reports success. Check the count with &lt;code&gt;--list&lt;/code&gt; while planning and widen the expression until it covers the story&amp;#x27;s construct. Together the slices cover the corpus; a case no slice reaches is first executed by the terminal gate, where a failure arrives with the whole build already spent and no story to attribute it to.&lt;/p&gt;
+&lt;p&gt;No acceptance check may assert that an imported or staged file merely exists — a file-presence check is not acceptance.&lt;/p&gt;
+&lt;p&gt;The summary line is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The harness reserves exit &lt;code&gt;2&lt;/code&gt; for its own faults — a missing corpus, an unset &lt;code&gt;JQ&lt;/code&gt;, a stale exclusion. Exit &lt;code&gt;2&lt;/code&gt; never means the interpreter is wrong.&lt;/p&gt;
+&lt;h2&gt;The corpus format&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sources/jq.test&lt;/code&gt; documents its own format in its header. Cases are separated by blank lines; blank lines and &lt;code&gt;#&lt;/code&gt; lines are ignored. A case is a program line, an input line, and then the expected output values, one per line. A case preceded by &lt;code&gt;%%FAIL&lt;/code&gt; is a program that must be &lt;strong&gt;rejected at compile time&lt;/strong&gt;: the following lines are upstream jq&amp;#x27;s diagnostic, which this harness records but never compares. Reproducing jq&amp;#x27;s exact error text is reverse-engineering a C implementation, not conforming to a specification, so a &lt;code&gt;%%FAIL&lt;/code&gt; case passes on exit &lt;code&gt;3&lt;/code&gt; alone.&lt;/p&gt;
+&lt;p&gt;Values are compared structurally, not textually. &lt;code&gt;1&lt;/code&gt; and &lt;code&gt;1.0&lt;/code&gt; are the same jq value; so are two objects whose keys are printed in a different order. Formatting of output is therefore not under test, but the &lt;strong&gt;number and order&lt;/strong&gt; of values is.&lt;/p&gt;
+&lt;h2&gt;Declared exclusions&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sources/exclusions.txt&lt;/code&gt; names the corpus cases this kit cannot run, with the reason. They are the module-loader cases: &lt;code&gt;import&lt;/code&gt; and &lt;code&gt;include&lt;/code&gt; resolved against a search path of fixture files that this kit&amp;#x27;s flat source import cannot carry. They are reported as &lt;code&gt;skipped&lt;/code&gt; and are not part of the score.&lt;/p&gt;
+&lt;p&gt;The module &lt;em&gt;grammar&lt;/em&gt; cases are &lt;strong&gt;not&lt;/strong&gt; excluded and must pass. &lt;code&gt;module (.+1); 0&lt;/code&gt;, &lt;code&gt;module []; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;a&amp;quot; (.+1); 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;a&amp;quot; []; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;\ &amp;quot;; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;\(a)&amp;quot;; 0&lt;/code&gt;, and &lt;code&gt;%::wat&lt;/code&gt; are all &lt;code&gt;%%FAIL&lt;/code&gt; cases: the front end must parse the module syntax far enough to reject them, without ever touching the filesystem.&lt;/p&gt;
+&lt;h2&gt;Source Roles&lt;/h2&gt;
+&lt;p&gt;Record this table in the Analysis so every asset is staged onto disk in the build directory. &lt;code&gt;sources/jq-manual.txt&lt;/code&gt;, &lt;code&gt;sources/jq.test&lt;/code&gt;, &lt;code&gt;sources/parser.y&lt;/code&gt;, and &lt;code&gt;sources/lexer.l&lt;/code&gt; are large and must be readable from disk during implementation rather than carried in prompt text.&lt;/p&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Source&lt;/th&gt;&lt;th&gt;Role&lt;/th&gt;&lt;th&gt;Plan disposition&lt;/th&gt;&lt;th&gt;Build disposition&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq-manual.txt&lt;/code&gt;&lt;/td&gt;&lt;td&gt;normative specification&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;jq.test&lt;/code&gt;&lt;/td&gt;&lt;td&gt;conformance test suite&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;parser.y&lt;/code&gt;&lt;/td&gt;&lt;td&gt;normative specification&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;lexer.l&lt;/code&gt;&lt;/td&gt;&lt;td&gt;normative specification&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;builtin.jq&lt;/code&gt;&lt;/td&gt;&lt;td&gt;reference implementation&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;run_conformance.py&lt;/code&gt;&lt;/td&gt;&lt;td&gt;conformance harness&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;full_test.sh&lt;/code&gt;&lt;/td&gt;&lt;td&gt;conformance harness&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;exclusions.txt&lt;/code&gt;&lt;/td&gt;&lt;td&gt;conformance harness&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;stage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;INSTRUCTIONS.md&lt;/code&gt;&lt;/td&gt;&lt;td&gt;author intent&lt;/td&gt;&lt;td&gt;context&lt;/td&gt;&lt;td&gt;prompt-only&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;What each staged file is for:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/jq-manual.txt&lt;/code&gt; — the jq language manual at 1.8.2, rendered to plain text. The&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;primary specification, and the normative description of every builtin.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/jq.test&lt;/code&gt; — the conformance corpus. Also the most precise available statement of&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;the semantics, especially for generators and backtracking.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/parser.y&lt;/code&gt; — upstream&amp;#x27;s yacc grammar. The authority on operator precedence,&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;associativity, and the shape of every syntactic form.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/lexer.l&lt;/code&gt; — upstream&amp;#x27;s lexer. The authority on tokens, string interpolation, and&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;escape handling.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/builtin.jq&lt;/code&gt; — the subset of jq&amp;#x27;s builtins that upstream defines in jq itself.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;Read it as a specification of those builtins&amp;#x27; semantics.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sources/run_conformance.py&lt;/code&gt;, &lt;code&gt;sources/full_test.sh&lt;/code&gt;, &lt;code&gt;sources/exclusions.txt&lt;/code&gt; — the&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;scoring instruments, read-only as stated above.&lt;/p&gt;
+&lt;h2&gt;Suggested implementation order&lt;/h2&gt;
+&lt;p&gt;The difficulty is concentrated in one place — the evaluation model — and not spread evenly across the corpus. Build the core correctly before reaching for coverage.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Lexer and parser.&lt;/strong&gt; Follow &lt;code&gt;sources/lexer.l&lt;/code&gt; and &lt;code&gt;sources/parser.y&lt;/code&gt; directly. Produce&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;an AST. Precedence, &lt;code&gt;?&lt;/code&gt; suffixes, string interpolation, and the &lt;code&gt;def&lt;/code&gt; forms are all settled there. Reject invalid programs with exit &lt;code&gt;3&lt;/code&gt;.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;The generator core.&lt;/strong&gt; Evaluate a filter as something that yields a stream of values:&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;.&lt;/code&gt;, literals, &lt;code&gt;|&lt;/code&gt;, &lt;code&gt;,&lt;/code&gt;, field access, iteration, arithmetic, comparison, and &lt;code&gt;empty&lt;/code&gt;. Every later feature is expressed in terms of this. Get &lt;code&gt;[.[] | f]&lt;/code&gt;, cartesian products over multi-output arguments, and short-circuiting right.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Paths and assignment.&lt;/strong&gt; &lt;code&gt;path(f)&lt;/code&gt;, &lt;code&gt;getpath&lt;/code&gt;, &lt;code&gt;setpath&lt;/code&gt;, &lt;code&gt;delpaths&lt;/code&gt;, &lt;code&gt;del&lt;/code&gt;, and then&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;=&lt;/code&gt;, &lt;code&gt;|=&lt;/code&gt;, &lt;code&gt;+=&lt;/code&gt;, and friends. Assignment is defined over path expressions, so this cannot precede step 2.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Control flow.&lt;/strong&gt; &lt;code&gt;if&lt;/code&gt;/&lt;code&gt;then&lt;/code&gt;/&lt;code&gt;elif&lt;/code&gt;/&lt;code&gt;else&lt;/code&gt;/&lt;code&gt;end&lt;/code&gt;, &lt;code&gt;try&lt;/code&gt;/&lt;code&gt;catch&lt;/code&gt; and &lt;code&gt;?&lt;/code&gt;, &lt;code&gt;//&lt;/code&gt;,&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;reduce&lt;/code&gt;, &lt;code&gt;foreach&lt;/code&gt;, &lt;code&gt;label&lt;/code&gt;/&lt;code&gt;break&lt;/code&gt;, &lt;code&gt;limit&lt;/code&gt;, &lt;code&gt;first&lt;/code&gt;, &lt;code&gt;last&lt;/code&gt;, &lt;code&gt;until&lt;/code&gt;, &lt;code&gt;while&lt;/code&gt;, &lt;code&gt;recurse&lt;/code&gt;. This is where backtracking is tested hardest.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Functions, variables, and destructuring.&lt;/strong&gt; &lt;code&gt;def&lt;/code&gt; with arity and closures, &lt;code&gt;as&lt;/code&gt;&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;bindings, object and array patterns, and the &lt;code&gt;?//&lt;/code&gt; alternative operator.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Builtins.&lt;/strong&gt; Work outward from &lt;code&gt;sources/builtin.jq&lt;/code&gt; and the manual: strings, arrays,&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;objects, &lt;code&gt;sort_by&lt;/code&gt;/&lt;code&gt;group_by&lt;/code&gt;/&lt;code&gt;unique_by&lt;/code&gt;, &lt;code&gt;@base64&lt;/code&gt;/&lt;code&gt;@uri&lt;/code&gt;/&lt;code&gt;@csv&lt;/code&gt;/&lt;code&gt;@tsv&lt;/code&gt;/&lt;code&gt;@sh&lt;/code&gt; formats, the date functions, &lt;code&gt;tostream&lt;/code&gt;, &lt;code&gt;input&lt;/code&gt;/&lt;code&gt;inputs&lt;/code&gt;, &lt;code&gt;$__loc__&lt;/code&gt;, &lt;code&gt;debug&lt;/code&gt;.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;Numbers and edge cases.&lt;/strong&gt; &lt;code&gt;nan&lt;/code&gt;, &lt;code&gt;infinite&lt;/code&gt;, integer/float equality, large literals,&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;and the &lt;code&gt;have_decnum&lt;/code&gt; builtin — return &lt;code&gt;false&lt;/code&gt; from it and the corpus takes its non-decNumber branch, which native floats satisfy.&lt;/p&gt;
+&lt;p&gt;The manual is normative and the corpus is precise. Follow both directly rather than inferring behaviour from jq&amp;#x27;s printed output.&lt;/p&gt;
+&lt;h2&gt;Definition of Done&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;sh sources/full_test.sh&lt;/code&gt; runs cleanly with zero errors and exits zero.&lt;/li&gt;&lt;li&gt;The program satisfies the &lt;code&gt;./jq -c&lt;/code&gt; → stdin → one-JSON-value-per-line → exit-code&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;contract.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Every corpus case that runs passes: the failed and errored counts are both zero, and the&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;skipped count matches the declared exclusions. The harness exit status is the verdict and the whole verdict — assert &lt;code&gt;returncode == 0&lt;/code&gt; and stop there. Do not assert on the text of the summary line at all: the case totals belong to the pinned corpus, and a check that reads a runner&amp;#x27;s printed output is measuring the runner rather than the interpreter.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Do not create acceptance checks asserting that imported or staged files merely exist.&lt;/li&gt;&lt;li&gt;The interpreter is written from the specification. **Every third-party jq&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;implementation or binding is forbidden** — &lt;code&gt;jq.py&lt;/code&gt;, &lt;code&gt;pyjq&lt;/code&gt;, &lt;code&gt;jqlang&lt;/code&gt;, &lt;code&gt;gojq&lt;/code&gt;, &lt;code&gt;jaq&lt;/code&gt;, and any other — as is shelling out to a system &lt;code&gt;jq&lt;/code&gt; binary. A wrapper around real jq scores perfectly and makes the exercise meaningless.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;The project declares no third-party runtime dependency. The standard library is&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;sufficient: &lt;code&gt;json&lt;/code&gt;, &lt;code&gt;decimal&lt;/code&gt;, &lt;code&gt;math&lt;/code&gt;, &lt;code&gt;re&lt;/code&gt;, &lt;code&gt;datetime&lt;/code&gt;, &lt;code&gt;time&lt;/code&gt;, &lt;code&gt;base64&lt;/code&gt;, &lt;code&gt;unicodedata&lt;/code&gt;, &lt;code&gt;itertools&lt;/code&gt;, &lt;code&gt;functools&lt;/code&gt;, &lt;code&gt;dataclasses&lt;/code&gt;, &lt;code&gt;argparse&lt;/code&gt;, &lt;code&gt;sys&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;No network access at any point, including at test time. No package is installed, and no&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;tool beyond &lt;code&gt;python3&lt;/code&gt; and POSIX &lt;code&gt;sh&lt;/code&gt; is invoked.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Deliver a concise project &lt;code&gt;README.md&lt;/code&gt; documenting the stdin/stdout interface, the exit&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;codes, and the &lt;code&gt;sh sources/full_test.sh&lt;/code&gt; command.&lt;/p&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

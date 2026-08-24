@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>result.json</title>
+<link rel="stylesheet" href="../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>result.json</h1><div class="filenav"><a href="../index.html">&larr; Report</a><a href="../result.json">Raw file</a></div></header>
+<article class="doc"><pre>{
+  &quot;acceptance&quot;: {
+    &quot;failed&quot;: 3,
+    &quot;failures&quot;: [
+      &quot;text-003-regex-conformance&quot;,
+      &quot;text-003-captures&quot;,
+      &quot;io-003-conformance&quot;
+    ],
+    &quot;passed&quot;: 18,
+    &quot;prepassed&quot;: 36,
+    &quot;recorded&quot;: true,
+    &quot;total&quot;: 57,
+    &quot;unrecognized&quot;: 0,
+    &quot;unverified&quot;: 0,
+    &quot;verified_at&quot;: &quot;2026-08-23T12:21:00+00:00&quot;
+  },
+  &quot;build&quot;: {
+    &quot;blocks&quot;: 43,
+    &quot;calls&quot;: 57,
+    &quot;failed&quot;: [
+      &quot;block-37&quot;
+    ],
+    &quot;recorded&quot;: true,
+    &quot;repaired&quot;: [
+      &quot;block-8&quot;,
+      &quot;block-31&quot;
+    ]
+  },
+  &quot;commands&quot;: [
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;init&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2121,
+      &quot;label&quot;: &quot;01-init&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.044628.383Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.044628.383Z_jq_init.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 04:46&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;import&quot;,
+        &quot;jq&quot;,
+        &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/sources&quot;,
+        &quot;--format&quot;,
+        &quot;markdown&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3604,
+      &quot;label&quot;: &quot;02-import&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.044630.923Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.044630.923Z_jq_import_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 04:46&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;analyze&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 129468,
+      &quot;label&quot;: &quot;03-analyze&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.044634.751Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.044634.751Z_jq_analyze_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 04:48&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1356731,
+      &quot;label&quot;: &quot;04-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.044844.592Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.044844.592Z_jq_plan_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:11&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1775,
+      &quot;label&quot;: &quot;05-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.051121.561Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:11&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;repair&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 303064,
+      &quot;label&quot;: &quot;06-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.051123.558Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:16&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2732,
+      &quot;label&quot;: &quot;07-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.051626.849Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:16&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1043,
+      &quot;label&quot;: &quot;08-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.051629.928Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.051629.928Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:16&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3808,
+      &quot;label&quot;: &quot;09-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055334.797Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:53&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;repair&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 99332,
+      &quot;label&quot;: &quot;10-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055339.024Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:55&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1282,
+      &quot;label&quot;: &quot;11-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055518.690Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:55&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 5531,
+      &quot;label&quot;: &quot;12-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.055520.613Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.055520.613Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:55&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2180,
+      &quot;label&quot;: &quot;13-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055710.711Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:57&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;repair&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 68443,
+      &quot;label&quot;: &quot;14-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055713.218Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:58&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 4242,
+      &quot;label&quot;: &quot;15-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.055821.941Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:58&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 368,
+      &quot;label&quot;: &quot;16-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.055826.504Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.055826.504Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 05:58&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 5808,
+      &quot;label&quot;: &quot;17-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.141911.933Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 14:19&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;repair&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 72520,
+      &quot;label&quot;: &quot;18-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.141918.435Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 14:20&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1334,
+      &quot;label&quot;: &quot;19-plan&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.142031.176Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 14:20&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 5475,
+      &quot;label&quot;: &quot;20-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.142032.769Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.142032.769Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 14:20&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1206917,
+      &quot;label&quot;: &quot;21-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.153144.789Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.153144.789Z_jq_plan_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 15:51&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3700,
+      &quot;label&quot;: &quot;22-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.155152.000Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 15:51&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 505,
+      &quot;label&quot;: &quot;23-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.155156.068Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.155156.068Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 15:51&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3027,
+      &quot;label&quot;: &quot;24-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.174047.625Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 17:40&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3672,
+      &quot;label&quot;: &quot;25-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.174050.989Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.174050.989Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 17:40&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1505910,
+      &quot;label&quot;: &quot;26-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.174113.385Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.174113.385Z_jq_plan_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 18:06&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1741,
+      &quot;label&quot;: &quot;27-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.180619.515Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 18:06&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 545,
+      &quot;label&quot;: &quot;28-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.180621.466Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.180621.466Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 18:06&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;6&quot;
+      ],
+      &quot;elapsed_ms&quot;: 636978,
+      &quot;label&quot;: &quot;29-build&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.180624.912Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.180624.912Z_jq_build_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 18:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1121,
+      &quot;label&quot;: &quot;30-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.181702.245Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.181702.245Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 18:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;
+      ],
+      &quot;elapsed_ms&quot;: 818280,
+      &quot;label&quot;: &quot;31-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.193319.568Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.193319.568Z_jq_plan_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 19:46&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 5839,
+      &quot;label&quot;: &quot;32-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.194658.624Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 19:47&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1067,
+      &quot;label&quot;: &quot;33-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.194704.870Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.194704.870Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 19:47&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;6&quot;
+      ],
+      &quot;elapsed_ms&quot;: 5392896,
+      &quot;label&quot;: &quot;34-build&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.194712.269Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.194712.269Z_jq_build_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 21:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1600,
+      &quot;label&quot;: &quot;35-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.211705.705Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.211705.705Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 21:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1685,
+      &quot;label&quot;: &quot;36-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.220328.244Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 22:03&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2881,
+      &quot;label&quot;: &quot;37-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.220330.156Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.220330.156Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 22:03&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;6&quot;
+      ],
+      &quot;elapsed_ms&quot;: 4896270,
+      &quot;label&quot;: &quot;38-build&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.220335.776Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.220335.776Z_jq_build_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 23:25&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1008,
+      &quot;label&quot;: &quot;39-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.232512.456Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.232512.456Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 23:25&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;plan&quot;,
+        &quot;verify&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1386,
+      &quot;label&quot;: &quot;40-plan&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.234907.752Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;&quot;,
+      &quot;time&quot;: &quot;2026-08-22 23:49&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 3825,
+      &quot;label&quot;: &quot;41-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260822.234909.429Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.234909.429Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-22 23:49&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;15&quot;
+      ],
+      &quot;elapsed_ms&quot;: 19525993,
+      &quot;label&quot;: &quot;42-build&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260822.234915.446Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260822.234915.446Z_jq_build_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 05:14&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1588,
+      &quot;label&quot;: &quot;43-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.051442.143Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.051442.143Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 05:14&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;,
+        &quot;--override&quot;,
+        &quot;--repair-attempts&quot;,
+        &quot;15&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2337582,
+      &quot;label&quot;: &quot;44-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.113803.929Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.113803.929Z_jq_build_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 12:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1291,
+      &quot;label&quot;: &quot;45-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.121704.647Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.121704.647Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 12:17&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;score&quot;,
+        &quot;ac&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 498370,
+      &quot;label&quot;: &quot;46-score&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260823.122059.517Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.122059.517Z_jq_score.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 12:29&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;score&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1848,
+      &quot;label&quot;: &quot;47-score&quot;,
+      &quot;returncode&quot;: 1,
+      &quot;stamp&quot;: &quot;20260823.122918.258Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.122918.258Z_jq_score.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 12:29&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;score&quot;,
+        &quot;release&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 223513,
+      &quot;label&quot;: &quot;48-score&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.122920.469Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.122920.469Z_jq_score_codex.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 12:33&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 7148,
+      &quot;label&quot;: &quot;49-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.131209.080Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.131209.080Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 13:12&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;build&quot;,
+        &quot;status&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 2194,
+      &quot;label&quot;: &quot;50-build&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.133429.576Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.133429.576Z_jq_build.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 13:34&quot;
+    },
+    {
+      &quot;argv&quot;: [
+        &quot;drydock&quot;,
+        &quot;score&quot;,
+        &quot;build&quot;,
+        &quot;jq&quot;
+      ],
+      &quot;elapsed_ms&quot;: 1525,
+      &quot;label&quot;: &quot;51-score&quot;,
+      &quot;returncode&quot;: 0,
+      &quot;stamp&quot;: &quot;20260823.142737.053Z&quot;,
+      &quot;stderr_path&quot;: &quot;&quot;,
+      &quot;stdout_path&quot;: &quot;logs/20260823.142737.053Z_jq_score.log&quot;,
+      &quot;time&quot;: &quot;2026-08-23 14:27&quot;
+    }
+  ],
+  &quot;elapsed_ms&quot;: 39162766,
+  &quot;environment&quot;: {
+    &quot;drydock_version&quot;: &quot;0.2.0&quot;,
+    &quot;finished_at&quot;: &quot;2026-08-23T14:27:37.053Z&quot;,
+    &quot;model&quot;: &quot;gpt-5.6-luna&quot;,
+    &quot;provider&quot;: &quot;codex&quot;,
+    &quot;started_at&quot;: &quot;2026-08-22T04:46:28.383Z&quot;
+  },
+  &quot;run_id&quot;: &quot;20260822.044628.383Z&quot;,
+  &quot;score_exit_codes&quot;: {
+    &quot;ac&quot;: 1,
+    &quot;build&quot;: 0,
+    &quot;release&quot;: 0
+  },
+  &quot;score_summary&quot;: [
+    {
+      &quot;at&quot;: &quot;&quot;,
+      &quot;note&quot;: &quot;not written&quot;,
+      &quot;output&quot;: &quot;SPECIFICATION_SCORECARD.md&quot;,
+      &quot;output_at&quot;: &quot;&quot;,
+      &quot;result&quot;: &quot;not run&quot;,
+      &quot;verb&quot;: &quot;spec&quot;
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23 08:20&quot;,
+      &quot;note&quot;: &quot;57 criteria: 18 passed, 36 prepassed, 3 failed&quot;,
+      &quot;output&quot;: &quot;SOUNDINGS.md&quot;,
+      &quot;output_at&quot;: &quot;2026-08-23 08:29&quot;,
+      &quot;result&quot;: &quot;fail&quot;,
+      &quot;verb&quot;: &quot;ac&quot;
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23 10:27&quot;,
+      &quot;note&quot;: &quot;console report; writes no file&quot;,
+      &quot;output&quot;: &quot;&quot;,
+      &quot;output_at&quot;: &quot;&quot;,
+      &quot;result&quot;: &quot;pass&quot;,
+      &quot;verb&quot;: &quot;build&quot;
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23 08:29&quot;,
+      &quot;note&quot;: &quot;&quot;,
+      &quot;output&quot;: &quot;SCORECARD.md&quot;,
+      &quot;output_at&quot;: &quot;2026-08-23 08:33&quot;,
+      &quot;result&quot;: &quot;pass&quot;,
+      &quot;verb&quot;: &quot;release&quot;
+    },
+    {
+      &quot;at&quot;: &quot;&quot;,
+      &quot;note&quot;: &quot;not written&quot;,
+      &quot;output&quot;: &quot;drydock_receipt/index.html&quot;,
+      &quot;output_at&quot;: &quot;&quot;,
+      &quot;result&quot;: &quot;not run&quot;,
+      &quot;verb&quot;: &quot;report&quot;
+    }
+  ],
+  &quot;state&quot;: {
+    &quot;at&quot;: &quot;2026-08-23T12:33:02.229+00:00&quot;,
+    &quot;attempts&quot;: 1,
+    &quot;command&quot;: &quot;drydock score release jq&quot;,
+    &quot;detail&quot;: &quot;&quot;,
+    &quot;label&quot;: &quot;SCORE RELEASE&quot;,
+    &quot;passed&quot;: true
+  },
+  &quot;status&quot;: &quot;passed&quot;,
+  &quot;target&quot;: &quot;jq&quot;,
+  &quot;usage&quot;: {
+    &quot;cached_input_tokens&quot;: 140953088,
+    &quot;calls&quot;: 187,
+    &quot;fresh_input_tokens&quot;: 13717106,
+    &quot;input_tokens&quot;: 154670194,
+    &quot;llm_elapsed_ms&quot;: 27672339,
+    &quot;output_tokens&quot;: 813760
+  },
+  &quot;workflow&quot;: [
+    {
+      &quot;at&quot;: &quot;2026-08-22T04:46:29.469+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock init jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;INITIALIZED&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-22T04:46:33.960+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock import jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;IMPORTED&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-22T04:48:42.765+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock analyze jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;ANALYZED&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-22T19:46:51.359+00:00&quot;,
+      &quot;attempts&quot;: 5,
+      &quot;command&quot;: &quot;drydock plan jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;PLAN CREATED&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23T11:38:11.262+00:00&quot;,
+      &quot;attempts&quot;: 4,
+      &quot;command&quot;: &quot;drydock build jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;BUILDING&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23T12:16:58.422+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock build jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;BUILT&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23T12:29:16.640+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock score ac jq&quot;,
+      &quot;detail&quot;: &quot;3 of 57 failed&quot;,
+      &quot;label&quot;: &quot;SCORE AC&quot;,
+      &quot;passed&quot;: false
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23T12:29:18.889+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock score build jq&quot;,
+      &quot;detail&quot;: &quot;1 block(s) unverified&quot;,
+      &quot;label&quot;: &quot;SCORE BUILD&quot;,
+      &quot;passed&quot;: false
+    },
+    {
+      &quot;at&quot;: &quot;2026-08-23T12:33:02.229+00:00&quot;,
+      &quot;attempts&quot;: 1,
+      &quot;command&quot;: &quot;drydock score release jq&quot;,
+      &quot;detail&quot;: &quot;&quot;,
+      &quot;label&quot;: &quot;SCORE RELEASE&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}
+</pre></article>
+</main>
+</body>
+</html>

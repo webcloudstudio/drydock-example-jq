@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-4.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-4.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/evidence/block-4.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/evidence/block-4.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/evidence/block-4.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/evidence/block-4.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;Evidence: Block 4 · Service (block-4)&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;block type: block&lt;/li&gt;&lt;li&gt;date: 2026-08-22&lt;/li&gt;&lt;li&gt;resulting state: closed/verified&lt;/li&gt;&lt;li&gt;story points (combined assembled cost): 24282&lt;/li&gt;&lt;li&gt;execution id: 20260822.195122.332Z-1d5baaf1&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stories built&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement JSON input and compact output handling. (EXEC-003) [story]&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Stacked context&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;compass: COMPASS.md (SP 3420)&lt;/li&gt;&lt;li&gt;implements: FEATURE-EXEC-003.md (SP 537)&lt;/li&gt;&lt;li&gt;context: run_conformance.py (SP 4354)&lt;/li&gt;&lt;li&gt;context: jq.test (SP 13058)&lt;/li&gt;&lt;li&gt;context: ARCHITECTURE_compact.md (SP 154)&lt;/li&gt;&lt;li&gt;stack: python_compact.md (SP 1534)&lt;/li&gt;&lt;li&gt;stack: common_compact.md (SP 1179)&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Build directory changes&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/ast.py&lt;/li&gt;&lt;li&gt;jq_interpreter/cli.py&lt;/li&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;jq_interpreter/interpreter.py&lt;/li&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;tests/test_json_io.py&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Pre-build acceptance observation&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;GREEN (prepassed): multiple-input-values (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Multiple JSON input values are processed in order and emitted one per line. return code: 0&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;RED: generator-line-output (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Multiple outputs generated from one input preserve order and multiplicity. return code: 1 stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&amp;#x27;./jq&amp;#x27;, &amp;#x27;-c&amp;#x27;, &amp;#x27;.[]&amp;#x27;], returncode=3, stdout=&amp;#x27;&amp;#x27;, stderr=&amp;#x27;jq: compile error: unsupported program in foundational parser\n&amp;#x27;) --- drydock: end values --- Traceback (most recent call last): File &amp;quot;generator-line-output.py&amp;quot;, line 11, in &amp;lt;module&amp;gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;GREEN (prepassed): compact-json-output (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Generated objects are serialized as single-line JSON values. return code: 0&lt;/p&gt;
+&lt;h2&gt;Post-build programmatic acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;PASS: multiple-input-values (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Multiple JSON input values are processed in order and emitted one per line. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;PASS: generator-line-output (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Multiple outputs generated from one input preserve order and multiplicity. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;PASS: compact-json-output (FEATURE-EXEC-003.md)&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;intent: Generated objects are serialized as single-line JSON values. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0&lt;/p&gt;
+&lt;h2&gt;Build summary&lt;/h2&gt;
+&lt;p&gt;RESULT: SUCCESS&lt;/p&gt;
+&lt;p&gt;FILES CHANGED:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;jq_interpreter/interpreter.py&lt;/li&gt;&lt;li&gt;jq_interpreter/cli.py&lt;/li&gt;&lt;li&gt;jq_interpreter/ast.py&lt;/li&gt;&lt;li&gt;jq_interpreter/parser.py&lt;/li&gt;&lt;li&gt;jq_interpreter/evaluator.py&lt;/li&gt;&lt;li&gt;tests/test_json_io.py&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;SUMMARY: Implemented whitespace-separated JSON stream input, compact ordered JSON output, and &lt;code&gt;.[]&lt;/code&gt; generator support. All 20 tests and declared acceptance checks pass.&lt;/p&gt;
+&lt;p&gt;BLOCKERS:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;None&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

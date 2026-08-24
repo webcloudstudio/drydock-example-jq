@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/blueprint/FEATURE-CORE-002.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/blueprint/FEATURE-CORE-002.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/blueprint/FEATURE-CORE-002.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Composition and Cartesian Evaluation</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Evaluate jq composition, collections, arguments, objects, and binary combinations.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-CORE-001.md</td></tr><tr><td>Provides</td><td>pipe, comma, argument, array, object, and binary composition</td></tr><tr><td>Consumes</td><td>ordered generator evaluator</td></tr></tbody></table></div>
+<h2>Scope</h2>
+<p>Implement composition over stream-valued filters: pipe outputs into downstream filters, concatenate comma streams, evaluate filter arguments against the correct input, collect arrays, construct objects, and produce Cartesian combinations for multi-output operands and arguments. Preserve jq&#x27;s documented evaluation order.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC core-002-conformance ===<br>Intent: The executable evaluates pipes, commas, arrays, objects, and composed operators.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import subprocess</p>
+<p>def run(program, input_text=&quot;null\n&quot;): return subprocess.run( [&quot;./jq&quot;, &quot;-c&quot;, program], input=input_text, capture_output=True, text=True, )</p>
+<p>assert run(&quot;[1,2,3] | .[]&quot;).returncode == 0 assert run(&quot;[1,2,3] | .[]&quot;).stdout == &quot;1\n2\n3\n&quot; assert run(&quot;[. + 1, . + 2]&quot;, &quot;4\n&quot;).stdout == &quot;[5,6]\n&quot; assert run(&quot;{a: 1, b: 2}&quot;).stdout == &#x27;{&quot;a&quot;:1,&quot;b&quot;:2}\n&#x27; === END AC core-002-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Pipe and comma ordering is observable and must remain stable.</li><li>Multi-output operands must produce all required Cartesian combinations.</li><li>Collection and object construction must not mutate their input values.</li></ul></article>
+</main>
+</body>
+</html>

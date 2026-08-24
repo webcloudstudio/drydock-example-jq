@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-006.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-006.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-FLOW-006.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Recursive Generator Primitives</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Provides jq recursive generator and recursive-descent primitives.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md, FEATURE-FLOW-005.md</td></tr><tr><td>Provides</td><td>while, until, repeat, recurse, recursive descent</td></tr><tr><td>Consumes</td><td>ordered generator evaluator, runtime error model</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>Recursive generators repeatedly apply filters while preserving jq stream order and termination behavior.</p>
+<ul><li><code>while(cond; update)</code> emits each qualifying value before continuing.</li><li><code>until(cond; next)</code> continues until its condition succeeds.</li><li><code>repeat(exp)</code> continues until the expression raises an error.</li><li><code>recurse</code> emits the current value and recursively generated descendants.</li><li><code>..</code> provides recursive descent equivalent to zero-argument <code>recurse</code>.</li></ul>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC flow-006-conformance ===<br>Intent: The executable passes the authoritative conformance cases exercising recursive generators and recursive descent.<br>Suite: scoped<br>Requires: executable=python3; scope=test</p>
+<p>import json import os import subprocess import sys</p>
+<p>SELECT = r&quot;while|until|recurse|repeat&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, SELECT, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC flow-006-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>Recursive filters terminate and preserve the documented depth-first output order.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Do not introduce incorrect termination for generators that intentionally produce repeated values.</li><li>Preserve runtime error behavior for <code>repeat</code>.</li></ul></article>
+</main>
+</body>
+</html>

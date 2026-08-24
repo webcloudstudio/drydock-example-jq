@@ -1,6 +1,9 @@
-# jq: PASSED
+# JQ
 
-4 of 4 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
+- Short description: Flagship drydock UAT kit. ~620 conformance test conditions from the upstream jq test suite (46 excluded, reasons in exclusions.txt). Provenance: byte-for-byte upstream files from github.com/jqlang/jq at tag jq-1.8.2, SHA-256 verified in PROVENANCE.md.
+- Status: BUILT
+
+3 of 4 receipt claims proven. Open `index.html` for the linked proof kit; verify it with `sha256sum -c SHA256SUMS`.
 
 ## Receipt
 
@@ -8,36 +11,28 @@
 |---|---|---|---|
 | Lifecycle completed | PASS | 19 lifecycle commands executed; the run ended at 19-score-release. | [result.json](result.json) |
 | External conformance suite passed | PASS | sh sources/full_test.sh exited 0. | [evidence/commands/16-test.stdout.log](evidence/commands/16-test.stdout.log) |
-| Release score passed | PASS | drydock score release exited 0. | [evidence/commands/19-score-release.stdout.log](evidence/commands/19-score-release.stdout.log) |
-| Integrity verification passed | PASS | 1,190 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
+| Release score passed | FAIL | drydock score release exited 1. | [evidence/commands/19-score-release.stdout.log](evidence/commands/19-score-release.stdout.log) |
+| Integrity verification passed | PASS | 2,697 files digested; verify with sha256sum -c SHA256SUMS. | [SHA256SUMS](SHA256SUMS) |
 
 ## Run facts
 
-- Drydock: `0.2.0` (commit `0ac0d2c34853476aa443ea11e6c0e7737c279942`)
+- Drydock: `0.2.0` (commit `23e60265a3ea5630f70363378f1aac610da09b97`)
 - Provider and model: `codex` / `gpt-5.6-luna`
 - Platform: `Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35` on Python `3.12.13`
-- Target: `jq`
 - Run: `20260822.044627`
-- Ran: 2026-08-23 07:38:01 EDT — 2026-08-23 08:34:20 EDT
-- Elapsed: 3379.2s
-- LLM calls: 187
-- Tokens: cached 140,953,088; uncached 13,717,106; output 813,760
-- LLM elapsed: 27672.3s
+- Elapsed: 472.7s
+- LLM calls: 188
+- Tokens: cached 140,962,048; uncached 13,722,404; output 813,916
+- LLM elapsed: 27679.7s
 - Build passes: 5; repairs: 15 attempts allowed
 - Conformance: passed
-- Verdict: expected PASSED, observed PASSED
-- Advisory scores: acceptance=exit 1, build-report=exit 1, release=exit 0
+- Advisory scores: acceptance=exit 1, build-report=exit 1, release=exit 1
 
 ## RUN SUMMARY
 
 - Input specification: [`sources/INSTRUCTIONS.md`](sources/INSTRUCTIONS.md)
 - Delivered Code: [`build/jq/`](build/jq)
 - Test Results: [`evidence/commands/16-test.stdout.log`](evidence/commands/16-test.stdout.log)
-
-## RUN NOTES:
-
-- One run is evidence of one run. It is not a benchmark.
-- It is not a security certification of the delivered code.
 
 ## Commands
 
@@ -58,10 +53,10 @@
 | 13-after-initial-build-build-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock build status jq` | 0 | 2.0s | [stdout](evidence/commands/13-after-initial-build-build-status.stdout.log) · [stderr](evidence/commands/13-after-initial-build-build-status.stderr.log) |
 | 14-after-initial-build-target-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status jq` | 0 | 4.8s | [stdout](evidence/commands/14-after-initial-build-target-status.stdout.log) · [stderr](evidence/commands/14-after-initial-build-target-status.stderr.log) |
 | 15-after-initial-build-workspace-status | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock status` | 0 | 1.9s | [stdout](evidence/commands/15-after-initial-build-workspace-status.stdout.log) · [stderr](evidence/commands/15-after-initial-build-workspace-status.stderr.log) |
-| 16-test | `sh sources/full_test.sh` | 0 | 226.3s | [stdout](evidence/commands/16-test.stdout.log) · [stderr](evidence/commands/16-test.stderr.log) |
-| 17-score-acceptance | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score ac jq` | 1 | 498.7s | [stdout](evidence/commands/17-score-acceptance.stdout.log) · [stderr](evidence/commands/17-score-acceptance.stderr.log) |
-| 18-score-build-report | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score build jq` | 1 | 2.2s | [stdout](evidence/commands/18-score-build-report.stdout.log) · [stderr](evidence/commands/18-score-build-report.stderr.log) |
-| 19-score-release | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score release jq` | 0 | 223.8s | [stdout](evidence/commands/19-score-release.stdout.log) · [stderr](evidence/commands/19-score-release.stderr.log) · [llm](evidence/commands/19-score-release.llm.log) |
+| 16-test | `sh sources/full_test.sh` | 0 | 105.4s | [stdout](evidence/commands/16-test.stdout.log) · [stderr](evidence/commands/16-test.stderr.log) |
+| 17-score-acceptance | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score ac jq` | 1 | 15.9s | [stdout](evidence/commands/17-score-acceptance.stdout.log) · [stderr](evidence/commands/17-score-acceptance.stderr.log) |
+| 18-score-build-report | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score build jq` | 1 | 15.5s | [stdout](evidence/commands/18-score-build-report.stdout.log) · [stderr](evidence/commands/18-score-build-report.stderr.log) |
+| 19-score-release | `/mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 -m drydock score release jq` | 1 | 256.5s | [stdout](evidence/commands/19-score-release.stdout.log) · [stderr](evidence/commands/19-score-release.stderr.log) · [llm](evidence/commands/19-score-release.llm.log) |
 
 ## Evidence
 

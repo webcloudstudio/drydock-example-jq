@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.181613.175Z_jq_build_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.181613.175Z_jq_build_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.181613.175Z_jq_build_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.181613.175Z_jq_build_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.181613.175Z_jq_build_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.181613.175Z_jq_build_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;&amp;lt;reusable-compact filename=&amp;quot;exclusions.txt&amp;quot;&amp;gt;
+One verbatim jq program per exclusion; comments document reasons. Entries must match corpus programs exactly. Stale entries are harness errors. Excludes only module-loader cases.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;full_test.sh&amp;quot;&amp;gt;
+Executable scoring entry point. Requires executable ./jq, sets JQ to it, and runs the supplied harness over the full corpus. Exit status is the conformance verdict.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;parser.y&amp;quot;&amp;gt;
+Defines jq grammar, expressions, filters, functions, imports, variables, generators, assignments, conditionals, patterns, and compile-error behavior. Compile failures must remain distinct from runtime failures.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;lexer.l&amp;quot;&amp;gt;
+Defines jq tokens, operators, literals, identifiers, bindings, fields, strings/interpolation, comments, formats, and delimiter state validation.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;builtin.jq&amp;quot;&amp;gt;
+Defines jq standard-library filters for mapping, reduction, iteration, paths, assignment, strings, regex, dates, math, streaming, SQL-style operations, and type predicates.
+&amp;lt;/reusable-compact&amp;gt;
+
+&amp;lt;reusable-compact filename=&amp;quot;jq-manual.txt&amp;quot;&amp;gt;
+Normative jq language contract: generator semantics, ordering, filtering, variables, functions, reductions, assignments, builtins, regex, modules, I/O, streaming, and numeric behavior.
+&amp;lt;/reusable-compact&amp;gt;
+
+AC_BROKEN: conformance-source-integrity
+
+RESULT: FAILED
+
+FILES CHANGED:
+- tests/test_conformance_assets.py
+
+SUMMARY:
+The corpus validation passes: 550 cases and 13 exclusions. Local conformance asset tests pass. The source-integrity acceptance check is impossible as written because the supplied harness intentionally exposes absolute resolved paths, while the criterion compares them to relative paths.
+
+BLOCKERS:
+- The acceptance criterion must compare `.resolve()` paths, or the supplied harness contract must change.
+- Full pytest collection also fails because `jq_interpreter` is not yet present; that belongs to a later implementation block.
+
+FAILURE_SUMMARY: Source-integrity criterion compares absolute and relative paths.
+FAILURE_DETAIL: `run_conformance.CORPUS` is `/.../sources/jq.test` because the immutable harness uses `Path(__file__).resolve()`, while the criterion expects `sources/jq.test`; modifying sources is forbidden.&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

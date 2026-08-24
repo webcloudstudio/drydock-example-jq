@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-002.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-002.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-EXEC-002.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-EXEC-002.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-EXEC-002.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-EXEC-002.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: jq Process Exit and Diagnostics&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Separates compile failures, runtime failures, successful completion, and diagnostics.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;FEATURE-EXEC-001.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;compile exit 3, runtime exit 5, success exit 0, stderr diagnostics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Intent&lt;/h2&gt;
+&lt;p&gt;Implement the process contract required by the conformance harness. Invalid jq syntax exits &lt;code&gt;3&lt;/code&gt;; a compiled program that raises at runtime exits &lt;code&gt;5&lt;/code&gt;; successful execution exits &lt;code&gt;0&lt;/code&gt;. Diagnostics go to standard error, while values emitted before a runtime failure remain on standard output.&lt;/p&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC compile-exit-code ===&lt;br&gt;Intent: A syntactically invalid jq program returns the compile-failure status.&lt;/p&gt;
+&lt;p&gt;import os import subprocess&lt;/p&gt;
+&lt;p&gt;result = subprocess.run( [f&amp;quot;{os.getcwd()}/jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;{&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) assert result.returncode == 3 === END AC compile-exit-code ===&lt;/p&gt;
+&lt;p&gt;=== AC runtime-exit-code ===&lt;br&gt;Intent: A compiled jq program that raises returns the runtime-failure status.&lt;/p&gt;
+&lt;p&gt;import os import subprocess&lt;/p&gt;
+&lt;p&gt;result = subprocess.run( [f&amp;quot;{os.getcwd()}/jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;error&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) assert result.returncode == 5 === END AC runtime-exit-code ===&lt;/p&gt;
+&lt;p&gt;=== AC partial-runtime-output ===&lt;br&gt;Intent: Values emitted before a runtime error remain available on stdout.&lt;/p&gt;
+&lt;p&gt;import os import subprocess&lt;/p&gt;
+&lt;p&gt;result = subprocess.run( [f&amp;quot;{os.getcwd()}/jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;1, error&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) assert result.returncode == 5 assert result.stdout.splitlines()[:1] == [&amp;quot;1&amp;quot;] === END AC partial-runtime-output ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Never collapse compile and runtime failures into one status.&lt;/li&gt;&lt;li&gt;Diagnostics must not be written to standard output.&lt;/li&gt;&lt;li&gt;Preserve output produced before a runtime failure.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

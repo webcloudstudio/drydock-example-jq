@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/logs/20260822.210533.139Z_jq_build_codex.stderr.log</title>
+<link rel="stylesheet" href="../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/logs/20260822.210533.139Z_jq_build_codex.stderr.log</h1><div class="filenav"><a href="../../../../../../index.html">&larr; Report</a><a href="../../../../../../workspace/targets/jq/drydock_receipt/logs/20260822.210533.139Z_jq_build_codex.stderr.log">Raw file</a></div></header>
+<article class="doc"><pre>2026-08-22T21:11:55.921741Z ERROR codex_core::tools::router: error=write_stdin failed: Unknown process id 12565
+2026-08-22T21:12:46.321436Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/parser.py:
+    def if_expr(self):
+        self.take(&#x27;if&#x27;); c=self.expr(0); self.take(&#x27;then&#x27;); a=self.expr(0); b=Node(&#x27;literal&#x27;,(&#x27;null&#x27;,))
+        if self.p()==&#x27;else&#x27;: self.take(); b=self.expr(0); self.take(&#x27;end&#x27;)
+        elif self.p()==&#x27;elif&#x27;:
+            self.take(&#x27;elif&#x27;); ec=self.expr(0); self.take(&#x27;then&#x27;); ea=self.expr(0)
+            eb=Node(&#x27;literal&#x27;,(&#x27;null&#x27;,))
+            if self.p()==&#x27;else&#x27;: self.take(); eb=self.expr(0); self.take(&#x27;end&#x27;)
+            elif self.p()==&#x27;elif&#x27;:
+                self.take(&#x27;elif&#x27;); eb=self.if_expr()
+            else: self.take(&#x27;end&#x27;)
+            b=Node(&#x27;if&#x27;,(ec,ea,eb))
+        else: self.take(&#x27;end&#x27;)
+        return Node(&#x27;if&#x27;,(c,a,b))
+</pre></article>
+</main>
+</body>
+</html>

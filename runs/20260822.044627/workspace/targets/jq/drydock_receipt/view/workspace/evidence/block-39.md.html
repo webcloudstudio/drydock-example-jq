@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-39.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-39.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-39.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 39 · Service (block-39)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-23</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53294</li><li>execution id: 20260823.114405.252Z-b659e0d3</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement input stream controls. (IO-001) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-IO-001.md#io-001-input-conformance: executable=python3; scope=test; authorization=existing Target environment</li><li>FEATURE-IO-001.md#io-001-streams: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-IO-001.md (SP 594)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li><li>stack: common.md (SP 1807)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/cli.py</li><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/interpreter.py</li><li>jq_interpreter/parser.py</li><li>tests/test_json_io.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): io-001-input-conformance (FEATURE-IO-001.md)</li></ul>
+<p>intent: The authoritative corpus cases covering input stream controls execute and pass. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 1, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<ul><li>GREEN (prepassed): io-001-streams (FEATURE-IO-001.md)</li></ul>
+<p>intent: The selected corpus includes both single-next-input and remaining-input stream behavior. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 1, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: io-001-input-conformance (FEATURE-IO-001.md)</li></ul>
+<p>intent: The authoritative corpus cases covering input stream controls execute and pass. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 1, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<ul><li>PASS: io-001-streams (FEATURE-IO-001.md)</li></ul>
+<p>intent: The selected corpus includes both single-next-input and remaining-input stream behavior. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 1, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/cli.py</li><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/interpreter.py</li><li>jq_interpreter/parser.py</li><li>tests/test_json_io.py</li></ul>
+<p>SUMMARY: Implemented <code>input</code>, <code>inputs</code>, <code>input_filename</code>, and <code>input_line_number</code> with shared stdin stream state and metadata tracking.</p>
+<p>Verification:</p>
+<ul><li>Both IO-001 scoped gates passed.</li><li>Full test suite: 173 passed.</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

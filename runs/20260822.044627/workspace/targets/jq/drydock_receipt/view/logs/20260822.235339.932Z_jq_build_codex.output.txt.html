@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.235339.932Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.235339.932Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.235339.932Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Improved shared operator error handling, defined-or fallback, unary negation, `nth`, `pick`, `input`, datetime diagnostics, `_strindices`, and `bsearch`. Project tests pass: 32 passed.
+
+Acceptance checks remain failing:
+- PARSE-003: 344 passed, 110 failed, 1 errored
+- PARSE-004: 156 passed, 54 failed, 1 errored
+
+BLOCKERS:
+- Broad evaluator gaps remain in assignments, closures, deep paths, numeric semantics, and additional builtins.
+
+FAILURE_SUMMARY: Scoped conformance gates remain red.
+FAILURE_DETAIL: The interpreter still fails substantial authoritative corpus coverage; further evaluator implementation is required before rerunning this build block.</pre></article>
+</main>
+</body>
+</html>

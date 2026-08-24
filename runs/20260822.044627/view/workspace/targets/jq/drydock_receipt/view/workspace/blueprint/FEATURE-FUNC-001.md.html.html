@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-FUNC-001.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-FUNC-001.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-FUNC-001.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-FUNC-001.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-FUNC-001.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-FUNC-001.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: Lexical Variable Bindings&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Provides jq lexical value bindings and variable lookup.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;ARCHITECTURE.md, FEATURE-FLOW-006.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;as bindings, variable lookup, lexical scope, shadowing&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;generator evaluator, parser AST&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Workflow&lt;/h2&gt;
+&lt;p&gt;Bindings evaluate the left-hand filter as a generator, bind each produced value lexically, and run the remainder of the expression with the original input and the active binding environment.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;EXP as $name | REST&lt;/code&gt; supports multiple generated bindings.&lt;/li&gt;&lt;li&gt;Bindings are immutable and lexically scoped.&lt;/li&gt;&lt;li&gt;Nested bindings may shadow outer names without mutating them.&lt;/li&gt;&lt;li&gt;Keyword identifiers may be used as binding names.&lt;/li&gt;&lt;li&gt;Array and object patterns bind missing members as &lt;code&gt;null&lt;/code&gt;.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC func-001-conformance ===&lt;br&gt;Intent: The executable passes the authoritative conformance cases exercising lexical bindings and variable lookup.&lt;br&gt;Suite: scoped&lt;br&gt;Requires: executable=python3; scope=test&lt;/p&gt;
+&lt;p&gt;import json import os import subprocess import sys&lt;/p&gt;
+&lt;p&gt;SELECT = r&amp;quot; as \$|\$[A-Za-z]&amp;quot; result = subprocess.run( [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, SELECT, &amp;quot;--json&amp;quot;], capture_output=True, text=True, env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&amp;quot;summary&amp;quot;] assert sum(tally.values()) &amp;gt; 0 assert tally[&amp;quot;fail&amp;quot;] == 0 and tally[&amp;quot;error&amp;quot;] == 0 assert result.returncode == 0 === END AC func-001-conformance ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Variable values remain available only within their lexical scope and preserve generator backtracking.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Do not implement bindings as mutable global variables.&lt;/li&gt;&lt;li&gt;Do not leak nested or out-of-scope bindings.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

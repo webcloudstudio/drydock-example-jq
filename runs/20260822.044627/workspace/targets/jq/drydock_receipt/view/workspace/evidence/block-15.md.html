@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-15.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-15.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-15.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 15 · Service (block-15)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51250</li><li>execution id: 20260823.024036.322Z-8ffc2035</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement slices and collection iteration. (VALUE-003) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-VALUE-003.md (SP 350)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_003_slices_iteration.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): value-003-conformance (FEATURE-VALUE-003.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising slices and collection iteration execute successfully. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 144, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 4 }, &quot;cases&quot;: [ { &quot;line&quot;: 1900, &quot;program&quot;: &quot;import \&quot;a\&quot; as foo; import \&quot;b\&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[\&quot;a\&quot;,\&quot;b\&quot;,\&quot;c\&quot;,\&quot;a\&quot;]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1904, &quot;program&quot;: &quot;import \&quot;c\&quot; as foo; [foo::a, foo::c]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[0,\&quot;acmehbah\&quot;]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1912, &quot;program&quot;: &quot;import \&quot;data\&quot; as $e; import \&quot;data\&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&quot;;\&quot;)&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;\&quot;is a test;is too;is a test;is too\&quot;&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1929, &quot;program&quot;: &quot;import \&quot;shadow1\&quot; as f; import \&quot;shadow2\&quot; as f; import \&quot;shadow1\&quot; as e; [e::e, f::e]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[2,3]&quot; ], &quot;actual&quot;: [] } ] }</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: value-003-conformance (FEATURE-VALUE-003.md)</li></ul>
+<p>intent: The authoritative corpus cases exercising slices and collection iteration execute successfully. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 144, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 4 }, &quot;cases&quot;: [ { &quot;line&quot;: 1900, &quot;program&quot;: &quot;import \&quot;a\&quot; as foo; import \&quot;b\&quot; as bar; def fooa: foo::a; [fooa, bar::a, bar::b, foo::a]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[\&quot;a\&quot;,\&quot;b\&quot;,\&quot;c\&quot;,\&quot;a\&quot;]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1904, &quot;program&quot;: &quot;import \&quot;c\&quot; as foo; [foo::a, foo::c]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[0,\&quot;acmehbah\&quot;]&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1912, &quot;program&quot;: &quot;import \&quot;data\&quot; as $e; import \&quot;data\&quot; as $d; [$d[].this,$e[].that,$d::d[].this,$e::e[].that]|join(\&quot;;\&quot;)&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;\&quot;is a test;is too;is a test;is too\&quot;&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1929, &quot;program&quot;: &quot;import \&quot;shadow1\&quot; as f; import \&quot;shadow2\&quot; as f; import \&quot;shadow1\&quot; as e; [e::e, f::e]&quot;, &quot;status&quot;: &quot;skip&quot;, &quot;detail&quot;: &quot;declared in exclusions.txt&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[2,3]&quot; ], &quot;actual&quot;: [] } ] }</p>
+<h2>Build summary</h2>
+<p>Implemented VALUE-003 slices and collection iteration, including fractional bounds, null handling, ordering, multiplicity, and optional iteration.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_value_003_slices_iteration.py</li></ul>
+<p>SUMMARY: 73 tests passed. Scoped conformance: 144 passed, 0 failed, 0 errored, 4 skipped.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Process-Contract.md.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Process-Contract.md.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/FEATURE-Process-Contract.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/FEATURE-Process-Contract.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/FEATURE-Process-Contract.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/FEATURE-Process-Contract.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;FEATURE: jq Process Contract&lt;/h1&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Version&lt;/td&gt;&lt;td&gt;20260822 V1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Description&lt;/td&gt;&lt;td&gt;Defines jq compilation, runtime failure, success, partial-output, and diagnostic process behavior.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Depends On&lt;/td&gt;&lt;td&gt;FEATURE-Executable-Entry-Point.md&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Provides&lt;/td&gt;&lt;td&gt;compile exit 3, runtime exit 5, success exit 0, stderr diagnostics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Consumes&lt;/td&gt;&lt;td&gt;./jq -c program execution&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;h2&gt;Compile and Runtime Outcomes&lt;/h2&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Condition&lt;/th&gt;&lt;th&gt;Exit&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Program compiles and finishes&lt;/td&gt;&lt;td&gt;&lt;code&gt;0&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Program is rejected during compilation&lt;/td&gt;&lt;td&gt;&lt;code&gt;3&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Program compiles and raises during evaluation&lt;/td&gt;&lt;td&gt;&lt;code&gt;5&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;A compile failure must not be reported as a runtime failure. A runtime failure may occur after values have already been emitted; those values remain observable on stdout. Diagnostics go to stderr and are not part of the value stream.&lt;/p&gt;
+&lt;h2&gt;Programmatic Acceptance&lt;/h2&gt;
+&lt;p&gt;=== AC exec-002-compile-runtime ===&lt;br&gt;Intent: The executable distinguishes compile failures, runtime failures, and successful completion.&lt;br&gt;Suite: scoped&lt;br&gt;Requires: executable=python3; scope=test&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;compile_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;{&amp;quot;,], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) runtime_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;error&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) success_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) assert compile_result.returncode == 3 assert runtime_result.returncode == 5 assert success_result.returncode == 0 assert compile_result.stderr != &amp;quot;&amp;quot; assert runtime_result.stderr != &amp;quot;&amp;quot; === END AC exec-002-compile-runtime ===&lt;/p&gt;
+&lt;p&gt;=== AC exec-002-statuses ===&lt;br&gt;Intent: The executable exposes distinct compile, runtime, and successful completion statuses.&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;compile_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;{&amp;quot;,], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) runtime_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;error&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) success_result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) assert compile_result.returncode == 3 assert runtime_result.returncode == 5 assert success_result.returncode == 0 === END AC exec-002-statuses ===&lt;/p&gt;
+&lt;p&gt;=== AC exec-002-partial-output ===&lt;br&gt;Intent: A runtime failure preserves values emitted before the failure and keeps diagnostics off standard output.&lt;/p&gt;
+&lt;p&gt;import subprocess&lt;/p&gt;
+&lt;p&gt;result = subprocess.run( [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;1, error&amp;quot;], input=&amp;quot;null\n&amp;quot;, capture_output=True, text=True, ) print(result.stdout) print(result.stderr, file=&lt;strong&gt;import&lt;/strong&gt;(&amp;quot;sys&amp;quot;).stderr) assert result.returncode == 5 assert result.stdout.splitlines() == [&amp;quot;1&amp;quot;] assert result.stderr != &amp;quot;&amp;quot; === END AC exec-002-partial-output ===&lt;/p&gt;
+&lt;h2&gt;User Acceptance&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;None.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Compile failures exit &lt;code&gt;3&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Runtime failures exit &lt;code&gt;5&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Successful completion exits &lt;code&gt;0&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Runtime output produced before failure is preserved.&lt;/li&gt;&lt;li&gt;Diagnostics are written to stderr only.&lt;/li&gt;&lt;/ul&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

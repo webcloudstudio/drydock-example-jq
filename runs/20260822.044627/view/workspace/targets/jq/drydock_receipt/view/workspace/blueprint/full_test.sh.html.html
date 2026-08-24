@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/full_test.sh.html</title>
+<link rel="stylesheet" href="../../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/blueprint/full_test.sh.html</h1><div class="filenav"><a href="../../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/blueprint/full_test.sh.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/blueprint/full_test.sh&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/blueprint/full_test.sh&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../../workspace/blueprint/full_test.sh&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;#!/bin/sh
+# full_test.sh — scoring entry point. Do not filter, skip, or reinterpret.
+#
+# `drydock uat` runs `sh sources/full_test.sh` from the completed application root and takes its
+# exit code and output as the score. The interface check is separate from the conformance run so
+# that a missing or non-executable program and a genuine conformance failure are distinguishable
+# in the evidence. JQ is the harness&amp;#x27;s only knowledge of the implementation language; the
+# harness itself is language-neutral.
+set -eu
+if [ ! -x ./jq ]; then
+    echo &amp;quot;error: no executable ./jq at the application root.&amp;quot; &amp;gt;&amp;amp;2
+    echo &amp;quot;The deliverable is an executable named jq that reads JSON on stdin.&amp;quot; &amp;gt;&amp;amp;2
+    exit 1
+fi
+JQ=&amp;quot;$PWD/jq&amp;quot; exec python3 sources/run_conformance.py
+&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

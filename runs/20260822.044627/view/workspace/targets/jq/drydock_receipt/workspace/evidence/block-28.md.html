@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/evidence/block-28.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/evidence/block-28.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/evidence/block-28.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 28 · Service (block-28)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53792</li><li>execution id: 20260823.035649.869Z-75289107</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement path access and mutation primitives. (PATH-002) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-PATH-002.md#path-002-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-PATH-002.md (SP 483)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_path_002_access_mutation.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>GREEN (prepassed): path-002-conformance (FEATURE-PATH-002.md)</li></ul>
+<p>intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes. return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 16, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: path-002-conformance (FEATURE-PATH-002.md)</li></ul>
+<p>intent: The authoritative corpus slice covering getpath, setpath, and delpaths executes and passes. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 16, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>Implemented PATH-002.</p>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_path_002_access_mutation.py</li></ul>
+<p>SUMMARY: Added validated immutable <code>getpath</code>, <code>setpath</code>, and <code>delpaths</code> behavior, including nested creation, deletion ordering, negative indices, depth/index limits, and invalid path handling.</p>
+<p>Verification:</p>
+<ul><li>Scoped conformance: 16 passed, 0 failed, 0 errors</li><li>Pytest: 131 passed</li></ul>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

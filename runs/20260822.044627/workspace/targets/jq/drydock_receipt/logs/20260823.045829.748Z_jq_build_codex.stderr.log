@@ -1,0 +1,26 @@
+2026-08-23T04:59:59.778169Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+def _stringify(value: object) -> str:
+    import json
+    if isinstance(value, InputNumber):
+        value = float(value)
+    if isinstance(value, float) and math.isfinite(value) and value.is_integer():
+        if abs(value) >= 1e16:
+            from decimal import Decimal
+            return format(Decimal(str(value)), '.0f')
+        return str(int(value))
+    return value if isinstance(value, str) else json.dumps(value, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+
+
+def _apply_format(name: str, value: object, template: bool = False) -> str:
+    import base64, html, json, urllib.parse
+    if name == "text": return _stringify(value)
+    if name == "json": return json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+    if name == "html": return html.escape(_stringify(value), quote=True).replace("&#x27;", "&apos;")
+    if name == "uri": return urllib.parse.quote(_stringify(value), safe="-_.~")
+    if name == "urid": return urllib.parse.unquote(_stringify(value))
+    if name == "base64": return base64.b64encode(_stringify(value).encode()).decode()
+    if name == "base64d": return base64.b64decode(_stringify(value)).decode()
+    if name == "csv": return ",".join('"' + str(x).replace('"', '""') + '"' if isinstance(x, str) else _stringify(x) for x in value)
+    if name == "tsv": return "\t".join(_stringify(x).replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") for x in value)
+    if name == "sh": return "'" + _stringify(value).replace("'", "'\\''") + "'"
+    raise RuntimeError(f"unknown format @{name}")

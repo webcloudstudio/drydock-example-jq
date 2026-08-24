@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-VALUE-001.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-VALUE-001.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-VALUE-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: jq Values and Numeric Model</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20220822 V1</td></tr><tr><td>Description</td><td>Define jq&#x27;s JSON value kinds, special numeric values, and numeric serialization behavior.</td></tr><tr><td>Depends On</td><td>FEATURE-CORE-004.md</td></tr><tr><td>Provides</td><td>null, boolean, number, string, array, object, NaN, infinity values</td></tr><tr><td>Consumes</td><td>JSON input reader</td></tr></tbody></table></div>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC value-001-conformance ===<br>Intent: The authoritative corpus cases exercising jq values and special numeric behavior execute successfully.<br>Suite: scoped</p>
+<p>import json import os import subprocess import sys</p>
+<p>select = r&quot;nan|infinite|tojson|fromjson&quot; result = subprocess.run( [sys.executable, &quot;sources/run_conformance.py&quot;, &quot;--select&quot;, select, &quot;--json&quot;], capture_output=True, text=True, env={**os.environ, &quot;JQ&quot;: f&quot;{os.getcwd()}/jq&quot;}, ) print(result.stdout) print(result.stderr, file=sys.stderr) report = json.loads(result.stdout) tally = report[&quot;summary&quot;] assert sum(tally.values()) &gt; 0 assert tally[&quot;fail&quot;] == 0 and tally[&quot;error&quot;] == 0 assert result.returncode == 0 === END AC value-001-conformance ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>Use only Python standard-library facilities.</li><li>Do not introduce a third-party jq value implementation or external runtime.</li><li>Serialize non-finite values according to jq behavior rather than emitting invalid JSON tokens.</li></ul></article>
+</main>
+</body>
+</html>

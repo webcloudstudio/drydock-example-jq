@@ -1,0 +1,18 @@
+2026-08-23T00:46:38.397171Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py:
+    if name == 'del':
+        result = value
+        for path_expr in args:
+            if path_expr.operation == 'slice':
+                base_node, start_node, end_node = path_expr.arguments
+                for parent in _paths(base_node, result, env):
+                    current = _get_path(result, parent)
+                    if isinstance(current, list):
+                        start = _one(start_node, current, env)
+                        end = None if end_node is None else _one(end_node, current, env)
+                        first = 0 if start is None or (isinstance(start, float) and math.isnan(start)) else math.floor(start)
+                        last = len(current) if end_node is None or (isinstance(end, float) and math.isnan(end)) else math.ceil(end)
+                        result = _set_path(result, parent, current[:int(first)] + current[int(last):])
+                continue
+            for path in _paths(path_expr, result, env):
+                result = _delete_path(result, path)
+        yield result

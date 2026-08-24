@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-001.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-001.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/blueprint/FEATURE-CONF-001.md">Raw file</a></div></header>
+<article class="doc"><h1>FEATURE: Conformance Asset Staging</h1>
+<div class="scroll"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Version</td><td>20260822 V1</td></tr><tr><td>Description</td><td>Stages and validates the immutable jq conformance assets.</td></tr><tr><td>Depends On</td><td>ARCHITECTURE.md</td></tr><tr><td>Provides</td><td>sources/ conformance corpus, manual, grammar, harness, exclusions, full-test script</td></tr><tr><td>Consumes</td><td>target application root</td></tr></tbody></table></div>
+<h2>Workflow</h2>
+<p>The supplied source assets are staged byte-for-byte beneath <code>sources/</code>. The harness parser is imported directly to validate corpus structure and exclusion consistency without launching the candidate interpreter.</p>
+<h2>Programmatic Acceptance</h2>
+<p>=== AC conf-001-assets ===<br>Intent: The staged corpus parses into the authoritative case set and all declared exclusions match cases.<br>Requires: executable=python3; scope=test</p>
+<p>import sys</p>
+<p>sys.path.insert(0, &quot;sources&quot;) import run_conformance as harness</p>
+<p>cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&quot;utf-8&quot;)) excluded = harness.apply_exclusions( cases, harness.parse_exclusions(harness.EXCLUSIONS), ) assert len(cases) == 550 assert len(excluded) == 13 assert harness.CORPUS.is_file() assert harness.EXCLUSIONS.is_file() === END AC conf-001-assets ===</p>
+<h2>User Acceptance</h2>
+<ul><li>None.</li></ul>
+<h2>Guardrails</h2>
+<ul><li>The supplied scoring assets remain read-only and are never modified, rewritten, filtered, or substituted.</li></ul></article>
+</main>
+</body>
+</html>

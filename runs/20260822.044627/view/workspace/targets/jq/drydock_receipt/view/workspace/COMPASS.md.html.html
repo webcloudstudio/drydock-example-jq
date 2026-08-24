@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/workspace/COMPASS.md.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/workspace/COMPASS.md.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/workspace/COMPASS.md.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;workspace/COMPASS.md&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;workspace/COMPASS.md&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../workspace/COMPASS.md&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;h1&gt;COMPASS: jq&lt;/h1&gt;
+&lt;h2&gt;Compass&lt;/h2&gt;
+&lt;p&gt;Build a standalone interpreter for the jq language as described in &lt;code&gt;sources/jq-manual.txt&lt;/code&gt;. The product is an executable file named &lt;code&gt;jq&lt;/code&gt; at the application root. It reads JSON from standard input, evaluates a jq filter as an ordered generator, and writes each value the filter produces to standard output as one compact JSON value per line.&lt;/p&gt;
+&lt;p&gt;Correctness is measured by the upstream jq conformance corpus &lt;code&gt;sources/jq.test&lt;/code&gt;, taken verbatim from jq 1.8.2, minus the cases named in &lt;code&gt;sources/exclusions.txt&lt;/code&gt;. The goal is every case passing, none failed and none errored.&lt;/p&gt;
+&lt;h2&gt;Constraints&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Implement in Python using only the standard library.&lt;/li&gt;&lt;li&gt;Provide an executable named &lt;code&gt;jq&lt;/code&gt; at the application root, invoked as &lt;code&gt;./jq -c &amp;#x27;&amp;lt;program&amp;gt;&amp;#x27;&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;&lt;code&gt;-c&lt;/code&gt; is the only option exercised. No other command-line option is required.&lt;/li&gt;&lt;li&gt;Run without network access, package installation, or external runtime dependencies.&lt;/li&gt;&lt;li&gt;Exit &lt;code&gt;0&lt;/code&gt; when the program compiled and ran to completion, &lt;code&gt;3&lt;/code&gt; when it did not compile, and &lt;code&gt;5&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;when it compiled and raised at run time. The harness grades on this distinction.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Diagnostics go to standard error and are never compared.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Guardrails&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Do not shell out to a system &lt;code&gt;jq&lt;/code&gt; executable.&lt;/li&gt;&lt;li&gt;Do not use a third-party jq implementation or binding.&lt;/li&gt;&lt;li&gt;Do not modify, rewrite, trim, regenerate, or substitute any file under &lt;code&gt;sources/&lt;/code&gt;. Those assets&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;are restored before grading and an edit is reported as tampering.&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Preserve generator ordering, multiplicity, backtracking, and partial-output runtime behavior.&lt;/li&gt;&lt;li&gt;Keep compile failures distinct from runtime failures using exit codes 3 and 5.&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;Verification Protocol&lt;/h2&gt;
+&lt;p&gt;This section is normative. It governs which story may invoke the supplied harness, and how.&lt;/p&gt;
+&lt;h3&gt;Invoking the harness&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;sources/run_conformance.py&lt;/code&gt; &lt;strong&gt;requires&lt;/strong&gt; the environment variable &lt;code&gt;JQ&lt;/code&gt;, the command that runs the candidate implementation. Without it the harness exits &lt;code&gt;2&lt;/code&gt; on its own usage code, which is a harness fault and never a verdict about the interpreter. Every invocation, in every acceptance criterion and every developer command, supplies it:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py            # whole corpus, the scored run
+JQ=&amp;quot;$PWD/jq&amp;quot; python3 sources/run_conformance.py --select &amp;#x27;reduce&amp;#x27;   # run one construct for real&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Those two commands are the only ways this build runs the harness. They are specified verbatim below under &lt;em&gt;The two harness invocations&lt;/em&gt;, together with the flag this build forbids.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sources/&lt;/code&gt; is read only. No story edits, patches, or regenerates &lt;code&gt;sources/run_conformance.py&lt;/code&gt;, &lt;code&gt;sources/jq.test&lt;/code&gt;, or &lt;code&gt;sources/exclusions.txt&lt;/code&gt;; a harness defect is reported, not repaired in place. A story that needs to experiment with the harness works on a copy outside &lt;code&gt;sources/&lt;/code&gt;, and every acceptance criterion invokes the original &lt;code&gt;sources/run_conformance.py&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;An acceptance criterion written in Python supplies it by &lt;strong&gt;extending&lt;/strong&gt; the inherited environment, never by replacing it:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;env={**os.environ, &amp;quot;JQ&amp;quot;: str(build_dir / &amp;quot;jq&amp;quot;)}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;env={&amp;quot;JQ&amp;quot;: ...}&lt;/code&gt; alone leaves the child with no &lt;code&gt;PATH&lt;/code&gt;, so nothing it invokes resolves and the criterion is false at every level of implementation quality.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sources/full_test.sh&lt;/code&gt; sets &lt;code&gt;JQ&lt;/code&gt; itself for the runner it wraps and therefore takes no environment from its caller.&lt;/p&gt;
+&lt;p&gt;The harness reserves exit &lt;code&gt;2&lt;/code&gt; for its own faults — a missing corpus, an unset &lt;code&gt;JQ&lt;/code&gt;, a stale exclusion list. Exit &lt;code&gt;2&lt;/code&gt; never means the interpreter is wrong.&lt;/p&gt;
+&lt;p&gt;The summary line is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;jq conformance: NNN passed, N failed, N errored, N skipped (corpus jq.test @ jq-1.8.2)&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;The two harness invocations&lt;/h3&gt;
+&lt;p&gt;An acceptance criterion that runs &lt;code&gt;sources/run_conformance.py&lt;/code&gt; uses one of these two commands. No criterion in this build passes any other flag to the harness.&lt;/p&gt;
+&lt;div class=&quot;scroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Story kind&lt;/th&gt;&lt;th&gt;Command&lt;/th&gt;&lt;th&gt;Executes cases?&lt;/th&gt;&lt;th&gt;Asserts&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Every behavioral story&lt;/td&gt;&lt;td&gt;&lt;code&gt;--select &amp;lt;regex&amp;gt; --json&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Yes, the selected slice&lt;/td&gt;&lt;td&gt;exit &lt;code&gt;0&lt;/code&gt;, zero &lt;code&gt;fail&lt;/code&gt;, zero &lt;code&gt;error&lt;/code&gt;, non-zero case count&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Terminal story (once, last)&lt;/td&gt;&lt;td&gt;&lt;code&gt;sh sources/full_test.sh&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Yes, all of them&lt;/td&gt;&lt;td&gt;exit &lt;code&gt;0&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;The staging story does not appear in this table. It does not run the harness at all; see &lt;em&gt;The staging story&lt;/em&gt; below.&lt;/p&gt;
+&lt;h4&gt;&lt;code&gt;--list&lt;/code&gt; is never run&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;sources/run_conformance.py&lt;/code&gt; accepts a flag, spelled &lt;code&gt;--list&lt;/code&gt;, that prints the names of the matching cases and then exits without executing any of them. &lt;code&gt;sources/INSTRUCTIONS.md&lt;/code&gt;, the file header, and &lt;code&gt;--help&lt;/code&gt; all document it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;This build never runs it. Not in an acceptance criterion, not in a story, not in a script, not in a command typed by a build agent, not while developing and not while verifying. The string &lt;code&gt;--list&lt;/code&gt; does not appear anywhere in this project&amp;#x27;s output. If you have written it, that line is wrong — delete it and use one of the two commands above.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A Drydock build is headless. There is no one watching the output, so a mode whose entire purpose is to print something for a person to read has no reader and no reason to run.&lt;/p&gt;
+&lt;p&gt;The flag returns &lt;code&gt;0&lt;/code&gt; at the top of the run — before the harness reads &lt;code&gt;JQ&lt;/code&gt;, before it resolves the candidate command, before it executes a single case. A criterion built on it passes when &lt;code&gt;jq&lt;/code&gt; is an empty file, when &lt;code&gt;jq&lt;/code&gt; does not exist, and when the story it gates was never written. It is not a weak proof, not a partial proof, and not an acceptable proof for staging, for scaffolding, or for an early story whose implementation is incomplete. It is not a proof. Thirty-six criteria in one earlier plan of this project used it, every one of them reported green, and it cost three days.&lt;/p&gt;
+&lt;p&gt;If you are writing a criterion and reaching for that flag, the reason is always the same: the story&amp;#x27;s code does not exist yet and you want a command that will not fail. That is the definition of a criterion that proves nothing. Write the &lt;code&gt;--select ... --json&lt;/code&gt; form instead and let it be red until the story makes it green. &lt;strong&gt;A criterion is supposed to fail before its story is built.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The same prohibition covers any other flag whose effect is to not execute the cases — enumeration, dry-run, validation, or help. If a flag&amp;#x27;s documented purpose is &amp;quot;run nothing&amp;quot;, it has no place in an acceptance criterion.&lt;/p&gt;
+&lt;h4&gt;Behavioral criterion — copy this, changing only &lt;code&gt;SELECT&lt;/code&gt;&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;import json
+import os
+import subprocess
+import sys
+
+SELECT = r&amp;quot;reduce&amp;quot;
+
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, SELECT, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+tally = report[&amp;quot;summary&amp;quot;]
+assert sum(tally.values()) &amp;gt; 0, f&amp;quot;selector matched no case: {SELECT}&amp;quot;
+assert tally[&amp;quot;fail&amp;quot;] == 0 and tally[&amp;quot;error&amp;quot;] == 0, tally
+assert result.returncode == 0, result.returncode&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Three assertions, and all three are required.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;The selector matched something.&lt;/strong&gt; &lt;code&gt;--select&lt;/code&gt; is a regular expression matched against the&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;program text of each case. A selector that matches nothing yields zero cases, zero failures, and exit &lt;code&gt;0&lt;/code&gt; — green, and worth nothing. Alternations naming ideas rather than syntax (&lt;code&gt;closure&lt;/code&gt;, &lt;code&gt;recursive&lt;/code&gt;, &lt;code&gt;optional&lt;/code&gt;) match no jq program and are the common way to write one by accident. Select on syntax the corpus actually contains: &lt;code&gt;reduce&lt;/code&gt;, &lt;code&gt;foreach&lt;/code&gt;, &lt;code&gt;def&lt;/code&gt;, &lt;code&gt;as \$&lt;/code&gt;, &lt;code&gt;try&lt;/code&gt;, &lt;code&gt;//&lt;/code&gt;, &lt;code&gt;path(&lt;/code&gt;.&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;strong&gt;No case failed or errored.&lt;/strong&gt; Read off the parsed JSON tally, not off any printed line.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;The exit status is &lt;code&gt;0&lt;/code&gt;.&lt;/strong&gt; The harness returns &lt;code&gt;0&lt;/code&gt; only when &lt;code&gt;fail&lt;/code&gt; and &lt;code&gt;error&lt;/code&gt; are both zero,&lt;/li&gt;&lt;/ol&gt;
+&lt;p&gt;and reserves &lt;code&gt;2&lt;/code&gt; for its own faults — a missing corpus, an unset &lt;code&gt;JQ&lt;/code&gt;, a stale exclusion list. Exit &lt;code&gt;2&lt;/code&gt; is never a verdict about the interpreter.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--json&lt;/code&gt; writes the report and nothing else to stdout, so &lt;code&gt;json.loads(result.stdout)&lt;/code&gt; is total. Do not assert against the human summary line, and do not grep stdout for &lt;code&gt;passed&lt;/code&gt; or &lt;code&gt;failed&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;The terminal story&lt;/h3&gt;
+&lt;p&gt;The &lt;strong&gt;terminal story&lt;/strong&gt; is the last story in the build order: the one on which every other story is a transitive dependency, and after which no further story runs. It is a verification story. Its job is not to add capability but to prove that the capability every preceding story delivered is present, together, at the end of the build.&lt;/p&gt;
+&lt;p&gt;The terminal story of this project runs &lt;code&gt;sh sources/full_test.sh&lt;/code&gt;, asserts &lt;code&gt;returncode == 0&lt;/code&gt;, prints the captured stdout and stderr so a failure is diagnosable from the evidence alone, and carries the Sea Trial. It is the only story permitted to run the whole corpus.&lt;/p&gt;
+&lt;p&gt;A story is not terminal because its name contains &amp;quot;verify&amp;quot;, because it is a test harness, or because it stages the test assets. Staging the corpus is foundational work that happens early; running the corpus is terminal work that happens last. Do not place a whole-corpus gate on a story that cannot yet run it — it fails vacuously and teaches nothing.&lt;/p&gt;
+&lt;h3&gt;Scope of every other story&lt;/h3&gt;
+&lt;p&gt;Every non-terminal story is gated on its own declared behavior only, through &lt;code&gt;--select&lt;/code&gt; against the constructs that story implements, and the criterion asserts the selected slice passes. A non-terminal story never invokes &lt;code&gt;sources/full_test.sh&lt;/code&gt; and never runs the corpus unfiltered: a partial interpreter fails most of an authoritative corpus by construction, and its unimplemented cases exhaust the harness&amp;#x27;s per-case timeout rather than returning, so the unscoped run costs the most exactly where it teaches the least.&lt;/p&gt;
+&lt;p&gt;Regression across stories is not the responsibility of any story&amp;#x27;s criteria. Drydock re-runs every previously proven criterion after each block and attributes a criterion that was green and is now red to the block that broke it, so a criterion proven at story 2 and broken at story 6 fails story&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;Do not author a mid-build story whose purpose is to re-run earlier stories&amp;#x27; checks.&lt;/li&gt;&lt;/ol&gt;
+&lt;h3&gt;The staging story&lt;/h3&gt;
+&lt;p&gt;The story that stages the conformance assets is gated on the assets being present, complete, and mutually consistent — not on a bare file-existence assertion, and not on the corpus running. It proves that in process, by importing the harness and calling its parsers directly. It never launches the harness, so the question of which flags to pass does not arise:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import sys
+
+sys.path.insert(0, &amp;quot;sources&amp;quot;)
+import run_conformance as harness
+
+EXPECTED_CASES = 550
+EXPECTED_EXCLUSIONS = 13
+
+cases = harness.parse_corpus(harness.CORPUS.read_text(encoding=&amp;quot;utf-8&amp;quot;))
+excluded = harness.apply_exclusions(cases, harness.parse_exclusions(harness.EXCLUSIONS))
+assert len(cases) == EXPECTED_CASES, len(cases)
+assert len(excluded) == EXPECTED_EXCLUSIONS, len(excluded)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This reads state rather than output: the harness module imports, the corpus parses into the expected number of cases, and every exclusion still matches a case — &lt;code&gt;apply_exclusions&lt;/code&gt; raises on a stale entry, so a corpus and an exclusion list that have drifted apart fail here rather than silently skipping cases later.&lt;/p&gt;
+&lt;p&gt;It claims nothing about the interpreter, because at this point in the build there is nothing to claim. Every story that claims a construct works runs that construct through &lt;code&gt;--select ... --json&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;The corpus&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sources/jq.test&lt;/code&gt; documents its own format in its header. Cases are separated by blank lines; blank lines and &lt;code&gt;#&lt;/code&gt; lines are ignored. A case is a program line, an input line, and then the expected output values, one per line. A case preceded by &lt;code&gt;%%FAIL&lt;/code&gt; is a program that must be rejected at compile time; the following lines are upstream jq&amp;#x27;s diagnostic, which the harness records but never compares. Reproducing jq&amp;#x27;s exact error text is reverse-engineering a C implementation rather than conforming to a specification, so a &lt;code&gt;%%FAIL&lt;/code&gt; case passes on exit &lt;code&gt;3&lt;/code&gt; alone.&lt;/p&gt;
+&lt;p&gt;Values are compared structurally, not textually. &lt;code&gt;1&lt;/code&gt; and &lt;code&gt;1.0&lt;/code&gt; are the same jq value, and so are two objects whose keys print in a different order. Output formatting is therefore not under test, but the number and order of values is.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sources/exclusions.txt&lt;/code&gt; names the corpus cases this kit cannot run, with the reason. They are the module-loader cases, whose &lt;code&gt;import&lt;/code&gt; and &lt;code&gt;include&lt;/code&gt; resolve against a search path of fixture files a flat source import cannot carry. They are reported as &lt;code&gt;skipped&lt;/code&gt; and are not part of the score.&lt;/p&gt;
+&lt;p&gt;The module &lt;em&gt;grammar&lt;/em&gt; cases are not excluded and must pass. &lt;code&gt;module (.+1); 0&lt;/code&gt;, &lt;code&gt;module []; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;a&amp;quot; (.+1); 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;a&amp;quot; []; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;\ &amp;quot;; 0&lt;/code&gt;, &lt;code&gt;include &amp;quot;\(a)&amp;quot;; 0&lt;/code&gt;, and &lt;code&gt;%::wat&lt;/code&gt; are all &lt;code&gt;%%FAIL&lt;/code&gt; cases: the front end parses the module syntax far enough to reject them, without ever touching the filesystem.&lt;/p&gt;
+&lt;p&gt;&amp;lt;!-- drydock:build-write-guardrail:start --&amp;gt;&lt;/p&gt;
+&lt;h2&gt;Build Write Guardrail&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Authorized build directory: &lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq&lt;/code&gt;&lt;/li&gt;&lt;li&gt;Authorized Target directory: &lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq&lt;/code&gt;&lt;/li&gt;&lt;li&gt;Build agents have permission to create, modify, and remove files required by the active build block inside these authorized directories.&lt;/li&gt;&lt;li&gt;No path outside these authorized directories may be modified.&lt;/li&gt;&lt;li&gt;Protected Drydock artifacts:&lt;ul&gt;&lt;li&gt;&lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/blueprint/&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/MANIFEST.md&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/COMPASS.md&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/QuarterDeck/&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence/&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;&amp;lt;!-- drydock:build-write-guardrail:end --&amp;gt;&lt;/p&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/view/logs/20260822.175747.734Z_jq_plan_codex.output.txt.html</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/view/logs/20260822.175747.734Z_jq_plan_codex.output.txt.html</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/view/logs/20260822.175747.734Z_jq_plan_codex.output.txt.html">Raw file</a></div></header>
+<article class="doc"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;logs/20260822.175747.734Z_jq_plan_codex.output.txt&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../../assets/kit.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;main&gt;
+&lt;header class=&quot;fileheader&quot;&gt;&lt;div class=&quot;kind&quot;&gt;Run artifact&lt;/div&gt;&lt;h1&gt;logs/20260822.175747.734Z_jq_plan_codex.output.txt&lt;/h1&gt;&lt;div class=&quot;filenav&quot;&gt;&lt;a href=&quot;../../index.html&quot;&gt;&amp;larr; Report&lt;/a&gt;&lt;a href=&quot;../../logs/20260822.175747.734Z_jq_plan_codex.output.txt&quot;&gt;Raw file&lt;/a&gt;&lt;/div&gt;&lt;/header&gt;
+&lt;article class=&quot;doc&quot;&gt;&lt;pre&gt;=== BEGIN ARTIFACT FEATURE-Json-IO.md ===
+# FEATURE: JSON Input and Output
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides ordered JSON input processing, Unicode handling, numeric values, and compact output serialization. |
+| Depends On  | FEATURE-Process-Contract.md |
+| Provides    | JSON stdin parsing, compact JSON serialization, ordered output stream |
+| Consumes    | ./jq -c program execution |
+
+## Questions
+
+- None.
+
+## Input Processing
+
+Read the JSON values supplied by standard input in corpus order. Evaluate the filter independently against each input while preserving the global output order. Support Unicode escapes and characters, embedded control characters, large numeric literals, NaN, and infinities where required by jq semantics.
+
+## Output Processing
+
+Serialize every generated jq value as one compact JSON value per line. Structural comparison, not object key spelling or whitespace, defines conformance, but serialization must remain valid JSON-compatible output for the harness. Preserve generator multiplicity and ordering.
+
+## Programmatic Acceptance
+
+=== AC exec-003-conformance ===
+Intent: The supplied conformance runner executes a non-empty slice covering JSON conversion, special numbers, Unicode, and output behavior with no failed or errored cases.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;nan|infinite|tojson|fromjson|@base64|@uri&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC exec-003-conformance ===
+
+=== AC exec-003-multiple-inputs ===
+Intent: Multiple newline-delimited JSON inputs produce outputs in input and generator order.
+
+import subprocess
+
+inputs = &amp;quot;1\n2\n3\n&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=inputs,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&amp;quot;sys&amp;quot;).stderr)
+assert result.returncode == 0
+assert result.stdout.splitlines() == inputs.splitlines()
+=== END AC exec-003-multiple-inputs ===
+
+=== AC exec-003-unicode-and-compact ===
+Intent: Unicode input is decoded and emitted as one compact JSON value per line.
+
+import subprocess
+
+value = &amp;#x27;&amp;quot;\\u03bc&amp;quot;&amp;#x27;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;.&amp;quot;],
+    input=value + &amp;quot;\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&amp;quot;sys&amp;quot;).stderr)
+assert result.returncode == 0
+lines = result.stdout.splitlines()
+assert len(lines) == 1
+assert __import__(&amp;quot;json&amp;quot;).loads(lines[0]) == __import__(&amp;quot;json&amp;quot;).loads(value)
+=== END AC exec-003-unicode-and-compact ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Preserve input and output ordering.
+- Emit one output value per line.
+- Do not pretty-print output.
+- Preserve generator multiplicity.
+- Do not silently discard Unicode or special numeric values required by the corpus.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Labels-and-Breaks.md ===
+# FEATURE: Labels and Breaks
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Define lexically scoped jq labels and break expressions for terminating generators. |
+| Depends On  | FEATURE-Conditionals-and-Exceptions.md |
+| Provides    | label and break |
+| Consumes    | conditionals and exception flow, ordered generator evaluation |
+
+## Questions
+
+- None.
+
+## Intent
+
+This capability implements lexical control transfer from `break $label` to its matching visible `label $label`.
+
+## Behavior
+
+- `label $name | EXP` establishes a lexical break target.
+- `break $name` terminates the nearest matching labeled generator and produces no further values from it.
+- Breaks do not escape their lexical label or affect unrelated generators.
+- A break without a visible matching label is rejected at compile time with exit status 3.
+- Labels preserve output ordering for values produced before the break.
+
+## Programmatic Acceptance
+
+=== AC flow-004-conformance ===
+Intent: The authoritative corpus slice covering labels, breaks, and invalid-label compilation executes and passes.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;\b(label|break)\b&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0 and summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC flow-004-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Break targets are lexical, not dynamically searched.
+- A break must not leak values after its matching label terminates.
+- Invalid labels must be compile failures, never runtime failures.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Lexer.md ===
+# FEATURE: jq Lexer
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Tokenizes jq source text into the lexical forms required by the parser and evaluator. |
+| Depends On  | ARCHITECTURE.md, FEATURE-Json-IO.md |
+| Provides    | jq tokenization |
+| Consumes    | interpreter executable boundary |
+
+## Questions
+
+- None.
+
+## Lexical Scope
+
+Implement lexical recognition for:
+
+- JSON literals and numeric forms, including exponent notation.
+- Identifiers, field names, variable bindings, and qualified names.
+- jq keywords such as `def`, `if`, `reduce`, `try`, `label`, `module`, and `include`.
+- Operators including arithmetic, comparison, pipe, comma, alternative, assignment, and optional forms.
+- Parentheses, brackets, braces, separators, and delimiters.
+- Line comments beginning with `#`, including the source-defined continuation behavior.
+- Format tokens beginning with `@`.
+- Quoted strings, JSON escapes, and interpolation markers.
+
+The lexer must reject invalid characters and malformed escapes so the parser can report a compile failure with exit code `3`.
+
+## Source Contract
+
+`sources/lexer.l` is the lexical authority. `sources/parser.y` consumes the corresponding token categories. The lexer must not load module files or introduce command-line behavior beyond the fixed `-c` interface.
+
+## Programmatic Acceptance
+
+=== AC parse-001-conformance ===
+Intent: The supplied conformance runner executes a non-empty lexical slice and reports no failed or errored cases.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;^(true|false|null|1|\.)$&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC parse-001-conformance ===
+
+=== AC parse-001-comments-and-keywords ===
+Intent: Lexical comments and keyword identifiers remain distinguishable in valid jq source.
+
+import json
+import subprocess
+
+program = &amp;quot;{if:0,and:1,or:2,then:3,else:4,elif:5,end:6,as:7,def:8}&amp;quot;
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, program],
+    input=&amp;quot;null\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&amp;quot;sys&amp;quot;).stderr)
+assert result.returncode == 0
+actual = json.loads(result.stdout)
+assert actual == {
+    &amp;quot;if&amp;quot;: 0,
+    &amp;quot;and&amp;quot;: 1,
+    &amp;quot;or&amp;quot;: 2,
+    &amp;quot;then&amp;quot;: 3,
+    &amp;quot;else&amp;quot;: 4,
+    &amp;quot;elif&amp;quot;: 5,
+    &amp;quot;end&amp;quot;: 6,
+    &amp;quot;as&amp;quot;: 7,
+    &amp;quot;def&amp;quot;: 8,
+}
+=== END AC parse-001-comments-and-keywords ===
+
+=== AC parse-001-invalid-lexeme ===
+Intent: An invalid escape is rejected during compilation with the declared compile-failure status.
+
+import subprocess
+
+result = subprocess.run(
+    [&amp;quot;./jq&amp;quot;, &amp;quot;-c&amp;quot;, &amp;#x27;&amp;quot;u\\vw&amp;quot;&amp;#x27;],
+    input=&amp;quot;null\n&amp;quot;,
+    capture_output=True,
+    text=True,
+)
+print(result.stdout)
+print(result.stderr, file=__import__(&amp;quot;sys&amp;quot;).stderr)
+assert result.returncode == 3
+=== END AC parse-001-invalid-lexeme ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Follow the token categories and delimiter-state behavior defined by `sources/lexer.l`.
+- Preserve string escape and interpolation markers for parser consumption.
+- Reject malformed escapes and invalid characters at compile time.
+- Keep comments out of the token stream.
+- Do not modify staged lexical or parser sources.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Object-and-Containment-Builtins.md ===
+# FEATURE: Object and Containment Builtins
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provides jq object-entry, key, membership, and structural containment builtins. |
+| Depends On  | FEATURE-Sorting-and-Grouping.md, FEATURE-Value-Model.md |
+| Provides    | keys, keys_unsorted, has, in, inside, contains, to_entries, from_entries, with_entries |
+| Consumes    | jq value model, structural equality, collection transformations |
+
+## Questions
+
+- None.
+
+## Scope
+
+This feature implements object and array key inspection, membership predicates, recursive containment, conversion between objects and entry arrays, and entry transformations.
+
+## Behavior
+
+- `keys` sorts object keys and returns array indices for arrays.
+- `keys_unsorted` preserves object insertion order.
+- `has` tests object keys or valid array indices.
+- `in` reverses `has`.
+- `contains` and `inside` apply recursive jq containment rules to strings, arrays, objects, and scalar values.
+- `to_entries`, `from_entries`, and `with_entries` preserve supported key and value spellings.
+
+## Programmatic Acceptance
+
+=== AC data-003-conformance ===
+Intent: The authoritative corpus slice containing object, key, entry, membership, and containment syntax executes and passes without failures or errors.
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;\b(keys|keys_unsorted|has|in|contains|inside|to_entries|from_entries|with_entries)\b&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0 and summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC data-003-conformance ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Object key order must not affect structural equality or containment.
+- Preserve insertion order only for `keys_unsorted`.
+- Enforce containment depth and type semantics defined by jq.
+=== END ARTIFACT ===
+=== BEGIN ARTIFACT FEATURE-Output-Formats.md ===
+# FEATURE: Output Formats
+
+| Field       | Value |
+|-------------|-------|
+| Version     | 20260822 V1 |
+| Description | Provide JSON conversion and jq output-format filters. |
+| Depends On  | FEATURE-String-Builtins.md, FEATURE-Json-IO.md |
+| Provides    | tostring, tojson, fromjson, @text, @json, @html, @uri, @urid, @csv, @tsv, @sh, @base64, @base64d |
+| Consumes    | string manipulation builtins, JSON serializer |
+
+## Questions
+
+- None.
+
+## Intent
+
+Implement conversion between jq values and JSON text, plus the required text, HTML, URI, CSV, TSV, shell, and base64 format filters. Preserve interpolation behavior and stream ordering.
+
+## Programmatic Acceptance
+
+=== AC text-002-conformance ===
+Intent: The authoritative corpus cases covering JSON conversion and output-format filters pass.
+Suite: scoped
+Requires: executable=python3; scope=test
+
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;@(?:text|json|html|uri|csv|tsv|sh|base64)|tojson|fromjson&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+print(result.stdout)
+print(result.stderr, file=sys.stderr)
+report = json.loads(result.stdout)
+summary = report[&amp;quot;summary&amp;quot;]
+assert sum(summary.values()) &amp;gt; 0
+assert summary[&amp;quot;fail&amp;quot;] == 0
+assert summary[&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC text-002-conformance ===
+
+=== AC text-002-interface ===
+Intent: The format-filter corpus slice executes through the candidate executable.
+import json
+import os
+import subprocess
+import sys
+
+selector = r&amp;quot;@(?:text|json|html|uri|csv|tsv|sh|base64)&amp;quot;
+result = subprocess.run(
+    [sys.executable, &amp;quot;sources/run_conformance.py&amp;quot;, &amp;quot;--select&amp;quot;, selector, &amp;quot;--json&amp;quot;],
+    capture_output=True,
+    text=True,
+    env={**os.environ, &amp;quot;JQ&amp;quot;: f&amp;quot;{os.getcwd()}/jq&amp;quot;},
+)
+report = json.loads(result.stdout)
+assert sum(report[&amp;quot;summary&amp;quot;].values()) &amp;gt; 0
+assert report[&amp;quot;summary&amp;quot;][&amp;quot;fail&amp;quot;] == 0
+assert report[&amp;quot;summary&amp;quot;][&amp;quot;error&amp;quot;] == 0
+assert result.returncode == 0
+=== END AC text-002-interface ===
+
+## User Acceptance
+
+- None.
+
+## Guardrails
+
+- Use only Python standard-library facilities.
+- Preserve compact JSON values and one output per line.
+- Do not modify staged scoring assets.
+=== END ARTIFACT ===&lt;/pre&gt;&lt;/article&gt;
+&lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></article>
+</main>
+</body>
+</html>

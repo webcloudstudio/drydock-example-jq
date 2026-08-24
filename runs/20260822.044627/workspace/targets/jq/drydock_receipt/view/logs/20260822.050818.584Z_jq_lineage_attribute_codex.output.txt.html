@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.050818.584Z_jq_lineage_attribute_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>&lt;requirement name=&quot;test-input-output-contract&quot; stories=&quot;EXEC-003&quot;&gt;
+# Tests are groups of three lines: program, input, expected output
+# Blank lines and lines starting with # are ignored
+&lt;/requirement&gt;
+&lt;requirement name=&quot;lexical-scanning&quot; stories=&quot;PARSE-001&quot;&gt;
+# The input line starts with a 0xFEFF (byte order mark) codepoint
+&lt;/requirement&gt;
+&lt;requirement name=&quot;literals-strings-interpolation&quot; stories=&quot;PARSE-002&quot;&gt;
+# We test escapes by matching them against Unicode codepoints
+&lt;/requirement&gt;
+&lt;requirement name=&quot;core-filter-grammar&quot; stories=&quot;PARSE-003&quot;&gt;
+# Field access, piping
+&lt;/requirement&gt;
+&lt;requirement name=&quot;advanced-filter-grammar&quot; stories=&quot;PARSE-004&quot;&gt;
+# module system
+&lt;/requirement&gt;
+&lt;requirement name=&quot;stream-evaluation&quot; stories=&quot;CORE-001&quot;&gt;
+# Multiple outputs, iteration
+&lt;/requirement&gt;
+&lt;requirement name=&quot;composition-cartesian-evaluation&quot; stories=&quot;CORE-002&quot;&gt;
+# Check that various builtins evaluate all arguments where appropriate,
+# doing cartesian products where appropriate.
+&lt;/requirement&gt;
+&lt;requirement name=&quot;errors-and-optional-evaluation&quot; stories=&quot;CORE-003&quot;&gt;
+# Try/catch and general `?` operator
+&lt;/requirement&gt;
+&lt;requirement name=&quot;truthiness-comparison&quot; stories=&quot;CORE-004&quot;&gt;
+# And some in/equality tests
+&lt;/requirement&gt;
+&lt;requirement name=&quot;value-model-numeric-edge-cases&quot; stories=&quot;VALUE-001&quot;&gt;
+# Basic numbers tests: integers, powers of two
+&lt;/requirement&gt;
+&lt;requirement name=&quot;field-index-access&quot; stories=&quot;VALUE-002&quot;&gt;
+# Negative array indices
+&lt;/requirement&gt;
+&lt;requirement name=&quot;slices-and-iteration&quot; stories=&quot;VALUE-003&quot;&gt;
+# Slices
+&lt;/requirement&gt;
+&lt;requirement name=&quot;type-length-math-primitives&quot; stories=&quot;VALUE-004&quot;&gt;
+# abs, fabs, length
+&lt;/requirement&gt;
+&lt;requirement name=&quot;arithmetic-structural-operators&quot; stories=&quot;FLOW-001&quot;&gt;
+# Builtin functions
+&lt;/requirement&gt;
+&lt;requirement name=&quot;boolean-alternative-operators&quot; stories=&quot;FLOW-002&quot;&gt;
+# containment operator
+&lt;/requirement&gt;
+&lt;requirement name=&quot;conditionals-exception-flow&quot; stories=&quot;FLOW-003&quot;&gt;
+# Conditionals
+&lt;/requirement&gt;
+&lt;requirement name=&quot;labels-and-breaks&quot; stories=&quot;FLOW-004&quot;&gt;
+[label $out | foreach .[] as $item ([3, null]; if .[0] &lt; 1 then break $out else [.[0] -1, $item] end; .[1])]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;reductions-iteration-control&quot; stories=&quot;FLOW-005&quot;&gt;
+[foreach .[] as $x (0; . + $x) as $x | $x]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;recursive-generators&quot; stories=&quot;FLOW-006&quot;&gt;
+# test recursion
+&lt;/requirement&gt;
+&lt;requirement name=&quot;variable-bindings&quot; stories=&quot;FUNC-001&quot;&gt;
+# Variables
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-parameters&quot; stories=&quot;FUNC-002&quot;&gt;
+def f(a;b;c;d;e;f): [a+1,b,c,d,e,f]; f(.[0];.[1];.[0];.[0];.[0];.[0])
+&lt;/requirement&gt;
+&lt;requirement name=&quot;function-definitions-scope&quot; stories=&quot;FUNC-003&quot;&gt;
+# test multiple function arities and redefinition
+&lt;/requirement&gt;
+&lt;requirement name=&quot;destructuring-alternatives&quot; stories=&quot;FUNC-004&quot;&gt;
+# Destructuring with alternation
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-discovery-projection&quot; stories=&quot;PATH-001&quot;&gt;
+# Paths
+&lt;/requirement&gt;
+&lt;requirement name=&quot;path-access-mutation&quot; stories=&quot;PATH-002&quot;&gt;
+[&quot;foo&quot;,1] as $p | getpath($p), setpath($p; 20), delpaths([$p])
+&lt;/requirement&gt;
+&lt;requirement name=&quot;deletion-assignment&quot; stories=&quot;PATH-003&quot;&gt;
+#
+# Assignment
+#
+.message = &quot;goodbye&quot;
+&lt;/requirement&gt;
+&lt;requirement name=&quot;complex-assignment-edge-cases&quot; stories=&quot;PATH-004&quot;&gt;
+# #1358, getpath/1 should work in path expressions
+&lt;/requirement&gt;
+&lt;requirement name=&quot;collection-transformations&quot; stories=&quot;DATA-001&quot;&gt;
+# Collection transformations
+&lt;/requirement&gt;
+&lt;requirement name=&quot;sorting-grouping-extrema&quot; stories=&quot;DATA-002&quot;&gt;
+sort
+[42,[2,5,3,11],10,{&quot;a&quot;:42,&quot;b&quot;:2},{&quot;a&quot;:42},true,2,[2,6],&quot;hello&quot;,null,[2,5,6],{&quot;a&quot;:[],&quot;b&quot;:1},&quot;abc&quot;,&quot;ab&quot;,[3,10],{},false,&quot;abcd&quot;,null]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;object-entries-containment&quot; stories=&quot;DATA-003&quot;&gt;
+to_entries
+{&quot;a&quot;: 1, &quot;b&quot;: 2}
+[{&quot;key&quot;:&quot;a&quot;, &quot;value&quot;:1}, {&quot;key&quot;:&quot;b&quot;, &quot;value&quot;:2}]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;index-membership-search&quot; stories=&quot;DATA-004&quot;&gt;
+# check that dead code removal occurs after builtin it generation
+&lt;/requirement&gt;
+&lt;requirement name=&quot;string-manipulation&quot; stories=&quot;TEXT-001&quot;&gt;
+# string operations
+&lt;/requirement&gt;
+&lt;requirement name=&quot;formats-serialization&quot; stories=&quot;TEXT-002&quot;&gt;
+[.[]|tojson|fromjson]
+[&quot;foo&quot;, 1, [&quot;a&quot;, 1, &quot;b&quot;, 2, {&quot;foo&quot;:&quot;bar&quot;}]]
+[&quot;foo&quot;,1,[&quot;a&quot;,1,&quot;b&quot;,2,{&quot;foo&quot;:&quot;bar&quot;}]]
+&lt;/requirement&gt;
+&lt;requirement name=&quot;regular-expression-filters&quot; stories=&quot;TEXT-003&quot;&gt;
+# string operations
+&lt;/requirement&gt;
+&lt;requirement name=&quot;date-time-filters&quot; stories=&quot;TEXT-004&quot;&gt;
+# module system
+&lt;/requirement&gt;
+&lt;requirement name=&quot;input-stream-controls&quot; stories=&quot;IO-001&quot;&gt;
+# calling input/0, or debug/0 in a test doesn&#x27;t crash jq
+&lt;/requirement&gt;
+&lt;requirement name=&quot;diagnostics-stderr-filters&quot; stories=&quot;IO-002&quot;&gt;
+debug
+1
+1
+&lt;/requirement&gt;
+&lt;requirement name=&quot;streaming-transformations&quot; stories=&quot;IO-003&quot;&gt;
+# Multiple outputs, iteration
+&lt;/requirement&gt;
+&lt;requirement name=&quot;full-conformance-verification&quot; stories=&quot;CONF-001,CONF-002,CONF-003&quot;&gt;
+# Tests are groups of three lines: program, input, expected output
+&lt;/requirement&gt;
+&lt;unattached story=&quot;architecture-foundation&quot;/&gt;
+&lt;unattached story=&quot;EXEC-001&quot;/&gt;
+&lt;unattached story=&quot;EXEC-002&quot;/&gt;</pre></article>
+</main>
+</body>
+</html>

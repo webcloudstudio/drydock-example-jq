@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-34.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-34.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-34.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 34 · Service (block-34)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-22</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 53744</li><li>execution id: 20260823.044517.300Z-207a6942</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement index and membership utilities. (DATA-004) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-DATA-004.md#data-004-conformance: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-DATA-004.md (SP 444)</li><li>context: builtin.jq (SP 2408)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_data_003_entries_containment.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: data-004-conformance (FEATURE-DATA-004.md)</li></ul>
+<p>intent: The index, membership, quantifier, and emptiness slice executes matching corpus cases and passes all selected cases. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 40, &quot;fail&quot;: 3, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1827, &quot;program&quot;: &quot;bsearch(0,1,2,3,4)&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;-1&quot;, &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;-4&quot; ], &quot;actual&quot;: [ &quot;-1&quot; ] }, { &quot;line&quot;: 2121, &quot;program&quot;: &quot;IN(range(10;20); range(10))&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;false&quot; ], &quot;actual&quot;: [ &quot;true&quot; ] }, { &quot;line&quot;: 2152, &quot;program&quot;: &quot;index(\&quot;\&quot;)&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;null&quot; ], &quot;actual&quot;: [ &quot;0&quot; ] } ] } stderr: --- drydock: progress --- cases: pass=40 fail=3 error=0 skip=0 total=43 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 40, &#x27;fail&#x27;: 3, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;data-004-conformance.py&quot;, line 18, in &lt;module&gt; assert summary[&quot;fail&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: data-004-conformance (FEATURE-DATA-004.md)</li></ul>
+<p>intent: The index, membership, quantifier, and emptiness slice executes matching corpus cases and passes all selected cases. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 43, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li><a href="/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq_interpreter/evaluator.py">jq_interpreter/evaluator.py</a></li><li><a href="/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/tests/test_data_003_entries_containment.py">tests/test_data_003_entries_containment.py</a></li></ul>
+<p>SUMMARY: Implemented DATA-004 index, binary search, quantifier, emptiness, and IN fixes. Scoped conformance: 43 passed, 0 failed, 0 errored. Project tests: 151 passed.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

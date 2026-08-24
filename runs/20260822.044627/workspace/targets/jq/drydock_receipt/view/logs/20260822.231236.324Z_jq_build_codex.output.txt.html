@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260822.231236.324Z_jq_build_codex.output.txt</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260822.231236.324Z_jq_build_codex.output.txt</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260822.231236.324Z_jq_build_codex.output.txt">Raw file</a></div></header>
+<article class="doc"><pre>RESULT: FAILED
+
+FILES CHANGED:
+- jq_interpreter/parser.py
+- jq_interpreter/evaluator.py
+
+SUMMARY:
+Implemented parser/evaluator fixes for recursive descent, generator indexes, ranges, slices, computed-key validation, paths, bindings, and control precedence. Project tests pass: 32 passed.
+
+Scoped acceptance remains failing:
+- parse-003: 331 passed, 123 failed, 1 errored, 9 skipped
+- parse-004: 153 passed, 57 failed, 1 errored, 13 skipped
+
+BLOCKERS:
+- Significant evaluator functionality remains incomplete, including builtins, assignment semantics, function scoping, and advanced control behavior.
+
+FAILURE_SUMMARY: Scoped conformance suites still fail.
+FAILURE_DETAIL: Both authoritative acceptance commands executed successfully but reported nonzero fail/error tallies; further evaluator and builtin implementation is required.</pre></article>
+</main>
+</body>
+</html>

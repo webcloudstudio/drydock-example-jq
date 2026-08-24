@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/targets/jq/drydock_receipt/workspace/evidence/block-43.md</title>
+<link rel="stylesheet" href="../../../../../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/targets/jq/drydock_receipt/workspace/evidence/block-43.md</h1><div class="filenav"><a href="../../../../../../../index.html">&larr; Report</a><a href="../../../../../../../workspace/targets/jq/drydock_receipt/workspace/evidence/block-43.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 43 · Service (block-43)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-23</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 24894</li><li>execution id: 20260823.120026.215Z-156f0541</li></ul>
+<h2>Stories built</h2>
+<ul><li>Run the complete jq conformance corpus. (CONF-003) [story]</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-CONF-003.md (SP 305)</li><li>context: full_test.sh (SP 189)</li><li>context: run_conformance.py (SP 4354)</li><li>context: exclusions.txt (SP 654)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li><li>stack: common_compact.md (SP 1179)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_conf_003_abs.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: conf-003-full-suite (FEATURE-CONF-003.md)</li></ul>
+<p>intent: The supplied complete conformance suite passes with a successful exit status. return code: 1 stdout: FAIL jq.test:2250  output mismatch program:  abs input:    &quot;abc&quot; expected: [&#x27;&quot;abc&quot;&#x27;] actual:   (no output) stderr:   jq: runtime error: bad operand type for abs(): &#x27;str&#x27; jq conformance: 536 passed, 1 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2) stderr: --- drydock: values at failure --- result = CompletedProcess(args=[&#x27;sh&#x27;, &#x27;sources/full_test.sh&#x27;], returncode=1, stdout=&#x27;FAIL jq.test:2250  output mismatch\n    program:  abs\n    input:    &quot;abc&quot;\n    expected: [\&#x27;&quot;abc&quot;\&#x27;]\n    actual:   (no output)\n    stderr:   jq: runtime error: bad operand type for abs(): \&#x27;str\&#x27;\njq conformance: 536 passed, 1 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)\n&#x27;, stderr=&#x27;&#x27;) --- drydock: end values --- Traceback (most recent call last): File &quot;conf-003-full-suite.py&quot;, line 10, in &lt;module&gt; assert result.returncode == 0 ^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: conf-003-full-suite (FEATURE-CONF-003.md)</li></ul>
+<p>intent: The supplied complete conformance suite passes with a successful exit status. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: jq conformance: 537 passed, 0 failed, 0 errored, 13 skipped (corpus jq.test @ jq-1.8.2)</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>tests/test_conf_003_abs.py</li></ul>
+<p>SUMMARY: Fixed jq <code>abs</code> behavior for non-numeric values. Full conformance passed: 537 passed, 0 failed, 0 errored, 13 skipped. Project tests passed: 183 passed.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>

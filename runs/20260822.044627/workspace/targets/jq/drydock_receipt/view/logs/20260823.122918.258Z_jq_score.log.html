@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>logs/20260823.122918.258Z_jq_score.log</title>
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>logs/20260823.122918.258Z_jq_score.log</h1><div class="filenav"><a href="../../index.html">&larr; Report</a><a href="../../logs/20260823.122918.258Z_jq_score.log">Raw file</a></div></header>
+<article class="doc"><pre>Drydock 0.2.0  Copyright (c) 2026 Web Cloud Studio. All rights reserved.
+
+Build report: jq
+  evidence: /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/targets/jq/evidence
+  usage:    /mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/workspace/logs/llm.jsonl
+
+  Blueprint acceptance (last `score ac`): PASS 18  FAIL 3  UNVERIFIED 0  PREPASSED 36  (57 AC)
+
+  Block                     Build AC  Calls      Cached   Uncached    Hit   Output     Time
+  ─────────────────────────────────────────────────────────────────────────────────────────
+  ✗ Block 37 · Service           0/0      1           0          0      —        0       0s
+  ✓ Block 1 · Foundational       2/2      1     257,792     33,918  88.4%    4,301   1m 47s
+  ✓ Block 2 · Foundational       2/2      1     192,768     30,410  86.4%    2,010      56s
+  ✓ Block 3 · Service            3/3      1     195,840     33,812  85.3%    2,449   1m 03s
+  ✓ Block 4 · Service            3/3      1     478,720     54,284  89.8%    3,932   1m 48s
+  ✓ Block 5 · Foundational       1/1      1     481,792     90,617  84.2%    2,045   1m 04s
+  ✓ Block 6 · Service            3/3      1     847,104     67,960  92.6%    9,622   3m 39s
+  ✓ Block 7 · Service            1/1      1   1,679,616    103,758  94.2%    8,656   3m 50s
+  ✓ Block 8 · Service            2/2     14  44,248,832  1,582,687  96.5%  147,887   1h 59m
+  ✓ Block 9 · Service            1/1      1   1,286,400    104,718  92.5%    4,454   2m 28s
+  ✓ Block 10 · Service           1/1      1   1,065,728    109,112  90.7%    4,301   2m 53s
+  ✓ Block 11 · Service           1/1      1     722,688    107,628  87.0%    3,142   2m 02s
+  ✓ Block 12 · Service           1/1      1   1,250,816    112,786  91.7%    5,516   2m 16s
+  ✓ Block 13 · Service           1/1      1   1,202,688    109,168  91.7%    3,685   1m 48s
+  ✓ Block 14 · Service           1/1      1     919,808    111,349  89.2%    3,777   2m 04s
+  ✓ Block 15 · Service           1/1      1   1,056,512    101,523  91.2%    4,412   2m 32s
+  ✓ Block 16 · Service           1/1      1   2,139,904    129,750  94.3%    7,279   3m 20s
+  ✓ Block 17 · Service           1/1      1   1,382,656    114,367  92.4%    4,746   2m 41s
+  ✓ Block 18 · Service           1/1      1   1,263,104    118,304  91.4%    3,695   2m 04s
+  ✓ Block 19 · Service           1/1      1   1,026,816    211,325  82.9%    4,419   2m 48s
+  ✓ Block 20 · Service           1/1      1     974,080    100,713  90.6%    3,412   1m 39s
+  ✓ Block 21 · Service           1/1      1   1,818,112    133,138  93.2%    4,814   2m 30s
+  ✓ Block 22 · Service           1/1      1   1,470,720    124,514  92.2%    5,632   2m 25s
+  ✓ Block 23 · Service           1/1      1   2,021,632    134,621  93.8%    6,930   3m 21s
+  ✓ Block 24 · Service           1/1      1   2,128,640    135,777  94.0%    6,102   2m 54s
+  ✓ Block 25 · Service           1/1      1   1,286,912    133,438  90.6%    4,382   2m 22s
+  ✓ Block 26 · Service           1/1      1     649,216    105,983  86.0%    3,092   1m 39s
+  ✓ Block 27 · Service           1/1      1   1,005,568     96,041  91.3%    3,471   1m 53s
+  ✓ Block 28 · Service           1/1      1   1,357,056    116,281  92.1%    7,684   3m 12s
+  ✓ Block 29 · Service           1/1      1   2,174,464    115,365  95.0%    7,073   3m 37s
+  ✓ Block 30 · Service           1/1      1   1,485,824    114,007  92.9%    5,144   2m 22s
+  ✓ Block 31 · Service           1/1      2   3,439,104    235,321  93.6%   10,720   5m 45s
+  ✓ Block 32 · Service           1/1      1   1,050,368    100,852  91.2%    4,729   2m 08s
+  ✓ Block 33 · Service           1/1      1   1,814,016    130,683  93.3%    5,911   2m 48s
+  ✓ Block 34 · Service           1/1      1   1,138,432    112,252  91.0%    4,162   2m 00s
+  ✓ Block 35 · Service           1/1      1   1,293,824    117,989  91.6%    4,989   2m 13s
+  ✓ Block 36 · Service           2/2      1   1,439,744    110,746  92.9%    8,019   3m 52s
+  ✓ Block 38 · Service           2/2      1   1,896,704     98,678  95.1%    8,283   5m 34s
+  ✓ Block 39 · Service           2/2      1   2,192,640    117,629  94.9%   11,136   4m 55s
+  ✓ Block 40 · Service           2/2      1   1,492,736    103,909  93.5%    5,849   3m 24s
+  ✓ Block 41 · Service           0/0      1   1,453,056    110,554  92.9%    6,932   3m 39s
+  ✓ Block 42 · Service           1/1      1     172,288     24,975  87.3%    1,747   1m 04s
+  ✓ Block 43 · Service           1/1      1   1,737,984     77,070  95.8%    3,779  12m 16s
+  ─────────────────────────────────────────────────────────────────────────────────────────
+  TOTAL                        54/54     57  97,192,704  5,978,012  94.2%  364,320   3h 58m
+
+  Blocks: 42/43 verified · 40 on first call · 2 repaired
+  Model:  gpt-5.6-luna
+  Tokens: 97,192,704 cached · 5,978,012 uncached · 364,320 out
+
+  Repairs
+    Block 8 · Service [block-8]
+      initial build  incomplete 0/2 AC · 507/688 cases · 2,561,054 in · 95.5% hit · 6m 04s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 1       incomplete 0/2 AC · 527/688 cases · 3,722,966 in · 96.9% hit · 8m 55s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 2       incomplete 0/2 AC · 546/688 cases · 3,324,985 in · 96.7% hit · 8m 08s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 3       incomplete 0/2 AC · 558/688 cases · 2,681,270 in · 96.0% hit · 7m 09s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 4       incomplete 0/2 AC · 567/688 cases · 2,923,658 in · 96.3% hit · 8m 35s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 5       incomplete 0/2 AC · 573/688 cases · 3,310,823 in · 96.6% hit · 8m 48s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 6       incomplete 0/2 AC · 591/688 cases · 2,297,067 in · 95.5% hit · 6m 04s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 7       incomplete 0/2 AC · 594/688 cases · 2,740,501 in · 96.2% hit · 7m 50s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 8       incomplete 0/2 AC · 617/688 cases · 3,616,376 in · 96.7% hit · 7m 44s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 9       incomplete 0/2 AC · 619/688 cases · 2,892,104 in · 96.4% hit · 9m 58s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 10      incomplete 0/2 AC · 627/688 cases · 3,133,465 in · 96.5% hit · 9m 35s
+                     programmatic acceptance failed: parse-003-conformance, parse-004-conformance
+      repair 11      incomplete 1/2 AC · 435/464 cases · 6,243,850 in · 97.6% hit · 13m 48s
+                     programmatic acceptance failed: parse-003-conformance
+      repair 12      incomplete 1/2 AC · 446/464 cases · 2,657,110 in · 95.9% hit · 6m 36s
+                     programmatic acceptance failed: parse-003-conformance
+      repair 13      built      2/2 AC · 3,726,290 in · 97.0% hit · 10m 04s
+    Block 31 · Service [block-31]
+      initial build  incomplete 1/1 AC · 2,258,868 in · 94.6% hit · 2m 52s
+                     acceptance regression: parse-003-conformance, parse-004-conformance, value-001-conformance, value-002-conformance, value-003-conformance, flow-001-conformance,…
+      repair 1       built      1/1 AC · 1,415,557 in · 92.0% hit · 2m 53s
+
+  Not verified
+    Block 37 · Service [block-37] — closed/implemented
+
+  Note: 1 execution(s) have no usage record; their tokens read as zero.
+
+Target - committed project workspace git store
+</pre></article>
+</main>
+</body>
+</html>

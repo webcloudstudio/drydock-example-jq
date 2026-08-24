@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workspace/evidence/block-38.md</title>
+<link rel="stylesheet" href="../../../assets/kit.css">
+</head>
+<body>
+<main>
+<header class="fileheader"><div class="kind">Run artifact</div><h1>workspace/evidence/block-38.md</h1><div class="filenav"><a href="../../../index.html">&larr; Report</a><a href="../../../workspace/evidence/block-38.md">Raw file</a></div></header>
+<article class="doc"><h1>Evidence: Block 38 · Service (block-38)</h1>
+<ul><li>block type: block</li><li>date: 2026-08-23</li><li>resulting state: closed/verified</li><li>story points (combined assembled cost): 51519</li><li>execution id: 20260823.113822.128Z-2a70a44a</li></ul>
+<h2>Stories built</h2>
+<ul><li>Implement date and time filters. (TEXT-004) [story]</li></ul>
+<h2>Acceptance tooling authorization</h2>
+<ul><li>FEATURE-TEXT-004.md#text-004-date-conformance: executable=python3; scope=test; authorization=existing Target environment</li><li>FEATURE-TEXT-004.md#text-004-utc: executable=python3; scope=test; authorization=existing Target environment</li></ul>
+<h2>Stacked context</h2>
+<ul><li>compass: COMPASS.md (SP 3420)</li><li>implements: FEATURE-TEXT-004.md (SP 621)</li><li>context: jq-manual.txt (SP 32696)</li><li>context: jq.test (SP 13058)</li><li>context: ARCHITECTURE_compact.md (SP 154)</li><li>stack: python_compact.md (SP 1534)</li></ul>
+<h2>Build directory changes</h2>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_service_date_time.py</li></ul>
+<h2>Pre-build acceptance observation</h2>
+<ul><li>RED: text-004-date-conformance (FEATURE-TEXT-004.md)</li></ul>
+<p>intent: The authoritative corpus cases covering date and time filters execute and pass. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 12, &quot;fail&quot;: 2, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1855, &quot;program&quot;: &quot;mktime&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;program did not compile: jq: compile error: unknown filter&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;1726876800&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1859, &quot;program&quot;: &quot;gmtime&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[2015,2,5,23,51,47,4,63]&quot; ], &quot;actual&quot;: [ &quot;[2015,2,5,23,51,47,3,63]&quot; ] } ] } stderr: --- drydock: progress --- cases: pass=12 fail=2 error=0 skip=0 total=14 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 12, &#x27;fail&#x27;: 2, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;text-004-date-conformance.py&quot;, line 18, in &lt;module&gt; assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<ul><li>RED: text-004-utc (FEATURE-TEXT-004.md)</li></ul>
+<p>intent: The selected corpus exercises both ISO convenience filters and low-level UTC conversions. return code: 1 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 9, &quot;fail&quot;: 2, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [ { &quot;line&quot;: 1855, &quot;program&quot;: &quot;mktime&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;program did not compile: jq: compile error: unknown filter&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;1726876800&quot; ], &quot;actual&quot;: [] }, { &quot;line&quot;: 1859, &quot;program&quot;: &quot;gmtime&quot;, &quot;status&quot;: &quot;fail&quot;, &quot;detail&quot;: &quot;output mismatch&quot;, &quot;expect_failure&quot;: false, &quot;expected&quot;: [ &quot;[2015,2,5,23,51,47,4,63]&quot; ], &quot;actual&quot;: [ &quot;[2015,2,5,23,51,47,3,63]&quot; ] } ] } stderr: --- drydock: progress --- cases: pass=9 fail=2 error=0 skip=0 total=11 from=summary --- drydock: end progress --- --- drydock: values at failure --- summary = {&#x27;pass&#x27;: 9, &#x27;fail&#x27;: 2, &#x27;error&#x27;: 0, &#x27;skip&#x27;: 0} --- drydock: end values --- Traceback (most recent call last): File &quot;text-004-utc.py&quot;, line 18, in &lt;module&gt; assert summary[&quot;fail&quot;] == 0 and summary[&quot;error&quot;] == 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ AssertionError</p>
+<h2>Post-build programmatic acceptance</h2>
+<ul><li>PASS: text-004-date-conformance (FEATURE-TEXT-004.md)</li></ul>
+<p>intent: The authoritative corpus cases covering date and time filters execute and pass. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 14, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<ul><li>PASS: text-004-utc (FEATURE-TEXT-004.md)</li></ul>
+<p>intent: The selected corpus exercises both ISO convenience filters and low-level UTC conversions. target interpreter: /mnt/c/Users/barlo/projects/drydock/.venv/bin/python3 provisioning: not required return code: 0 stdout: { &quot;candidate&quot;: [ &quot;/mnt/c/Users/barlo/projects/drydock/uat/jq/runs/20260822.044627/build/jq/jq&quot; ], &quot;corpus&quot;: &quot;jq.test&quot;, &quot;summary&quot;: { &quot;pass&quot;: 11, &quot;fail&quot;: 0, &quot;error&quot;: 0, &quot;skip&quot;: 0 }, &quot;cases&quot;: [] }</p>
+<h2>Build summary</h2>
+<p>RESULT: SUCCESS</p>
+<p>FILES CHANGED:</p>
+<ul><li>jq_interpreter/evaluator.py</li><li>jq_interpreter/parser.py</li><li>tests/test_service_date_time.py</li></ul>
+<p>SUMMARY: Implemented UTC date parsing, formatting, local/UTC time conversion, <code>mktime</code>, and ISO aliases. All 170 tests pass; acceptance slices pass 14/14 and 11/11.</p>
+<p>BLOCKERS:</p>
+<ul><li>None</li></ul></article>
+</main>
+</body>
+</html>
